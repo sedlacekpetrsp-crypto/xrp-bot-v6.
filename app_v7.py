@@ -465,14 +465,14 @@ async def manage_position():
 
     if side == "LONG":
         if price <= stop_loss:
-            close_trade(price, "STOP LOSS / BE")
+            close_trade(price, "BREAK EVEN" if p.get("breakeven_moved") else "STOP LOSS")
             return
         if price >= take_profit:
             close_trade(price, "TAKE PROFIT")
             return
     else:
         if price >= stop_loss:
-            close_trade(price, "STOP LOSS / BE")
+            close_trade(price, "BREAK EVEN" if p.get("breakeven_moved") else "STOP LOSS")
             return
         if price <= take_profit:
             close_trade(price, "TAKE PROFIT")
