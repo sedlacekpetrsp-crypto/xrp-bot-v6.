@@ -432,6 +432,10 @@ async def strategy_analysis():
             signal, setup, score = "SHORT", "TREND_PULLBACK", short_score
         elif short_score >= MIN_ENTRY_SCORE + 1:
             signal, setup, score = "SHORT", "MOMENTUM", short_score
+    elif regime == "TRANSITION" and long_score == 8:
+        signal, setup, score = "LONG", "TRANSITION_8_OF_8", 8
+    elif regime == "TRANSITION" and short_score == 8:
+        signal, setup, score = "SHORT", "TRANSITION_8_OF_8", 8
     elif regime in ("RANGE", "TRANSITION") and atr_value and vwap_value:
         stretched = vwap_distance >= atr_value * VWAP_STRETCH_ATR
         range_long = failed_low and stretched and c < vwap_value and rsi_value <= RANGE_RSI_LONG_MAX and volume_ratio >= MIN_VOLUME_RATIO_RANGE and book_imbalance >= 0.50
