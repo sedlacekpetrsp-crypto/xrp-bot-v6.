@@ -8,19 +8,20 @@ import psycopg
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 
-app = FastAPI(title="XRP Bot V7 Pro Scalper")
+app = FastAPI(title="V7 Pro Multi Scalper")
 
-SYMBOL = "XRPUSDT"
+SYMBOLS = ["XRPUSDC", "ETHUSDC", "SOLUSDC"]
 BINANCE_API = "https://data-api.binance.vision"
 TRADING_MODE = "PAPER"
 DATABASE_URL = os.getenv("DATABASE_URL")
 STARTING_BALANCE = 10000.0
 
-RISK_PER_TRADE = 0.0025
+# Risk and execution simulation
+RISK_PER_TRADE = 0.0025          # 0.25 % account risk per trade
 BASE_RISK_REWARD = 1.30
 ATR_MULTIPLIER = 0.90
-FEE_RATE = 0.0005
-SLIPPAGE_RATE = 0.0002
+FEE_RATE = 0.0005               # 0.05 % each side
+SLIPPAGE_RATE = 0.0002          # 0.02 % simulated slippage each side
 MAX_TRADE_MINUTES = 6
 COOLDOWN_AFTER_WIN_MIN = 0
 COOLDOWN_AFTER_LOSS_MIN = 1
@@ -28,7 +29,9 @@ LOOP_SECONDS = 10
 DAILY_LOSS_LIMIT_R = 3.0
 MAX_CONSECUTIVE_LOSSES = 3
 LOSS_STREAK_COOLDOWN_MIN = 30
+MAX_OPEN_POSITIONS = 1          # correlation protection: only one crypto position at once
 
+# Strategy filters
 BREAKOUT_LOOKBACK = 12
 ORDER_BOOK_LEVELS = 20
 TREND_ADX_MIN = 18.0
@@ -51,7 +54,7 @@ VWAP_STRETCH_ATR = 1.20
 PAPER_BALANCE = STARTING_BALANCE
 paper_position = None
 trade_history = []
-last_entry_candle = None
+last_entry_candle = {}
 cooldown_until = None
 bot_loop_started = False
 
@@ -85,6 +88,7 @@ def init_db():
                     closed_at TIMESTAMPTZ DEFAULT NOW()
                 )
             """)
+            cur.execute("ALTER TABLE v7_trades ADD COLUMN IF NOT EXISTS symbol TEXT NOT NULL DEFAULT 'XRPUSDT'")
             cur.execute("""
                 CREATE TABLE IF NOT EXISTS v7_state (
                     id INTEGER PRIMARY KEY,
@@ -129,22 +133,32 @@ def load_state():
                     state = row[0]
                     PAPER_BALANCE = float(state.get("paper_balance", STARTING_BALANCE))
                     paper_position = state.get("paper_position")
-                    last_entry_candle = state.get("last_entry_candle")
+                    if paper_position and "symbol" not in paper_position:
+                        paper_position["symbol"] = "XRPUSDT"
+                    lec = state.get("last_entry_candle", {})
+                    if isinstance(lec, dict):
+                        last_entry_candle = lec
+                    elif lec is not None:
+                        last_entry_candle = {"XRPUSDC": lec}
+                    else:
+                        last_entry_candle = {}
                     c = state.get("cooldown_until")
                     cooldown_until = datetime.fromisoformat(c) if c else None
+
                 cur.execute("""
-                    SELECT side, setup, entry_price, exit_price, qty,
+                    SELECT symbol, side, setup, entry_price, exit_price, qty,
                            gross_pnl, fees, pnl, reason, score, opened_at, closed_at
                     FROM v7_trades ORDER BY id DESC LIMIT 300
                 """)
                 trade_history = []
                 for r in cur.fetchall():
                     trade_history.append({
-                        "side": r[0], "setup": r[1], "entry_price": r[2],
-                        "exit_price": r[3], "qty": r[4], "gross_pnl": r[5],
-                        "fees": r[6], "pnl": r[7], "reason": r[8], "score": r[9],
-                        "opened_at": r[10].isoformat() if r[10] else None,
-                        "closed_at": r[11].isoformat() if r[11] else None,
+                        "symbol": r[0], "side": r[1], "setup": r[2],
+                        "entry_price": r[3], "exit_price": r[4], "qty": r[5],
+                        "gross_pnl": r[6], "fees": r[7], "pnl": r[8],
+                        "reason": r[9], "score": r[10],
+                        "opened_at": r[11].isoformat() if r[11] else None,
+                        "closed_at": r[12].isoformat() if r[12] else None,
                     })
     except Exception as e:
         print("LOAD STATE ERROR:", e)
@@ -158,13 +172,13 @@ def save_trade(t):
             with conn.cursor() as cur:
                 cur.execute("""
                     INSERT INTO v7_trades (
-                        side, setup, entry_price, exit_price, qty,
+                        symbol, side, setup, entry_price, exit_price, qty,
                         gross_pnl, fees, pnl, reason, score, opened_at, closed_at
-                    ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                    ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                 """, (
-                    t["side"], t["setup"], t["entry_price"], t["exit_price"], t["qty"],
-                    t["gross_pnl"], t["fees"], t["pnl"], t["reason"], t["score"],
-                    t["opened_at"], t["closed_at"],
+                    t["symbol"], t["side"], t["setup"], t["entry_price"],
+                    t["exit_price"], t["qty"], t["gross_pnl"], t["fees"],
+                    t["pnl"], t["reason"], t["score"], t["opened_at"], t["closed_at"],
                 ))
             conn.commit()
     except Exception as e:
@@ -273,24 +287,24 @@ def rolling_vwap(highs, lows, closes, volumes, lookback=120):
     return pv / vol if vol > 0 else None
 
 
-async def get_klines(interval, limit=250):
-    url = f"{BINANCE_API}/api/v3/klines?symbol={SYMBOL}&interval={interval}&limit={limit}"
+async def get_klines(symbol, interval, limit=250):
+    url = f"{BINANCE_API}/api/v3/klines?symbol={symbol}&interval={interval}&limit={limit}"
     async with httpx.AsyncClient(timeout=10) as client:
         response = await client.get(url)
         response.raise_for_status()
         return response.json()
 
 
-async def get_live_price():
-    url = f"{BINANCE_API}/api/v3/ticker/price?symbol={SYMBOL}"
+async def get_live_price(symbol):
+    url = f"{BINANCE_API}/api/v3/ticker/price?symbol={symbol}"
     async with httpx.AsyncClient(timeout=10) as client:
         response = await client.get(url)
         response.raise_for_status()
         return float(response.json()["price"])
 
 
-async def get_order_book_imbalance():
-    url = f"{BINANCE_API}/api/v3/depth?symbol={SYMBOL}&limit={ORDER_BOOK_LEVELS}"
+async def get_order_book_imbalance(symbol):
+    url = f"{BINANCE_API}/api/v3/depth?symbol={symbol}&limit={ORDER_BOOK_LEVELS}"
     async with httpx.AsyncClient(timeout=10) as client:
         response = await client.get(url)
         response.raise_for_status()
@@ -319,16 +333,16 @@ def daily_risk_status():
             consecutive_losses += 1
         else:
             break
-    risk_per_trade_usdt = max(PAPER_BALANCE, 1.0) * RISK_PER_TRADE
-    limit_usdt = risk_per_trade_usdt * DAILY_LOSS_LIMIT_R
-    daily_blocked = day_pnl <= -limit_usdt
-    return day_pnl, consecutive_losses, daily_blocked, limit_usdt
+    risk_per_trade_usdc = max(PAPER_BALANCE, 1.0) * RISK_PER_TRADE
+    limit_usdc = risk_per_trade_usdc * DAILY_LOSS_LIMIT_R
+    daily_blocked = day_pnl <= -limit_usdc
+    return day_pnl, consecutive_losses, daily_blocked, limit_usdc
 
 
-async def strategy_analysis():
-    k1_task = get_klines("1m", 250)
-    k5_task = get_klines("5m", 250)
-    book_task = get_order_book_imbalance()
+async def strategy_analysis(symbol):
+    k1_task = get_klines(symbol, "1m", 250)
+    k5_task = get_klines(symbol, "5m", 250)
+    book_task = get_order_book_imbalance(symbol)
     k1, k5, book_imbalance = await asyncio.gather(k1_task, k5_task, book_task)
 
     c1 = k1[:-1]
@@ -445,13 +459,14 @@ async def strategy_analysis():
         elif range_short:
             signal, setup, score = "SHORT", "FAILED_BREAKOUT", 6
 
-    if adx5 is not None:
-        reason = f"Regime {regime} · LONG {long_score}/8 · SHORT {short_score}/8 · Book {book_imbalance:.2f} · Vol {volume_ratio:.2f}× · ADX5 {adx5:.1f}"
-    else:
-        reason = f"Regime {regime} · LONG {long_score}/8 · SHORT {short_score}/8 · Book {book_imbalance:.2f}"
+    reason = (
+        f"{symbol} · Regime {regime} · LONG {long_score}/8 · SHORT {short_score}/8 · "
+        f"Book {book_imbalance:.2f} · Vol {volume_ratio:.2f}× · "
+        + (f"ADX5 {adx5:.1f}" if adx5 is not None else "ADX5 ---")
+    )
 
     return {
-        "signal": signal, "setup": setup, "score": score,
+        "symbol": symbol, "signal": signal, "setup": setup, "score": score,
         "candle_time": candle_time, "regime": regime,
         "rsi": rsi_value, "macd": macd_value, "atr": atr_value,
         "adx5": adx5, "ema9": ema9, "ema21": ema21,
@@ -462,17 +477,18 @@ async def strategy_analysis():
     }
 
 
-def open_trade(side, setup, score, market_price, atr_value, candle_time):
+def open_trade(symbol, side, setup, score, market_price, atr_value, candle_time):
     global paper_position, last_entry_candle
     if paper_position is not None or atr_value is None or atr_value <= 0:
         return
-    risk_usdt = PAPER_BALANCE * RISK_PER_TRADE
+    risk_usdc = PAPER_BALANCE * RISK_PER_TRADE
     setup_atr_mult = 0.80 if setup == "FAILED_BREAKOUT" else ATR_MULTIPLIER
     setup_rr = 1.15 if setup == "FAILED_BREAKOUT" else BASE_RISK_REWARD
     stop_distance = atr_value * setup_atr_mult
-    qty = min(risk_usdt / stop_distance, PAPER_BALANCE / market_price)
+    qty = min(risk_usdc / stop_distance, PAPER_BALANCE / market_price)
     if qty <= 0:
         return
+
     if side == "LONG":
         entry = market_price * (1 + SLIPPAGE_RATE)
         stop_loss = entry - stop_distance
@@ -481,16 +497,17 @@ def open_trade(side, setup, score, market_price, atr_value, candle_time):
         entry = market_price * (1 - SLIPPAGE_RATE)
         stop_loss = entry + stop_distance
         take_profit = entry - stop_distance * setup_rr
+
     paper_position = {
-        "side": side, "setup": setup, "score": score,
+        "symbol": symbol, "side": side, "setup": setup, "score": score,
         "entry_price": entry, "qty": qty,
         "stop_loss": stop_loss, "take_profit": take_profit,
         "risk_distance": stop_distance, "breakeven_moved": False,
         "opened_at": datetime.now(timezone.utc).isoformat(),
     }
-    last_entry_candle = candle_time
+    last_entry_candle[symbol] = candle_time
     save_state()
-    print("V7 OPEN", side, setup, score, entry)
+    print("V7 OPEN", symbol, side, setup, score, entry)
 
 
 def close_trade(market_price, reason):
@@ -498,28 +515,33 @@ def close_trade(market_price, reason):
     if not paper_position:
         return
     p = paper_position
+    symbol = p.get("symbol", "XRPUSDT")
     side = p["side"]
     entry = float(p["entry_price"])
     qty = float(p["qty"])
+
     if side == "LONG":
         exit_price = market_price * (1 - SLIPPAGE_RATE)
         gross_pnl = (exit_price - entry) * qty
     else:
         exit_price = market_price * (1 + SLIPPAGE_RATE)
         gross_pnl = (entry - exit_price) * qty
+
     fees = (entry * qty + exit_price * qty) * FEE_RATE
     net_pnl = gross_pnl - fees
     PAPER_BALANCE += net_pnl
     closed_at = datetime.now(timezone.utc)
     trade = {
-        "side": side, "setup": p.get("setup"), "score": int(p.get("score", 0)),
-        "entry_price": entry, "exit_price": exit_price, "qty": qty,
-        "gross_pnl": gross_pnl, "fees": fees, "pnl": net_pnl,
-        "reason": reason, "opened_at": p["opened_at"], "closed_at": closed_at.isoformat(),
+        "symbol": symbol, "side": side, "setup": p.get("setup"),
+        "score": int(p.get("score", 0)), "entry_price": entry,
+        "exit_price": exit_price, "qty": qty, "gross_pnl": gross_pnl,
+        "fees": fees, "pnl": net_pnl, "reason": reason,
+        "opened_at": p["opened_at"], "closed_at": closed_at.isoformat(),
     }
     save_trade(trade)
     trade_history.insert(0, trade)
     trade_history = trade_history[:300]
+
     _, streak, _, _ = daily_risk_status()
     cooldown_minutes = COOLDOWN_AFTER_LOSS_MIN if net_pnl < 0 else COOLDOWN_AFTER_WIN_MIN
     if net_pnl < 0 and streak >= MAX_CONSECUTIVE_LOSSES:
@@ -527,15 +549,16 @@ def close_trade(market_price, reason):
     cooldown_until = closed_at + timedelta(minutes=cooldown_minutes)
     paper_position = None
     save_state()
-    print("V7 CLOSE", reason, net_pnl)
+    print("V7 CLOSE", symbol, reason, net_pnl)
 
 
 async def manage_position():
     global paper_position
     if not paper_position:
         return
-    price = await get_live_price()
     p = paper_position
+    symbol = p.get("symbol", "XRPUSDT")
+    price = await get_live_price(symbol)
     side = p["side"]
     entry = float(p["entry_price"])
     stop_loss = float(p["stop_loss"])
@@ -575,24 +598,73 @@ async def manage_position():
         close_trade(price, "TIME EXIT")
 
 
+async def analyze_all_symbols():
+    results = await asyncio.gather(
+        *(strategy_analysis(symbol) for symbol in SYMBOLS),
+        return_exceptions=True,
+    )
+    analyses = []
+    for symbol, result in zip(SYMBOLS, results):
+        if isinstance(result, Exception):
+            print("V7 ANALYSIS ERROR", symbol, result)
+            analyses.append({
+                "symbol": symbol, "signal": "ERROR", "setup": None, "score": 0,
+                "reason": str(result), "long_score": 0, "short_score": 0,
+                "regime": "ERROR", "rsi": None, "macd": None, "atr": None,
+                "adx5": None, "ema9": None, "ema21": None, "ema20_5m": None,
+                "ema50_5m": None, "vwap": None, "volume_ratio": None,
+                "book_imbalance": None, "candle_time": None,
+            })
+        else:
+            analyses.append(result)
+    return analyses
+
+
+def choose_best_signal(analyses):
+    candidates = []
+    for a in analyses:
+        if a.get("signal") not in ("LONG", "SHORT"):
+            continue
+        symbol = a["symbol"]
+        if last_entry_candle.get(symbol) == a.get("candle_time"):
+            continue
+        # Higher score first, then stronger ADX, then stronger volume.
+        rank = (
+            int(a.get("score") or 0),
+            float(a.get("adx5") or 0),
+            float(a.get("volume_ratio") or 0),
+        )
+        candidates.append((rank, a))
+    if not candidates:
+        return None
+    candidates.sort(key=lambda x: x[0], reverse=True)
+    return candidates[0][1]
+
+
 async def trading_cycle():
     try:
         await manage_position()
-        analysis = await strategy_analysis()
         if paper_position is not None:
             return
+
         now = datetime.now(timezone.utc)
         if cooldown_until and now < cooldown_until:
             return
+
         _, streak, daily_blocked, _ = daily_risk_status()
         if daily_blocked or streak >= MAX_CONSECUTIVE_LOSSES:
             return
-        if last_entry_candle == analysis["candle_time"]:
+
+        analyses = await analyze_all_symbols()
+        best = choose_best_signal(analyses)
+        if not best:
             return
-        if analysis["signal"] not in ("LONG", "SHORT"):
-            return
-        live_price = await get_live_price()
-        open_trade(analysis["signal"], analysis["setup"], analysis["score"], live_price, analysis["atr"], analysis["candle_time"])
+
+        live_price = await get_live_price(best["symbol"])
+        open_trade(
+            best["symbol"], best["signal"], best["setup"], best["score"],
+            live_price, best["atr"], best["candle_time"],
+        )
     except Exception as e:
         print("V7 TRADING CYCLE ERROR:", e)
 
@@ -611,7 +683,7 @@ async def startup_event():
     if not bot_loop_started:
         bot_loop_started = True
         asyncio.create_task(bot_loop())
-        print("XRP BOT V7 PRO SCALPER STARTED")
+        print("V7 PRO MULTI SCALPER STARTED", SYMBOLS)
 
 
 def calculate_stats():
@@ -622,6 +694,7 @@ def calculate_stats():
     total_fees = sum(float(t["fees"]) for t in trade_history)
     win_rate = wins / count * 100 if count else 0
     average_pnl = total_pnl / count if count else 0
+
     equity = STARTING_BALANCE
     peak = equity
     max_drawdown = 0.0
@@ -630,6 +703,20 @@ def calculate_stats():
         peak = max(peak, equity)
         if peak > 0:
             max_drawdown = max(max_drawdown, (peak - equity) / peak * 100)
+
+    by_symbol = {}
+    for symbol in SYMBOLS:
+        rows = [t for t in trade_history if t.get("symbol") == symbol]
+        n = len(rows)
+        sw = sum(1 for t in rows if float(t["pnl"]) > 0)
+        by_symbol[symbol] = {
+            "count": n,
+            "wins": sw,
+            "win_rate": sw / n * 100 if n else 0,
+            "pnl": sum(float(t["pnl"]) for t in rows),
+            "fees": sum(float(t["fees"]) for t in rows),
+        }
+
     day_pnl, streak, daily_blocked, daily_limit = daily_risk_status()
     return {
         "count": count, "wins": wins, "losses": losses, "win_rate": win_rate,
@@ -637,60 +724,174 @@ def calculate_stats():
         "average_pnl": average_pnl, "max_drawdown": max_drawdown,
         "day_pnl": day_pnl, "loss_streak": streak,
         "daily_blocked": daily_blocked, "daily_limit": daily_limit,
+        "by_symbol": by_symbol,
     }
 
 
 @app.get("/analyze")
 async def analyze():
-    analysis = await strategy_analysis()
-    live_price = await get_live_price()
+    analyses = await analyze_all_symbols()
+    prices_results = await asyncio.gather(
+        *(get_live_price(symbol) for symbol in SYMBOLS),
+        return_exceptions=True,
+    )
+    prices = {
+        symbol: (None if isinstance(price, Exception) else price)
+        for symbol, price in zip(SYMBOLS, prices_results)
+    }
+
     stats = calculate_stats()
     now = datetime.now(timezone.utc)
     cooldown_text = "NE"
     if cooldown_until and now < cooldown_until:
         cooldown_text = f"{(cooldown_until - now).total_seconds() / 60:.1f} min"
+
     position = dict(paper_position) if paper_position else None
     unrealized_pnl = 0.0
     if position:
-        entry = float(position["entry_price"])
-        qty = float(position["qty"])
-        unrealized_pnl = (live_price - entry) * qty if position["side"] == "LONG" else (entry - live_price) * qty
+        symbol = position.get("symbol", "XRPUSDT")
+        live_price = prices.get(symbol)
+        if live_price is None:
+            try:
+                live_price = await get_live_price(symbol)
+            except Exception:
+                live_price = None
+        if live_price is not None:
+            entry = float(position["entry_price"])
+            qty = float(position["qty"])
+            unrealized_pnl = (
+                (live_price - entry) * qty
+                if position["side"] == "LONG"
+                else (entry - live_price) * qty
+            )
+
+    best = choose_best_signal(analyses)
     return {
-        "bot": "XRP BOT V7 PRO SCALPER", "mode": TRADING_MODE,
-        "price": live_price, "signal": analysis["signal"],
-        "setup": analysis["setup"], "score": analysis["score"],
-        "long_score": analysis["long_score"], "short_score": analysis["short_score"],
-        "regime": analysis["regime"], "rsi": analysis["rsi"],
-        "macd": analysis["macd"], "atr": analysis["atr"], "adx5": analysis["adx5"],
-        "ema9_1m": analysis["ema9"], "ema21_1m": analysis["ema21"],
-        "ema20_5m": analysis["ema20_5m"], "ema50_5m": analysis["ema50_5m"],
-        "vwap": analysis["vwap"], "volume_ratio": analysis["volume_ratio"],
-        "book_imbalance": analysis["book_imbalance"], "reason": analysis["reason"],
+        "bot": "V7 PRO MULTI SCALPER", "mode": TRADING_MODE,
+        "symbols": SYMBOLS, "prices": prices, "analyses": analyses,
+        "best_signal": best,
         "cooldown": cooldown_text, "paper_balance": PAPER_BALANCE,
-        "equity": PAPER_BALANCE + unrealized_pnl, "unrealized_pnl": unrealized_pnl,
-        "position": position, "stats": stats, "trade_history": trade_history[:30],
+        "equity": PAPER_BALANCE + unrealized_pnl,
+        "unrealized_pnl": unrealized_pnl,
+        "position": position, "stats": stats,
+        "trade_history": trade_history[:40],
     }
 
 
 @app.get("/health")
 async def health():
-    return {"status": "ok", "bot": "XRP BOT V7 PRO SCALPER", "mode": TRADING_MODE}
+    return {
+        "status": "ok", "bot": "V7 PRO MULTI SCALPER",
+        "mode": TRADING_MODE, "symbols": SYMBOLS,
+    }
 
 
 @app.get("/", response_class=HTMLResponse)
 async def dashboard():
     return """
-<!DOCTYPE html><html lang="cs"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>XRP Bot V7 Pro</title>
-<style>body{background:#0b1118;color:white;font-family:Arial,sans-serif;margin:0;padding:16px}.container{max-width:800px;margin:auto}.card{background:#151c24;border-radius:22px;padding:22px;margin-bottom:18px}.row{display:flex;justify-content:space-between;gap:15px;margin:11px 0}.green{color:#5ee08a}.red{color:#ff6b6b}.yellow{color:#ffd166}.small{font-size:14px;opacity:.75}.trade{padding:12px 0;border-bottom:1px solid #29313b}</style></head>
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>V7 Pro Multi Scalper</title>
+<style>
+body{background:#0b1118;color:white;font-family:Arial,sans-serif;margin:0;padding:16px}
+.container{max-width:900px;margin:auto}.card{background:#151c24;border-radius:22px;padding:22px;margin-bottom:18px}
+.row{display:flex;justify-content:space-between;gap:15px;margin:11px 0}.green{color:#5ee08a}.red{color:#ff6b6b}.yellow{color:#ffd166}
+.small{font-size:14px;opacity:.75}.trade{padding:12px 0;border-bottom:1px solid #29313b}.market{border-top:1px solid #29313b;padding-top:10px;margin-top:10px}
+.symbol{font-weight:700;font-size:20px}.muted{opacity:.72}
+</style>
+</head>
 <body><div class="container">
-<div class="card"><h1>⚡ XRP BOT V7 PRO SCALPER</h1><div class="row"><span>Režim</span><span>PAPER</span></div><div class="row"><span>XRP cena</span><span id="price">---</span></div><div class="row"><span>Signál</span><span id="signal">---</span></div><div class="row"><span>Setup</span><span id="setup">---</span></div><div class="row"><span>Market regime</span><span id="regime">---</span></div><div class="row"><span>Cooldown</span><span id="cooldown">---</span></div></div>
-<div class="card"><h2>🧠 Profesionální filtry</h2><div class="row"><span>LONG score</span><span id="ls">---</span></div><div class="row"><span>SHORT score</span><span id="ss">---</span></div><div class="row"><span>RSI 1m</span><span id="rsi">---</span></div><div class="row"><span>MACD</span><span id="macd">---</span></div><div class="row"><span>ATR 1m</span><span id="atr">---</span></div><div class="row"><span>ADX 5m</span><span id="adx">---</span></div><div class="row"><span>VWAP 120m</span><span id="vwap">---</span></div><div class="row"><span>Order book bids</span><span id="book">---</span></div><div class="row"><span>EMA 9 / 21</span><span id="ema">---</span></div><div class="row"><span>EMA 20 / 50 (5m)</span><span id="ema5">---</span></div><div class="row"><span>Volume ratio</span><span id="vol">---</span></div><p id="reason">---</p></div>
+<div class="card"><h1>⚡ V7 PRO MULTI SCALPER</h1>
+<div class="row"><span>Režim</span><span>PAPER</span></div>
+<div class="row"><span>Trhy</span><span>XRP/USDC · ETH/USDC · SOL/USDC</span></div>
+<div class="row"><span>Cooldown</span><span id="cooldown">---</span></div>
+<div class="row"><span>Nejlepší signál</span><span id="best">---</span></div>
+</div>
+
+<div class="card"><h2>🧠 Trhy a signály</h2><div id="markets">Načítám...</div></div>
+
 <div class="card"><h2>📋 Otevřený PAPER obchod</h2><div id="position">Zatím žádný otevřený obchod</div></div>
-<div class="card"><h2>💰 Účet</h2><div class="row"><span>Balance</span><span id="bal">---</span></div><div class="row"><span>Equity</span><span id="eq">---</span></div><div class="row"><span>Otevřený P&L</span><span id="upnl">---</span></div></div>
-<div class="card"><h2>📊 Statistiky</h2><div class="row"><span>Obchody</span><span id="count">---</span></div><div class="row"><span>Win rate</span><span id="wr">---</span></div><div class="row"><span>Čistý P&L</span><span id="pnl">---</span></div><div class="row"><span>Dnešní P&L</span><span id="daypnl">---</span></div><div class="row"><span>Série ztrát</span><span id="streak">---</span></div><div class="row"><span>Max drawdown</span><span id="dd">---</span></div></div>
-<div class="card"><h2>📜 Poslední obchody</h2><div id="history">Zatím žádné uzavřené obchody</div></div></div>
+
+<div class="card"><h2>💰 Účet</h2>
+<div class="row"><span>Balance</span><span id="bal">---</span></div>
+<div class="row"><span>Equity</span><span id="eq">---</span></div>
+<div class="row"><span>Otevřený P&L</span><span id="upnl">---</span></div>
+</div>
+
+<div class="card"><h2>📊 Celkové statistiky</h2>
+<div class="row"><span>Obchody</span><span id="count">---</span></div>
+<div class="row"><span>Win rate</span><span id="wr">---</span></div>
+<div class="row"><span>Čistý P&L</span><span id="pnl">---</span></div>
+<div class="row"><span>Poplatky</span><span id="fees">---</span></div>
+<div class="row"><span>Dnešní P&L</span><span id="daypnl">---</span></div>
+<div class="row"><span>Série ztrát</span><span id="streak">---</span></div>
+<div class="row"><span>Max drawdown</span><span id="dd">---</span></div>
+</div>
+
+<div class="card"><h2>🏁 Výsledky podle trhu</h2><div id="bysymbol">---</div></div>
+<div class="card"><h2>📜 Poslední obchody</h2><div id="history">Zatím žádné uzavřené obchody</div></div>
+</div>
+
 <script>
-const n=(v,d=4)=>Number.isFinite(Number(v))?Number(v).toFixed(d):'---';const cls=v=>Number(v)>0?'green':Number(v)<0?'red':'yellow';
-async function refresh(){try{const d=await (await fetch('/analyze',{cache:'no-store'})).json();document.getElementById('price').innerText=n(d.price,5);const se=document.getElementById('signal');se.innerText=d.signal??'---';se.className=cls(d.signal==='LONG'?1:d.signal==='SHORT'?-1:0);document.getElementById('setup').innerText=d.setup??'---';document.getElementById('regime').innerText=d.regime??'---';document.getElementById('cooldown').innerText=d.cooldown??'---';document.getElementById('ls').innerText=(d.long_score??0)+'/8';document.getElementById('ss').innerText=(d.short_score??0)+'/8';document.getElementById('rsi').innerText=n(d.rsi,2);document.getElementById('macd').innerText=n(d.macd,6);document.getElementById('atr').innerText=n(d.atr,6);document.getElementById('adx').innerText=n(d.adx5,1);document.getElementById('vwap').innerText=n(d.vwap,5);document.getElementById('book').innerText=n((d.book_imbalance??0)*100,1)+' %';document.getElementById('ema').innerText=n(d.ema9_1m,5)+' / '+n(d.ema21_1m,5);document.getElementById('ema5').innerText=n(d.ema20_5m,5)+' / '+n(d.ema50_5m,5);document.getElementById('vol').innerText=n(d.volume_ratio,2)+'×';document.getElementById('reason').innerText=d.reason??'---';document.getElementById('bal').innerText=n(d.paper_balance,2)+' USDT';document.getElementById('eq').innerText=n(d.equity,2)+' USDT';const u=document.getElementById('upnl');u.innerText=n(d.unrealized_pnl,2)+' USDT';u.className=cls(d.unrealized_pnl);if(d.position){const p=d.position;document.getElementById('position').innerHTML=`<div class="row"><span>Směr</span><span>${p.side}</span></div><div class="row"><span>Setup</span><span>${p.setup}</span></div><div class="row"><span>Score</span><span>${p.score}/8</span></div><div class="row"><span>Entry</span><span>${n(p.entry_price,5)}</span></div><div class="row"><span>SL</span><span>${n(p.stop_loss,5)}</span></div><div class="row"><span>TP</span><span>${n(p.take_profit,5)}</span></div>`}else document.getElementById('position').innerText='Zatím žádný otevřený obchod';const s=d.stats??{};document.getElementById('count').innerText=s.count??0;document.getElementById('wr').innerText=n(s.win_rate,1)+' %';const pe=document.getElementById('pnl');pe.innerText=n(s.total_pnl,2)+' USDT';pe.className=cls(s.total_pnl);const dp=document.getElementById('daypnl');dp.innerText=n(s.day_pnl,2)+' USDT';dp.className=cls(s.day_pnl);document.getElementById('streak').innerText=s.loss_streak??0;document.getElementById('dd').innerText=n(s.max_drawdown,2)+' %';const h=d.trade_history??[];document.getElementById('history').innerHTML=h.length?h.map(t=>`<div class="trade"><div class="row"><span>${t.side} · ${t.setup} · ${t.score}/8</span><span class="${cls(t.pnl)}">${n(t.pnl,2)} USDT</span></div><div class="small">${t.reason} · ${n(t.entry_price,5)} → ${n(t.exit_price,5)}</div></div>`).join(''):'Zatím žádné uzavřené obchody'}catch(e){document.getElementById('reason').innerText='Chyba načítání: '+e}}refresh();setInterval(refresh,5000);
-</script></body></html>
+const n=(v,d=4)=>Number.isFinite(Number(v))?Number(v).toFixed(d):'---';
+const cls=v=>Number(v)>0?'green':Number(v)<0?'red':'yellow';
+const pretty=s=>String(s||'').replace('USDC','/USDC').replace('USDT','/USDT');
+
+async function refresh(){
+try{
+ const d=await (await fetch('/analyze',{cache:'no-store'})).json();
+ document.getElementById('cooldown').innerText=d.cooldown??'---';
+ const b=d.best_signal;
+ document.getElementById('best').innerText=b?`${pretty(b.symbol)} · ${b.signal} · ${b.setup} · ${b.score}/8`:'WAIT';
+
+ const prices=d.prices||{};
+ const aa=d.analyses||[];
+ document.getElementById('markets').innerHTML=aa.map(a=>{
+   const sig=a.signal||'WAIT'; const c=sig==='LONG'?'green':sig==='SHORT'?'red':'yellow';
+   return `<div class="market"><div class="row"><span class="symbol">${pretty(a.symbol)}</span><span>${n(prices[a.symbol],a.symbol.startsWith('XRP')?5:2)} USDC</span></div>
+   <div class="row"><span>Signál</span><span class="${c}">${sig}</span></div>
+   <div class="row"><span>Setup</span><span>${a.setup??'---'}</span></div>
+   <div class="row"><span>Regime</span><span>${a.regime??'---'}</span></div>
+   <div class="row"><span>LONG / SHORT score</span><span>${a.long_score??0}/8 · ${a.short_score??0}/8</span></div>
+   <div class="row"><span>RSI · ADX5</span><span>${n(a.rsi,1)} · ${n(a.adx5,1)}</span></div>
+   <div class="row"><span>Volume · Book bids</span><span>${n(a.volume_ratio,2)}× · ${n((a.book_imbalance??0)*100,1)}%</span></div>
+   <div class="small">${a.reason??''}</div></div>`;
+ }).join('');
+
+ document.getElementById('bal').innerText=n(d.paper_balance,2)+' USDC';
+ document.getElementById('eq').innerText=n(d.equity,2)+' USDC';
+ const u=document.getElementById('upnl');u.innerText=n(d.unrealized_pnl,2)+' USDC';u.className=cls(d.unrealized_pnl);
+
+ if(d.position){const p=d.position;document.getElementById('position').innerHTML=`
+ <div class="row"><span>Trh</span><span>${pretty(p.symbol)}</span></div>
+ <div class="row"><span>Směr</span><span>${p.side}</span></div>
+ <div class="row"><span>Setup</span><span>${p.setup}</span></div>
+ <div class="row"><span>Score</span><span>${p.score}/8</span></div>
+ <div class="row"><span>Entry</span><span>${n(p.entry_price,6)}</span></div>
+ <div class="row"><span>SL</span><span>${n(p.stop_loss,6)}</span></div>
+ <div class="row"><span>TP</span><span>${n(p.take_profit,6)}</span></div>`}
+ else document.getElementById('position').innerText='Zatím žádný otevřený obchod';
+
+ const s=d.stats||{};
+ document.getElementById('count').innerText=s.count??0;
+ document.getElementById('wr').innerText=n(s.win_rate,1)+' %';
+ const pe=document.getElementById('pnl');pe.innerText=n(s.total_pnl,2)+' USDC';pe.className=cls(s.total_pnl);
+ document.getElementById('fees').innerText=n(s.total_fees,2)+' USDC';
+ const dp=document.getElementById('daypnl');dp.innerText=n(s.day_pnl,2)+' USDC';dp.className=cls(s.day_pnl);
+ document.getElementById('streak').innerText=s.loss_streak??0;
+ document.getElementById('dd').innerText=n(s.max_drawdown,2)+' %';
+
+ const bs=s.by_symbol||{};
+ document.getElementById('bysymbol').innerHTML=(d.symbols||[]).map(sym=>{const x=bs[sym]||{};return `<div class="trade"><div class="row"><span>${pretty(sym)}</span><span class="${cls(x.pnl)}">${n(x.pnl,2)} USDC</span></div><div class="small">Obchody ${x.count??0} · Win rate ${n(x.win_rate,1)} % · Poplatky ${n(x.fees,2)} USDC</div></div>`}).join('');
+
+ const h=d.trade_history||[];
+ document.getElementById('history').innerHTML=h.length?h.map(t=>`<div class="trade"><div class="row"><span>${pretty(t.symbol)} · ${t.side} · ${t.setup} · ${t.score}/8</span><span class="${cls(t.pnl)}">${n(t.pnl,2)} USDC</span></div><div class="small">${t.reason} · ${n(t.entry_price,6)} → ${n(t.exit_price,6)} · fee ${n(t.fees,2)}</div></div>`).join(''):'Zatím žádné uzavřené obchody';
+}catch(e){document.getElementById('best').innerText='Chyba načítání: '+e}
+}
+refresh();setInterval(refresh,5000);
+</script>
+</body></html>
 """
