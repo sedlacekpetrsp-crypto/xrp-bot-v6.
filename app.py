@@ -557,7 +557,7 @@ async def analyze():
         "open_positions": positions,
         "market": market,
         "stats": calculate_stats(),
-        "trade_history": trade_history[:50],
+        "trade_history": trade_history[:20],
     }
 
 
@@ -623,7 +623,7 @@ h1{margin:2px 0 12px;font-size:25px}h2{font-size:19px}
 <div class="row"><span>Čistý P&L</span><b id="pnl">---</b></div>
 <div class="row"><span>Poplatky</span><b id="fees">---</b></div>
 </div>
-<div class="card"><h2>📜 Poslední obchody</h2><div id="history">---</div></div>
+<div class="card"><h2>📜 Posledních 20 obchodů</h2><div id="history">---</div></div>
 </div>
 <script>
 const fmt=(v,d=4)=>Number.isFinite(Number(v))?Number(v).toFixed(d):"---";
@@ -657,7 +657,7 @@ async function refresh(){
       </div>`;
     }).join("");
 
-    const h=d.trade_history||[];
+    const h=(d.trade_history||[]).slice(0,20);
     document.getElementById("history").innerHTML=h.length?h.map(t=>`<div class="trade">
       <div class="row"><span><b>${t.symbol}</b> · ${t.side} · ${t.setup||"---"}</span>
       <b class="${cls(t.pnl)}">${fmt(t.pnl,2)} USDT</b></div>
