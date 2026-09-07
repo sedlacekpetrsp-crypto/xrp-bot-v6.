@@ -1,36 +1,22 @@
 """Runtime compatibility tweaks for V8.1.
 
-- Make UptimeRobot HEAD checks behave like GET for the monitored endpoints.
-- Expand displayed/API trade history from 20 to 50 trades without touching
-  trading strategy, risk, entries, exits, or persistence.
+- Register explicit HEAD routes for uptime checks on /, /analyze and /health.
+- Expand displayed/API trade history from 20 to 50 trades.
+- Trading strategy, risk, entries, exits and persistence are untouched.
 """
 
 try:
     from functools import wraps
     from fastapi import FastAPI
 
-    # HEAD compatibility for uptime checks.
-    _original_call = FastAPI.__call__
-
-    async def _uptime_head_compatible_call(self, scope, receive, send):
-        if (
-            scope.get("type") == "http"
-            and scope.get("method") == "HEAD"
-            and scope.get("path") in ("/", "/analyze", "/health")
-        ):
-            scope = dict(scope)
-            scope["method"] = "GET"
-        return await _original_call(self, scope, receive, send)
-
-    FastAPI.__call__ = _uptime_head_compatible_call
-
-    # Wrap selected GET endpoints as they are registered by app.py.
     _original_get = FastAPI.get
 
     def _patched_get(self, path, *args, **kwargs):
         original_decorator = _original_get(self, path, *args, **kwargs)
 
         def decorator(func):
+            endpoint = func
+
             if path == "/analyze":
                 @wraps(func)
                 async def analyze_wrapper(*f_args, **f_kwargs):
@@ -39,9 +25,9 @@ try:
                         history = func.__globals__.get("trade_history", [])
                         result["trade_history"] = history[:50]
                     return result
-                return original_decorator(analyze_wrapper)
+                endpoint = analyze_wrapper
 
-            if path == "/":
+            elif path == "/":
                 @wraps(func)
                 async def dashboard_wrapper(*f_args, **f_kwargs):
                     html = await func(*f_args, **f_kwargs)
@@ -49,9 +35,23 @@ try:
                         html = html.replace("Posledních 20 obchodů", "Posledních 50 obchodů")
                         html = html.replace("slice(0,20)", "slice(0,50)")
                     return html
-                return original_decorator(dashboard_wrapper)
+                endpoint = dashboard_wrapper
 
-            return original_decorator(func)
+            registered = original_decorator(endpoint)
+
+            # Explicit HEAD route. This is what UptimeRobot uses.
+            if path in ("/", "/analyze", "/health"):
+                async def head_ok():
+                    return None
+                self.add_api_route(
+                    path,
+                    head_ok,
+                    methods=["HEAD"],
+                    include_in_schema=False,
+                    status_code=200,
+                )
+
+            return registered
 
         return decorator
 
