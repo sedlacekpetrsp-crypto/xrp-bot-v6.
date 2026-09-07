@@ -1,15 +1,15 @@
 """Compatibility patch for uptime monitors.
 
-UptimeRobot checks the service root with HTTP HEAD. FastAPI/Starlette does not
-implicitly map HEAD to the existing GET / route in this app, so the monitor
-received 405 even while the bot was healthy. This patch treats HEAD / exactly
-like GET / at the ASGI layer. Trading logic is untouched.
+UptimeRobot checks the service root with HTTP HEAD. The app has GET / but no
+HEAD / route, so FastAPI returns 405 even while the bot is healthy. Patch the
+FastAPI ASGI entry point so HEAD / is handled as GET /. Trading logic is
+untouched.
 """
 
 try:
-    from starlette.applications import Starlette
+    from fastapi import FastAPI
 
-    _original_call = Starlette.__call__
+    _original_call = FastAPI.__call__
 
     async def _uptime_head_compatible_call(self, scope, receive, send):
         if (
@@ -21,6 +21,6 @@ try:
             scope["method"] = "GET"
         return await _original_call(self, scope, receive, send)
 
-    Starlette.__call__ = _uptime_head_compatible_call
+    FastAPI.__call__ = _uptime_head_compatible_call
 except Exception as exc:
     print("UPTIME HEAD PATCH ERROR:", exc)
