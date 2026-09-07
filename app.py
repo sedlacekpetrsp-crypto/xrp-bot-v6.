@@ -6,7 +6,7 @@ from datetime import datetime, timezone, timedelta
 import httpx
 import psycopg
 from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, Response
 
 # ============================================================
 # XRP BOT V8.1 CANDLE — MULTI-COIN — PAPER ONLY
@@ -557,7 +557,7 @@ async def analyze():
         "open_positions": positions,
         "market": market,
         "stats": calculate_stats(),
-        "trade_history": trade_history[:20],
+        "trade_history": trade_history[:50],
     }
 
 
@@ -573,6 +573,14 @@ async def health():
         "symbols": SYMBOLS,
         "open_positions": len(positions),
     }
+
+
+# UptimeRobot uses HEAD requests. Explicit routes prevent false 405 DOWN alerts.
+@app.head("/")
+@app.head("/analyze")
+@app.head("/health")
+async def uptime_head():
+    return Response(status_code=200)
 
 
 # ============================================================
@@ -623,7 +631,7 @@ h1{margin:2px 0 12px;font-size:25px}h2{font-size:19px}
 <div class="row"><span>Čistý P&L</span><b id="pnl">---</b></div>
 <div class="row"><span>Poplatky</span><b id="fees">---</b></div>
 </div>
-<div class="card"><h2>📜 Posledních 20 obchodů</h2><div id="history">---</div></div>
+<div class="card"><h2>📜 Posledních 50 obchodů</h2><div id="history">---</div></div>
 </div>
 <script>
 const fmt=(v,d=4)=>Number.isFinite(Number(v))?Number(v).toFixed(d):"---";
@@ -657,7 +665,7 @@ async function refresh(){
       </div>`;
     }).join("");
 
-    const h=(d.trade_history||[]).slice(0,20);
+    const h=(d.trade_history||[]).slice(0,50);
     document.getElementById("history").innerHTML=h.length?h.map(t=>`<div class="trade">
       <div class="row"><span><b>${t.symbol}</b> · ${t.side} · ${t.setup||"---"}</span>
       <b class="${cls(t.pnl)}">${fmt(t.pnl,2)} USDT</b></div>
