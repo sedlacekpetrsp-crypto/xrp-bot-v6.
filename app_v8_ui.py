@@ -23,11 +23,34 @@ const $=id=>document.getElementById(id);
 const n=(v,d=2)=>Number.isFinite(Number(v))?Number(v).toFixed(d):'---';
 const pretty=s=>String(s||'').replace('USDC','/USDC').replace('USDT','/USDT');
 const cls=s=>s==='LONG'?'green':s==='SHORT'?'red':'yellow';
+let refreshing=false;
+
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+
+async function fetchAnalyze(){
+  let lastErr;
+  for(let attempt=1; attempt<=2; attempt++){
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),15000);
+    try{
+      const resp=await fetch('/analyze',{cache:'no-store',signal:controller.signal});
+      if(!resp.ok) throw new Error('HTTP '+resp.status);
+      return await resp.json();
+    }catch(e){
+      lastErr=e;
+      if(attempt===1) await sleep(1500);
+    }finally{
+      clearTimeout(timer);
+    }
+  }
+  throw lastErr;
+}
+
 async function refresh(){
+  if(refreshing) return;
+  refreshing=true;
   try{
-    const resp=await fetch('/analyze',{cache:'no-store'});
-    if(!resp.ok) throw new Error('HTTP '+resp.status);
-    const d=await resp.json();
+    const d=await fetchAnalyze();
     $('error').innerText='';
     const b=d.best_signal;
     $('best').innerText=b?`${pretty(b.symbol)} · ${b.signal} · ${b.setup||'---'} · score ${b.score||0}/8`:'WAIT';
@@ -53,13 +76,12 @@ async function refresh(){
     const h=d.trade_history||[];
     $('history').innerHTML=h.length?h.map(t=>`<div class="trade"><div class="row"><span>${pretty(t.symbol)} · ${t.side} · ${t.setup}</span><b>${n(t.pnl)} USDC</b></div><div class="muted">MAE ${n(t.mae_r,2)}R · MFE ${n(t.mfe_r,2)}R · ${t.reason||''}</div></div>`).join(''):'Zatím žádné uzavřené obchody';
   }catch(e){
-    $('error').innerText='Dashboard chyba: '+e.message;
-    $('markets').innerText='Data se nepodařilo načíst.';
-    $('account').innerText='Data se nepodařilo načíst.';
-    $('stats').innerText='Data se nepodařilo načíst.';
-    $('history').innerText='Data se nepodařilo načíst.';
+    const msg=e && e.name==='AbortError'?'timeout při načítání dat':(e && e.message?e.message:String(e));
+    $('error').innerText='Dočasný problém s načtením: '+msg+' — zkouším znovu automaticky.';
+  }finally{
+    refreshing=false;
   }
 }
-refresh();setInterval(refresh,5000);
+refresh();setInterval(refresh,10000);
 </script></body></html>
 '''
