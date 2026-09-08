@@ -1,6 +1,7 @@
 import os
 import json
 import asyncio
+import time
 from datetime import datetime, timezone, timedelta
 
 import httpx
@@ -10,7 +11,8 @@ from fastapi.responses import HTMLResponse, Response
 
 # ============================================================
 # XRP BOT V8.1 CANDLE — MULTI-COIN — PAPER ONLY
-# Price Action ONLY | R:R 1:1 | risk/trade 0.5 %
+# Stable build: shared HTTP client, cached dashboard data,
+# retry/backoff for Binance 429, low request volume.
 # ============================================================
 
 app = FastAPI(title="XRP Bot V8.1 Candle")
@@ -18,47 +20,54 @@ app = FastAPI(title="XRP Bot V8.1 Candle")
 SYMBOLS = ["XRPUSDT", "BTCUSDT", "ETHUSDT", "SOLUSDT"]
 BINANCE_API = "https://data-api.binance.vision"
 TRADING_MODE = "PAPER"
-
 DATABASE_URL = os.getenv("DATABASE_URL")
 STARTING_BALANCE = 10000.0
 
-RISK_PER_TRADE = 0.005       # 0.5 % účtu
-RISK_REWARD = 1.0            # TP = 1R
-FEE_RATE = 0.0005            # 0.05 % za stranu
-SLIPPAGE_RATE = 0.0002       # 0.02 % za stranu
-STOP_BUFFER_RATE = 0.0005    # 0.05 % za high/low signální svíčky
-MIN_STOP_RATE = 0.0015       # minimální SL vzdálenost 0.15 %
-MAX_NOTIONAL_SHARE = 1 / len(SYMBOLS)  # 4 souběžné pozice bez celkové páky
+RISK_PER_TRADE = 0.005
+RISK_REWARD = 1.0
+FEE_RATE = 0.0005
+SLIPPAGE_RATE = 0.0002
+ROUND_TRIP_COST_RATE = 2 * (FEE_RATE + SLIPPAGE_RATE)
+MIN_EDGE_COST_MULTIPLE = 1.50
+STOP_BUFFER_RATE = 0.0005
+MIN_STOP_RATE = 0.0015
+MAX_NOTIONAL_SHARE = 1 / len(SYMBOLS)
 
 COOLDOWN_AFTER_WIN_MIN = 1
 COOLDOWN_AFTER_LOSS_MIN = 5
 MAX_TRADE_MINUTES = 45
-LOOP_SECONDS = 10
+POSITION_LOOP_SECONDS = 5
+SIGNAL_SCAN_SECONDS = 30
 
 PAPER_BALANCE = STARTING_BALANCE
-positions = {}               # symbol -> position
+positions = {}
 trade_history = []
-last_entry_candle = {}       # symbol -> candle open time ms
-cooldown_until = {}          # symbol -> ISO datetime
+last_entry_candle = {}
+cooldown_until = {}
 last_analysis = {}
+price_cache = {}
 bot_loop_started = False
+bot_task = None
+http_client = None
+last_cycle_at = None
+last_signal_scan_at = None
+last_error = None
+http_429_count = 0
+started_at = datetime.now(timezone.utc)
 
 
-# ============================================================
-# DATABASE
-# ============================================================
+def utcnow():
+    return datetime.now(timezone.utc)
+
 
 def get_db():
-    if not DATABASE_URL:
-        return None
-    return psycopg.connect(DATABASE_URL)
+    return psycopg.connect(DATABASE_URL) if DATABASE_URL else None
 
 
 def init_db():
     if not DATABASE_URL:
         print("DATABASE_URL není nastaveno - data nebudou trvale ukládána.")
         return
-
     with get_db() as conn:
         with conn.cursor() as cur:
             cur.execute("""
@@ -90,7 +99,6 @@ def init_db():
 def save_state():
     if not DATABASE_URL:
         return
-
     state = {
         "paper_balance": PAPER_BALANCE,
         "positions": positions,
@@ -101,8 +109,7 @@ def save_state():
         with get_db() as conn:
             with conn.cursor() as cur:
                 cur.execute("""
-                    INSERT INTO v81_state (id, state)
-                    VALUES (1, %s::jsonb)
+                    INSERT INTO v81_state (id, state) VALUES (1, %s::jsonb)
                     ON CONFLICT (id) DO UPDATE SET state = EXCLUDED.state
                 """, (json.dumps(state),))
             conn.commit()
@@ -112,10 +119,8 @@ def save_state():
 
 def load_state():
     global PAPER_BALANCE, positions, last_entry_candle, cooldown_until, trade_history
-
     if not DATABASE_URL:
         return
-
     try:
         with get_db() as conn:
             with conn.cursor() as cur:
@@ -127,13 +132,10 @@ def load_state():
                     positions = state.get("positions", {}) or {}
                     last_entry_candle = state.get("last_entry_candle", {}) or {}
                     cooldown_until = state.get("cooldown_until", {}) or {}
-
                 cur.execute("""
                     SELECT symbol, side, setup, entry_price, exit_price, qty,
                            gross_pnl, fees, pnl, reason, opened_at, closed_at
-                    FROM v81_trades
-                    ORDER BY id DESC
-                    LIMIT 300
+                    FROM v81_trades ORDER BY id DESC LIMIT 300
                 """)
                 rows = cur.fetchall()
                 trade_history = [{
@@ -158,8 +160,7 @@ def save_trade(trade):
                     INSERT INTO v81_trades (
                         symbol, side, setup, entry_price, exit_price, qty,
                         gross_pnl, fees, pnl, reason, opened_at, closed_at
-                    )
-                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                    ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                 """, (
                     trade["symbol"], trade["side"], trade["setup"],
                     trade["entry_price"], trade["exit_price"], trade["qty"],
@@ -171,31 +172,52 @@ def save_trade(trade):
         print("SAVE TRADE ERROR:", e)
 
 
-# ============================================================
-# BINANCE DATA
-# ============================================================
+async def binance_get(path, params=None):
+    global http_429_count, last_error
+    if http_client is None:
+        raise RuntimeError("HTTP client not initialized")
+    url = f"{BINANCE_API}{path}"
+    delay = 1.0
+    for attempt in range(4):
+        try:
+            r = await http_client.get(url, params=params)
+            if r.status_code == 429:
+                http_429_count += 1
+                retry_after = r.headers.get("Retry-After")
+                try:
+                    wait = float(retry_after) if retry_after else delay
+                except ValueError:
+                    wait = delay
+                await asyncio.sleep(min(max(wait, 0.5), 10.0))
+                delay *= 2
+                continue
+            r.raise_for_status()
+            return r.json()
+        except (httpx.TimeoutException, httpx.NetworkError) as e:
+            last_error = f"BINANCE {type(e).__name__}: {e}"
+            if attempt == 3:
+                raise
+            await asyncio.sleep(delay)
+            delay *= 2
+    raise RuntimeError("Binance rate limit: retries exhausted")
+
 
 async def get_klines(symbol, interval="5m", limit=80):
-    url = f"{BINANCE_API}/api/v3/klines"
-    params = {"symbol": symbol, "interval": interval, "limit": limit}
-    async with httpx.AsyncClient(timeout=10) as client:
-        response = await client.get(url, params=params)
-        response.raise_for_status()
-        return response.json()
+    return await binance_get("/api/v3/klines", {
+        "symbol": symbol, "interval": interval, "limit": limit
+    })
 
 
-async def get_live_price(symbol):
-    url = f"{BINANCE_API}/api/v3/ticker/price"
-    params = {"symbol": symbol}
-    async with httpx.AsyncClient(timeout=10) as client:
-        response = await client.get(url, params=params)
-        response.raise_for_status()
-        return float(response.json()["price"])
+async def get_live_price(symbol, max_age=2.0):
+    cached = price_cache.get(symbol)
+    now = time.monotonic()
+    if cached and now - cached["ts"] <= max_age:
+        return cached["price"]
+    data = await binance_get("/api/v3/ticker/price", {"symbol": symbol})
+    price = float(data["price"])
+    price_cache[symbol] = {"price": price, "ts": now, "updated_at": utcnow().isoformat()}
+    return price
 
-
-# ============================================================
-# PRICE ACTION / CANDLE STRATEGY ONLY
-# ============================================================
 
 def candle_parts(k):
     o, h, l, c = float(k[1]), float(k[2]), float(k[3]), float(k[4])
@@ -207,22 +229,12 @@ def candle_parts(k):
 
 
 def detect_setup(closed):
-    """
-    Uses only completed 5m candles.
-    Priority:
-      1) 8-candle breakout with strong body
-      2) engulfing
-      3) pin bar rejection
-    No EMA / RSI / MACD / ATR / volume filters.
-    """
     if len(closed) < 12:
         return {"signal": "WAIT", "setup": None, "reason": "málo dat"}
 
-    prev = closed[-2]
-    cur = closed[-1]
+    prev, cur = closed[-2], closed[-1]
     p_o, p_h, p_l, p_c, p_body, p_rng, p_up, p_low = candle_parts(prev)
     c_o, c_h, c_l, c_c, c_body, c_rng, c_up, c_low = candle_parts(cur)
-
     candle_time = int(cur[0])
     body_ratio = c_body / c_rng
 
@@ -237,11 +249,13 @@ def detect_setup(closed):
         p_c < p_o and c_c > c_o
         and c_o <= p_c and c_c >= p_o
         and c_body >= p_body * 1.05
+        and body_ratio >= 0.45
     )
     bearish_engulfing = (
         p_c > p_o and c_c < c_o
         and c_o >= p_c and c_c <= p_o
         and c_body >= p_body * 1.05
+        and body_ratio >= 0.45
     )
 
     bullish_pin = (
@@ -286,33 +300,27 @@ def detect_setup(closed):
 
 async def strategy_analysis(symbol):
     klines = await get_klines(symbol, "5m", 80)
-    closed = klines[:-1]  # pouze uzavřené svíčky
+    closed = klines[:-1]
     result = detect_setup(closed)
     result["symbol"] = symbol
     return result
 
-
-# ============================================================
-# RISK / POSITIONS
-# ============================================================
 
 def cooldown_active(symbol):
     value = cooldown_until.get(symbol)
     if not value:
         return False
     try:
-        return datetime.now(timezone.utc) < datetime.fromisoformat(value)
+        return utcnow() < datetime.fromisoformat(value)
     except Exception:
         return False
 
 
 def open_trade(symbol, analysis, market_price):
     global positions, last_entry_candle
-
     if symbol in positions:
         return False
-
-    side = analysis["signal"]
+    side = analysis.get("signal")
     if side not in ("LONG", "SHORT"):
         return False
 
@@ -336,10 +344,13 @@ def open_trade(symbol, analysis, market_price):
     if stop_distance <= 0:
         return False
 
+    expected_move_rate = (stop_distance * RISK_REWARD) / max(entry_price, 1e-12)
+    if expected_move_rate < ROUND_TRIP_COST_RATE * MIN_EDGE_COST_MULTIPLE:
+        print("SKIP V8.1", symbol, "EDGE_TOO_SMALL", expected_move_rate)
+        return False
+
     risk_usdt = PAPER_BALANCE * RISK_PER_TRADE
     qty_by_risk = risk_usdt / stop_distance
-
-    # Multi-coin bez souhrnné páky: každý ze 4 symbolů max 25 % účtu.
     max_notional = PAPER_BALANCE * MAX_NOTIONAL_SHARE
     qty_by_notional = max_notional / entry_price
     qty = min(qty_by_risk, qty_by_notional)
@@ -355,7 +366,7 @@ def open_trade(symbol, analysis, market_price):
         "stop_loss": stop_loss,
         "take_profit": take_profit,
         "risk_usdt": risk_usdt,
-        "opened_at": datetime.now(timezone.utc).isoformat(),
+        "opened_at": utcnow().isoformat(),
         "signal_candle": analysis["candle_time"],
     }
     last_entry_candle[symbol] = analysis["candle_time"]
@@ -366,11 +377,9 @@ def open_trade(symbol, analysis, market_price):
 
 def close_trade(symbol, market_price, reason):
     global PAPER_BALANCE, trade_history, positions, cooldown_until
-
     p = positions.get(symbol)
     if not p:
         return
-
     side = p["side"]
     entry_price = float(p["entry_price"])
     qty = float(p["qty"])
@@ -385,31 +394,20 @@ def close_trade(symbol, market_price, reason):
     fees = (entry_price * qty + exit_price * qty) * FEE_RATE
     net_pnl = gross_pnl - fees
     PAPER_BALANCE += net_pnl
-
-    closed_at = datetime.now(timezone.utc)
+    closed_at = utcnow()
     trade = {
-        "symbol": symbol,
-        "side": side,
-        "setup": p["setup"],
-        "entry_price": entry_price,
-        "exit_price": exit_price,
-        "qty": qty,
-        "gross_pnl": gross_pnl,
-        "fees": fees,
-        "pnl": net_pnl,
-        "reason": reason,
-        "opened_at": p["opened_at"],
+        "symbol": symbol, "side": side, "setup": p["setup"],
+        "entry_price": entry_price, "exit_price": exit_price, "qty": qty,
+        "gross_pnl": gross_pnl, "fees": fees, "pnl": net_pnl,
+        "reason": reason, "opened_at": p["opened_at"],
         "closed_at": closed_at.isoformat(),
     }
-
     save_trade(trade)
     trade_history.insert(0, trade)
     trade_history = trade_history[:300]
-
     minutes = COOLDOWN_AFTER_LOSS_MIN if net_pnl < 0 else COOLDOWN_AFTER_WIN_MIN
     cooldown_until[symbol] = (closed_at + timedelta(minutes=minutes)).isoformat()
-
-    del positions[symbol]
+    positions.pop(symbol, None)
     save_state()
     print("CLOSE V8.1", symbol, reason, net_pnl)
 
@@ -418,14 +416,12 @@ async def manage_position(symbol):
     p = positions.get(symbol)
     if not p:
         return
-
-    price = await get_live_price(symbol)
+    price = await get_live_price(symbol, max_age=1.0)
     side = p["side"]
     stop_loss = float(p["stop_loss"])
     take_profit = float(p["take_profit"])
-
     opened_at = datetime.fromisoformat(p["opened_at"])
-    age_minutes = (datetime.now(timezone.utc) - opened_at).total_seconds() / 60
+    age_minutes = (utcnow() - opened_at).total_seconds() / 60
 
     if side == "LONG":
         if price <= stop_loss:
@@ -446,63 +442,55 @@ async def manage_position(symbol):
         close_trade(symbol, price, "TIME EXIT")
 
 
-# ============================================================
-# BOT CYCLE — ALL SYMBOLS IN PARALLEL
-# ============================================================
-
-async def process_symbol(symbol):
+async def scan_symbol(symbol):
+    global last_error
     try:
-        await manage_position(symbol)
         analysis = await strategy_analysis(symbol)
         last_analysis[symbol] = analysis
-
-        if symbol in positions:
+        if symbol in positions or cooldown_active(symbol):
             return
-        if cooldown_active(symbol):
+        if last_entry_candle.get(symbol) == analysis.get("candle_time"):
             return
-        if last_entry_candle.get(symbol) == analysis["candle_time"]:
+        if analysis.get("signal") not in ("LONG", "SHORT"):
             return
-        if analysis["signal"] not in ("LONG", "SHORT"):
-            return
-
-        live_price = await get_live_price(symbol)
-        open_trade(symbol, analysis, live_price)
+        price = await get_live_price(symbol, max_age=2.0)
+        open_trade(symbol, analysis, price)
     except Exception as e:
-        print("SYMBOL CYCLE ERROR", symbol, e)
+        last_error = f"{symbol}: {type(e).__name__}: {e}"
+        last_analysis[symbol] = {
+            "symbol": symbol, "signal": "ERROR", "setup": None,
+            "reason": str(e)
+        }
+        print("SYMBOL SCAN ERROR", symbol, e)
 
 
-async def trading_cycle():
-    await asyncio.gather(*(process_symbol(s) for s in SYMBOLS))
-
-
-async def bot_loop():
+async def trading_loop():
+    global last_cycle_at, last_signal_scan_at, last_error
+    next_scan = 0.0
     while True:
-        await trading_cycle()
-        await asyncio.sleep(LOOP_SECONDS)
+        try:
+            if positions:
+                await asyncio.gather(*(manage_position(s) for s in list(positions.keys())), return_exceptions=True)
+            now = time.monotonic()
+            if now >= next_scan:
+                await asyncio.gather(*(scan_symbol(s) for s in SYMBOLS))
+                last_signal_scan_at = utcnow().isoformat()
+                next_scan = now + SIGNAL_SCAN_SECONDS
+            last_cycle_at = utcnow().isoformat()
+        except Exception as e:
+            last_error = f"LOOP: {type(e).__name__}: {e}"
+            print("V8.1 LOOP ERROR", e)
+        await asyncio.sleep(POSITION_LOOP_SECONDS)
 
-
-@app.on_event("startup")
-async def startup_event():
-    global bot_loop_started
-    init_db()
-    load_state()
-    if not bot_loop_started:
-        bot_loop_started = True
-        asyncio.create_task(bot_loop())
-        print("XRP BOT V8.1 CANDLE STARTED")
-
-
-# ============================================================
-# STATISTICS / API
-# ============================================================
 
 def calculate_stats():
-    trades = trade_history
-    count = len(trades)
-    wins = sum(1 for t in trades if float(t["pnl"]) > 0)
+    count = len(trade_history)
+    wins = sum(1 for t in trade_history if float(t["pnl"]) > 0)
     losses = count - wins
-    total_pnl = sum(float(t["pnl"]) for t in trades)
-    total_fees = sum(float(t["fees"]) for t in trades)
+    total_pnl = sum(float(t["pnl"]) for t in trade_history)
+    total_fees = sum(float(t["fees"]) for t in trade_history)
+    gp = sum(float(t["pnl"]) for t in trade_history if float(t["pnl"]) > 0)
+    gl = abs(sum(float(t["pnl"]) for t in trade_history if float(t["pnl"]) < 0))
     return {
         "count": count,
         "wins": wins,
@@ -511,39 +499,56 @@ def calculate_stats():
         "total_pnl": total_pnl,
         "total_fees": total_fees,
         "average_pnl": (total_pnl / count) if count else 0,
+        "profit_factor": (gp / gl) if gl else (999 if gp else 0),
     }
+
+
+@app.on_event("startup")
+async def startup_event():
+    global bot_loop_started, bot_task, http_client, started_at
+    started_at = utcnow()
+    limits = httpx.Limits(max_connections=8, max_keepalive_connections=4, keepalive_expiry=30.0)
+    http_client = httpx.AsyncClient(timeout=httpx.Timeout(10.0), limits=limits, headers={"User-Agent": "xrp-bot-v8.1/1.1"})
+    init_db()
+    load_state()
+    if not bot_loop_started:
+        bot_loop_started = True
+        bot_task = asyncio.create_task(trading_loop())
+        print("XRP BOT V8.1 CANDLE STABLE STARTED")
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    global bot_task, http_client
+    if bot_task:
+        bot_task.cancel()
+    if http_client:
+        await http_client.aclose()
+        http_client = None
 
 
 @app.get("/analyze")
 async def analyze():
-    analyses = await asyncio.gather(*(strategy_analysis(s) for s in SYMBOLS), return_exceptions=True)
     market = {}
     unrealized_total = 0.0
-
-    for symbol, a in zip(SYMBOLS, analyses):
-        if isinstance(a, Exception):
-            market[symbol] = {"symbol": symbol, "signal": "ERROR", "reason": str(a)}
-            continue
-
-        last_analysis[symbol] = a
-        price = await get_live_price(symbol)
-        row = dict(a)
-        row["price"] = price
-        row["cooldown"] = cooldown_active(symbol)
-        row["position"] = positions.get(symbol)
-
+    for symbol in SYMBOLS:
+        a = dict(last_analysis.get(symbol) or {
+            "symbol": symbol, "signal": "WAIT", "setup": None, "reason": "čekám na první scan"
+        })
         p = positions.get(symbol)
-        if p:
+        cached = price_cache.get(symbol)
+        price = cached["price"] if cached else a.get("price_closed")
+        a["price"] = price
+        a["cooldown"] = cooldown_active(symbol)
+        a["position"] = p
+        upnl = 0.0
+        if p and price is not None:
             entry = float(p["entry_price"])
             qty = float(p["qty"])
             upnl = (price - entry) * qty if p["side"] == "LONG" else (entry - price) * qty
-            row["unrealized_pnl"] = upnl
             unrealized_total += upnl
-        else:
-            row["unrealized_pnl"] = 0.0
-
-        market[symbol] = row
-
+        a["unrealized_pnl"] = upnl
+        market[symbol] = a
     return {
         "bot": "XRP BOT V8.1 CANDLE",
         "mode": TRADING_MODE,
@@ -558,6 +563,10 @@ async def analyze():
         "market": market,
         "stats": calculate_stats(),
         "trade_history": trade_history[:50],
+        "last_cycle_at": last_cycle_at,
+        "last_signal_scan_at": last_signal_scan_at,
+        "last_error": last_error,
+        "http_429_count": http_429_count,
     }
 
 
@@ -567,15 +576,16 @@ async def health():
         "status": "ok",
         "bot": "XRP BOT V8.1 CANDLE",
         "mode": TRADING_MODE,
-        "strategy": "PRICE ACTION ONLY",
-        "risk_reward": RISK_REWARD,
-        "risk_per_trade": RISK_PER_TRADE,
-        "symbols": SYMBOLS,
+        "loop_started": bot_loop_started,
+        "last_cycle_at": last_cycle_at,
+        "last_signal_scan_at": last_signal_scan_at,
         "open_positions": len(positions),
+        "http_429_count": http_429_count,
+        "last_error": last_error,
+        "uptime_seconds": int((utcnow() - started_at).total_seconds()),
     }
 
 
-# UptimeRobot uses HEAD requests. Explicit routes prevent false 405 DOWN alerts.
 @app.head("/")
 @app.head("/analyze")
 @app.head("/health")
@@ -583,96 +593,60 @@ async def uptime_head():
     return Response(status_code=200)
 
 
-# ============================================================
-# DASHBOARD
-# ============================================================
-
 @app.get("/", response_class=HTMLResponse)
 async def dashboard():
     return """
-<!DOCTYPE html>
+<!doctype html>
 <html lang="cs">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Bot V8.1 Candle</title>
 <style>
-body{background:#0b1118;color:#fff;font-family:Arial,sans-serif;margin:0;padding:14px}
-.wrap{max-width:980px;margin:auto}
-.card{background:#151c24;border:1px solid #26313d;border-radius:18px;padding:18px;margin-bottom:14px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
-.coin{background:#10171f;border-radius:14px;padding:14px}
-.row{display:flex;justify-content:space-between;gap:12px;margin:7px 0}
-.green{color:#58df86}.red{color:#ff6868}.yellow{color:#ffd166}.muted{opacity:.7}
-.trade{padding:10px 0;border-bottom:1px solid #2a3440}
-h1{margin:2px 0 12px;font-size:25px}h2{font-size:19px}
-</style>
-</head>
+body{margin:0;background:#0b1118;color:#edf3f8;font-family:Arial,sans-serif}
+.wrap{max-width:1050px;margin:auto;padding:14px}
+.card{background:#151c24;border:1px solid #26313d;border-radius:16px;padding:16px;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
+.coin{background:#10171f;border-radius:12px;padding:12px}
+.row{display:flex;justify-content:space-between;gap:12px;margin:6px 0}
+.green{color:#5ce68b}.red{color:#ff6b6b}.yellow{color:#ffd166}.muted{opacity:.65}
+.trade{display:grid;grid-template-columns:1.1fr .8fr 1fr 1fr;gap:8px;padding:9px 0;border-bottom:1px solid #29343e;font-size:13px}
+h1{font-size:24px;margin:0 0 8px}h2{font-size:18px}
+</style></head>
 <body><div class="wrap">
-<div class="card">
-<h1>🕯️ BOT V8.1 CANDLE</h1>
-<div class="row"><span>Strategie</span><b>PRICE ACTION ONLY</b></div>
-<div class="row"><span>Risk : Reward</span><b>1 : 1</b></div>
-<div class="row"><span>Risk / obchod</span><b>0.5 %</b></div>
-<div class="row"><span>Režim</span><b>PAPER</b></div>
-</div>
-<div class="card"><h2>📡 Trhy a otevřené pozice</h2><div id="coins" class="grid"></div></div>
-<div class="card">
-<h2>💰 Účet</h2>
-<div class="row"><span>Balance</span><b id="balance">---</b></div>
-<div class="row"><span>Equity</span><b id="equity">---</b></div>
-<div class="row"><span>Otevřený P&L</span><b id="upnl">---</b></div>
-</div>
-<div class="card">
-<h2>📊 Statistiky</h2>
-<div class="row"><span>Obchody</span><b id="count">---</b></div>
-<div class="row"><span>WIN / LOSS</span><b id="wl">---</b></div>
-<div class="row"><span>Win rate</span><b id="wr">---</b></div>
-<div class="row"><span>Čistý P&L</span><b id="pnl">---</b></div>
-<div class="row"><span>Poplatky</span><b id="fees">---</b></div>
-</div>
-<div class="card"><h2>📜 Posledních 50 obchodů</h2><div id="history">---</div></div>
+<div class="card"><h1>🕯️ BOT V8.1 CANDLE</h1><div class="muted">PAPER • Price Action • R:R 1:1 • risk 0.5 %</div></div>
+<div class="card"><div id="stats" class="grid"></div></div>
+<div class="card"><h2>📡 Trhy / pozice</h2><div id="coins" class="grid"></div></div>
+<div class="card"><h2>🧾 Posledních 50 obchodů</h2><div id="trades"></div></div>
+<div class="card muted" id="health">Načítám…</div>
 </div>
 <script>
-const fmt=(v,d=4)=>Number.isFinite(Number(v))?Number(v).toFixed(d):"---";
-const cls=v=>Number(v)>0?"green":Number(v)<0?"red":"yellow";
+const f=(n,d=2)=>Number(n||0).toFixed(d);
 async function refresh(){
   try{
-    const r=await fetch("/analyze",{cache:"no-store"}); const d=await r.json();
-    document.getElementById("balance").innerText=fmt(d.paper_balance,2)+" USDT";
-    document.getElementById("equity").innerText=fmt(d.equity,2)+" USDT";
-    const u=document.getElementById("upnl");u.innerText=fmt(d.unrealized_pnl,2)+" USDT";u.className=cls(d.unrealized_pnl);
+    const r=await fetch('/analyze',{cache:'no-store'}); const d=await r.json();
     const s=d.stats||{};
-    document.getElementById("count").innerText=s.count||0;
-    document.getElementById("wl").innerText=(s.wins||0)+" / "+(s.losses||0);
-    document.getElementById("wr").innerText=fmt(s.win_rate,1)+" %";
-    const p=document.getElementById("pnl");p.innerText=fmt(s.total_pnl,2)+" USDT";p.className=cls(s.total_pnl);
-    document.getElementById("fees").innerText=fmt(s.total_fees,2)+" USDT";
-
-    document.getElementById("coins").innerHTML=(d.symbols||[]).map(sym=>{
-      const m=d.market[sym]||{}; const pos=m.position;
-      const sigClass=m.signal==="LONG"?"green":m.signal==="SHORT"?"red":"yellow";
-      return `<div class="coin">
-        <div class="row"><b>${sym.replace("USDT","")}</b><b>${fmt(m.price,5)}</b></div>
-        <div class="row"><span>Signál</span><b class="${sigClass}">${m.signal||"---"}</b></div>
-        <div class="row"><span>Setup</span><span>${m.setup||"---"}</span></div>
-        <div class="muted">${m.reason||""}</div>
-        ${pos?`<hr><div class="row"><span>Pozice</span><b>${pos.side}</b></div>
-        <div class="row"><span>Entry</span><span>${fmt(pos.entry_price,5)}</span></div>
-        <div class="row"><span>SL</span><span>${fmt(pos.stop_loss,5)}</span></div>
-        <div class="row"><span>TP</span><span>${fmt(pos.take_profit,5)}</span></div>
-        <div class="row"><span>P&L</span><b class="${cls(m.unrealized_pnl)}">${fmt(m.unrealized_pnl,2)} USDT</b></div>`:""}
-      </div>`;
-    }).join("");
-
-    const h=(d.trade_history||[]).slice(0,50);
-    document.getElementById("history").innerHTML=h.length?h.map(t=>`<div class="trade">
-      <div class="row"><span><b>${t.symbol}</b> · ${t.side} · ${t.setup||"---"}</span>
-      <b class="${cls(t.pnl)}">${fmt(t.pnl,2)} USDT</b></div>
-      <div class="muted">${t.reason} · ${fmt(t.entry_price,5)} → ${fmt(t.exit_price,5)}</div>
-    </div>`).join(""):"Zatím žádné uzavřené obchody";
-  }catch(e){console.error(e)}
+    document.getElementById('stats').innerHTML=[
+      ['Balance',f(d.paper_balance,2)+' USDT'],
+      ['Equity',f(d.equity,2)+' USDT'],
+      ['Obchody',s.count||0],
+      ['Win rate',f(s.win_rate,1)+' %'],
+      ['PnL',f(s.total_pnl,2)+' USDT'],
+      ['Fees',f(s.total_fees,2)+' USDT']
+    ].map(x=>`<div class="coin"><div class="muted">${x[0]}</div><b>${x[1]}</b></div>`).join('');
+    document.getElementById('coins').innerHTML=Object.values(d.market||{}).map(x=>{
+      const p=x.position, sig=x.signal||'WAIT', cls=sig==='LONG'?'green':sig==='SHORT'?'red':'yellow';
+      return `<div class="coin"><b>${x.symbol}</b><div class="row"><span>Signál</span><b class="${cls}">${sig}</b></div>
+      <div class="row"><span>Cena</span><span>${x.price==null?'—':f(x.price,6)}</span></div>
+      <div class="row"><span>Setup</span><span>${x.setup||'—'}</span></div>
+      <div class="row"><span>Pozice</span><span>${p?p.side:'—'}</span></div>
+      <div class="row"><span>uPnL</span><span>${f(x.unrealized_pnl,2)}</span></div></div>`;
+    }).join('');
+    document.getElementById('trades').innerHTML=(d.trade_history||[]).map(t=>
+      `<div class="trade"><span>${t.symbol}</span><span>${t.side}</span><span>${t.reason}</span><span class="${Number(t.pnl)>=0?'green':'red'}">${f(t.pnl,2)}</span></div>`
+    ).join('')||'<div class="muted">Zatím bez obchodů.</div>';
+    document.getElementById('health').textContent=`Poslední cyklus: ${d.last_cycle_at||'—'} • scan: ${d.last_signal_scan_at||'—'} • 429: ${d.http_429_count||0} • chyba: ${d.last_error||'žádná'}`;
+  }catch(e){document.getElementById('health').textContent='Dashboard error: '+e}
 }
-refresh(); setInterval(refresh,5000);
+refresh(); setInterval(refresh,10000);
 </script></body></html>
 """
