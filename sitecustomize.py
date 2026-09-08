@@ -1,17 +1,22 @@
-"""Runtime compatibility tweaks for V8.1.
+"""Runtime compatibility and secure DB bridge for V8.1.
 
-- Register explicit HEAD routes for uptime checks on /, /analyze and /health.
-- Expand displayed/API trade history from 20 to 50 trades.
-- Trading strategy, risk, entries, exits and persistence are untouched.
+- Keeps explicit HEAD routes for uptime checks.
+- Keeps up to 50 trades in /analyze and dashboard.
+- Adds an authenticated internal endpoint that exposes DATABASE_URL only to V8
+  when the shared secret header matches V8_DB_BRIDGE_TOKEN.
 """
+
+import os
 
 try:
     from functools import wraps
-    from fastapi import FastAPI
+    from fastapi import FastAPI, Header, HTTPException
 
     _original_get = FastAPI.get
+    _bridge_registered = False
 
     def _patched_get(self, path, *args, **kwargs):
+        global _bridge_registered
         original_decorator = _original_get(self, path, *args, **kwargs)
 
         def decorator(func):
@@ -39,7 +44,6 @@ try:
 
             registered = original_decorator(endpoint)
 
-            # Explicit HEAD route. This is what UptimeRobot uses.
             if path in ("/", "/analyze", "/health"):
                 async def head_ok():
                     return None
@@ -49,6 +53,25 @@ try:
                     methods=["HEAD"],
                     include_in_schema=False,
                     status_code=200,
+                )
+
+            if not _bridge_registered:
+                _bridge_registered = True
+
+                async def db_bridge(x_bridge_token: str | None = Header(default=None)):
+                    expected = os.getenv("V8_DB_BRIDGE_TOKEN")
+                    database_url = os.getenv("DATABASE_URL")
+                    if not expected or not x_bridge_token or x_bridge_token != expected:
+                        raise HTTPException(status_code=404, detail="Not found")
+                    if not database_url:
+                        raise HTTPException(status_code=503, detail="Database unavailable")
+                    return {"database_url": database_url}
+
+                self.add_api_route(
+                    "/_internal/v8-db-bridge",
+                    db_bridge,
+                    methods=["GET"],
+                    include_in_schema=False,
                 )
 
             return registered
