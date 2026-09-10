@@ -9,16 +9,23 @@ import psycopg
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse, JSONResponse
 
-app = FastAPI(title="XRP Bot V8 Candle")
+app = FastAPI(title="XRP Bot V8 Candle Fixed")
 
 SYMBOL = os.getenv("SYMBOL", "XRPUSDT")
 BINANCE_API = os.getenv("BINANCE_API", "https://data-api.binance.vision")
 TRADING_MODE = "PAPER"
 STARTING_BALANCE = float(os.getenv("STARTING_BALANCE", "10000"))
-RISK_PER_TRADE = float(os.getenv("RISK_PER_TRADE", "0.005"))
-RISK_REWARD = float(os.getenv("RISK_REWARD", "2.0"))
+RISK_PER_TRADE = float(os.getenv("RISK_PER_TRADE", "0.003"))
+RISK_REWARD = float(os.getenv("RISK_REWARD", "2.0"))  # skutečné NET R:R po nákladech
 FEE_RATE = float(os.getenv("FEE_RATE", "0.0005"))
-MIN_SCORE = int(os.getenv("MIN_SCORE", "4"))
+SLIPPAGE_RATE = float(os.getenv("SLIPPAGE_RATE", "0.0002"))
+MAX_NOTIONAL_SHARE = float(os.getenv("MAX_NOTIONAL_SHARE", "0.50"))
+MIN_SCORE = int(os.getenv("MIN_SCORE", "6"))
+MIN_VOLUME_RATIO = float(os.getenv("MIN_VOLUME_RATIO", "1.35"))
+MIN_TREND_STRENGTH = float(os.getenv("MIN_TREND_STRENGTH", "0.0015"))
+MAX_TRADE_MINUTES = int(os.getenv("MAX_TRADE_MINUTES", "120"))
+BREAKEVEN_TRIGGER_R = float(os.getenv("BREAKEVEN_TRIGGER_R", "0.75"))
+ENABLED_SETUPS = {"BULLISH_ENGULFING", "BEARISH_ENGULFING"}
 COOLDOWN_AFTER_LOSS_MIN = int(os.getenv("COOLDOWN_AFTER_LOSS_MIN", "30"))
 MAIN_INTERVAL = os.getenv("MAIN_INTERVAL", "5m")
 STRUCTURE_INTERVAL = os.getenv("STRUCTURE_INTERVAL", "15m")
@@ -153,7 +160,7 @@ async def get_live_price(client):
 
 
 def candle(k):
-    return {"open_time":int(k[0]),"open":float(k[1]),"high":float(k[2]),"low":float(k[3]),"close":float(k[4])}
+    return {"open_time":int(k[0]),"open":float(k[1]),"high":float(k[2]),"low":float(k[3]),"close":float(k[4]),"volume":float(k[5])}
 
 
 def body(c): return abs(c["close"]-c["open"])
@@ -194,6 +201,16 @@ def near_level(price,level):
     return level>0 and abs(price-level)/level <= STRUCTURE_TOLERANCE_PCT
 
 
+def ema(values, period):
+    if len(values) < period:
+        return None
+    alpha = 2.0 / (period + 1.0)
+    value = sum(values[:period]) / period
+    for x in values[period:]:
+        value = alpha * x + (1.0 - alpha) * value
+    return value
+
+
 def detect_signal(main_closed, structure_closed):
     if len(main_closed)<25 or len(structure_closed)<35:
         return {"side":"WAIT","setup":"NONE","score":0,"reasons":["Not enough candles"]}
@@ -203,6 +220,12 @@ def detect_signal(main_closed, structure_closed):
     resistance=max(c["high"] for c in structure_closed[-30:])
     swing_low=min(c["low"] for c in main_closed[-22:-2])
     swing_high=max(c["high"] for c in main_closed[-22:-2])
+    avg_volume=sum(c["volume"] for c in main_closed[-22:-2])/20
+    volume_ratio=c1["volume"]/avg_volume if avg_volume>0 else 0.0
+    structure_closes=[c["close"] for c in structure_closed]
+    ema20=ema(structure_closes,20); ema50=ema(structure_closes,50)
+    trend_strength=abs(ema20-ema50)/c1["close"] if ema20 and ema50 else 0.0
+    trend="LONG" if ema20 and ema50 and ema20>ema50 else "SHORT" if ema20 and ema50 and ema20<ema50 else "MIXED"
     candidates=[]
 
     if bull_engulf(c3,c2) and c1["close"]>c2["high"]:
@@ -240,27 +263,54 @@ def detect_signal(main_closed, structure_closed):
             candidates.append({"side":"SHORT","setup":"INSIDE_BAR_BREAKOUT_SHORT","score":score,"pattern_low":c1["low"],"pattern_high":max(c3["high"],c2["high"]),"entry":c1["close"],"candle_time":c1["open_time"],"reasons":reasons})
 
     if not candidates:
-        return {"side":"WAIT","setup":"NONE","score":0,"support":support,"resistance":resistance,"candle_time":c1["open_time"],"reasons":["No confirmed candle setup"]}
+        return {"side":"WAIT","setup":"NONE","score":0,"support":support,"resistance":resistance,"candle_time":c1["open_time"],"volume_ratio":volume_ratio,"trend":trend,"trend_strength":trend_strength,"reasons":["No confirmed candle setup"]}
 
     best=max(candidates,key=lambda x:x["score"])
     best["support"]=support; best["resistance"]=resistance
+    best["volume_ratio"]=volume_ratio; best["trend"]=trend; best["trend_strength"]=trend_strength
+    if best["setup"] not in ENABLED_SETUPS:
+        best["side"]="WAIT"; best["reasons"].append("Setup disabled after results review")
+    elif volume_ratio < MIN_VOLUME_RATIO:
+        best["side"]="WAIT"; best["reasons"].append(f"Volume {volume_ratio:.2f}x < {MIN_VOLUME_RATIO:.2f}x")
+    elif trend_strength < MIN_TREND_STRENGTH:
+        best["side"]="WAIT"; best["reasons"].append("15m trend too weak / chop")
+    elif best["side"] != trend:
+        best["side"]="WAIT"; best["reasons"].append(f"Signal against 15m {trend} trend")
     if best["score"]<MIN_SCORE:
         best["side"]="WAIT"; best["reasons"].append(f"Score {best['score']} < {MIN_SCORE}")
     return best
 
 
+def estimated_net_per_unit(side, entry_exec, exit_market):
+    exit_exec=exit_market*(1-SLIPPAGE_RATE if side=="LONG" else 1+SLIPPAGE_RATE)
+    gross=(exit_exec-entry_exec) if side=="LONG" else (entry_exec-exit_exec)
+    return gross-(entry_exec+exit_exec)*FEE_RATE
+
+
+def target_market_for_net_profit(side, entry_exec, target_net_per_unit):
+    f=FEE_RATE; s=SLIPPAGE_RATE
+    if side=="LONG":
+        exit_exec=(target_net_per_unit+entry_exec*(1+f))/(1-f)
+        return exit_exec/(1-s)
+    exit_exec=(entry_exec*(1-f)-target_net_per_unit)/(1+f)
+    return exit_exec/(1+s)
+
+
 def open_position(signal):
     global paper_position,last_entry_candle
-    entry=float(signal["entry"]); side=signal["side"]; buffer=entry*0.0002
+    market_entry=float(signal["entry"]); side=signal["side"]; buffer=market_entry*0.0002
+    entry=market_entry*(1+SLIPPAGE_RATE if side=="LONG" else 1-SLIPPAGE_RATE)
     if side=="LONG":
-        stop=float(signal["pattern_low"])-buffer; unit=entry-stop; tp=entry+RISK_REWARD*unit
+        stop=float(signal["pattern_low"])-buffer
     else:
-        stop=float(signal["pattern_high"])+buffer; unit=stop-entry; tp=entry-RISK_REWARD*unit
-    if unit<=0: return False
+        stop=float(signal["pattern_high"])+buffer
+    net_loss_per_unit=-estimated_net_per_unit(side,entry,stop)
+    if net_loss_per_unit<=0: return False
+    tp=target_market_for_net_profit(side,entry,net_loss_per_unit*RISK_REWARD)
     risk_usdt=paper_balance*RISK_PER_TRADE
-    qty=min(risk_usdt/unit, paper_balance/entry)
+    qty=min(risk_usdt/net_loss_per_unit, paper_balance*MAX_NOTIONAL_SHARE/entry)
     if qty<=0: return False
-    paper_position={"side":side,"setup":signal["setup"],"score":int(signal["score"]),"entry_price":entry,"qty":qty,"stop_loss":stop,"take_profit":tp,"entry_time":datetime.now(timezone.utc).isoformat(),"entry_candle":int(signal["candle_time"]),"reasons":signal.get("reasons",[])}
+    paper_position={"side":side,"setup":signal["setup"],"score":int(signal["score"]),"entry_price":entry,"qty":qty,"stop_loss":stop,"take_profit":tp,"risk_usdt":qty*net_loss_per_unit,"breakeven_moved":False,"entry_time":datetime.now(timezone.utc).isoformat(),"entry_candle":int(signal["candle_time"]),"reasons":signal.get("reasons",[])}
     last_entry_candle=int(signal["candle_time"]); save_state(); return True
 
 
@@ -268,9 +318,10 @@ def close_position(exit_price,reason):
     global paper_balance,paper_position,cooldown_until,trade_history
     if not paper_position: return
     p=paper_position; entry=p["entry_price"]; qty=p["qty"]
-    gross=(exit_price-entry)*qty if p["side"]=="LONG" else (entry-exit_price)*qty
-    fees=(entry*qty+exit_price*qty)*FEE_RATE; net=gross-fees; paper_balance+=net
-    t={"side":p["side"],"setup":p["setup"],"score":p["score"],"entry_price":entry,"exit_price":exit_price,"qty":qty,"stop_loss":p["stop_loss"],"take_profit":p["take_profit"],"gross_pnl":gross,"fees":fees,"net_pnl":net,"reason":reason,"entry_time":p["entry_time"],"exit_time":datetime.now(timezone.utc).isoformat()}
+    exit_exec=exit_price*(1-SLIPPAGE_RATE if p["side"]=="LONG" else 1+SLIPPAGE_RATE)
+    gross=(exit_exec-entry)*qty if p["side"]=="LONG" else (entry-exit_exec)*qty
+    fees=(entry*qty+exit_exec*qty)*FEE_RATE; net=gross-fees; paper_balance+=net
+    t={"side":p["side"],"setup":p["setup"],"score":p["score"],"entry_price":entry,"exit_price":exit_exec,"qty":qty,"stop_loss":p["stop_loss"],"take_profit":p["take_profit"],"gross_pnl":gross,"fees":fees,"net_pnl":net,"reason":reason,"entry_time":p["entry_time"],"exit_time":datetime.now(timezone.utc).isoformat()}
     trade_history.insert(0,t); trade_history[:]=trade_history[:100]; save_trade(t)
     if net<0: cooldown_until=datetime.now(timezone.utc)+timedelta(minutes=COOLDOWN_AFTER_LOSS_MIN)
     paper_position=None; save_state()
@@ -279,18 +330,27 @@ def close_position(exit_price,reason):
 def manage_position(price):
     if not paper_position: return
     p=paper_position
+    opened=datetime.fromisoformat(p["entry_time"])
+    age_minutes=(datetime.now(timezone.utc)-opened).total_seconds()/60
+    current_net=estimated_net_per_unit(p["side"],p["entry_price"],price)*p["qty"]
+    risk=float(p.get("risk_usdt",paper_balance*RISK_PER_TRADE))
+    if not p.get("breakeven_moved") and current_net>=risk*BREAKEVEN_TRIGGER_R:
+        p["stop_loss"]=target_market_for_net_profit(p["side"],p["entry_price"],0.0)
+        p["breakeven_moved"]=True; save_state()
     if p["side"]=="LONG":
-        if price<=p["stop_loss"]: close_position(price,"STOP_LOSS")
+        if price<=p["stop_loss"]: close_position(price,"BREAK_EVEN" if p.get("breakeven_moved") else "STOP_LOSS")
         elif price>=p["take_profit"]: close_position(price,"TAKE_PROFIT")
     else:
-        if price>=p["stop_loss"]: close_position(price,"STOP_LOSS")
+        if price>=p["stop_loss"]: close_position(price,"BREAK_EVEN" if p.get("breakeven_moved") else "STOP_LOSS")
         elif price<=p["take_profit"]: close_position(price,"TAKE_PROFIT")
+    if paper_position and age_minutes>=MAX_TRADE_MINUTES:
+        close_position(price,"TIME_EXIT")
 
 
 def unrealized(price):
     if not paper_position: return 0.0
-    p=paper_position; gross=(price-p["entry_price"])*p["qty"] if p["side"]=="LONG" else (p["entry_price"]-price)*p["qty"]
-    return gross-(p["entry_price"]*p["qty"]+price*p["qty"])*FEE_RATE
+    p=paper_position
+    return estimated_net_per_unit(p["side"],p["entry_price"],price)*p["qty"]
 
 
 async def analyze_once():
@@ -304,7 +364,7 @@ async def analyze_once():
     if not had and paper_position is None and not cd and signal.get("side") in ("LONG","SHORT") and signal.get("score",0)>=MIN_SCORE and signal.get("candle_time")!=last_entry_candle:
         opened=open_position(signal)
     upnl=unrealized(price)
-    return {"bot":"XRP Bot V8 Candle","mode":TRADING_MODE,"symbol":SYMBOL,"price":price,"balance":paper_balance,"equity":paper_balance+upnl,"unrealized_pnl":upnl,"position":paper_position,"signal":signal,"opened_this_cycle":opened,"cooldown_until":cooldown_until.isoformat() if cooldown_until else None,"fee_rate":FEE_RATE,"risk_per_trade":RISK_PER_TRADE,"risk_reward":RISK_REWARD,"min_score":MIN_SCORE,"history":trade_history[:30],"time":datetime.now(timezone.utc).isoformat()}
+    return {"bot":"XRP Bot V8 Candle Fixed","mode":TRADING_MODE,"symbol":SYMBOL,"price":price,"balance":paper_balance,"equity":paper_balance+upnl,"unrealized_pnl":upnl,"position":paper_position,"signal":signal,"opened_this_cycle":opened,"cooldown_until":cooldown_until.isoformat() if cooldown_until else None,"fee_rate":FEE_RATE,"slippage_rate":SLIPPAGE_RATE,"risk_per_trade":RISK_PER_TRADE,"risk_reward":RISK_REWARD,"min_score":MIN_SCORE,"enabled_setups":sorted(ENABLED_SETUPS),"history":trade_history[:30],"time":datetime.now(timezone.utc).isoformat()}
 
 
 async def bot_loop():
@@ -332,7 +392,7 @@ async def shutdown():
 
 @app.get("/health")
 async def health():
-    return {"status":"ok","bot":"XRP BOT V8 CANDLE","mode":TRADING_MODE,"symbol":SYMBOL,"strategy":"CANDLE / PRICE ACTION ONLY"}
+    return {"status":"ok","bot":"XRP BOT V8 CANDLE FIXED","mode":TRADING_MODE,"symbol":SYMBOL,"strategy":"ENGULFING + 15m TREND + VOLUME","risk_reward":"NET 1:2"}
 
 
 @app.get("/analyze")
@@ -348,7 +408,7 @@ async def dashboard():
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>XRP V8 Candle</title>
+<title>XRP V8 Candle Fixed</title>
 <style>
 :root{--bg:#07111f;--panel:#0f1b2d;--panel2:#132238;--line:#243650;--text:#f4f7fb;--muted:#8ea1b8;--green:#21d19f;--red:#ff647c;--amber:#f8c55c;--blue:#6ea8fe;--shadow:0 12px 35px rgba(0,0,0,.24)}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#07111f 0%,#091525 100%);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}.wrap{max-width:980px;margin:auto;padding:18px 14px 34px}.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin:4px 2px 18px}.title{font-size:24px;font-weight:800;letter-spacing:-.4px}.subtitle{font-size:12px;color:var(--muted);margin-top:4px}.badge{padding:7px 10px;border:1px solid var(--line);background:#0d1929;border-radius:999px;font-size:11px;color:#b8c6d8;white-space:nowrap}.hero{background:linear-gradient(145deg,#13243a,#0e1a2c);border:1px solid #20344f;border-radius:22px;padding:18px;box-shadow:var(--shadow);margin-bottom:14px}.heroRow{display:flex;justify-content:space-between;align-items:center;gap:12px}.signal{font-size:30px;font-weight:900;letter-spacing:.3px}.setup{font-size:13px;color:#b9c6d6;margin-top:3px}.pnl{text-align:right}.pnlLabel{font-size:11px;color:var(--muted)}.pnlValue{font-size:26px;font-weight:900;margin-top:2px}.long{color:var(--green)}.short{color:var(--red)}.wait{color:var(--amber)}.pos{color:var(--green)}.neg{color:var(--red)}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}.metric{background:var(--panel);border:1px solid #1d3048;border-radius:16px;padding:13px 12px}.metric .k{font-size:11px;color:var(--muted);margin-bottom:5px}.metric .v{font-size:18px;font-weight:800;white-space:nowrap}.card{background:var(--panel);border:1px solid #1d3048;border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 7px 22px rgba(0,0,0,.14)}.card h3{margin:0 0 14px;font-size:16px}.positionGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.item{background:#0b1727;border:1px solid #1c2c43;border-radius:13px;padding:11px}.item .k{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}.item .v{font-size:16px;font-weight:800;margin-top:4px}.riskbar{height:8px;background:#1a2b42;border-radius:10px;overflow:hidden;margin:14px 0 6px}.riskfill{height:100%;width:50%;background:linear-gradient(90deg,var(--red),var(--amber),var(--green));border-radius:10px}.barlabels{display:flex;justify-content:space-between;font-size:10px;color:var(--muted)}.reasons{display:grid;gap:8px}.reason{background:#0b1727;border:1px solid #1b2c42;border-radius:12px;padding:10px 11px;font-size:13px}.reason:before{content:'✓';color:var(--green);font-weight:900;margin-right:8px}.empty{color:var(--muted);font-size:13px;padding:4px 0}.history{display:grid;gap:9px}.trade{background:#0b1727;border:1px solid #1c2c43;border-radius:14px;padding:11px 12px}.tradeTop{display:flex;justify-content:space-between;gap:10px}.tradeSide{font-weight:900;font-size:13px}.tradeSetup{font-size:11px;color:var(--muted);margin-top:2px}.tradePnl{font-size:16px;font-weight:900}.tradeMeta{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;font-size:10px;color:var(--muted)}.tradeMeta b{display:block;color:#dbe5f2;font-size:12px;margin-top:2px}.footer{font-size:10px;color:#61758d;text-align:center;padding:6px}.dot{display:inline-block;width:7px;height:7px;background:var(--green);border-radius:50%;margin-right:6px;box-shadow:0 0 0 4px rgba(33,209,159,.1)}@media(max-width:620px){.wrap{padding:13px 10px 28px}.title{font-size:21px}.grid{grid-template-columns:repeat(2,1fr)}.metric .v{font-size:16px}.hero{padding:16px}.signal{font-size:27px}.pnlValue{font-size:22px}.positionGrid{grid-template-columns:repeat(2,1fr)}}
@@ -356,7 +416,7 @@ async def dashboard():
 </head>
 <body>
 <div class="wrap">
-  <div class="top"><div><div class="title">XRP Bot V8 Candle</div><div class="subtitle"><span class="dot"></span>Price Action ONLY · PAPER · auto refresh 15 s</div></div><div class="badge" id="clock">--:--</div></div>
+  <div class="top"><div><div class="title">XRP Bot V8 Candle Fixed</div><div class="subtitle"><span class="dot"></span>ENGULFING + 15m trend + volume · PAPER · auto refresh 15 s</div></div><div class="badge" id="clock">--:--</div></div>
 
   <section class="hero">
     <div class="heroRow"><div><div id="heroSignal" class="signal wait">WAIT</div><div id="heroSetup" class="setup">Čekám na potvrzenou svíčkovou formaci</div></div><div class="pnl"><div class="pnlLabel">NEREALIZOVANÝ P&L</div><div id="heroPnl" class="pnlValue">0.00 USDT</div></div></div>
@@ -374,7 +434,7 @@ async def dashboard():
   <section class="card"><h3>Aktuální pozice</h3><div id="positionBox" class="empty">Žádná otevřená pozice</div></section>
   <section class="card"><h3>Proč bot rozhodl</h3><div id="reasons" class="reasons"><div class="empty">Načítám…</div></div></section>
   <section class="card"><h3>Poslední obchody</h3><div id="history" class="history"><div class="empty">Zatím žádné uzavřené obchody</div></div></section>
-  <div class="footer">V8 Candle · svíčkové formace + price action · strategie nebyla změněna</div>
+  <div class="footer">V8 Candle Fixed · pouze engulfing · NET R:R po nákladech</div>
 </div>
 <script>
 const fmt=(v,d=4)=>v==null?'-':Number(v).toFixed(d);
