@@ -53,7 +53,7 @@ def init_db():
     with get_db() as conn:
         with conn.cursor() as cur:
             cur.execute("""
-                CREATE TABLE IF NOT EXISTS candle_v8_trades (
+                CREATE TABLE IF NOT EXISTS candle_v8_fixed_trades (
                     id SERIAL PRIMARY KEY,
                     side TEXT NOT NULL,
                     setup TEXT NOT NULL,
@@ -72,7 +72,7 @@ def init_db():
                 )
             """)
             cur.execute("""
-                CREATE TABLE IF NOT EXISTS candle_v8_state (
+                CREATE TABLE IF NOT EXISTS candle_v8_fixed_state (
                     id INTEGER PRIMARY KEY,
                     state JSONB NOT NULL
                 )
@@ -92,7 +92,7 @@ def save_state():
     with get_db() as conn:
         with conn.cursor() as cur:
             cur.execute("""
-                INSERT INTO candle_v8_state (id, state)
+                INSERT INTO candle_v8_fixed_state (id, state)
                 VALUES (1, %s::jsonb)
                 ON CONFLICT (id) DO UPDATE SET state = EXCLUDED.state
             """, (json.dumps(state),))
@@ -105,7 +105,7 @@ def load_state():
         return
     with get_db() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT state FROM candle_v8_state WHERE id=1")
+            cur.execute("SELECT state FROM candle_v8_fixed_state WHERE id=1")
             row = cur.fetchone()
             if row:
                 s = row[0] or {}
@@ -117,7 +117,7 @@ def load_state():
             cur.execute("""
                 SELECT side,setup,score,entry_price,exit_price,qty,stop_loss,take_profit,
                        gross_pnl,fees,net_pnl,reason,entry_time,exit_time
-                FROM candle_v8_trades ORDER BY id DESC LIMIT 100
+                FROM candle_v8_fixed_trades ORDER BY id DESC LIMIT 100
             """)
             rows = cur.fetchall()
     trade_history = [{
@@ -135,7 +135,7 @@ def save_trade(t):
     with get_db() as conn:
         with conn.cursor() as cur:
             cur.execute("""
-                INSERT INTO candle_v8_trades(
+                INSERT INTO candle_v8_fixed_trades(
                     side,setup,score,entry_price,exit_price,qty,stop_loss,take_profit,
                     gross_pnl,fees,net_pnl,reason,entry_time,exit_time
                 ) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
