@@ -10,7 +10,7 @@ from fastapi import FastAPI
 from fastapi.responses import HTMLResponse, Response
 
 # ============================================================
-# XRP BOT V8.1 CANDLE FIXED — MULTI-COIN — PAPER ONLY
+# XRP BOT V8.1 BREAKOUT FIXED — MULTI-COIN — PAPER ONLY
 # Changes after 279-trade review:
 # - 15m EMA trend + anti-chop filter
 # - 5m volume confirmation
@@ -22,7 +22,7 @@ from fastapi.responses import HTMLResponse, Response
 # - separate DB tables so the old 279-trade sample is preserved
 # ============================================================
 
-app = FastAPI(title="XRP Bot V8.1 Candle Fixed")
+app = FastAPI(title="XRP Bot V8.1 Breakout Fixed")
 
 SYMBOLS = ["XRPUSDT", "BTCUSDT", "ETHUSDT", "SOLUSDT"]
 BINANCE_API = "https://data-api.binance.vision"
@@ -30,7 +30,7 @@ TRADING_MODE = "PAPER"
 DATABASE_URL = os.getenv("DATABASE_URL")
 STARTING_BALANCE = 10000.0
 
-RISK_PER_TRADE = 0.005
+RISK_PER_TRADE = 0.003
 NET_RISK_REWARD = 1.0
 FEE_RATE = 0.0005
 SLIPPAGE_RATE = 0.0002
@@ -40,22 +40,22 @@ STOP_BUFFER_RATE = 0.0005
 MIN_STOP_RATE = 0.0040
 MAX_STOP_RATE = 0.0150
 MIN_TARGET_MOVE_RATE = 0.0050
-MAX_NOTIONAL_SHARE = 0.50
+MAX_NOTIONAL_SHARE = 0.35
 MAX_OPEN_POSITIONS = 2
 
 TREND_INTERVAL = "15m"
 TREND_EMA_FAST = 20
 TREND_EMA_SLOW = 50
-MIN_TREND_STRENGTH = 0.0012
+MIN_TREND_STRENGTH = 0.0015
 
 VOLUME_LOOKBACK = 20
-MIN_VOLUME_BREAKOUT = 1.35
+MIN_VOLUME_BREAKOUT = 1.50
 MIN_VOLUME_ENGULFING = 1.15
 MIN_VOLUME_PIN = 1.20
 
 BREAKOUT_LOOKBACK = 20
-BREAKOUT_BUFFER_RATE = 0.0005
-BREAKOUT_BODY_RATIO = 0.65
+BREAKOUT_BUFFER_RATE = 0.0008
+BREAKOUT_BODY_RATIO = 0.70
 MAX_SIGNAL_RANGE_RATE = 0.012
 
 COOLDOWN_AFTER_WIN_MIN = 5
@@ -64,8 +64,10 @@ MAX_TRADE_MINUTES = 120
 POSITION_LOOP_SECONDS = 5
 SIGNAL_SCAN_SECONDS = 60
 
-TRADE_TABLE = "v81fix_trades"
-STATE_TABLE = "v81fix_state"
+ENABLED_SETUPS = {"BREAKOUT"}
+BREAKEVEN_TRIGGER_R = 0.60
+TRADE_TABLE = "v81breakout_trades"
+STATE_TABLE = "v81breakout_state"
 
 PAPER_BALANCE = STARTING_BALANCE
 positions = {}
@@ -450,6 +452,13 @@ async def strategy_analysis(symbol):
 
     side = result.get("signal")
     if side in ("LONG", "SHORT"):
+        if result.get("setup") not in ENABLED_SETUPS:
+            result["raw_signal"] = side
+            result["signal"] = "WAIT"
+            result["reason"] = "setup vypnut po vyhodnocení výsledků"
+            _, _, trend_meta = trend_filter(closed15, side)
+            result.update(trend_meta)
+            return result
         ok, trend_reason, trend_meta = trend_filter(closed15, side)
         result.update(trend_meta)
         if not ok:
@@ -571,6 +580,7 @@ def open_trade(symbol, analysis, market_price):
         "risk_usdt": actual_net_risk,
         "expected_reward_usdt": expected_net_reward,
         "net_rr": expected_net_reward / max(actual_net_risk, 1e-12),
+        "breakeven_moved": False,
         "opened_at": utcnow().isoformat(),
         "signal_candle": analysis["candle_time"],
         "volume_ratio": analysis.get("volume_ratio"),
@@ -657,16 +667,32 @@ async def manage_position(symbol):
     opened_at = datetime.fromisoformat(p["opened_at"])
     age_minutes = (utcnow() - opened_at).total_seconds() / 60
 
+    current_net = estimated_net_per_unit(
+        side, float(p["entry_price"]), price
+    ) * float(p["qty"])
+    risk_usdt = float(p.get("risk_usdt", 0.0))
+    if (
+        not p.get("breakeven_moved")
+        and risk_usdt > 0
+        and current_net >= risk_usdt * BREAKEVEN_TRIGGER_R
+    ):
+        p["stop_loss"] = target_market_for_net_profit(
+            side, float(p["entry_price"]), 0.0
+        )
+        p["breakeven_moved"] = True
+        stop_loss = float(p["stop_loss"])
+        save_state()
+
     if side == "LONG":
         if price <= stop_loss:
-            close_trade(symbol, price, "STOP LOSS")
+            close_trade(symbol, price, "BREAK EVEN" if p.get("breakeven_moved") else "STOP LOSS")
             return
         if price >= take_profit:
             close_trade(symbol, price, "TAKE PROFIT")
             return
     else:
         if price >= stop_loss:
-            close_trade(symbol, price, "STOP LOSS")
+            close_trade(symbol, price, "BREAK EVEN" if p.get("breakeven_moved") else "STOP LOSS")
             return
         if price <= take_profit:
             close_trade(symbol, price, "TAKE PROFIT")
@@ -779,7 +805,7 @@ async def startup_event():
     if not bot_loop_started:
         bot_loop_started = True
         bot_task = asyncio.create_task(trading_loop())
-        print("XRP BOT V8.1 CANDLE FIXED STARTED")
+        print("XRP BOT V8.1 BREAKOUT FIXED STARTED")
 
 
 @app.on_event("shutdown")
@@ -826,9 +852,9 @@ async def analyze():
         market[symbol] = a
 
     return {
-        "bot": "XRP BOT V8.1 CANDLE FIXED",
+        "bot": "XRP BOT V8.1 BREAKOUT FIXED",
         "mode": TRADING_MODE,
-        "strategy": "PRICE ACTION + 15m TREND + VOLUME",
+        "strategy": "BREAKOUT + 15m TREND + VOLUME",
         "risk_reward": "NET 1:1 after costs",
         "risk_per_trade_pct": RISK_PER_TRADE * 100,
         "symbols": SYMBOLS,
@@ -853,6 +879,8 @@ async def analyze():
             "max_trade_minutes": MAX_TRADE_MINUTES,
             "fee_pct_each_side": FEE_RATE * 100,
             "slippage_pct_each_side": SLIPPAGE_RATE * 100,
+            "enabled_setups": sorted(ENABLED_SETUPS),
+            "breakeven_trigger_r": BREAKEVEN_TRIGGER_R,
         },
     }
 
@@ -861,7 +889,7 @@ async def analyze():
 async def health():
     return {
         "status": "ok",
-        "bot": "XRP BOT V8.1 CANDLE FIXED",
+        "bot": "XRP BOT V8.1 BREAKOUT FIXED",
         "mode": TRADING_MODE,
         "loop_started": bot_loop_started,
         "last_cycle_at": last_cycle_at,
@@ -887,7 +915,7 @@ async def dashboard():
 <html lang="cs">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Bot V8.1 Candle Fixed</title>
+<title>Bot V8.1 Breakout Fixed</title>
 <style>
 body{margin:0;background:#0b1118;color:#edf3f8;font-family:Arial,sans-serif}
 .wrap{max-width:1050px;margin:auto;padding:14px}
@@ -900,8 +928,8 @@ body{margin:0;background:#0b1118;color:#edf3f8;font-family:Arial,sans-serif}
 h1{font-size:24px;margin:0 0 8px}h2{font-size:18px}
 </style></head>
 <body><div class="wrap">
-<div class="card"><h1>🕯️ BOT V8.1 CANDLE — FIXED</h1>
-<div class="muted">PAPER • Price Action + 15m trend + volume • NET R:R 1:1 • risk 0.5 %</div></div>
+<div class="card"><h1>🕯️ BOT V8.1 BREAKOUT — FIXED</h1>
+<div class="muted">PAPER • pouze BREAKOUT • NET R:R 1:1 • ochrana break-even • risk 0,3 %</div></div>
 <div class="card"><div id="stats" class="grid"></div></div>
 <div class="card"><h2>📡 Trhy / pozice</h2><div id="coins" class="grid"></div></div>
 <div class="card"><h2>🧾 Posledních 50 obchodů</h2><div id="trades"></div></div>
