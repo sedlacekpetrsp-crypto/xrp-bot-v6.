@@ -10,12 +10,12 @@ from fastapi import FastAPI
 from fastapi.responses import HTMLResponse, Response
 
 # ============================================================
-# V8 ADAPTIVE LIQUIDITY SCALPER — PAPER
+# V8 ADAPTIVE BREAKOUT SCALPER — PAPER
 # Stable build: pooled Binance client, cached dashboard,
 # deduplicated signal logs, 429 backoff, lower request volume.
 # ============================================================
 
-app = FastAPI(title="V8 Adaptive Liquidity Scalper")
+app = FastAPI(title="V8 Adaptive Breakout Scalper")
 
 SYMBOLS = ["XRPUSDC", "ETHUSDC", "SOLUSDC"]
 BINANCE_API = "https://data-api.binance.vision"
@@ -27,7 +27,11 @@ RISK_PER_TRADE = 0.0025
 FEE_RATE = 0.0005
 SLIPPAGE_RATE = 0.0002
 ROUND_TRIP_COST = 2 * (FEE_RATE + SLIPPAGE_RATE)
-MIN_EDGE_MULTIPLE = 1.50
+NET_RISK_REWARD = 1.30
+MIN_EDGE_MULTIPLE = 1.75
+MIN_STOP_RATE = 0.0040
+MAX_STOP_RATE = 0.0120
+MAX_NOTIONAL_SHARE = 0.50
 MAX_TRADE_MINUTES = 12
 LOOP_SECONDS = 15
 DAILY_LOSS_LIMIT_R = 3.0
@@ -37,16 +41,16 @@ LOSS_STREAK_COOLDOWN_MIN = 30
 TREND_ADX_MIN = 19.0
 RANGE_ADX_MAX = 15.0
 EMA_SEP_MIN = 0.0009
-MIN_SCORE = 6
+MIN_SCORE = 7
 SWEEP_LOOKBACK = 24
 BREAKOUT_LOOKBACK = 20
 MIN_SWEEP_WICK_ATR = 0.12
 MIN_SWEEP_VOLUME = 1.05
-MIN_BREAKOUT_VOLUME = 1.20
+MIN_BREAKOUT_VOLUME = 1.35
 MIN_TREND_VOLUME = 0.90
 
 ORDER_BOOK_LEVELS = 20
-BOOK_SNAPSHOTS = 2
+BOOK_SNAPSHOTS = 1
 BOOK_DELAY = 0.35
 BOOK_LONG_MIN = 0.535
 BOOK_SHORT_MAX = 0.465
@@ -57,6 +61,10 @@ SETUP_PARAMS = {
     "TREND_PULLBACK": {"atr_mult": 1.00, "rr": 1.70},
     "BREAKOUT": {"atr_mult": 1.05, "rr": 1.90},
 }
+ENABLED_SETUPS = {"BREAKOUT"}
+TRADE_TABLE = "v8fixed_trades"
+STATE_TABLE = "v8fixed_state"
+SIGNAL_TABLE = "v8fixed_signals"
 MIN_SETUP_TRADES_FOR_ADAPT = 12
 MIN_SETUP_EXPECTANCY_R = -0.15
 
@@ -93,7 +101,7 @@ def init_db():
     with get_db() as conn:
         with conn.cursor() as cur:
             cur.execute("""
-                CREATE TABLE IF NOT EXISTS v8_trades (
+                CREATE TABLE IF NOT EXISTS v8fixed_trades (
                     id SERIAL PRIMARY KEY,
                     symbol TEXT NOT NULL,
                     side TEXT NOT NULL,
@@ -115,13 +123,13 @@ def init_db():
                 )
             """)
             cur.execute("""
-                CREATE TABLE IF NOT EXISTS v8_state (
+                CREATE TABLE IF NOT EXISTS v8fixed_state (
                     id INTEGER PRIMARY KEY,
                     state JSONB NOT NULL
                 )
             """)
             cur.execute("""
-                CREATE TABLE IF NOT EXISTS v8_signals (
+                CREATE TABLE IF NOT EXISTS v8fixed_signals (
                     id SERIAL PRIMARY KEY,
                     symbol TEXT NOT NULL,
                     candle_time BIGINT,
@@ -150,7 +158,7 @@ def save_state():
         with get_db() as conn:
             with conn.cursor() as cur:
                 cur.execute("""
-                    INSERT INTO v8_state(id,state) VALUES(1,%s::jsonb)
+                    INSERT INTO v8fixed_state(id,state) VALUES(1,%s::jsonb)
                     ON CONFLICT(id) DO UPDATE SET state=EXCLUDED.state
                 """, (json.dumps(state),))
             conn.commit()
@@ -165,7 +173,7 @@ def load_state():
     try:
         with get_db() as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT state FROM v8_state WHERE id=1")
+                cur.execute("SELECT state FROM v8fixed_state WHERE id=1")
                 row = cur.fetchone()
                 if row:
                     s = row[0] or {}
@@ -178,7 +186,7 @@ def load_state():
                 cur.execute("""
                     SELECT symbol,side,setup,regime,score,entry_price,exit_price,qty,
                            gross_pnl,fees,pnl,initial_risk_usdc,mae_r,mfe_r,reason,opened_at,closed_at
-                    FROM v8_trades ORDER BY id DESC LIMIT 500
+                    FROM v8fixed_trades ORDER BY id DESC LIMIT 500
                 """)
                 trade_history = []
                 for r in cur.fetchall():
@@ -200,7 +208,7 @@ def save_trade(t):
     with get_db() as conn:
         with conn.cursor() as cur:
             cur.execute("""
-                INSERT INTO v8_trades(
+                INSERT INTO v8fixed_trades(
                     symbol,side,setup,regime,score,entry_price,exit_price,qty,
                     gross_pnl,fees,pnl,initial_risk_usdc,mae_r,mfe_r,reason,opened_at,closed_at
                 ) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
@@ -225,7 +233,7 @@ def log_signal(a, decision, reason):
         with get_db() as conn:
             with conn.cursor() as cur:
                 cur.execute("""
-                    INSERT INTO v8_signals(symbol,candle_time,raw_signal,setup,regime,score,decision,reason)
+                    INSERT INTO v8fixed_signals(symbol,candle_time,raw_signal,setup,regime,score,decision,reason)
                     VALUES(%s,%s,%s,%s,%s,%s,%s,%s)
                 """, (
                     symbol, a.get("candle_time"), a.get("raw_signal"), a.get("setup"),
@@ -506,9 +514,11 @@ async def strategy_analysis(symbol):
 
     signal, reject, edge_pct = raw, None, 0.0
     if raw in ("LONG", "SHORT"):
+        if setup not in ENABLED_SETUPS:
+            signal, reject = "WAIT", "SETUP_DISABLED_AFTER_REVIEW"
         p = SETUP_PARAMS[setup]
         edge_pct = (av * p["atr_mult"] * p["rr"]) / cl
-        if edge_pct < ROUND_TRIP_COST * MIN_EDGE_MULTIPLE:
+        if signal != "WAIT" and edge_pct < ROUND_TRIP_COST * MIN_EDGE_MULTIPLE:
             signal, reject = "WAIT", "EDGE_TOO_SMALL"
         enabled, exp = setup_edge(setup, symbol)
         if signal != "WAIT" and not enabled:
@@ -530,29 +540,58 @@ async def strategy_analysis(symbol):
     }
 
 
+def estimated_net_per_unit(side, entry_exec, exit_market):
+    if side == "LONG":
+        exit_exec = exit_market * (1 - SLIPPAGE_RATE)
+        gross_exec = exit_exec - entry_exec
+    else:
+        exit_exec = exit_market * (1 + SLIPPAGE_RATE)
+        gross_exec = entry_exec - exit_exec
+    fees = (entry_exec + exit_exec) * FEE_RATE
+    return gross_exec - fees
+
+
+def target_market_for_net_profit(side, entry_exec, target_net_per_unit):
+    f, s = FEE_RATE, SLIPPAGE_RATE
+    if side == "LONG":
+        exit_exec = (target_net_per_unit + entry_exec * (1 + f)) / (1 - f)
+        return exit_exec / (1 - s)
+    exit_exec = (entry_exec * (1 - f) - target_net_per_unit) / (1 + f)
+    return exit_exec / (1 + s)
+
+
 def open_trade(a, price):
     global paper_position, last_entry_candle
     if paper_position or not a.get("atr"):
         return
     p = SETUP_PARAMS[a["setup"]]
-    dist = float(a["atr"]) * p["atr_mult"]
+    dist = max(float(a["atr"]) * p["atr_mult"], price * MIN_STOP_RATE)
+    if dist / price > MAX_STOP_RATE:
+        log_signal(a, "REJECT", "STOP_OUT_OF_RANGE")
+        return
     risk = PAPER_BALANCE * RISK_PER_TRADE
-    qty = min(risk / dist, PAPER_BALANCE / price)
     side = a["signal"]
     if side == "LONG":
         entry = price * (1 + SLIPPAGE_RATE)
         sl = entry - dist
-        tp = entry + dist * p["rr"]
     else:
         entry = price * (1 - SLIPPAGE_RATE)
         sl = entry + dist
-        tp = entry - dist * p["rr"]
+
+    net_loss_per_unit = -estimated_net_per_unit(side, entry, sl)
+    if net_loss_per_unit <= 0:
+        return
+    target_net_per_unit = net_loss_per_unit * NET_RISK_REWARD
+    tp = target_market_for_net_profit(side, entry, target_net_per_unit)
+    qty = min(risk / net_loss_per_unit, PAPER_BALANCE * MAX_NOTIONAL_SHARE / entry)
+    actual_risk = qty * net_loss_per_unit
 
     paper_position = {
         "symbol": a["symbol"], "side": side, "setup": a["setup"],
         "regime": a["regime"], "score": a["score"], "entry_price": entry,
         "qty": qty, "stop_loss": sl, "take_profit": tp,
-        "risk_distance": dist, "initial_risk_usdc": risk,
+        "risk_distance": dist, "initial_risk_usdc": actual_risk,
+        "net_rr": NET_RISK_REWARD,
         "mae_r": 0.0, "mfe_r": 0.0, "breakeven_moved": False,
         "opened_at": utcnow().isoformat()
     }
@@ -758,7 +797,7 @@ async def analyze():
 
     pnl_today, streak, blocked, limit = daily_risk_status()
     return {
-        "bot": "V8 Adaptive Liquidity Scalper",
+        "bot": "V8 Adaptive Breakout Scalper",
         "mode": TRADING_MODE,
         "symbols": SYMBOLS,
         "paper_balance": PAPER_BALANCE,
@@ -778,6 +817,8 @@ async def analyze():
         "last_error": last_error,
         "http_429_count": http_429_count,
         "min_edge_multiple": MIN_EDGE_MULTIPLE,
+        "enabled_setups": sorted(ENABLED_SETUPS),
+        "net_risk_reward": NET_RISK_REWARD,
     }
 
 
@@ -785,13 +826,15 @@ async def analyze():
 async def health():
     return {
         "status": "ok",
-        "bot": "V8 Adaptive Liquidity Scalper",
+        "bot": "V8 Adaptive Breakout Scalper",
         "mode": TRADING_MODE,
         "loop_started": bot_loop_started,
         "last_cycle_at": last_cycle_at,
         "position_open": bool(paper_position),
         "http_429_count": http_429_count,
         "last_error": last_error,
+        "enabled_setups": sorted(ENABLED_SETUPS),
+        "net_risk_reward": NET_RISK_REWARD,
         "uptime_seconds": int((utcnow() - started_at).total_seconds()),
     }
 
@@ -818,7 +861,7 @@ body{margin:0;background:#0b1118;color:#eef4f8;font-family:Arial,sans-serif}.wra
 .trade{display:grid;grid-template-columns:1.1fr .8fr 1fr 1fr;gap:8px;padding:9px 0;border-bottom:1px solid #29343e;font-size:13px}
 h1{font-size:24px;margin:0 0 8px}h2{font-size:18px}
 </style></head><body><div class="wrap">
-<div class="card"><h1>⚡ BOT V8 ADAPTIVE LIQUIDITY SCALPER</h1><div class="muted">PAPER • pooled Binance client • cached dashboard</div></div>
+<div class="card"><h1>⚡ BOT V8 ADAPTIVE BREAKOUT SCALPER</h1><div class="muted">PAPER • pouze BREAKOUT • čisté R:R 1:1,3</div></div>
 <div class="card"><div id="stats" class="grid"></div></div>
 <div class="card"><h2>📡 Trhy</h2><div id="coins" class="grid"></div></div>
 <div class="card"><h2>📌 Otevřená pozice</h2><div id="position" class="muted">—</div></div>
