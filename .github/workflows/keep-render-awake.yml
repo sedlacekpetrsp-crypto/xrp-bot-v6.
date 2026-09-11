@@ -1,0 +1,20 @@
+name: Keep Render bots awake
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wake XRP Bot V8 Candle Fixed
+        run: |
+          curl --fail --silent --show-error --max-time 90 \
+            https://xrp-bot-v8-candle.onrender.com/ > /dev/null
+
+      - name: Wake BOT V8.1 BREAKOUT FIXED
+        run: |
+          curl --fail --silent --show-error --max-time 90 \
+            https://xrp-bot-v8-1-candle.onrender.com/ > /dev/null
