@@ -7,6 +7,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 import app_v8_candle as fixed
 import v8_candle_scanner_engine as scanner
 
+BUILD = "combined-v1"
 app = FastAPI(title="V8 Candle Combined")
 
 fixed_task = None
@@ -43,6 +44,7 @@ async def health():
     return {
         "status": "ok",
         "service": "V8 Candle Combined",
+        "build": BUILD,
         "fixed": {
             "running": bool(fixed_task and not fixed_task.done()),
             "strategy": "XRP engulfing + 15m trend + volume",
