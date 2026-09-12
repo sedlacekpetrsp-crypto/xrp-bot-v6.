@@ -106,7 +106,7 @@ async function go(){
  fixed.innerHTML=f.error?`<span class="red">ERROR: ${f.error}</span>`:`<div class="big">${(f.signal&&f.signal.side)||'WAIT'}</div><div>Balance: ${(f.balance||0).toFixed(2)} USDT</div><div>Equity: ${(f.equity||0).toFixed(2)} USDT</div><div class="muted">${f.position?'Pozice otevřená':'Bez otevřené pozice'}</div>`;
  scanner.innerHTML=s.error?`<span class="red">ERROR: ${s.error}</span>`:`<div class="big">${(s.signal&&s.signal.side)||'WAIT'}</div><div>Balance: ${(s.balance||0).toFixed(2)} USDT</div><div>Equity: ${(s.equity||0).toFixed(2)} USDT</div><div class="muted">${s.position?s.position.symbol+' '+s.position.side:'Bez otevřené pozice'}</div>`;
  const rows=s.scan||[];
- scan.innerHTML='<table><tr><th>Coin</th><th>1h</th><th>4h</th><th>Strength</th><th>Směr</th></tr>'+rows.map(x=>`<tr><td>${x.symbol}</td><td>${x.m1h.toFixed(2)}%</td><td>${x.m4h.toFixed(2)}%</td><td>${x.strength.toFixed(2)}</td><td>${x.bucket}</td></tr>`).join('')+'</table>';
+ scan.innerHTML='<table><tr><th>Coin</th><th>1h</th><th>4h</th><th>Strength</th><th>Směr</th></tr>'+rows.map(x=>`<tr><td>${x.symbol}</td><td>${x.m1h.toFixed(2)}%</td><td>${x.m4h.toFixed(2)}%</td><td>${x.strength.toFixed(2)}</td><td class="${x.bucket==='LONG'?'ok':x.bucket==='SHORT'?'red':'muted'}"><b>${x.bucket}</b></td></tr>`).join('')+'</table>';
 }
 go();setInterval(go,15000);
 </script></body></html>'''
