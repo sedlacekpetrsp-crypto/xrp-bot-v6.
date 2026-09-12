@@ -1,4 +1,5 @@
 import os
+from entry_rules import ENTRY_INTERVAL, STRATEGY_VERSION, MAX_ENTRY_DEVIATION, rejection
 import json
 import asyncio
 from datetime import datetime, timezone, timedelta
@@ -27,7 +28,7 @@ MAX_TRADE_MINUTES = int(os.getenv("MAX_TRADE_MINUTES", "120"))
 BREAKEVEN_TRIGGER_R = float(os.getenv("BREAKEVEN_TRIGGER_R", "0.75"))
 ENABLED_SETUPS = {"MOMENTUM_BREAKOUT", "MOMENTUM"}
 COOLDOWN_AFTER_LOSS_MIN = 0
-MAIN_INTERVAL = os.getenv("MAIN_INTERVAL", "5m")
+MAIN_INTERVAL = ENTRY_INTERVAL
 STRUCTURE_INTERVAL = os.getenv("STRUCTURE_INTERVAL", "15m")
 STRUCTURE_TOLERANCE_PCT = float(os.getenv("STRUCTURE_TOLERANCE_PCT", "0.0035"))
 MIN_CANDLE_RANGE_PCT = float(os.getenv("MIN_CANDLE_RANGE_PCT", "0.0012"))
@@ -249,7 +250,8 @@ def detect_signal(main_closed, structure_closed):
         candidates.append({"side":side,"setup":setup,"score":score,
             "pattern_low":min(c["low"] for c in main_closed[-4:]),
             "pattern_high":max(c["high"] for c in main_closed[-4:]),
-            "entry":c1["close"],"candle_time":c1["open_time"],"reasons":reasons})
+            "entry":c1["close"],"candle_time":c1["open_time"],"reasons":reasons,
+            "trigger_level": (breakout_high if side=="LONG" else breakout_low) if setup=="MOMENTUM_BREAKOUT" else (max(c3["high"],c2["high"]) if side=="LONG" else min(c3["low"],c2["low"]))})
 
     if not candidates:
         return {"side":"WAIT","setup":"NONE","score":0,"support":support,"resistance":resistance,"candle_time":c1["open_time"],"volume_ratio":volume_ratio,"trend":trend,"trend_strength":trend_strength,"reasons":["Čekám na potvrzený průraz nebo momentum."]}
@@ -285,9 +287,14 @@ def target_market_for_net_profit(side, entry_exec, target_net_per_unit):
     return exit_exec/(1+s)
 
 
-def open_position(signal):
+def open_position(signal, market_entry):
     global paper_position,last_entry_candle
-    market_entry=float(signal["entry"]); side=signal["side"]; buffer=market_entry*0.0002
+    error = rejection(signal, market_entry)
+    if error:
+        signal["reasons"].append(error)
+        signal["side"] = "WAIT"
+        return False
+    side=signal["side"]; buffer=market_entry*0.0002
     entry=market_entry*(1+SLIPPAGE_RATE if side=="LONG" else 1-SLIPPAGE_RATE)
     if side=="LONG":
         stop=float(signal["pattern_low"])-buffer
@@ -299,7 +306,7 @@ def open_position(signal):
     risk_usdt=paper_balance*RISK_PER_TRADE
     qty=min(risk_usdt/net_loss_per_unit, paper_balance*MAX_NOTIONAL_SHARE/entry)
     if qty<=0: return False
-    paper_position={"side":side,"setup":signal["setup"],"score":int(signal["score"]),"entry_price":entry,"qty":qty,"stop_loss":stop,"take_profit":tp,"risk_usdt":qty*net_loss_per_unit,"breakeven_moved":False,"entry_time":datetime.now(timezone.utc).isoformat(),"entry_candle":int(signal["candle_time"]),"reasons":signal.get("reasons",[])}
+    paper_position={"side":side,"setup":signal["setup"],"score":int(signal["score"]),"entry_price":entry,"qty":qty,"stop_loss":stop,"take_profit":tp,"risk_usdt":qty*net_loss_per_unit,"breakeven_moved":False,"strategy_version":STRATEGY_VERSION,"signal_price":signal["entry"],"entry_market":market_entry,"entry_time":datetime.now(timezone.utc).isoformat(),"entry_candle":int(signal["candle_time"]),"reasons":signal.get("reasons",[])}
     last_entry_candle=int(signal["candle_time"]); save_state(); return True
 
 
@@ -345,15 +352,16 @@ def unrealized(price):
 async def analyze_once():
     global last_signal
     async with httpx.AsyncClient() as client:
-        main_raw,struct_raw,price=await asyncio.gather(get_klines(client,MAIN_INTERVAL),get_klines(client,STRUCTURE_INTERVAL),get_live_price(client))
+        main_raw,struct_raw=await asyncio.gather(get_klines(client,MAIN_INTERVAL),get_klines(client,STRUCTURE_INTERVAL))
+        price=await get_live_price(client)
     main=[candle(k) for k in main_raw][:-1]; struct=[candle(k) for k in struct_raw][:-1]
     had=paper_position is not None; manage_position(price)
     signal=detect_signal(main,struct); last_signal=signal
     cd=False; opened=False
     if not had and paper_position is None and not cd and signal.get("side") in ("LONG","SHORT") and signal.get("score",0)>=MIN_SCORE and signal.get("candle_time")!=last_entry_candle:
-        opened=open_position(signal)
+        opened=open_position(signal, price)
     upnl=unrealized(price)
-    return {"bot":"XRP Bot V8 Candle Fixed","mode":TRADING_MODE,"symbol":SYMBOL,"price":price,"balance":paper_balance,"equity":paper_balance+upnl,"unrealized_pnl":upnl,"position":paper_position,"signal":signal,"opened_this_cycle":opened,"cooldown_until":cooldown_until.isoformat() if cooldown_until else None,"fee_rate":FEE_RATE,"slippage_rate":SLIPPAGE_RATE,"risk_per_trade":RISK_PER_TRADE,"risk_reward":RISK_REWARD,"min_score":MIN_SCORE,"enabled_setups":sorted(ENABLED_SETUPS),"history":trade_history[:30],"time":datetime.now(timezone.utc).isoformat()}
+    return {"bot":"XRP Bot V8 Candle Fixed","strategy_version":STRATEGY_VERSION,"entry_interval":MAIN_INTERVAL,"max_entry_deviation":MAX_ENTRY_DEVIATION,"mode":TRADING_MODE,"symbol":SYMBOL,"price":price,"balance":paper_balance,"equity":paper_balance+upnl,"unrealized_pnl":upnl,"position":paper_position,"signal":signal,"opened_this_cycle":opened,"cooldown_until":cooldown_until.isoformat() if cooldown_until else None,"fee_rate":FEE_RATE,"slippage_rate":SLIPPAGE_RATE,"risk_per_trade":RISK_PER_TRADE,"risk_reward":RISK_REWARD,"min_score":MIN_SCORE,"enabled_setups":sorted(ENABLED_SETUPS),"history":trade_history[:30],"time":datetime.now(timezone.utc).isoformat()}
 
 
 async def bot_loop():

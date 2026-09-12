@@ -9,7 +9,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 import app_v8_candle as fixed
 import v8_candle_scanner_engine as scanner
 
-BUILD = "position-progress-v6"
+BUILD = "early-entry-1m-live-v7"
 app = FastAPI(title="V8 Candle Combined")
 log = logging.getLogger(__name__)
 fixed_task = None
@@ -186,7 +186,7 @@ body{margin:0;background:#07111f;color:#f4f7fb;font-family:system-ui}.w{max-widt
 </style></head>
 <body><div class="w">
 <div class="clockbar"><div><div class="muted">AKTUÁLNÍ ČAS</div><div id="clock" class="clock">--:--:--</div></div><div id="refresh" class="refresh">Data se načítají…</div></div>
-<div class="card"><b>Kontrola provozu</b><div id="runtimeState" class="muted">Ověřuji běh na pozadí a uloženou historii…</div></div>\n<h1>V8 Candle Combined</h1><div class="muted">Fixed + Scanner · PAPER · Průraz / momentum · bez engulfingu · bez pauzy po ztrátě (v3)</div>
+<div class="card"><b>Kontrola provozu</b><div id="runtimeState" class="muted">Ověřuji běh na pozadí a uloženou historii…</div></div>\n<h1>V8 Candle Combined</h1><div class="muted">Fixed + Scanner · PAPER · Vstup 1m · trend 15m · aktuální realizační cena · max. odchylka 0,15 % (v7)</div>
 <div class="grid"><div class="card"><h2>V8 Candle Fixed</h2><div id="fixed">Načítám…</div><p id="fixedReason" class="wait"></p></div><div class="card"><h2>V8 Candle Scanner</h2><div id="scanner">Načítám…</div><p id="scannerReason" class="wait"></p></div></div>
 <div class="card"><h2 class="history-title">Historie Scanneru</h2><p class="history-note">Posledních 20 uzavřených obchodů</p><div id="scannerHistory">Načítám…</div></div><div class="card"><h2 class="history-title">Historie Fixed</h2><p class="history-note">Posledních 20 uzavřených obchodů</p><div id="fixedHistory">Načítám…</div></div><div class="card"><h2>Scanner trhu</h2><div id="scan">Načítám…</div></div></div>
 <script>

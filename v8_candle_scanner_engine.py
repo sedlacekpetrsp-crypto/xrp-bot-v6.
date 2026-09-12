@@ -1,4 +1,6 @@
 import os
+import time
+from entry_rules import ENTRY_INTERVAL, STRATEGY_VERSION, MAX_ENTRY_DEVIATION, rejection
 import json
 import psycopg
 import asyncio
@@ -32,7 +34,8 @@ MOMENTUM_MIN_MOVE = float(os.getenv("MOMENTUM_MIN_MOVE", "0.0025"))
 MOMENTUM_BODY_RATIO = float(os.getenv("MOMENTUM_BODY_RATIO", "0.60"))
 MOMENTUM_VOLUME_RATIO = float(os.getenv("MOMENTUM_VOLUME_RATIO", "1.15"))
 TOP_N = int(os.getenv("TOP_N", "5"))
-SCAN_SECONDS = int(os.getenv("SCAN_SECONDS", "60"))
+SCAN_SECONDS = 15
+last_scan_at = 0.0
 MAX_TRADE_MINUTES = int(os.getenv("MAX_TRADE_MINUTES", "120"))
 COOLDOWN_AFTER_LOSS_MIN = 0
 
@@ -133,7 +136,7 @@ async def build_scan(client):
 async def signal_for(client, row):
     symbol = row["symbol"]
     try:
-        raw5, raw15 = await asyncio.gather(klines(client, symbol, "5m", 60), klines(client, symbol, "15m", 70))
+        raw5, raw15 = await asyncio.gather(klines(client, symbol, ENTRY_INTERVAL, 60), klines(client, symbol, "15m", 70))
         m = [c(x) for x in raw5][:-1]
         s = [c(x) for x in raw15][:-1]
         if len(m) < max(25, BREAKOUT_LOOKBACK + 3):
@@ -209,6 +212,7 @@ async def signal_for(client, row):
             "side": side,
             "setup": setup,
             "entry": conf["c"],
+            "trigger_level": (prev_high if side == "LONG" else prev_low) if setup == "MOMENTUM_BREAKOUT" else (max(a["h"], b["h"]) if side == "LONG" else min(a["l"], b["l"])),
             "pattern_low": p_low,
             "pattern_high": p_high,
             "volume_ratio": vol,
@@ -233,10 +237,14 @@ def target_for_net(side, entry, target):
     ex = (entry * (1 - f) - target) / (1 + f)
     return ex / (1 + s)
 
-def open_position(sig):
+def open_position(sig, market):
     global paper_position
+    error = rejection(sig, market)
+    if error:
+        sig["reason"] = error
+        sig["side"] = "WAIT"
+        return False
     side = sig["side"]
-    market = sig["entry"]
     entry = market * (1 + SLIPPAGE_RATE if side == "LONG" else 1 - SLIPPAGE_RATE)
     buf = market * 0.0002
     stop = (sig["pattern_low"] - buf) if side == "LONG" else (sig["pattern_high"] + buf)
@@ -249,6 +257,9 @@ def open_position(sig):
     tp = target_for_net(side, entry, loss * RISK_REWARD)
     paper_position = {
         **sig,
+        "strategy_version": STRATEGY_VERSION,
+        "signal_price": sig["entry"],
+        "entry_market": market,
         "entry_price": entry,
         "stop_loss": stop,
         "take_profit": tp,
@@ -282,9 +293,11 @@ async def cycle():
         return await _cycle()
 
 async def _cycle():
-    global last_scan, last_signal
+    global last_scan, last_signal, last_scan_at
     async with httpx.AsyncClient() as client:
-        last_scan = await build_scan(client)
+        if not last_scan or time.monotonic() - last_scan_at >= 60:
+            last_scan = await build_scan(client)
+            last_scan_at = time.monotonic()
         if paper_position:
             px = await price(client, paper_position["symbol"])
             p = paper_position
@@ -310,7 +323,8 @@ async def _cycle():
                 priority = {"MOMENTUM_BREAKOUT": 3, "MOMENTUM": 2}
                 signals.sort(key=lambda x: (priority.get(x["setup"], 0), abs(x["strength"]), x["volume_ratio"]), reverse=True)
                 last_signal = signals[0]
-                open_position(last_signal)
+                market = await price(client, last_signal["symbol"])
+                open_position(last_signal, market)
             else:
                 last_signal = {"side": "WAIT", "reason": "Čekám na průraz nebo momentum ve směru 15m trendu s dostatečným objemem."}
 
@@ -334,7 +348,9 @@ async def _cycle():
             "cooldown_after_loss_min": 0,
             "history_persistent": state_loaded,
             "top_n": TOP_N,
-            "strategy_version": "momentum-history-no-cooldown-v3",
+            "strategy_version": STRATEGY_VERSION,
+            "entry_interval": ENTRY_INTERVAL,
+            "max_entry_deviation": MAX_ENTRY_DEVIATION,
             "enabled_setups": ["MOMENTUM_BREAKOUT", "MOMENTUM"],
             "risk_per_trade": RISK_PER_TRADE,
             "risk_reward": RISK_REWARD,
