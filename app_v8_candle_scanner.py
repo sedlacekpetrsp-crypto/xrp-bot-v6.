@@ -9,7 +9,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 import app_v8_candle as fixed
 import v8_candle_scanner_engine as scanner
 
-BUILD = "background-db-health-v5"
+BUILD = "position-progress-v6"
 app = FastAPI(title="V8 Candle Combined")
 log = logging.getLogger(__name__)
 fixed_task = None
@@ -79,6 +79,12 @@ async def worker(name, initialize, cycle, interval):
                 initialize()
                 state["loaded"] = True
             data = await cycle()
+            # Scanner returns net P&L at its latest quote. Invert its own fee/slippage
+            # formula to expose that same mark without requesting another market quote.
+            p = data.get("position")
+            if name == "scanner" and p and p.get("qty", 0) > 0:
+                data["price"] = scanner.target_for_net(
+                    p["side"], p["entry_price"], data["unrealized_pnl"] / p["qty"])
             results[name] = copy.deepcopy(data)
             state.update(last_success=utcnow().isoformat(), error=None)
         except Exception:
@@ -176,6 +182,7 @@ body{margin:0;background:#07111f;color:#f4f7fb;font-family:system-ui}.w{max-widt
 .trade-card{background:#0a1525;border:1px solid #26374d;border-radius:14px;padding:16px;margin-top:12px}
 .trade-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}.trade-identity{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.trade-coin{font-size:21px;font-weight:750}.trade-badge{font-size:12px;font-weight:800;letter-spacing:.5px;padding:5px 9px;border-radius:7px}.trade-badge.long{color:#21d19f;background:#10372f}.trade-badge.short{color:#ff647c;background:#391d2b}.trade-result{text-align:right;margin-left:auto}.trade-result strong{display:block;font-size:23px;font-variant-numeric:tabular-nums;white-space:nowrap}.trade-label{color:#8ea1b8;font-size:12px;font-weight:400;display:block;margin-bottom:4px}.trade-prices{display:grid;grid-template-columns:1fr 1fr;gap:14px;border-top:1px solid #243650;margin-top:15px;padding-top:14px}.trade-price{font-size:17px;font-weight:600;font-variant-numeric:tabular-nums}.trade-footer{border-top:1px solid #243650;margin-top:14px;padding-top:12px;display:grid;gap:8px;font-size:13px}.trade-detail{display:flex;justify-content:space-between;gap:14px}.trade-detail span:first-child{color:#8ea1b8;flex-shrink:0}.trade-detail span:last-child{text-align:right;overflow-wrap:anywhere}.trade-empty{color:#8ea1b8;padding:16px 0}
 @media(max-width:380px){.trade-card{padding:12px}.trade-result strong{font-size:20px}.trade-coin{font-size:19px}}
+.position-summary{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.position-pnl{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums;margin:16px 0 4px}.position-sub{font-size:13px;color:#8ea1b8}.position-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}.position-cell{background:#091526;border-radius:10px;padding:12px;min-width:0}.position-value{font-size:18px;font-weight:700;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}.position-track{height:12px;background:linear-gradient(90deg,#96354e,#bd9743 45%,#178971);position:relative;border-radius:8px;margin:26px 8px 12px}.position-marker{position:absolute;top:-5px;width:6px;height:22px;background:#fff;transform:translateX(-50%);border:1px solid #07111f;border-radius:4px}.position-entry{position:absolute;top:-3px;width:2px;height:18px;background:#0a1525;transform:translateX(-50%)}.position-scale{display:flex;justify-content:space-between;font-size:12px;gap:10px}.position-note{font-size:12px;color:#8ea1b8;margin-top:12px;line-height:1.5}.position-account{border-top:1px solid #243650;margin-top:16px;padding-top:12px;font-size:14px;color:#8ea1b8}
 </style></head>
 <body><div class="w">
 <div class="clockbar"><div><div class="muted">AKTUÁLNÍ ČAS</div><div id="clock" class="clock">--:--:--</div></div><div id="refresh" class="refresh">Data se načítají…</div></div>
@@ -221,12 +228,64 @@ function renderHistory(target, rows){
   item.appendChild(footer);target.appendChild(item);
  }
 }
+
+function positionProgress(p,price){
+ const stop=Number(p.stop_loss),target=Number(p.take_profit);
+ if(!Number.isFinite(price)||!Number.isFinite(stop)||!Number.isFinite(target)||stop===target)return null;
+ return Math.max(0,Math.min(100,100*(price-stop)/(target-stop)));
+}
+function renderBot(target,d){
+ target.replaceChildren();
+ if(d.error)target.appendChild(historyNode('p','red',d.error));
+ const p=d.position;
+ if(!p){
+  target.append(historyNode('div','big','WAIT'),historyNode('div','','Balance: '+historyNumber(d.balance,2)+' USDT'),historyNode('div','','Equity: '+historyNumber(d.equity,2)+' USDT'),historyNode('div','muted','Bez otevřené pozice'));
+  return;
+ }
+ const side=p.side, symbol=p.symbol||d.symbol||'XRPUSDT';
+ const net=Number(d.unrealized_pnl), entry=Number(p.entry_price);
+ const qty=Number(p.qty), px=d.price==null?NaN:Number(d.price);
+ const pct=entry*qty>0?100*net/(entry*qty):null;
+ const header=historyNode('div','position-summary');
+ header.append(historyNode('span','trade-coin',symbol.replace(/USDT$/,' / USDT')),historyNode('span','trade-badge '+(side==='LONG'?'long':'short'),side));
+ target.append(header,historyNode('div','position-pnl '+(net>0?'ok':net<0?'red':'muted'),(net>0?'+':'')+historyNumber(d.unrealized_pnl,2)+' USDT'),
+  historyNode('div','position-sub','Průběžný čistý výsledek · '+(pct>0?'+':'')+historyNumber(pct,2)+' % z hodnoty pozice'));
+ const grid=historyNode('div','position-grid');
+ for(const [label,value,cls] of [
+  ['Vstupní cena',historyNumber(entry,5),''],
+  ['Aktuální cena',historyNumber(px,5),''],
+  ['Stop-loss',historyNumber(p.stop_loss,5),'red'],
+  ['Cíl (take-profit)',historyNumber(p.take_profit,5),'ok']]){
+   const cell=historyNode('div','position-cell');
+   cell.append(historyNode('span','trade-label',label+' · USDT'),historyNode('div','position-value '+cls,value));grid.appendChild(cell);
+ }
+ target.appendChild(grid);
+ const progress=positionProgress(p,px),entryProgress=positionProgress(p,entry);
+ if(progress!==null){
+  const track=historyNode('div','position-track');
+  track.setAttribute('role','meter');track.setAttribute('aria-label','Cena mezi stop-lossem a cílem');
+  track.setAttribute('aria-valuemin','0');track.setAttribute('aria-valuemax','100');track.setAttribute('aria-valuenow',String(Math.round(progress)));
+  if(entryProgress!==null){const mark=historyNode('span','position-entry');mark.style.left=entryProgress+'%';track.appendChild(mark);}
+  const mark=historyNode('span','position-marker');mark.style.left=progress+'%';track.appendChild(mark);
+  const scale=historyNode('div','position-scale');scale.append(historyNode('span','red','STOP-LOSS'),historyNode('span','muted','Bílá značka = cena'),historyNode('span','ok','CÍL'));
+  target.append(track,scale);
+  if(px>0)target.appendChild(historyNode('div','position-note','K stop-lossu: '+historyNumber(Math.abs(px-Number(p.stop_loss))/px*100,2)+' % · K cíli: '+historyNumber(Math.abs(Number(p.take_profit)-px)/px*100,2)+' % cenového pohybu'));
+ }
+ const started=new Date(p.entry_time);
+ const mins=Math.max(0,Math.floor((Date.now()-started.getTime())/60000));
+ const duration=Number.isFinite(mins)?(mins>=60?Math.floor(mins/60)+' h ':'')+(mins%60)+' min':'—';
+ target.appendChild(historyNode('div','position-note','Množství: '+historyNumber(qty,2)+' '+symbol.replace(/USDT$/,'')+' · Doba otevření: '+duration));
+ target.appendChild(historyNode('div','position-note','Otevřeno: '+historyTime(p.entry_time)+' · '+(p.setup==='MOMENTUM_BREAKOUT'?'Průraz':p.setup==='MOMENTUM'?'Momentum':p.setup||'')));
+ target.appendChild(historyNode('div','position-note','Výsledek zahrnuje odhad vstupních i výstupních poplatků a skluzu. Cena z posledního cyklu: '+(d.time?new Date(d.time).toLocaleTimeString('cs-CZ'):'—')));
+ target.appendChild(historyNode('div','position-account','Balance: '+historyNumber(d.balance,2)+' USDT · Equity: '+historyNumber(d.equity,2)+' USDT'));
+}
+
 async function go(){
  try{
   const d=await (await fetch('/analyze',{cache:'no-store'})).json();
   const f=d.fixed||{}, s=d.scanner||{};
-  fixed.innerHTML=f.error?`<span class="red">ERROR: ${f.error}</span>`:`<div class="big">${f.position?f.position.side:'WAIT'}</div><div>Balance: ${(f.balance||0).toFixed(2)} USDT</div><div>Equity: ${(f.equity||0).toFixed(2)} USDT</div><div class="muted">${f.position?'Pozice otevřená':'Bez otevřené pozice'}</div>`;
-  scanner.innerHTML=s.error?`<span class="red">ERROR: ${s.error}</span>`:`<div class="big">${s.position?s.position.side:'WAIT'}</div><div>Balance: ${(s.balance||0).toFixed(2)} USDT</div><div>Equity: ${(s.equity||0).toFixed(2)} USDT</div><div class="muted">${s.position?s.position.symbol+' '+s.position.side:'Bez otevřené pozice'}</div>`;
+  renderBot(fixed,f);
+  renderBot(scanner,s);
   fixedReason.textContent=f.position?'Pozice otevřená':f.cooldown_until&&new Date(f.cooldown_until)>new Date()?'Pauza po ztrátě':(f.signal?.reasons||[]).join(' · ');
   scannerReason.textContent=s.position?'Pozice otevřená':s.cooldown_until&&new Date(s.cooldown_until)>new Date()?'Pauza po ztrátě':s.signal?.reason||'Čekám na splnění vstupních podmínek';
   renderHistory(scannerHistory,s.history||[]);
