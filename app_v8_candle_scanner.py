@@ -7,7 +7,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 import app_v8_candle as fixed
 import v8_candle_scanner_engine as scanner
 
-BUILD = "combined-v1"
+BUILD = "momentum-no-engulfing-v2"
 app = FastAPI(title="V8 Candle Combined")
 
 fixed_task = None
@@ -47,13 +47,13 @@ async def health():
         "build": BUILD,
         "fixed": {
             "running": bool(fixed_task and not fixed_task.done()),
-            "strategy": "XRP engulfing + 15m trend + volume",
+            "strategy": "XRP breakout/momentum + 15m trend + volume",
             "rr": fixed.RISK_REWARD,
         },
         "scanner": {
             "running": bool(scanner_task and not scanner_task.done()),
             "symbols": len(scanner.SYMBOLS),
-            "strategy": "market strength + engulfing + 15m trend + volume",
+            "strategy": "market strength + breakout/momentum + 15m trend + volume",
             "rr": scanner.RISK_REWARD,
         },
         "time": datetime.now(timezone.utc).isoformat(),
@@ -98,8 +98,8 @@ body{margin:0;background:#07111f;color:#f4f7fb;font-family:system-ui}.w{max-widt
 </style></head>
 <body><div class="w">
 <div class="clockbar"><div><div class="muted">AKTUÁLNÍ ČAS</div><div id="clock" class="clock">--:--:--</div></div><div id="refresh" class="refresh">Data se načítají…</div></div>
-<h1>V8 Candle Combined</h1><div class="muted">Jeden Render proces · Fixed + Scanner · PAPER</div>
-<div class="grid"><div class="card"><h2>V8 Candle Fixed</h2><div id="fixed">Načítám…</div></div><div class="card"><h2>V8 Candle Scanner</h2><div id="scanner">Načítám…</div></div></div>
+<h1>V8 Candle Combined</h1><div class="muted">Fixed + Scanner · PAPER · Průraz / momentum · bez engulfingu (v2)</div>
+<div class="grid"><div class="card"><h2>V8 Candle Fixed</h2><div id="fixed">Načítám…</div><p id="fixedReason" class="wait"></p></div><div class="card"><h2>V8 Candle Scanner</h2><div id="scanner">Načítám…</div><p id="scannerReason" class="wait"></p></div></div>
 <div class="card"><h2>Scanner trhu</h2><div id="scan">Načítám…</div></div></div>
 <script>
 function tick(){
@@ -112,6 +112,8 @@ async function go(){
   const f=d.fixed||{}, s=d.scanner||{};
   fixed.innerHTML=f.error?`<span class="red">ERROR: ${f.error}</span>`:`<div class="big">${(f.signal&&f.signal.side)||'WAIT'}</div><div>Balance: ${(f.balance||0).toFixed(2)} USDT</div><div>Equity: ${(f.equity||0).toFixed(2)} USDT</div><div class="muted">${f.position?'Pozice otevřená':'Bez otevřené pozice'}</div>`;
   scanner.innerHTML=s.error?`<span class="red">ERROR: ${s.error}</span>`:`<div class="big">${(s.signal&&s.signal.side)||'WAIT'}</div><div>Balance: ${(s.balance||0).toFixed(2)} USDT</div><div>Equity: ${(s.equity||0).toFixed(2)} USDT</div><div class="muted">${s.position?s.position.symbol+' '+s.position.side:'Bez otevřené pozice'}</div>`;
+  fixedReason.textContent=f.position?'Pozice otevřená':f.cooldown_until&&new Date(f.cooldown_until)>new Date()?'Pauza po ztrátě':(f.signal?.reasons||[]).join(' · ');
+  scannerReason.textContent=s.position?'Pozice otevřená':s.cooldown_until&&new Date(s.cooldown_until)>new Date()?'Pauza po ztrátě':s.signal?.reason||'Čekám na splnění vstupních podmínek';
   const rows=s.scan||[];
   scan.innerHTML='<table><tr><th>Coin</th><th>1h</th><th>4h</th><th>Strength</th><th>Směr</th></tr>'+rows.map(x=>`<tr><td>${x.symbol}</td><td>${x.m1h.toFixed(2)}%</td><td>${x.m4h.toFixed(2)}%</td><td>${x.strength.toFixed(2)}</td><td class="${x.bucket==='LONG'?'ok':x.bucket==='SHORT'?'red':'muted'}"><b>${x.bucket}</b></td></tr>`).join('')+'</table>';
   const t=d.time?new Date(d.time):new Date();

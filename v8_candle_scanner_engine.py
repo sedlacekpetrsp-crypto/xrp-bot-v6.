@@ -124,17 +124,6 @@ async def signal_for(client, row):
         required_vol = MIN_VOLUME_RATIO
         required_trend = MIN_TREND_STRENGTH
 
-        if bull_engulf(a, b) and conf["c"] > b["h"]:
-            side = "LONG"
-            setup = "BULLISH_ENGULFING"
-            p_low = min(b["l"], conf["l"])
-            p_high = max(b["h"], conf["h"])
-        elif bear_engulf(a, b) and conf["c"] < b["l"]:
-            side = "SHORT"
-            setup = "BEARISH_ENGULFING"
-            p_low = min(b["l"], conf["l"])
-            p_high = max(b["h"], conf["h"])
-
         if side is None:
             prev = m[-(BREAKOUT_LOOKBACK + 1):-1]
             prev_high = max(x["h"] for x in prev)
@@ -280,12 +269,12 @@ async def cycle():
             watch = [r for r in last_scan if r["bucket"] in ("LONG", "SHORT")]
             signals = [s for s in await asyncio.gather(*(signal_for(client, r) for r in watch)) if s]
             if signals:
-                priority = {"MOMENTUM_BREAKOUT": 3, "MOMENTUM": 2, "BULLISH_ENGULFING": 1, "BEARISH_ENGULFING": 1}
+                priority = {"MOMENTUM_BREAKOUT": 3, "MOMENTUM": 2}
                 signals.sort(key=lambda x: (priority.get(x["setup"], 0), abs(x["strength"]), x["volume_ratio"]), reverse=True)
                 last_signal = signals[0]
                 open_position(last_signal)
             else:
-                last_signal = {"side": "WAIT", "reason": "No confirmed engulfing, breakout or momentum setup in top/bottom strength groups"}
+                last_signal = {"side": "WAIT", "reason": "Čekám na průraz nebo momentum ve směru 15m trendu s dostatečným objemem."}
 
         eq = paper_balance
         upnl = 0.0
@@ -303,7 +292,10 @@ async def cycle():
             "signal": last_signal,
             "scan": last_scan,
             "history": history,
+            "cooldown_until": cooldown_until.isoformat() if cooldown_until else None,
             "top_n": TOP_N,
+            "strategy_version": "momentum-no-engulfing-v2",
+            "enabled_setups": ["MOMENTUM_BREAKOUT", "MOMENTUM"],
             "risk_per_trade": RISK_PER_TRADE,
             "risk_reward": RISK_REWARD,
             "time": datetime.now(timezone.utc).isoformat(),
@@ -328,7 +320,7 @@ async def health():
         "status": "ok",
         "bot": "V8 Candle Scanner",
         "symbols": len(SYMBOLS),
-        "strategy": "market strength + engulfing + momentum/breakout + 15m trend + volume",
+        "strategy": "market strength + momentum/breakout + 15m trend + volume",
         "rr": "1:2",
     }
 
@@ -343,7 +335,7 @@ async def analyze():
 async def dashboard():
     return '''<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>V8 Candle Scanner</title>
 <style>body{margin:0;background:#07111f;color:#f4f7fb;font-family:system-ui}.w{max-width:920px;margin:auto;padding:18px}.card{background:#0f1b2d;border:1px solid #243650;border-radius:18px;padding:18px;margin:12px 0}.row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.big{font-size:34px;font-weight:800}.muted{color:#8ea1b8}.green{color:#21d19f}.red{color:#ff647c}.amber{color:#f8c55c}table{width:100%;border-collapse:collapse}td,th{padding:9px;border-bottom:1px solid #243650;text-align:left;font-size:13px}@media(max-width:650px){.row{grid-template-columns:1fr}.big{font-size:29px}}</style></head>
-<body><div class="w"><h1>V8 Candle Scanner</h1><div class="muted">Market strength + ENGULFING + MOMENTUM/BREAKOUT + 15m trend + volume · PAPER</div>
+<body><div class="w"><h1>V8 Candle Scanner</h1><div class="muted">Market strength + MOMENTUM/BREAKOUT + 15m trend + volume · PAPER</div>
 <div class="row"><div class="card"><div class="muted">BALANCE</div><div id="bal" class="big">-</div></div><div class="card"><div class="muted">EQUITY</div><div id="eq" class="big">-</div></div></div>
 <div class="card"><h2>Aktuální pozice</h2><div id="pos">Načítám…</div></div><div class="card"><h2>Market scanner</h2><div id="scan">Načítám…</div></div><div class="card"><h2>Poslední obchody</h2><div id="hist">Načítám…</div></div></div>
 <script>async function go(){let d=await (await fetch('/analyze')).json();bal.textContent=d.balance.toFixed(2)+' USDT';eq.textContent=d.equity.toFixed(2)+' USDT';pos.innerHTML=d.position?`<b>${d.position.symbol}</b> <span class="${d.position.side==='LONG'?'green':'red'}">${d.position.side}</span><br>Setup ${d.position.setup} · Entry ${d.position.entry_price.toFixed(5)} · SL ${d.position.stop_loss.toFixed(5)} · TP ${d.position.take_profit.toFixed(5)}`:'Žádná otevřená pozice';scan.innerHTML='<table><tr><th>Coin</th><th>1h</th><th>4h</th><th>Strength</th><th>Směr</th></tr>'+d.scan.map(x=>`<tr><td>${x.symbol}</td><td>${x.m1h.toFixed(2)}%</td><td>${x.m4h.toFixed(2)}%</td><td>${x.strength.toFixed(2)}</td><td class="${x.bucket==='LONG'?'green':x.bucket==='SHORT'?'red':'muted'}">${x.bucket}</td></tr>`).join('')+'</table>';hist.innerHTML=d.history.length?d.history.map(x=>`<div>${x.symbol} ${x.side} · ${x.setup} · ${x.reason} · <b>${x.net_pnl.toFixed(2)} USDT</b></div>`).join(''):'Zatím bez uzavřených obchodů'}go();setInterval(go,15000)</script></body></html>'''

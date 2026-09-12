@@ -25,7 +25,7 @@ MIN_VOLUME_RATIO = float(os.getenv("MIN_VOLUME_RATIO", "1.35"))
 MIN_TREND_STRENGTH = float(os.getenv("MIN_TREND_STRENGTH", "0.0015"))
 MAX_TRADE_MINUTES = int(os.getenv("MAX_TRADE_MINUTES", "120"))
 BREAKEVEN_TRIGGER_R = float(os.getenv("BREAKEVEN_TRIGGER_R", "0.75"))
-ENABLED_SETUPS = {"BULLISH_ENGULFING", "BEARISH_ENGULFING"}
+ENABLED_SETUPS = {"MOMENTUM_BREAKOUT", "MOMENTUM"}
 COOLDOWN_AFTER_LOSS_MIN = int(os.getenv("COOLDOWN_AFTER_LOSS_MIN", "30"))
 MAIN_INTERVAL = os.getenv("MAIN_INTERVAL", "5m")
 STRUCTURE_INTERVAL = os.getenv("STRUCTURE_INTERVAL", "15m")
@@ -212,7 +212,7 @@ def ema(values, period):
 
 
 def detect_signal(main_closed, structure_closed):
-    if len(main_closed)<25 or len(structure_closed)<35:
+    if len(main_closed)<25 or len(structure_closed)<50:
         return {"side":"WAIT","setup":"NONE","score":0,"reasons":["Not enough candles"]}
 
     c3,c2,c1 = main_closed[-3],main_closed[-2],main_closed[-1]
@@ -228,42 +228,31 @@ def detect_signal(main_closed, structure_closed):
     trend="LONG" if ema20 and ema50 and ema20>ema50 else "SHORT" if ema20 and ema50 and ema20<ema50 else "MIXED"
     candidates=[]
 
-    if bull_engulf(c3,c2) and c1["close"]>c2["high"]:
-        score=3; reasons=["Bullish engulfing","Confirmation above pattern high"]
-        if near_level(c2["low"],support) or near_level(c2["low"],swing_low): score+=2; reasons.append("Support/swing rejection")
-        if body(c2)/rng(c2)>=0.60: score+=1; reasons.append("Strong body")
-        candidates.append({"side":"LONG","setup":"BULLISH_ENGULFING","score":score,"pattern_low":min(c2["low"],c1["low"]),"pattern_high":max(c2["high"],c1["high"]),"entry":c1["close"],"candle_time":c1["open_time"],"reasons":reasons})
-
-    if bear_engulf(c3,c2) and c1["close"]<c2["low"]:
-        score=3; reasons=["Bearish engulfing","Confirmation below pattern low"]
-        if near_level(c2["high"],resistance) or near_level(c2["high"],swing_high): score+=2; reasons.append("Resistance/swing rejection")
-        if body(c2)/rng(c2)>=0.60: score+=1; reasons.append("Strong body")
-        candidates.append({"side":"SHORT","setup":"BEARISH_ENGULFING","score":score,"pattern_low":min(c2["low"],c1["low"]),"pattern_high":max(c2["high"],c1["high"]),"entry":c1["close"],"candle_time":c1["open_time"],"reasons":reasons})
-
-    if bull_pin(c2) and c1["close"]>c2["high"]:
-        score=3; reasons=["Bullish pin bar","Confirmation above pin high"]
-        if near_level(c2["low"],support) or near_level(c2["low"],swing_low): score+=2; reasons.append("Pin at support/swing low")
-        candidates.append({"side":"LONG","setup":"BULLISH_PINBAR","score":score,"pattern_low":min(c2["low"],c1["low"]),"pattern_high":max(c2["high"],c1["high"]),"entry":c1["close"],"candle_time":c1["open_time"],"reasons":reasons})
-
-    if bear_pin(c2) and c1["close"]<c2["low"]:
-        score=3; reasons=["Bearish pin bar","Confirmation below pin low"]
-        if near_level(c2["high"],resistance) or near_level(c2["high"],swing_high): score+=2; reasons.append("Pin at resistance/swing high")
-        candidates.append({"side":"SHORT","setup":"BEARISH_PINBAR","score":score,"pattern_low":min(c2["low"],c1["low"]),"pattern_high":max(c2["high"],c1["high"]),"entry":c1["close"],"candle_time":c1["open_time"],"reasons":reasons})
-
-    if inside_bar(c3,c2):
-        if c1["close"]>c3["high"] and bullish(c1):
-            score=3; reasons=["Inside bar","Bullish breakout"]
-            if near_level(c3["low"],support) or near_level(c3["low"],swing_low): score+=2; reasons.append("Support nearby")
-            if body(c1)/rng(c1)>=0.60: score+=1; reasons.append("Strong breakout candle")
-            candidates.append({"side":"LONG","setup":"INSIDE_BAR_BREAKOUT_LONG","score":score,"pattern_low":min(c3["low"],c2["low"]),"pattern_high":c1["high"],"entry":c1["close"],"candle_time":c1["open_time"],"reasons":reasons})
-        elif c1["close"]<c3["low"] and bearish(c1):
-            score=3; reasons=["Inside bar","Bearish breakout"]
-            if near_level(c3["high"],resistance) or near_level(c3["high"],swing_high): score+=2; reasons.append("Resistance nearby")
-            if body(c1)/rng(c1)>=0.60: score+=1; reasons.append("Strong breakout candle")
-            candidates.append({"side":"SHORT","setup":"INSIDE_BAR_BREAKOUT_SHORT","score":score,"pattern_low":c1["low"],"pattern_high":max(c3["high"],c2["high"]),"entry":c1["close"],"candle_time":c1["open_time"],"reasons":reasons})
+    # Closed-candle breakout or directional momentum; engulfing is not required.
+    previous = main_closed[-11:-1]
+    breakout_high = max(c["high"] for c in previous)
+    breakout_low = min(c["low"] for c in previous)
+    side = None
+    setup = None
+    if meaningful(c1) and bullish(c1) and c1["close"] > breakout_high:
+        side, setup = "LONG", "MOMENTUM_BREAKOUT"
+    elif meaningful(c1) and bearish(c1) and c1["close"] < breakout_low:
+        side, setup = "SHORT", "MOMENTUM_BREAKOUT"
+    elif meaningful(c1) and body(c1)/rng(c1) >= 0.60 and abs(c1["close"]/c1["open"]-1) >= 0.0025:
+        if bullish(c1) and c1["close"] > max(c3["high"], c2["high"]):
+            side, setup = "LONG", "MOMENTUM"
+        elif bearish(c1) and c1["close"] < min(c3["low"], c2["low"]):
+            side, setup = "SHORT", "MOMENTUM"
+    if side:
+        reasons = ["Potvrzený průraz na uzavřené svíčce" if setup == "MOMENTUM_BREAKOUT" else "Potvrzené cenové momentum"]
+        score = 3 + int(volume_ratio >= MIN_VOLUME_RATIO) + int(trend_strength >= MIN_TREND_STRENGTH) + int(side == trend)
+        candidates.append({"side":side,"setup":setup,"score":score,
+            "pattern_low":min(c["low"] for c in main_closed[-4:]),
+            "pattern_high":max(c["high"] for c in main_closed[-4:]),
+            "entry":c1["close"],"candle_time":c1["open_time"],"reasons":reasons})
 
     if not candidates:
-        return {"side":"WAIT","setup":"NONE","score":0,"support":support,"resistance":resistance,"candle_time":c1["open_time"],"volume_ratio":volume_ratio,"trend":trend,"trend_strength":trend_strength,"reasons":["No confirmed candle setup"]}
+        return {"side":"WAIT","setup":"NONE","score":0,"support":support,"resistance":resistance,"candle_time":c1["open_time"],"volume_ratio":volume_ratio,"trend":trend,"trend_strength":trend_strength,"reasons":["Čekám na potvrzený průraz nebo momentum."]}
 
     best=max(candidates,key=lambda x:x["score"])
     best["support"]=support; best["resistance"]=resistance
