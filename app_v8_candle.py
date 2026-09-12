@@ -26,7 +26,7 @@ MIN_TREND_STRENGTH = float(os.getenv("MIN_TREND_STRENGTH", "0.0015"))
 MAX_TRADE_MINUTES = int(os.getenv("MAX_TRADE_MINUTES", "120"))
 BREAKEVEN_TRIGGER_R = float(os.getenv("BREAKEVEN_TRIGGER_R", "0.75"))
 ENABLED_SETUPS = {"MOMENTUM_BREAKOUT", "MOMENTUM"}
-COOLDOWN_AFTER_LOSS_MIN = int(os.getenv("COOLDOWN_AFTER_LOSS_MIN", "30"))
+COOLDOWN_AFTER_LOSS_MIN = 0
 MAIN_INTERVAL = os.getenv("MAIN_INTERVAL", "5m")
 STRUCTURE_INTERVAL = os.getenv("STRUCTURE_INTERVAL", "15m")
 STRUCTURE_TOLERANCE_PCT = float(os.getenv("STRUCTURE_TOLERANCE_PCT", "0.0035"))
@@ -113,7 +113,7 @@ def load_state():
                 paper_position = s.get("paper_position")
                 last_entry_candle = s.get("last_entry_candle")
                 cd = s.get("cooldown_until")
-                cooldown_until = datetime.fromisoformat(cd) if cd else None
+                cooldown_until = None
             cur.execute("""
                 SELECT side,setup,score,entry_price,exit_price,qty,stop_loss,take_profit,
                        gross_pnl,fees,net_pnl,reason,entry_time,exit_time
@@ -349,7 +349,7 @@ async def analyze_once():
     main=[candle(k) for k in main_raw][:-1]; struct=[candle(k) for k in struct_raw][:-1]
     had=paper_position is not None; manage_position(price)
     signal=detect_signal(main,struct); last_signal=signal
-    cd=bool(cooldown_until and datetime.now(timezone.utc)<cooldown_until); opened=False
+    cd=False; opened=False
     if not had and paper_position is None and not cd and signal.get("side") in ("LONG","SHORT") and signal.get("score",0)>=MIN_SCORE and signal.get("candle_time")!=last_entry_candle:
         opened=open_position(signal)
     upnl=unrealized(price)

@@ -7,7 +7,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 import app_v8_candle as fixed
 import v8_candle_scanner_engine as scanner
 
-BUILD = "momentum-no-engulfing-v2"
+BUILD = "momentum-history-no-cooldown-v3"
 app = FastAPI(title="V8 Candle Combined")
 
 fixed_task = None
@@ -98,22 +98,35 @@ body{margin:0;background:#07111f;color:#f4f7fb;font-family:system-ui}.w{max-widt
 </style></head>
 <body><div class="w">
 <div class="clockbar"><div><div class="muted">AKTUÁLNÍ ČAS</div><div id="clock" class="clock">--:--:--</div></div><div id="refresh" class="refresh">Data se načítají…</div></div>
-<h1>V8 Candle Combined</h1><div class="muted">Fixed + Scanner · PAPER · Průraz / momentum · bez engulfingu (v2)</div>
+<h1>V8 Candle Combined</h1><div class="muted">Fixed + Scanner · PAPER · Průraz / momentum · bez engulfingu · bez pauzy po ztrátě (v3)</div>
 <div class="grid"><div class="card"><h2>V8 Candle Fixed</h2><div id="fixed">Načítám…</div><p id="fixedReason" class="wait"></p></div><div class="card"><h2>V8 Candle Scanner</h2><div id="scanner">Načítám…</div><p id="scannerReason" class="wait"></p></div></div>
-<div class="card"><h2>Scanner trhu</h2><div id="scan">Načítám…</div></div></div>
+<div class="card"><h2>Historie Scanneru · posledních 20 obchodů</h2><div id="scannerHistory">Načítám…</div></div><div class="card"><h2>Historie Fixed · posledních 20 obchodů</h2><div id="fixedHistory">Načítám…</div></div><div class="card"><h2>Scanner trhu</h2><div id="scan">Načítám…</div></div></div>
 <script>
 function tick(){
  const n=new Date();
  clock.textContent=n.toLocaleTimeString('cs-CZ',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
 }
+function renderHistory(target, rows){
+ target.replaceChildren();
+ if(!rows.length){target.textContent='Zatím žádné uzavřené obchody';return;}
+ for(const t of rows.slice(0,20)){
+  const item=document.createElement('p');
+  const net=Number(t.net_pnl||0);
+  item.className=net>=0?'ok':'red';
+  item.textContent=[t.symbol||'XRPUSDT',t.side,t.setup,new Date(t.exit_time).toLocaleString('cs-CZ'),t.reason,`Vstup ${Number(t.entry_price).toFixed(5)} → Výstup ${Number(t.exit_price).toFixed(5)}`,`Čistý výsledek ${net.toFixed(2)} USDT`].join(' · ');
+  target.appendChild(item);
+ }
+}
 async function go(){
  try{
   const d=await (await fetch('/analyze',{cache:'no-store'})).json();
   const f=d.fixed||{}, s=d.scanner||{};
-  fixed.innerHTML=f.error?`<span class="red">ERROR: ${f.error}</span>`:`<div class="big">${(f.signal&&f.signal.side)||'WAIT'}</div><div>Balance: ${(f.balance||0).toFixed(2)} USDT</div><div>Equity: ${(f.equity||0).toFixed(2)} USDT</div><div class="muted">${f.position?'Pozice otevřená':'Bez otevřené pozice'}</div>`;
-  scanner.innerHTML=s.error?`<span class="red">ERROR: ${s.error}</span>`:`<div class="big">${(s.signal&&s.signal.side)||'WAIT'}</div><div>Balance: ${(s.balance||0).toFixed(2)} USDT</div><div>Equity: ${(s.equity||0).toFixed(2)} USDT</div><div class="muted">${s.position?s.position.symbol+' '+s.position.side:'Bez otevřené pozice'}</div>`;
+  fixed.innerHTML=f.error?`<span class="red">ERROR: ${f.error}</span>`:`<div class="big">${f.position?f.position.side:'WAIT'}</div><div>Balance: ${(f.balance||0).toFixed(2)} USDT</div><div>Equity: ${(f.equity||0).toFixed(2)} USDT</div><div class="muted">${f.position?'Pozice otevřená':'Bez otevřené pozice'}</div>`;
+  scanner.innerHTML=s.error?`<span class="red">ERROR: ${s.error}</span>`:`<div class="big">${s.position?s.position.side:'WAIT'}</div><div>Balance: ${(s.balance||0).toFixed(2)} USDT</div><div>Equity: ${(s.equity||0).toFixed(2)} USDT</div><div class="muted">${s.position?s.position.symbol+' '+s.position.side:'Bez otevřené pozice'}</div>`;
   fixedReason.textContent=f.position?'Pozice otevřená':f.cooldown_until&&new Date(f.cooldown_until)>new Date()?'Pauza po ztrátě':(f.signal?.reasons||[]).join(' · ');
   scannerReason.textContent=s.position?'Pozice otevřená':s.cooldown_until&&new Date(s.cooldown_until)>new Date()?'Pauza po ztrátě':s.signal?.reason||'Čekám na splnění vstupních podmínek';
+  renderHistory(scannerHistory,s.history||[]);
+  renderHistory(fixedHistory,f.history||[]);
   const rows=s.scan||[];
   scan.innerHTML='<table><tr><th>Coin</th><th>1h</th><th>4h</th><th>Strength</th><th>Směr</th></tr>'+rows.map(x=>`<tr><td>${x.symbol}</td><td>${x.m1h.toFixed(2)}%</td><td>${x.m4h.toFixed(2)}%</td><td>${x.strength.toFixed(2)}</td><td class="${x.bucket==='LONG'?'ok':x.bucket==='SHORT'?'red':'muted'}"><b>${x.bucket}</b></td></tr>`).join('')+'</table>';
   const t=d.time?new Date(d.time):new Date();

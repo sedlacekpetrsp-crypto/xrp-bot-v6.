@@ -1,4 +1,6 @@
 import os
+import json
+import psycopg
 import asyncio
 from datetime import datetime, timezone, timedelta
 from typing import Dict, Any, Optional, List
@@ -32,7 +34,7 @@ MOMENTUM_VOLUME_RATIO = float(os.getenv("MOMENTUM_VOLUME_RATIO", "1.15"))
 TOP_N = int(os.getenv("TOP_N", "5"))
 SCAN_SECONDS = int(os.getenv("SCAN_SECONDS", "60"))
 MAX_TRADE_MINUTES = int(os.getenv("MAX_TRADE_MINUTES", "120"))
-COOLDOWN_AFTER_LOSS_MIN = int(os.getenv("COOLDOWN_AFTER_LOSS_MIN", "30"))
+COOLDOWN_AFTER_LOSS_MIN = 0
 
 paper_balance = STARTING_BALANCE
 paper_position: Optional[Dict[str, Any]] = None
@@ -42,6 +44,36 @@ last_signal: Dict[str, Any] = {"side": "WAIT"}
 cooldown_until: Optional[datetime] = None
 last_entry_candle: Dict[str, int] = {}
 bot_task = None
+
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+cycle_lock = asyncio.Lock()
+state_loaded = False
+
+
+def save_state():
+    state = {"paper_balance": paper_balance, "paper_position": paper_position,
+             "history": history, "last_entry_candle": last_entry_candle}
+    with psycopg.connect(DATABASE_URL) as conn:
+        conn.execute("INSERT INTO candle_v8_scanner_state (id, state) VALUES (1, %s::jsonb) ON CONFLICT (id) DO UPDATE SET state=EXCLUDED.state", (json.dumps(state),))
+
+
+def load_state():
+    global paper_balance, paper_position, history, last_entry_candle, state_loaded
+    if state_loaded:
+        return
+    if not DATABASE_URL:
+        raise RuntimeError("Scanner: DATABASE_URL chybí; nelze bezpečně ukládat historii")
+    with psycopg.connect(DATABASE_URL) as conn:
+        conn.execute("CREATE TABLE IF NOT EXISTS candle_v8_scanner_state (id INTEGER PRIMARY KEY, state JSONB NOT NULL)")
+        row = conn.execute("SELECT state FROM candle_v8_scanner_state WHERE id=1").fetchone()
+    state = row[0] if row else json.loads(os.getenv("SCANNER_INITIAL_STATE", "{}"))
+    paper_balance = float(state.get("paper_balance", STARTING_BALANCE))
+    paper_position = state.get("paper_position")
+    history = state.get("history", [])
+    last_entry_candle = state.get("last_entry_candle", {})
+    save_state()
+    state_loaded = True
 
 
 def c(k):
@@ -225,6 +257,7 @@ def open_position(sig):
         "entry_time": datetime.now(timezone.utc).isoformat(),
     }
     last_entry_candle[sig["symbol"]] = sig["candle_time"]
+    save_state()
     return True
 
 def close_position(market, reason):
@@ -238,12 +271,17 @@ def close_position(market, reason):
     net = gross - fees
     paper_balance += net
     history.insert(0, {**p, "exit_price": ex, "net_pnl": net, "reason": reason, "exit_time": datetime.now(timezone.utc).isoformat()})
-    del history[30:]
-    if net < 0:
-        cooldown_until = datetime.now(timezone.utc) + timedelta(minutes=COOLDOWN_AFTER_LOSS_MIN)
+    del history[100:]
+    cooldown_until = None
     paper_position = None
+    save_state()
 
 async def cycle():
+    async with cycle_lock:
+        load_state()
+        return await _cycle()
+
+async def _cycle():
     global last_scan, last_signal
     async with httpx.AsyncClient() as client:
         last_scan = await build_scan(client)
@@ -264,7 +302,7 @@ async def cycle():
             if paper_position and age >= MAX_TRADE_MINUTES:
                 close_position(px, "TIME_EXIT")
 
-        cd = bool(cooldown_until and datetime.now(timezone.utc) < cooldown_until)
+        cd = False
         if not paper_position and not cd:
             watch = [r for r in last_scan if r["bucket"] in ("LONG", "SHORT")]
             signals = [s for s in await asyncio.gather(*(signal_for(client, r) for r in watch)) if s]
@@ -292,9 +330,11 @@ async def cycle():
             "signal": last_signal,
             "scan": last_scan,
             "history": history,
-            "cooldown_until": cooldown_until.isoformat() if cooldown_until else None,
+            "cooldown_until": None,
+            "cooldown_after_loss_min": 0,
+            "history_persistent": state_loaded,
             "top_n": TOP_N,
-            "strategy_version": "momentum-no-engulfing-v2",
+            "strategy_version": "momentum-history-no-cooldown-v3",
             "enabled_setups": ["MOMENTUM_BREAKOUT", "MOMENTUM"],
             "risk_per_trade": RISK_PER_TRADE,
             "risk_reward": RISK_REWARD,
