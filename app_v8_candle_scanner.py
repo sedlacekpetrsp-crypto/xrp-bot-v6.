@@ -2,6 +2,7 @@ from market_data import install_data_health
 import asyncio
 import copy
 import logging
+import httpx
 from datetime import datetime, timezone
 
 from fastapi import FastAPI
@@ -10,13 +11,18 @@ from fastapi.responses import HTMLResponse, JSONResponse
 import app_v8_candle as fixed
 import v8_candle_scanner_engine as scanner
 
-BUILD = "winrate-stats-v8-cache3"
+BUILD = "winrate-stats-v8-cache3-fly-keepalive"
 app = FastAPI(title="V8 Candle Combined")
 install_data_health(app)
 log = logging.getLogger(__name__)
 fixed_task = None
 scanner_task = None
 database_task = None
+fly_task = None
+FLY_HEALTH_URL = "https://xrp-bot-v8-fly-test.onrender.com/health"
+fly_keepalive = {"url": FLY_HEALTH_URL, "interval_seconds": 300,
+                 "last_attempt": None, "last_success": None,
+                 "status_code": None, "error": None}
 started_at = datetime.now(timezone.utc)
 results = {}
 workers = {
@@ -95,6 +101,25 @@ async def worker(name, initialize, cycle, interval):
         await asyncio.sleep(interval)
 
 
+
+async def fly_keepalive_loop():
+    # Separate task: a cold start or outage must not block either trading worker.
+    async with httpx.AsyncClient(timeout=90, follow_redirects=False,
+                                 headers={"User-Agent": "scanner-fly-keepalive/1.0"}) as client:
+        while True:
+            fly_keepalive.update(last_attempt=utcnow().isoformat(), status_code=None)
+            try:
+                response = await client.get(FLY_HEALTH_URL)
+                fly_keepalive["status_code"] = response.status_code
+                response.raise_for_status()
+                fly_keepalive.update(last_success=utcnow().isoformat(), error=None)
+                log.warning("FLY_KEEPALIVE_OK status=%s", response.status_code)
+            except Exception as exc:
+                fly_keepalive["error"] = type(exc).__name__
+                log.warning("FLY_KEEPALIVE_FAILED error=%s", type(exc).__name__)
+            await asyncio.sleep(300)
+
+
 def initialize_fixed():
     if not fixed.DATABASE_URL:
         raise RuntimeError("Fixed: DATABASE_URL chybí")
@@ -104,16 +129,17 @@ def initialize_fixed():
 
 @app.on_event("startup")
 async def startup():
-    global fixed_task, scanner_task, database_task, started_at
+    global fixed_task, scanner_task, database_task, fly_task, started_at
     started_at = utcnow()
     fixed_task = asyncio.create_task(worker("fixed", initialize_fixed, fixed.analyze_once, 15))
     scanner_task = asyncio.create_task(worker("scanner", scanner.load_state, scanner.cycle, scanner.SCAN_SECONDS))
     database_task = asyncio.create_task(database_loop())
+    fly_task = asyncio.create_task(fly_keepalive_loop())
 
 
 @app.on_event("shutdown")
 async def shutdown():
-    tasks = [t for t in (fixed_task, scanner_task, database_task) if t]
+    tasks = [t for t in (fixed_task, scanner_task, database_task, fly_task) if t]
     for task in tasks:
         task.cancel()
     await asyncio.gather(*tasks, return_exceptions=True)
@@ -136,6 +162,7 @@ def runtime_status():
     healthy = all(s["ok"] for s in status.values()) and db["ok"]
     return {"status": "ok" if healthy else "degraded", "service": "V8 Candle Combined",
             "build": BUILD, **status, "database": db,
+            "fly_keepalive": {**fly_keepalive, "running": bool(fly_task and not fly_task.done())},
             "started_at": started_at.isoformat(), "time": now.isoformat()}
 
 
