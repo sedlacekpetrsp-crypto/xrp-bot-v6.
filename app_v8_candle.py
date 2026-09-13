@@ -1,3 +1,4 @@
+from market_data import market_get, market, install_data_health
 import os
 import json
 import asyncio
@@ -10,6 +11,7 @@ from fastapi import FastAPI
 from fastapi.responses import HTMLResponse, JSONResponse
 
 app = FastAPI(title="XRP Bot V8 Candle Fixed")
+install_data_health(app)
 
 SYMBOL = os.getenv("SYMBOL", "XRPUSDT")
 BINANCE_API = os.getenv("BINANCE_API", "https://data-api.binance.vision")
@@ -148,13 +150,13 @@ def save_trade(t):
 
 
 async def get_klines(client, interval, limit=120):
-    r = await client.get(f"{BINANCE_API}/api/v3/klines", params={"symbol":SYMBOL,"interval":interval,"limit":limit}, timeout=15)
+    r = await market_get(client, f"{BINANCE_API}/api/v3/klines", params={"symbol":SYMBOL,"interval":interval,"limit":limit}, timeout=15)
     r.raise_for_status()
     return r.json()
 
 
 async def get_live_price(client):
-    r = await client.get(f"{BINANCE_API}/api/v3/ticker/price", params={"symbol":SYMBOL}, timeout=15)
+    r = await market_get(client, f"{BINANCE_API}/api/v3/ticker/price", params={"symbol":SYMBOL}, timeout=15)
     r.raise_for_status()
     return float(r.json()["price"])
 
@@ -353,7 +355,21 @@ def unrealized(price):
     return estimated_net_per_unit(p["side"],p["entry_price"],price)*p["qty"]
 
 
+_analysis_lock = asyncio.Lock()
+_last_result = None
+_last_result_at = 0.0
+
 async def analyze_once():
+    global _last_result, _last_result_at
+    import time
+    async with _analysis_lock:
+        if _last_result is not None and time.monotonic() - _last_result_at < 5:
+            return _last_result
+        _last_result = await _analyze_once()
+        _last_result_at = time.monotonic()
+        return _last_result
+
+async def _analyze_once():
     global last_signal
     async with httpx.AsyncClient() as client:
         main_raw,struct_raw,price=await asyncio.gather(get_klines(client,MAIN_INTERVAL),get_klines(client,STRUCTURE_INTERVAL),get_live_price(client))
@@ -453,3 +469,4 @@ refresh();setInterval(refresh,15000);
 if __name__=="__main__":
     import uvicorn
     uvicorn.run("app_v8_candle:app",host="0.0.0.0",port=int(os.getenv("PORT","10000")))
+

@@ -1,3 +1,4 @@
+from market_data import market_get, market, install_data_health
 import os
 import json
 import asyncio
@@ -9,6 +10,7 @@ from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 
 app = FastAPI(title="V7 Pro Multi Scalper")
+install_data_health(app)
 
 SYMBOLS = ["XRPUSDC", "ETHUSDC", "SOLUSDC"]
 BINANCE_API = "https://data-api.binance.vision"
@@ -290,7 +292,7 @@ def rolling_vwap(highs, lows, closes, volumes, lookback=120):
 async def get_klines(symbol, interval, limit=250):
     url = f"{BINANCE_API}/api/v3/klines?symbol={symbol}&interval={interval}&limit={limit}"
     async with httpx.AsyncClient(timeout=10) as client:
-        response = await client.get(url)
+        response = await market_get(client, url)
         response.raise_for_status()
         return response.json()
 
@@ -298,7 +300,7 @@ async def get_klines(symbol, interval, limit=250):
 async def get_live_price(symbol):
     url = f"{BINANCE_API}/api/v3/ticker/price?symbol={symbol}"
     async with httpx.AsyncClient(timeout=10) as client:
-        response = await client.get(url)
+        response = await market_get(client, url)
         response.raise_for_status()
         return float(response.json()["price"])
 
@@ -306,7 +308,7 @@ async def get_live_price(symbol):
 async def get_order_book_imbalance(symbol):
     url = f"{BINANCE_API}/api/v3/depth?symbol={symbol}&limit={ORDER_BOOK_LEVELS}"
     async with httpx.AsyncClient(timeout=10) as client:
-        response = await client.get(url)
+        response = await market_get(client, url)
         response.raise_for_status()
         data = response.json()
     bid_notional = sum(float(p) * float(q) for p, q in data.get("bids", []))
@@ -895,3 +897,4 @@ refresh();setInterval(refresh,5000);
 </script>
 </body></html>
 """
+

@@ -1,3 +1,4 @@
+from market_data import market_get, market, install_data_health
 import os
 import json
 import asyncio
@@ -16,6 +17,7 @@ from fastapi.responses import HTMLResponse, Response
 # ============================================================
 
 app = FastAPI(title="V8 Adaptive Breakout Scalper")
+install_data_health(app)
 
 SYMBOLS = ["XRPUSDC", "ETHUSDC", "SOLUSDC"]
 BINANCE_API = "https://data-api.binance.vision"
@@ -350,7 +352,7 @@ async def binance_get(path, params=None):
     delay = 1.0
     for attempt in range(4):
         try:
-            r = await http_client.get(f"{BINANCE_API}{path}", params=params)
+            r = await market_get(http_client, f"{BINANCE_API}{path}", params=params)
             if r.status_code == 429:
                 http_429_count += 1
                 retry_after = r.headers.get("Retry-After")
@@ -531,7 +533,7 @@ async def strategy_analysis(symbol):
         reason += f" REJECT={reject}"
 
     return {
-        "symbol": symbol, "signal": signal, "raw_signal": raw, "setup": setup, "score": score,
+        "symbol": symbol, "price": float(k1[-1][4]), "signal": signal, "raw_signal": raw, "setup": setup, "score": score,
         "candle_time": ct, "regime": regime, "rsi": rv, "atr": av, "adx5": ad,
         "volume_ratio": vr, "book_imbalance": bavg, "book_spread": bspread,
         "long_score": ls, "short_score": ss, "sweep_high": sweep_high, "sweep_low": sweep_low,
@@ -805,6 +807,7 @@ async def analyze():
         "unrealized_pnl": unrealized,
         "position": paper_position,
         "market": last_analysis,
+        "market_data": market.status(),
         "stats": stats(),
         "trade_history": trade_history[:50],
         "risk_status": {
@@ -868,7 +871,7 @@ h1{font-size:24px;margin:0 0 8px}h2{font-size:18px}
 <div class="card"><h2>🧾 Posledních 50 obchodů</h2><div id="trades"></div></div>
 <div class="card muted" id="health">Načítám…</div>
 </div><script>
-const f=(n,d=2)=>Number(n||0).toFixed(d);
+const f=(n,d=2)=>n==null||!Number.isFinite(Number(n))?"—":Number(n).toFixed(d);
 async function refresh(){
  try{
   const r=await fetch('/analyze',{cache:'no-store'}),d=await r.json(),s=d.stats||{};
@@ -878,16 +881,17 @@ async function refresh(){
   ].map(x=>`<div class="coin"><div class="muted">${x[0]}</div><b>${x[1]}</b></div>`).join('');
   document.getElementById('coins').innerHTML=Object.values(d.market||{}).map(x=>{
    const sig=x.signal||'WAIT',cls=sig==='LONG'?'green':sig==='SHORT'?'red':'yellow';
-   return `<div class="coin"><b>${x.symbol}</b><div class="row"><span>Signál</span><b class="${cls}">${sig}</b></div>
+   return `<div class="coin"><b>${x.symbol}</b><div class="row"><span>Cena při analýze</span><span>${f(x.price,5)}</span></div><div class="row"><span>Signál</span><b class="${cls}">${sig}</b></div>
    <div class="row"><span>Raw</span><span>${x.raw_signal||'WAIT'}</span></div><div class="row"><span>Setup</span><span>${x.setup||'—'}</span></div>
    <div class="row"><span>Score L/S</span><span>${x.long_score??'—'} / ${x.short_score??'—'}</span></div>
    <div class="muted">${x.reason||''}</div></div>`;
   }).join('');
   const p=d.position; document.getElementById('position').innerHTML=p?`<b>${p.symbol} ${p.side}</b> • entry ${f(p.entry_price,6)} • SL ${f(p.stop_loss,6)} • TP ${f(p.take_profit,6)} • uPnL ${f(d.unrealized_pnl,2)}`:'Žádná otevřená pozice';
   document.getElementById('trades').innerHTML=(d.trade_history||[]).map(t=>`<div class="trade"><span>${t.symbol}</span><span>${t.side}</span><span>${t.reason}</span><span class="${Number(t.pnl)>=0?'green':'red'}">${f(t.pnl,2)}</span></div>`).join('')||'<div class="muted">Zatím bez obchodů.</div>';
-  document.getElementById('health').textContent=`Cyklus: ${d.last_cycle_at||'—'} • 429: ${d.http_429_count||0} • edge ×${d.min_edge_multiple} • chyba: ${d.last_error||'žádná'}`;
+  document.getElementById('health').textContent=`Cyklus: ${d.last_cycle_at||'—'} • 429: ${d.http_429_count||0} • edge ×${d.min_edge_multiple} • zdroj: ${d.market_data?.provider||'—'} • data: ${d.market_data?.last_success||'—'} • chyba: ${d.market_data?.last_error||d.last_error||'žádná'}`;
  }catch(e){document.getElementById('health').textContent='Dashboard error: '+e}
 }
 refresh();setInterval(refresh,10000);
 </script></body></html>
 """
+

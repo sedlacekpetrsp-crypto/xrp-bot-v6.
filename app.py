@@ -1,3 +1,4 @@
+from market_data import market_get, market, install_data_health
 import os
 import json
 import asyncio
@@ -13,6 +14,7 @@ from fastapi.responses import HTMLResponse
 # ============================================================
 
 app = FastAPI(title="XRP Bot V7.1 Scalper")
+install_data_health(app)
 
 SYMBOL = "XRPUSDT"
 BINANCE_API = "https://data-api.binance.vision"
@@ -291,7 +293,7 @@ def macd_histogram(values):
 async def get_klines(interval, limit=250):
     url = f"{BINANCE_API}/api/v3/klines?symbol={SYMBOL}&interval={interval}&limit={limit}"
     async with httpx.AsyncClient(timeout=10) as client:
-        response = await client.get(url)
+        response = await market_get(client, url)
         response.raise_for_status()
         return response.json()
 
@@ -299,7 +301,7 @@ async def get_klines(interval, limit=250):
 async def get_live_price():
     url = f"{BINANCE_API}/api/v3/ticker/price?symbol={SYMBOL}"
     async with httpx.AsyncClient(timeout=10) as client:
-        response = await client.get(url)
+        response = await market_get(client, url)
         response.raise_for_status()
         data = response.json()
         return float(data["price"])
