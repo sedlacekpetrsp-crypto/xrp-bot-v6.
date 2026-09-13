@@ -1,3 +1,4 @@
+from market_data import market_get, market, install_data_health
 import os
 import json
 import asyncio
@@ -16,6 +17,7 @@ from fastapi.responses import HTMLResponse
 # ============================================================
 
 app = FastAPI(title="V9 Best-Of Paper Bot")
+install_data_health(app)
 
 SYMBOLS = ["XRPUSDT", "BTCUSDT", "ETHUSDT", "SOLUSDT"]
 BINANCE_API = os.getenv("BINANCE_API", "https://data-api.binance.vision")
@@ -222,7 +224,7 @@ def volume_ratio(closed):
 
 async def api_get(path, params):
     global last_error
-    r = await http_client.get(BINANCE_API + path, params=params, timeout=15)
+    r = await market_get(http_client, BINANCE_API + path, params=params, timeout=15)
     r.raise_for_status()
     return r.json()
 
@@ -541,3 +543,4 @@ async function go(){try{const d=await (await fetch('/analyze',{cache:'no-store'}
 h+=`<div class='grid'>`+Object.values(d.symbols||{}).map(x=>{const s=x.signal||'WAIT';return `<div class='card'><b>${x.symbol}</b><div class='position-status'>Signál pro nový vstup</div><div class='big ${s==='LONG'?'green':s==='SHORT'?'red':'yellow'}'>${s}</div><div class='row'><span>Setup</span><b>${x.setup||'—'}</b></div><div class='row'><span>1h trend</span><b>${x.trend_1h||'—'}</b></div><div class='row'><span>15m trend</span><b>${x.trend_15m||'—'}</b></div><div class='row'><span>Volume</span><b>${f(x.volume_ratio,2)}×</b></div><small class='muted'>${x.reason||''}</small></div>`}).join('')+`</div>`;
 h+=`<div class='card'><h3>Uzavřené obchody</h3>${(d.trade_history||[]).length?'':`<p class='muted'>${Object.keys(d.open_positions||{}).length?'Obchod stále probíhá. Zde se objeví až po uzavření.':'Zatím žádný uzavřený obchod.'}</p>`}<div class='scroll'><table><tr><th>Pár</th><th>Směr</th><th>Setup</th><th>P/L</th><th>Důvod</th></tr>`+(d.trade_history||[]).map(t=>`<tr><td>${t.symbol}</td><td class='${t.side==='LONG'?'green':'red'}'>${t.side}</td><td>${t.setup}</td><td class='${cls(t.pnl)}'>${f(t.pnl)}</td><td>${t.reason}</td></tr>`).join('')+`</table></div></div>`;root.innerHTML=h}catch(e){root.innerHTML='<div class=card>Chyba načtení</div>'}}go();setInterval(go,15000);
 </script></body></html>""")
+
