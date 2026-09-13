@@ -7,6 +7,25 @@ try:
 
     _original_install_data_health = market_data.install_data_health
 
+    async def _direct_binance_price(client, symbol):
+        """Dashboard quote from Binance Spot only; no Kraken/derived-price substitution."""
+        last_exc = None
+        for base in ("https://data-api.binance.vision", "https://api.binance.com"):
+            try:
+                r = await client.get(
+                    base + "/api/v3/ticker/price",
+                    params={"symbol": symbol},
+                    timeout=5,
+                    headers={"Cache-Control": "no-cache"},
+                )
+                r.raise_for_status()
+                px = float(r.json()["price"])
+                if px > 0:
+                    return px
+            except Exception as exc:
+                last_exc = exc
+        raise RuntimeError(f"Binance live ticker unavailable for {symbol}: {last_exc}")
+
     def _patched_install_data_health(app):
         _original_install_data_health(app)
 
@@ -23,36 +42,52 @@ try:
 
                     fixed_data = copy.deepcopy(combined.snapshot("fixed"))
                     scanner_data = copy.deepcopy(combined.snapshot("scanner"))
+                    live_errors = {}
 
-                    async with httpx.AsyncClient(timeout=10) as client:
+                    async with httpx.AsyncClient() as client:
                         fp = fixed_data.get("position")
                         if fp:
-                            px = await combined.fixed.get_live_price(client)
-                            fixed_data["price"] = px
-                            upnl = combined.fixed.unrealized(px)
-                            fixed_data["unrealized_pnl"] = upnl
-                            fixed_data["equity"] = float(fixed_data.get("balance", 0.0)) + upnl
-                            fixed_data["time"] = combined.utcnow().isoformat()
+                            fsymbol = fp.get("symbol") or fixed_data.get("symbol") or "XRPUSDT"
+                            try:
+                                px = await _direct_binance_price(client, fsymbol)
+                                fixed_data["price"] = px
+                                upnl = combined.fixed.unrealized(px)
+                                fixed_data["unrealized_pnl"] = upnl
+                                fixed_data["equity"] = float(fixed_data.get("balance", 0.0)) + upnl
+                                fixed_data["time"] = combined.utcnow().isoformat()
+                                fixed_data["live_price_ok"] = True
+                                fixed_data["price_source"] = "BINANCE_SPOT"
+                            except Exception as exc:
+                                fixed_data["live_price_ok"] = False
+                                live_errors["fixed"] = str(exc)
 
                         sp = scanner_data.get("position")
                         if sp:
                             symbol = sp.get("symbol") or scanner_data.get("symbol") or "XRPUSDT"
-                            px = await combined.scanner.price(client, symbol)
-                            scanner_data["price"] = px
-                            upnl = combined.scanner.est_net_unit(
-                                sp["side"], float(sp["entry_price"]), px
-                            ) * float(sp["qty"])
-                            scanner_data["unrealized_pnl"] = upnl
-                            scanner_data["equity"] = float(scanner_data.get("balance", 0.0)) + upnl
-                            scanner_data["time"] = combined.utcnow().isoformat()
+                            try:
+                                px = await _direct_binance_price(client, symbol)
+                                scanner_data["price"] = px
+                                upnl = combined.scanner.est_net_unit(
+                                    sp["side"], float(sp["entry_price"]), px
+                                ) * float(sp["qty"])
+                                scanner_data["unrealized_pnl"] = upnl
+                                scanner_data["equity"] = float(scanner_data.get("balance", 0.0)) + upnl
+                                scanner_data["time"] = combined.utcnow().isoformat()
+                                scanner_data["live_price_ok"] = True
+                                scanner_data["price_source"] = "BINANCE_SPOT"
+                            except Exception as exc:
+                                scanner_data["live_price_ok"] = False
+                                live_errors["scanner"] = str(exc)
 
                     return JSONResponse({
                         "fixed": fixed_data,
                         "scanner": scanner_data,
                         "monitoring": combined.runtime_status(),
                         "time": combined.utcnow().isoformat(),
+                        "live_price_source": "BINANCE_SPOT",
                         "live_price_refresh_seconds": 3,
-                    }, headers={"Cache-Control": "no-store"})
+                        "live_price_errors": live_errors,
+                    }, headers={"Cache-Control": "no-store, no-cache, must-revalidate"})
                 except Exception as exc:
                     print("COMBINED LIVE PRICE FALLBACK:", repr(exc), flush=True)
 
@@ -67,7 +102,7 @@ try:
                 return Response(
                     content=text,
                     status_code=response.status_code,
-                    headers={"Cache-Control": "no-store"},
+                    headers={"Cache-Control": "no-store, no-cache, must-revalidate"},
                     media_type="text/html",
                 )
 
