@@ -15,8 +15,8 @@ try:
 
         @app.middleware("http")
         async def _combined_live_price_middleware(request, call_next):
-            # Only the public Combined dashboard gets the fast price layer.
-            # Trading scans, entries, risk, SL/TP and persistence stay unchanged.
+            # Display-only live-price layer. Strategy cycles, entries, exits,
+            # SL/TP, risk and database persistence remain untouched.
             if request.url.path == "/analyze":
                 try:
                     import app_v8_candle_scanner as combined
@@ -46,32 +46,28 @@ try:
                             scanner_data["equity"] = float(scanner_data.get("balance", 0.0)) + upnl
                             scanner_data["time"] = combined.utcnow().isoformat()
 
-                    payload = {
+                    return JSONResponse({
                         "fixed": fixed_data,
                         "scanner": scanner_data,
                         "monitoring": combined.runtime_status(),
                         "time": combined.utcnow().isoformat(),
                         "live_price_refresh_seconds": 3,
-                    }
-                    return JSONResponse(payload, headers={"Cache-Control": "no-store"})
+                    }, headers={"Cache-Control": "no-store"})
                 except Exception as exc:
                     print("COMBINED LIVE PRICE FALLBACK:", repr(exc), flush=True)
-                    # If the fresh quote is temporarily unavailable, use the bot's
-                    # normal endpoint rather than breaking the dashboard.
 
             response = await call_next(request)
 
             if request.url.path == "/" and response.headers.get("content-type", "").startswith("text/html"):
-                body = b"".join([chunk async for chunk in response.body_iterator])
+                body = getattr(response, "body", None)
+                if body is None:
+                    body = b"".join([chunk async for chunk in response.body_iterator])
                 text = body.decode("utf-8")
                 text = text.replace("setInterval(go,15000)", "setInterval(go,3000)")
-                headers = dict(response.headers)
-                headers.pop("content-length", None)
-                headers["Cache-Control"] = "no-store"
                 return Response(
                     content=text,
                     status_code=response.status_code,
-                    headers=headers,
+                    headers={"Cache-Control": "no-store"},
                     media_type="text/html",
                 )
 
