@@ -10,7 +10,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 import app_v8_candle as fixed
 import v8_candle_scanner_engine as scanner
 
-BUILD = "early-entry-1m-live-v7"
+BUILD = "winrate-stats-v8"
 app = FastAPI(title="V8 Candle Combined")
 install_data_health(app)
 log = logging.getLogger(__name__)
@@ -185,11 +185,12 @@ body{margin:0;background:#07111f;color:#f4f7fb;font-family:system-ui}.w{max-widt
 .trade-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}.trade-identity{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.trade-coin{font-size:21px;font-weight:750}.trade-badge{font-size:12px;font-weight:800;letter-spacing:.5px;padding:5px 9px;border-radius:7px}.trade-badge.long{color:#21d19f;background:#10372f}.trade-badge.short{color:#ff647c;background:#391d2b}.trade-result{text-align:right;margin-left:auto}.trade-result strong{display:block;font-size:23px;font-variant-numeric:tabular-nums;white-space:nowrap}.trade-label{color:#8ea1b8;font-size:12px;font-weight:400;display:block;margin-bottom:4px}.trade-prices{display:grid;grid-template-columns:1fr 1fr;gap:14px;border-top:1px solid #243650;margin-top:15px;padding-top:14px}.trade-price{font-size:17px;font-weight:600;font-variant-numeric:tabular-nums}.trade-footer{border-top:1px solid #243650;margin-top:14px;padding-top:12px;display:grid;gap:8px;font-size:13px}.trade-detail{display:flex;justify-content:space-between;gap:14px}.trade-detail span:first-child{color:#8ea1b8;flex-shrink:0}.trade-detail span:last-child{text-align:right;overflow-wrap:anywhere}.trade-empty{color:#8ea1b8;padding:16px 0}
 @media(max-width:380px){.trade-card{padding:12px}.trade-result strong{font-size:20px}.trade-coin{font-size:19px}}
 .position-summary{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.position-pnl{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums;margin:16px 0 4px}.position-sub{font-size:13px;color:#8ea1b8}.position-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}.position-cell{background:#091526;border-radius:10px;padding:12px;min-width:0}.position-value{font-size:18px;font-weight:700;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}.position-track{height:12px;background:linear-gradient(90deg,#96354e,#bd9743 45%,#178971);position:relative;border-radius:8px;margin:26px 8px 12px}.position-marker{position:absolute;top:-5px;width:6px;height:22px;background:#fff;transform:translateX(-50%);border:1px solid #07111f;border-radius:4px}.position-entry{position:absolute;top:-3px;width:2px;height:18px;background:#0a1525;transform:translateX(-50%)}.position-scale{display:flex;justify-content:space-between;font-size:12px;gap:10px}.position-note{font-size:12px;color:#8ea1b8;margin-top:12px;line-height:1.5}.position-account{border-top:1px solid #243650;margin-top:16px;padding-top:12px;font-size:14px;color:#8ea1b8}
+.stats-box{border-top:1px solid #243650;margin-top:16px;padding-top:14px}.stats-title{font-size:12px;color:#8ea1b8;margin-bottom:8px}.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.stats-cell{background:#091526;border-radius:10px;padding:10px}.stats-value{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums}.stats-label{font-size:11px;color:#8ea1b8;margin-top:2px}.stats-note{font-size:11px;color:#8ea1b8;margin-top:8px;line-height:1.4}
 </style></head>
 <body><div class="w">
 <div class="clockbar"><div><div class="muted">AKTUÁLNÍ ČAS</div><div id="clock" class="clock">--:--:--</div></div><div id="refresh" class="refresh">Data se načítají…</div></div>
 <div class="card"><b>Kontrola provozu</b><div id="runtimeState" class="muted">Ověřuji běh na pozadí a uloženou historii…</div></div>\n<h1>V8 Candle Combined</h1><div class="muted">Fixed + Scanner · PAPER · Vstup 1m · trend 15m · aktuální realizační cena · max. odchylka 0,15 % (v7)</div>
-<div class="grid"><div class="card"><h2>V8 Candle Fixed</h2><div id="fixed">Načítám…</div><p id="fixedReason" class="wait"></p></div><div class="card"><h2>V8 Candle Scanner</h2><div id="scanner">Načítám…</div><p id="scannerReason" class="wait"></p></div></div>
+<div class="grid"><div class="card"><h2>V8 Candle Fixed</h2><div id="fixed">Načítám…</div><p id="fixedReason" class="wait"></p><div id="fixedStats"></div></div><div class="card"><h2>V8 Candle Scanner</h2><div id="scanner">Načítám…</div><p id="scannerReason" class="wait"></p><div id="scannerStats"></div></div></div>
 <div class="card"><h2 class="history-title">Historie Scanneru</h2><p class="history-note">Posledních 20 uzavřených obchodů</p><div id="scannerHistory">Načítám…</div></div><div class="card"><h2 class="history-title">Historie Fixed</h2><p class="history-note">Posledních 20 uzavřených obchodů</p><div id="fixedHistory">Načítám…</div></div><div class="card"><h2>Scanner trhu</h2><div id="scan">Načítám…</div></div></div>
 <script>
 function tick(){
@@ -205,6 +206,38 @@ function historyNumber(value,digits){
 }
 function historyTime(value){
  const d=new Date(value);return value&&!isNaN(d)?d.toLocaleString('cs-CZ',{day:'numeric',month:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'}):'—';
+}
+function tradeStats(rows){
+ const closed=(rows||[]).filter(t=>Number.isFinite(Number(t.net_pnl)));
+ const wins=closed.filter(t=>Number(t.net_pnl)>0);
+ const losses=closed.filter(t=>Number(t.net_pnl)<0);
+ const breakeven=closed.length-wins.length-losses.length;
+ const decided=wins.length+losses.length;
+ const winrate=decided?100*wins.length/decided:null;
+ const net=closed.reduce((a,t)=>a+Number(t.net_pnl),0);
+ const grossWin=wins.reduce((a,t)=>a+Number(t.net_pnl),0);
+ const grossLoss=Math.abs(losses.reduce((a,t)=>a+Number(t.net_pnl),0));
+ const profitFactor=grossLoss>0?grossWin/grossLoss:(grossWin>0?Infinity:null);
+ return {count:closed.length,wins:wins.length,losses:losses.length,breakeven,winrate,net,profitFactor};
+}
+function renderStats(target,rows){
+ target.replaceChildren();
+ const s=tradeStats(rows);
+ const box=historyNode('div','stats-box');
+ box.appendChild(historyNode('div','stats-title','VYHODNOCENÍ UZAVŘENÝCH OBCHODŮ'));
+ if(!s.count){box.appendChild(historyNode('div','muted','Winrate zatím nelze vyhodnotit – žádný uzavřený obchod.'));target.appendChild(box);return;}
+ const grid=historyNode('div','stats-grid');
+ const pf=s.profitFactor===Infinity?'∞':historyNumber(s.profitFactor,2);
+ const values=[
+  ['Winrate',s.winrate===null?'—':historyNumber(s.winrate,1)+' %',s.winrate!==null&&s.winrate>=50?'ok':s.winrate!==null&&s.winrate<40?'red':''],
+  ['Wins / Losses',s.wins+' / '+s.losses,''],
+  ['Profit factor',pf,s.profitFactor!==null&&s.profitFactor>=1?'ok':s.profitFactor!==null?'red':''],
+  ['Čistý P/L',(s.net>0?'+':'')+historyNumber(s.net,2)+' USDT',s.net>0?'ok':s.net<0?'red':'']
+ ];
+ for(const [label,value,cls] of values){const cell=historyNode('div','stats-cell');cell.append(historyNode('div','stats-value '+cls,value),historyNode('div','stats-label',label));grid.appendChild(cell);}
+ box.appendChild(grid);
+ box.appendChild(historyNode('div','stats-note','Počet uzavřených obchodů: '+s.count+(s.breakeven?' · BE: '+s.breakeven:'')+' · Winrate počítá výhry proti výhrám + ztrátám. Uložená historie má nejvýše 100 obchodů.'));
+ target.appendChild(box);
 }
 function renderHistory(target, rows){
  target.replaceChildren();
@@ -288,6 +321,8 @@ async function go(){
   const f=d.fixed||{}, s=d.scanner||{};
   renderBot(fixed,f);
   renderBot(scanner,s);
+  renderStats(fixedStats,f.history||[]);
+  renderStats(scannerStats,s.history||[]);
   fixedReason.textContent=f.position?'Pozice otevřená':f.cooldown_until&&new Date(f.cooldown_until)>new Date()?'Pauza po ztrátě':(f.signal?.reasons||[]).join(' · ');
   scannerReason.textContent=s.position?'Pozice otevřená':s.cooldown_until&&new Date(s.cooldown_until)>new Date()?'Pauza po ztrátě':s.signal?.reason||'Čekám na splnění vstupních podmínek';
   renderHistory(scannerHistory,s.history||[]);
@@ -314,4 +349,3 @@ async function go(){
 }
 tick();setInterval(tick,1000);go();setInterval(go,15000);
 </script></body></html>'''
-
