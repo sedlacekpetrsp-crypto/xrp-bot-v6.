@@ -1,3 +1,4 @@
+from market_data import market_get, market, install_data_health
 import os
 import time
 from entry_rules import ENTRY_INTERVAL, STRATEGY_VERSION, MAX_ENTRY_DEVIATION, rejection
@@ -12,6 +13,7 @@ from fastapi import FastAPI
 from fastapi.responses import HTMLResponse, JSONResponse
 
 app = FastAPI(title="V8 Candle Scanner")
+install_data_health(app)
 
 BINANCE_API = os.getenv("BINANCE_API", "https://data-api.binance.vision")
 SYMBOLS = [s.strip().upper() for s in os.getenv(
@@ -103,12 +105,12 @@ def bear_engulf(a, b):
     return bullish(a) and bearish(b) and b["o"] >= a["c"] and b["c"] <= a["o"] and body(b) > body(a)
 
 async def klines(client, symbol, interval, limit):
-    r = await client.get(f"{BINANCE_API}/api/v3/klines", params={"symbol": symbol, "interval": interval, "limit": limit}, timeout=15)
+    r = await market_get(client, f"{BINANCE_API}/api/v3/klines", params={"symbol": symbol, "interval": interval, "limit": limit}, timeout=15)
     r.raise_for_status()
     return r.json()
 
 async def price(client, symbol):
-    r = await client.get(f"{BINANCE_API}/api/v3/ticker/price", params={"symbol": symbol}, timeout=15)
+    r = await market_get(client, f"{BINANCE_API}/api/v3/ticker/price", params={"symbol": symbol}, timeout=15)
     r.raise_for_status()
     return float(r.json()["price"])
 
@@ -395,3 +397,4 @@ async def dashboard():
 <div class="row"><div class="card"><div class="muted">BALANCE</div><div id="bal" class="big">-</div></div><div class="card"><div class="muted">EQUITY</div><div id="eq" class="big">-</div></div></div>
 <div class="card"><h2>Aktuální pozice</h2><div id="pos">Načítám…</div></div><div class="card"><h2>Market scanner</h2><div id="scan">Načítám…</div></div><div class="card"><h2>Poslední obchody</h2><div id="hist">Načítám…</div></div></div>
 <script>async function go(){let d=await (await fetch('/analyze')).json();bal.textContent=d.balance.toFixed(2)+' USDT';eq.textContent=d.equity.toFixed(2)+' USDT';pos.innerHTML=d.position?`<b>${d.position.symbol}</b> <span class="${d.position.side==='LONG'?'green':'red'}">${d.position.side}</span><br>Setup ${d.position.setup} · Entry ${d.position.entry_price.toFixed(5)} · SL ${d.position.stop_loss.toFixed(5)} · TP ${d.position.take_profit.toFixed(5)}`:'Žádná otevřená pozice';scan.innerHTML='<table><tr><th>Coin</th><th>1h</th><th>4h</th><th>Strength</th><th>Směr</th></tr>'+d.scan.map(x=>`<tr><td>${x.symbol}</td><td>${x.m1h.toFixed(2)}%</td><td>${x.m4h.toFixed(2)}%</td><td>${x.strength.toFixed(2)}</td><td class="${x.bucket==='LONG'?'green':x.bucket==='SHORT'?'red':'muted'}">${x.bucket}</td></tr>`).join('')+'</table>';hist.innerHTML=d.history.length?d.history.map(x=>`<div>${x.symbol} ${x.side} · ${x.setup} · ${x.reason} · <b>${x.net_pnl.toFixed(2)} USDT</b></div>`).join(''):'Zatím bez uzavřených obchodů'}go();setInterval(go,15000)</script></body></html>'''
+

@@ -1,3 +1,4 @@
+from market_data import install_data_health
 import asyncio
 import copy
 import logging
@@ -11,6 +12,7 @@ import v8_candle_scanner_engine as scanner
 
 BUILD = "early-entry-1m-live-v7"
 app = FastAPI(title="V8 Candle Combined")
+install_data_health(app)
 log = logging.getLogger(__name__)
 fixed_task = None
 scanner_task = None
@@ -312,3 +314,4 @@ async function go(){
 }
 tick();setInterval(tick,1000);go();setInterval(go,15000);
 </script></body></html>'''
+
