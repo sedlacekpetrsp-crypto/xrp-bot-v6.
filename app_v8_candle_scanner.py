@@ -2,7 +2,7 @@ from market_data import install_data_health
 import asyncio
 import copy
 import logging
-import httpx
+import os
 from datetime import datetime, timezone
 
 from fastapi import FastAPI
@@ -10,8 +10,13 @@ from fastapi.responses import HTMLResponse, JSONResponse
 
 import app_v8_candle as fixed
 import v8_candle_scanner_engine as scanner
+import app_v8_fly_engine as fly
+from v8_fly_layer import install as install_fly
 
-BUILD = "winrate-stats-v8-cache3-fly-keepalive"
+install_fly(fly)
+FLY_ENABLED = os.getenv("FLY_INTEGRATED_ENABLED", "false").lower() == "true"
+
+BUILD = "combined-fixed-scanner-fly-1"
 app = FastAPI(title="V8 Candle Combined")
 install_data_health(app)
 log = logging.getLogger(__name__)
@@ -19,10 +24,7 @@ fixed_task = None
 scanner_task = None
 database_task = None
 fly_task = None
-FLY_HEALTH_URL = "https://xrp-bot-v8-fly-test.onrender.com/health"
-fly_keepalive = {"url": FLY_HEALTH_URL, "interval_seconds": 300,
-                 "last_attempt": None, "last_success": None,
-                 "status_code": None, "error": None}
+fly_error = None
 started_at = datetime.now(timezone.utc)
 results = {}
 workers = {
@@ -102,22 +104,46 @@ async def worker(name, initialize, cycle, interval):
 
 
 
-async def fly_keepalive_loop():
-    # Separate task: a cold start or outage must not block either trading worker.
-    async with httpx.AsyncClient(timeout=90, follow_redirects=False,
-                                 headers={"User-Agent": "scanner-fly-keepalive/1.0"}) as client:
-        while True:
-            fly_keepalive.update(last_attempt=utcnow().isoformat(), status_code=None)
-            try:
-                response = await client.get(FLY_HEALTH_URL)
-                fly_keepalive["status_code"] = response.status_code
-                response.raise_for_status()
-                fly_keepalive.update(last_success=utcnow().isoformat(), error=None)
-                log.warning("FLY_KEEPALIVE_OK status=%s", response.status_code)
-            except Exception as exc:
-                fly_keepalive["error"] = type(exc).__name__
-                log.warning("FLY_KEEPALIVE_FAILED error=%s", type(exc).__name__)
-            await asyncio.sleep(300)
+async def fly_worker():
+    """Own the mounted Fly app lifecycle; mounts do not run startup handlers."""
+    global fly_error
+    while True:
+        try:
+            if not fly.DATABASE_URL:
+                raise RuntimeError("Fly database is missing")
+            # Refuse a fresh empty account: preserve the existing Fly state.
+            with fly.get_db() as conn:
+                row = conn.execute("SELECT state FROM v8fixed_state WHERE id=1").fetchone()
+                if not row:
+                    raise RuntimeError("Existing Fly state is missing")
+            await fly.startup()
+            saved = row[0]
+            if fly.PAPER_BALANCE != float(saved["paper_balance"]) or fly.paper_position != saved.get("paper_position"):
+                raise RuntimeError("Fly state did not restore correctly")
+            fly_error = None
+            log.warning("INTEGRATED_FLY_STARTED history=%s", len(fly.trade_history))
+            await fly.bot_task
+        except asyncio.CancelledError:
+            raise
+        except Exception:
+            fly_error = "Fly se nepodařilo spustit; další pokus za 30 sekund"
+            log.exception("INTEGRATED_FLY_FAILED")
+        finally:
+            await fly.shutdown()
+            if fly.bot_task:
+                await asyncio.gather(fly.bot_task, return_exceptions=True)
+            fly.bot_loop_started = False
+        await asyncio.sleep(30)
+
+
+def fly_status():
+    age = (utcnow() - datetime.fromisoformat(fly.last_cycle_at)).total_seconds() if fly.last_cycle_at else None
+    running = bool(fly_task and not fly_task.done() and fly.bot_task and not fly.bot_task.done())
+    return {"enabled": FLY_ENABLED, "running": running,
+            "ok": bool(FLY_ENABLED and running and age is not None and age < 120 and not fly_error),
+            "age_seconds": round(age, 1) if age is not None else None,
+            "last_cycle_at": fly.last_cycle_at, "error": fly_error,
+            "history_count": len(fly.trade_history), "dashboard": "/fly/"}
 
 
 def initialize_fixed():
@@ -134,7 +160,8 @@ async def startup():
     fixed_task = asyncio.create_task(worker("fixed", initialize_fixed, fixed.analyze_once, 15))
     scanner_task = asyncio.create_task(worker("scanner", scanner.load_state, scanner.cycle, scanner.SCAN_SECONDS))
     database_task = asyncio.create_task(database_loop())
-    fly_task = asyncio.create_task(fly_keepalive_loop())
+    if FLY_ENABLED:
+        fly_task = asyncio.create_task(fly_worker())
 
 
 @app.on_event("shutdown")
@@ -160,9 +187,10 @@ def runtime_status():
     db_age = (now - datetime.fromisoformat(db["checked_at"])).total_seconds() if db["checked_at"] else None
     db["ok"] = bool(db["ok"] and db_age is not None and db_age <= 150)
     healthy = all(s["ok"] for s in status.values()) and db["ok"]
+    fs = fly_status()
+    healthy = healthy and (not FLY_ENABLED or fs["ok"])
     return {"status": "ok" if healthy else "degraded", "service": "V8 Candle Combined",
-            "build": BUILD, **status, "database": db,
-            "fly_keepalive": {**fly_keepalive, "running": bool(fly_task and not fly_task.done())},
+            "build": BUILD, **status, "database": db, "fly": fs,
             "started_at": started_at.isoformat(), "time": now.isoformat()}
 
 
@@ -216,7 +244,7 @@ body{margin:0;background:#07111f;color:#f4f7fb;font-family:system-ui}.w{max-widt
 </style></head>
 <body><div class="w">
 <div class="clockbar"><div><div class="muted">AKTUÁLNÍ ČAS</div><div id="clock" class="clock">--:--:--</div></div><div id="refresh" class="refresh">Data se načítají…</div></div>
-<div class="card"><b>Kontrola provozu</b><div id="runtimeState" class="muted">Ověřuji běh na pozadí a uloženou historii…</div></div>\n<h1>V8 Candle Combined</h1><div class="muted">Fixed + Scanner · PAPER · Vstup 1m · trend 15m · aktuální realizační cena · max. odchylka 0,15 % (v7)</div>
+<div class="card"><b>Kontrola provozu</b><div id="runtimeState" class="muted">Ověřuji běh na pozadí a uloženou historii…</div></div>\n<h1>V8 Candle Combined</h1><div class="card"><b>Fly bot ve stejné službě</b><p id="flyState" class="muted">Ověřuji stav…</p><a href="/fly/" style="color:#21d19f">Otevřít Fly — pozice a historie →</a></div><div class="muted">Fixed + Scanner · PAPER · Vstup 1m · trend 15m · aktuální realizační cena · max. odchylka 0,15 % (v7)</div>
 <div class="grid"><div class="card"><h2>V8 Candle Fixed</h2><div id="fixed">Načítám…</div><p id="fixedReason" class="wait"></p><div id="fixedStats"></div></div><div class="card"><h2>V8 Candle Scanner</h2><div id="scanner">Načítám…</div><p id="scannerReason" class="wait"></p><div id="scannerStats"></div></div></div>
 <div class="card"><h2 class="history-title">Historie Scanneru</h2><p class="history-note">Posledních 20 uzavřených obchodů</p><div id="scannerHistory">Načítám…</div></div><div class="card"><h2 class="history-title">Historie Fixed</h2><p class="history-note">Posledních 20 uzavřených obchodů</p><div id="fixedHistory">Načítám…</div></div><div class="card"><h2>Scanner trhu</h2><div id="scan">Načítám…</div></div></div>
 <script>
@@ -290,6 +318,19 @@ function renderPosition(data){
  return `<div class="position-summary"><div><b class="${sideClass}">${p.side}</b> · ${p.symbol||'XRPUSDT'} · ${setupName(p.setup)}</div><div class="position-sub">otevřeno ${formatDate(p.entry_time)}</div></div><div class="position-pnl ${pnl>=0?'ok':'red'}">${pnl>=0?'+':''}${historyNumber(pnl,2)} USDT</div><div class="position-sub">Nerealizovaný čistý P/L včetně poplatků a slippage</div><div class="position-grid"><div class="position-cell"><span class="trade-label">Vstup</span><div class="position-value">${historyNumber(p.entry_price,6)}</div></div><div class="position-cell"><span class="trade-label">Aktuální cena</span><div class="position-value">${historyNumber(px,6)}</div></div><div class="position-cell"><span class="trade-label">Stop loss</span><div class="position-value red">${historyNumber(p.stop_loss,6)}</div></div><div class="position-cell"><span class="trade-label">Take profit</span><div class="position-value ok">${historyNumber(p.take_profit,6)}</div></div><div class="position-cell"><span class="trade-label">Množství</span><div class="position-value">${historyNumber(p.qty,3)}</div></div><div class="position-cell"><span class="trade-label">Risk při vstupu</span><div class="position-value">${historyNumber(p.risk_usdt,2)} USDT</div></div></div><div class="position-track"><div class="position-entry" style="left:${positionProgress(p,p.entry_price)}%"></div><div class="position-marker" style="left:${progress}%"></div></div><div class="position-scale"><span class="red">SL ${historyNumber(p.stop_loss,5)}</span><span>${historyNumber(px,5)}</span><span class="ok">TP ${historyNumber(p.take_profit,5)}</span></div><div class="position-note">Bílá značka ukazuje aktuální cenu mezi SL a TP. Tmavá čára označuje vstup. Průběh se aktualizuje společně s botem.</div>`;
 }
 function card(d,el,reason,stats){const side=d.position?d.position.side:(d.signal?.side||'WAIT');el.innerHTML='<div class="big '+(side==='WAIT'?'':'ok')+'">'+side+'</div><div>Balance: '+historyNumber(d.balance,2)+' USDT</div><div>Equity: '+historyNumber(d.equity,2)+' USDT</div><div>'+renderPosition(d)+'</div>';reason.textContent=d.error||d.signal?.reason||(d.signal?.reasons||[]).join(' · ')||'';renderStats(d,stats)}
-async function load(){try{const r=await fetch('/analyze',{cache:'no-store'});const j=await r.json();const bad=!r.ok||j.monitoring?.status!=='ok';refresh.textContent=bad?'Poslední kontrola hlásí problém':'Aktualizováno '+new Date().toLocaleTimeString('cs-CZ');refresh.className='refresh '+(bad?'errtxt':'oktxt');runtimeState.textContent=bad?'Některý běh nebo databáze není aktuální.':'Fixed i Scanner běží na pozadí a uložený stav je ověřen.';runtimeState.className=bad?'red':'ok';card(j.fixed,fixed,fixedReason,fixedStats);card(j.scanner,scanner,scannerReason,scannerStats);historyRows(j.scanner,scannerHistory);historyRows(j.fixed,fixedHistory);scan.innerHTML=(j.scanner.scan||[]).map(x=>x.symbol+' · '+x.bucket+' · '+Number(x.strength).toFixed(2)).join('<br>')||'—'}catch(e){refresh.textContent='Aktualizace se nezdařila';refresh.className='refresh errtxt';runtimeState.textContent='Nelze ověřit aktuální běh.';runtimeState.className='red'}}
+async function load(){try{const r=await fetch('/analyze',{cache:'no-store'});const j=await r.json();const f=j.monitoring?.fly;flyState.textContent=!f?.enabled?'Připraveno — čeká na pozastavení původní Fly služby':f.ok?'Fly běží ve stejné službě · historie: '+f.history_count:'Fly čeká na aktuální cyklus nebo hlásí chybu';flyState.className=f?.ok?'ok':'wait';const bad=!r.ok||j.monitoring?.status!=='ok';refresh.textContent=bad?'Poslední kontrola hlásí problém':'Aktualizováno '+new Date().toLocaleTimeString('cs-CZ');refresh.className='refresh '+(bad?'errtxt':'oktxt');runtimeState.textContent=bad?'Některý běh nebo databáze není aktuální.':'Fixed i Scanner běží na pozadí a uložený stav je ověřen.';runtimeState.className=bad?'red':'ok';card(j.fixed,fixed,fixedReason,fixedStats);card(j.scanner,scanner,scannerReason,scannerStats);historyRows(j.scanner,scannerHistory);historyRows(j.fixed,fixedHistory);scan.innerHTML=(j.scanner.scan||[]).map(x=>x.symbol+' · '+x.bucket+' · '+Number(x.strength).toFixed(2)).join('<br>')||'—'}catch(e){refresh.textContent='Aktualizace se nezdařila';refresh.className='refresh errtxt';runtimeState.textContent='Nelze ověřit aktuální běh.';runtimeState.className='red'}}
 setInterval(tick,1000);tick();setInterval(load,15000);load();
 </script></body></html>'''
+
+
+@fly.app.middleware("http")
+async def fly_availability(request, call_next):
+    if not FLY_ENABLED:
+        if request.url.path.rstrip("/") == "/fly":
+            return HTMLResponse('<html lang="cs"><meta name="viewport" content="width=device-width,initial-scale=1"><body><h1>Fly je připravený k přesunu</h1><p>Čeká na pozastavení původní Fly služby, aby dvě kopie neobchodovaly současně.</p><a href="/">Zpět na scanner</a></body></html>', status_code=503)
+        return JSONResponse({"status": "disabled", "reason": "Waiting for standalone Fly suspension"}, status_code=503)
+    response = await call_next(request)
+    return response
+
+
+app.mount("/fly", fly.app)
