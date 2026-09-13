@@ -11,7 +11,7 @@ from urllib.parse import urlsplit, parse_qsl
 
 import httpx
 
-BUILD = "market-data-guard-20260913-2"
+BUILD = "market-data-guard-20260913-3"
 INTERVALS = {"1m": 1, "5m": 5, "15m": 15, "30m": 30,
              "1h": 60, "4h": 240, "1d": 1440}
 
@@ -188,8 +188,18 @@ class MarketData:
                 self.validate(path, params, data)
                 ttl = 1.0 if path.endswith("price") else 0.0 if path.endswith("depth") else 15.0
                 if path.endswith("klines") and params.get("interval") in INTERVALS:
-                    seconds = INTERVALS[params["interval"]]*60
-                    ttl = min(ttl, seconds - time.time() % seconds)
+                    # Bots trade only on closed candles. Keep the current kline response
+                    # until that candle boundary instead of downloading identical history
+                    # every 15 seconds. If the provider is a fraction late publishing the
+                    # new candle, retry quickly rather than caching stale history for a full interval.
+                    seconds = INTERVALS[params["interval"]] * 60
+                    wall_now = time.time()
+                    current_bucket_ms = int(wall_now // seconds * seconds * 1000)
+                    last_open_ms = int(data[-1][0])
+                    if last_open_ms >= current_bucket_ms:
+                        ttl = max(0.5, seconds - wall_now % seconds)
+                    else:
+                        ttl = 1.0
                 self.cache[key] = (time.monotonic()+ttl, self.provider, copy.deepcopy(data))
                 self.last_success = datetime.now(timezone.utc).isoformat()
                 self.last_error = None
