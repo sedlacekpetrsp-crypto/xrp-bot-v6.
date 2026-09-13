@@ -89,3 +89,11 @@ def test_retry_formats():
  assert retry_seconds(response(headers={'Retry-After':formatdate(time.time()+7200,usegmt=True)}),60)>7190
  assert retry_seconds(response(data={'retryAfter':int((time.time()+8000)*1000)}),60)>7990
  assert retry_seconds(response(data={'msg':f'IP banned until {int((time.time()+9000)*1000)}'}),60)>8990
+
+@pytest.mark.asyncio
+async def test_configured_gateway_preserves_origin_prefix_and_params():
+ m=MarketData();c=Client(lambda u,p:response(data={'price':'1.3'}))
+ url='https://configured-gateway.example/binance/api/v3/ticker/price'
+ r=await m.get(c,url,{'symbol':'XRPUSDC'})
+ assert c.calls[0]==(url,{'symbol':'XRPUSDC'})
+ assert r.json()['price']=='1.3'

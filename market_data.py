@@ -11,7 +11,7 @@ from urllib.parse import urlsplit, parse_qsl
 
 import httpx
 
-BUILD = "market-data-guard-20260913-1"
+BUILD = "market-data-guard-20260913-2"
 INTERVALS = {"1m": 1, "5m": 5, "15m": 15, "30m": 30,
              "1h": 60, "4h": 240, "1d": 1440}
 
@@ -145,13 +145,16 @@ class MarketData:
 
     async def get(self, client, url, params=None, timeout=15):
         parsed = urlsplit(str(url))
-        if parsed.hostname not in {"data-api.binance.vision", "api.binance.com"}:
-            raise MarketDataUnavailable("Nepodporovaný zdroj dat")
+        # Callers supply their existing trusted BINANCE_API deployment setting.
+        # Preserve Binance-compatible configured gateways, including path prefixes.
+        if parsed.scheme not in {"https", "http"} or not parsed.hostname:
+            raise MarketDataUnavailable("Neplatná adresa zdroje dat")
         params = {**dict(parse_qsl(parsed.query)), **(params or {})}
-        path = parsed.path
-        if path not in {"/api/v3/klines", "/api/v3/ticker/price", "/api/v3/depth"}:
+        path = next((p for p in ("/api/v3/klines", "/api/v3/ticker/price", "/api/v3/depth")
+                     if parsed.path.endswith(p)), None)
+        if path is None:
             raise MarketDataUnavailable("Pouze veřejná tržní data")
-        key = (path, tuple(sorted((k, str(v)) for k, v in params.items())))
+        key = (parsed.netloc + parsed.path, tuple(sorted((k, str(v)) for k, v in params.items())))
         async with self.key_locks.setdefault(key, asyncio.Lock()):
             if time.monotonic() < self.transition_until:
                 raise MarketDataUnavailable("Změna zdroje na Kraken; čekám na nový cyklus")
@@ -168,7 +171,7 @@ class MarketData:
             try:
                 if self.provider == "binance":
                     try:
-                        data = await self.request(client, "binance", parsed.scheme+"://"+parsed.netloc+path, params, timeout)
+                        data = await self.request(client, "binance", parsed.scheme+"://"+parsed.netloc+parsed.path, params, timeout)
                     except (httpx.HTTPStatusError, httpx.TimeoutException, httpx.NetworkError, MarketDataUnavailable) as exc:
                         status = exc.response.status_code if isinstance(exc, httpx.HTTPStatusError) else None
                         if status is not None and status not in (418, 429, 403, 451) and status < 500:
