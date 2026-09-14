@@ -1,4 +1,6 @@
+import asyncio
 import copy
+import os
 
 try:
     import httpx
@@ -31,6 +33,40 @@ try:
 
         if getattr(app, "title", "") != "V8 Candle Combined":
             return
+
+        keepalive_task = None
+        keepalive_target = os.getenv(
+            "V81_KEEPALIVE_URL",
+            "https://xrp-bot-v8-1-candle.onrender.com/health",
+        )
+
+        async def _keep_v81_awake():
+            # Scanner itself is externally kept awake. While it is running, ping V8.1
+            # often enough that Render does not idle the separate V8.1 web service.
+            await asyncio.sleep(20)
+            async with httpx.AsyncClient(follow_redirects=True) as client:
+                while True:
+                    try:
+                        r = await client.head(keepalive_target, timeout=30)
+                        print(
+                            f"V81_KEEPALIVE status={r.status_code} target={keepalive_target}",
+                            flush=True,
+                        )
+                    except Exception as exc:
+                        print(f"V81_KEEPALIVE_ERROR {exc!r}", flush=True)
+                    await asyncio.sleep(240)
+
+        @app.on_event("startup")
+        async def _start_v81_keepalive():
+            nonlocal keepalive_task
+            keepalive_task = asyncio.create_task(_keep_v81_awake())
+
+        @app.on_event("shutdown")
+        async def _stop_v81_keepalive():
+            nonlocal keepalive_task
+            if keepalive_task:
+                keepalive_task.cancel()
+                await asyncio.gather(keepalive_task, return_exceptions=True)
 
         @app.middleware("http")
         async def _combined_live_price_middleware(request, call_next):
