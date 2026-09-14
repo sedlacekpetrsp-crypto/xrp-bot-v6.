@@ -30,17 +30,20 @@ MAX_NOTIONAL_SHARE = float(os.getenv("MAX_NOTIONAL_SHARE", "0.50"))
 MAX_TOTAL_NOTIONAL_SHARE = float(os.getenv("MAX_TOTAL_NOTIONAL_SHARE", "1.00"))
 MAX_OPEN_POSITIONS = int(os.getenv("MAX_OPEN_POSITIONS", "5"))
 
-# New early-entry settings use new env names so older Render overrides cannot
-# accidentally keep the old 10-candle / late-entry behaviour.
 BREAKOUT_LOOKBACK = int(os.getenv("EARLY_BREAKOUT_LOOKBACK", "4"))
 BREAKOUT_VOLUME_RATIO = float(os.getenv("EARLY_BREAKOUT_VOLUME_RATIO", "1.05"))
-BREAKOUT_TREND_STRENGTH = float(os.getenv("EARLY_TREND_STRENGTH", "0.0005"))
 MOMENTUM_MIN_MOVE = float(os.getenv("EARLY_MOMENTUM_MIN_MOVE", "0.0015"))
 MOMENTUM_BODY_RATIO = float(os.getenv("EARLY_MOMENTUM_BODY_RATIO", "0.55"))
 MOMENTUM_VOLUME_RATIO = float(os.getenv("EARLY_MOMENTUM_VOLUME_RATIO", "1.05"))
 MAX_TRIGGER_EXTENSION = float(os.getenv("MAX_TRIGGER_EXTENSION", "0.0020"))
 
-# TOP_N is now display/ranking information only. Every configured coin may trade.
+# 15m trend is now an adaptive filter, not a hard yes/no gate.
+# When EMA20/EMA50 are very close, the 15m market is treated as neutral and
+# a strong 1m breakout may enter in either direction with stricter confirmation.
+TREND_NEUTRAL_STRENGTH = float(os.getenv("TREND_NEUTRAL_STRENGTH", "0.00035"))
+NEUTRAL_VOLUME_RATIO = float(os.getenv("NEUTRAL_VOLUME_RATIO", "1.20"))
+NEUTRAL_BODY_RATIO = float(os.getenv("NEUTRAL_BODY_RATIO", "0.62"))
+
 TOP_N = int(os.getenv("TOP_N", "5"))
 SCAN_SECONDS = int(os.getenv("SCAN_SECONDS", "15"))
 last_scan_at = 0.0
@@ -49,7 +52,6 @@ COOLDOWN_AFTER_LOSS_MIN = 0
 
 paper_balance = STARTING_BALANCE
 paper_positions: Dict[str, Dict[str, Any]] = {}
-# Compatibility alias for the combined dashboard/database verifier.
 paper_position: Optional[Dict[str, Any]] = None
 history: List[Dict[str, Any]] = []
 last_scan: List[Dict[str, Any]] = []
@@ -99,13 +101,10 @@ def load_state():
             "CREATE TABLE IF NOT EXISTS candle_v8_scanner_state "
             "(id INTEGER PRIMARY KEY, state JSONB NOT NULL)"
         )
-        row = conn.execute(
-            "SELECT state FROM candle_v8_scanner_state WHERE id=1"
-        ).fetchone()
+        row = conn.execute("SELECT state FROM candle_v8_scanner_state WHERE id=1").fetchone()
 
     state = row[0] if row else json.loads(os.getenv("SCANNER_INITIAL_STATE", "{}"))
     paper_balance = float(state.get("paper_balance", STARTING_BALANCE))
-
     stored_positions = state.get("paper_positions")
     if isinstance(stored_positions, dict):
         paper_positions = {
@@ -120,7 +119,6 @@ def load_state():
             if isinstance(position, dict) and position.get("symbol")
         }
     else:
-        # Seamless migration from the old single-position state.
         old = state.get("paper_position")
         paper_positions = (
             {str(old.get("symbol", "XRPUSDT")): old}
@@ -137,12 +135,8 @@ def load_state():
 
 def c(k):
     return {
-        "t": int(k[0]),
-        "o": float(k[1]),
-        "h": float(k[2]),
-        "l": float(k[3]),
-        "c": float(k[4]),
-        "v": float(k[5]),
+        "t": int(k[0]), "o": float(k[1]), "h": float(k[2]),
+        "l": float(k[3]), "c": float(k[4]), "v": float(k[5]),
     }
 
 
@@ -156,20 +150,10 @@ def ema(vals, period):
     return e
 
 
-def bullish(x):
-    return x["c"] > x["o"]
-
-
-def bearish(x):
-    return x["c"] < x["o"]
-
-
-def body(x):
-    return abs(x["c"] - x["o"])
-
-
-def rng(x):
-    return max(x["h"] - x["l"], 1e-12)
+def bullish(x): return x["c"] > x["o"]
+def bearish(x): return x["c"] < x["o"]
+def body(x): return abs(x["c"] - x["o"])
+def rng(x): return max(x["h"] - x["l"], 1e-12)
 
 
 async def klines(client, symbol, interval, limit):
@@ -187,8 +171,7 @@ async def price(client, symbol):
     r = await market_get(
         client,
         f"{BINANCE_API}/api/v3/ticker/price",
-        params={"symbol": symbol},
-        timeout=15,
+        params={"symbol": symbol}, timeout=15,
     )
     r.raise_for_status()
     return float(r.json()["price"])
@@ -204,29 +187,24 @@ async def strength_for(client, symbol):
         h4 = [c(x) for x in h4][:-1]
         m1 = (h1[-1]["c"] / h1[-5]["o"] - 1) * 100 if len(h1) >= 5 else 0
         m4 = (h4[-1]["c"] / h4[-3]["o"] - 1) * 100 if len(h4) >= 3 else 0
-        score = 0.65 * m1 + 0.35 * m4
-        return {"symbol": symbol, "m1h": m1, "m4h": m4, "strength": score}
+        return {"symbol": symbol, "m1h": m1, "m4h": m4,
+                "strength": 0.65 * m1 + 0.35 * m4}
     except Exception:
         return None
 
 
 async def build_scan(client):
-    rows = [
-        r
-        for r in await asyncio.gather(*(strength_for(client, s) for s in SYMBOLS))
-        if r
-    ]
+    rows = [r for r in await asyncio.gather(
+        *(strength_for(client, s) for s in SYMBOLS)
+    ) if r]
     rows.sort(key=lambda x: x["strength"], reverse=True)
     longs = {x["symbol"] for x in rows[:TOP_N]}
     shorts = {x["symbol"] for x in rows[-TOP_N:]}
     for rank, x in enumerate(rows, start=1):
         x["rank"] = rank
         x["bucket"] = (
-            "LONG"
-            if x["symbol"] in longs
-            else "SHORT"
-            if x["symbol"] in shorts
-            else "NEUTRAL"
+            "LONG" if x["symbol"] in longs else
+            "SHORT" if x["symbol"] in shorts else "NEUTRAL"
         )
         x["tradable"] = True
     return rows
@@ -235,9 +213,14 @@ async def build_scan(client):
 def trigger_extension(side, trigger_level, current):
     if trigger_level <= 0 or current <= 0:
         return float("inf")
-    if side == "LONG":
-        return current / trigger_level - 1
-    return trigger_level / current - 1
+    return current / trigger_level - 1 if side == "LONG" else trigger_level / current - 1
+
+
+def classify_15m_trend(e20, e50, reference_price):
+    direction = "LONG" if e20 > e50 else "SHORT"
+    strength = abs(e20 - e50) / reference_price
+    state = "NEUTRAL" if strength <= TREND_NEUTRAL_STRENGTH else direction
+    return direction, state, strength
 
 
 async def signal_for(client, row):
@@ -257,14 +240,13 @@ async def signal_for(client, row):
         a, b, conf = m[-3], m[-2], m[-1]
         avg_vol = sum(x["v"] for x in m[-21:-1]) / 20
         vol = conf["v"] / avg_vol if avg_vol else 0.0
+        conf_body_ratio = body(conf) / rng(conf)
 
         closes = [x["c"] for x in s]
         e20, e50 = ema(closes, 20), ema(closes, 50)
         if not e20 or not e50:
             return None
-
-        trend = "LONG" if e20 > e50 else "SHORT"
-        trend_strength = abs(e20 - e50) / conf["c"]
+        trend, trend_state, trend_strength = classify_15m_trend(e20, e50, conf["c"])
 
         side = None
         setup = None
@@ -277,8 +259,6 @@ async def signal_for(client, row):
         prev_high = max(x["h"] for x in prev)
         prev_low = min(x["l"] for x in prev)
 
-        # Primary early entry: first confirmed 1m close through only the previous
-        # four 1m candles, instead of waiting for a 10-candle breakout.
         if bullish(conf) and conf["c"] > prev_high:
             side = "LONG"
             setup = "EARLY_BREAKOUT"
@@ -294,31 +274,18 @@ async def signal_for(client, row):
             p_high = max(x["h"] for x in m[-4:])
             required_vol = BREAKOUT_VOLUME_RATIO
 
-        # Secondary path catches a strong impulse before it clears the full
-        # four-candle range, but still requires a clean body and 15m trend.
         if side is None:
             move = abs(conf["c"] / conf["o"] - 1)
-            body_ratio = body(conf) / rng(conf)
             above_prev = conf["c"] > max(a["h"], b["h"])
             below_prev = conf["c"] < min(a["l"], b["l"])
-            if (
-                bullish(conf)
-                and move >= MOMENTUM_MIN_MOVE
-                and body_ratio >= MOMENTUM_BODY_RATIO
-                and above_prev
-            ):
+            if bullish(conf) and move >= MOMENTUM_MIN_MOVE and conf_body_ratio >= MOMENTUM_BODY_RATIO and above_prev:
                 side = "LONG"
                 setup = "EARLY_MOMENTUM"
                 trigger_level = max(a["h"], b["h"])
                 p_low = min(x["l"] for x in m[-4:])
                 p_high = conf["h"]
                 required_vol = MOMENTUM_VOLUME_RATIO
-            elif (
-                bearish(conf)
-                and move >= MOMENTUM_MIN_MOVE
-                and body_ratio >= MOMENTUM_BODY_RATIO
-                and below_prev
-            ):
+            elif bearish(conf) and move >= MOMENTUM_MIN_MOVE and conf_body_ratio >= MOMENTUM_BODY_RATIO and below_prev:
                 side = "SHORT"
                 setup = "EARLY_MOMENTUM"
                 trigger_level = min(a["l"], b["l"])
@@ -329,11 +296,21 @@ async def signal_for(client, row):
         if not side:
             return None
 
-        # Relative-strength TOP_N no longer blocks entries. All configured
-        # symbols may trade, but they still must align with the 15m EMA trend.
-        if side != trend:
-            return None
-        if vol < required_vol or trend_strength < BREAKOUT_TREND_STRENGTH:
+        # Adaptive 15m filter:
+        # 1) clear 15m trend -> only trade with that trend;
+        # 2) neutral 15m EMA zone -> allow either direction, but only with
+        #    stronger volume and a stronger 1m candle.
+        if trend_state == "NEUTRAL":
+            required_vol = max(required_vol, NEUTRAL_VOLUME_RATIO)
+            if conf_body_ratio < NEUTRAL_BODY_RATIO:
+                return None
+            trend_filter = "NEUTRAL_15M_STRONG_1M"
+        else:
+            if side != trend:
+                return None
+            trend_filter = "ALIGNED_15M"
+
+        if vol < required_vol:
             return None
 
         extension = trigger_extension(side, trigger_level, conf["c"])
@@ -352,8 +329,11 @@ async def signal_for(client, row):
             "pattern_low": p_low,
             "pattern_high": p_high,
             "volume_ratio": vol,
+            "candle_body_ratio": conf_body_ratio,
             "trend_strength": trend_strength,
             "trend": trend,
+            "trend_state": trend_state,
+            "trend_filter": trend_filter,
             "strength": row["strength"],
             "strength_bucket": row["bucket"],
             "candle_time": conf["t"],
@@ -363,14 +343,8 @@ async def signal_for(client, row):
 
 
 def est_net_unit(side, entry, exit_market):
-    exit_exec = exit_market * (
-        1 - SLIPPAGE_RATE if side == "LONG" else 1 + SLIPPAGE_RATE
-    )
-    gross = (
-        (exit_exec - entry)
-        if side == "LONG"
-        else (entry - exit_exec)
-    )
+    exit_exec = exit_market * (1 - SLIPPAGE_RATE if side == "LONG" else 1 + SLIPPAGE_RATE)
+    gross = (exit_exec - entry) if side == "LONG" else (entry - exit_exec)
     return gross - (entry + exit_exec) * FEE_RATE
 
 
@@ -384,10 +358,8 @@ def target_for_net(side, entry, target):
 
 
 def open_notional():
-    return sum(
-        float(p.get("entry_price", 0)) * float(p.get("qty", 0))
-        for p in paper_positions.values()
-    )
+    return sum(float(p.get("entry_price", 0)) * float(p.get("qty", 0))
+               for p in paper_positions.values())
 
 
 def open_position(sig, market):
@@ -406,21 +378,14 @@ def open_position(sig, market):
 
     market_extension = trigger_extension(sig["side"], float(sig["trigger_level"]), market)
     if market_extension < 0 or market_extension > MAX_TRIGGER_EXTENSION:
-        sig["reason"] = (
-            f"NO CHASE: cena je {market_extension * 100:.2f} % od průrazu"
-        )
+        sig["reason"] = f"NO CHASE: cena je {market_extension * 100:.2f} % od průrazu"
         return False
 
     side = sig["side"]
-    entry = market * (
-        1 + SLIPPAGE_RATE if side == "LONG" else 1 - SLIPPAGE_RATE
-    )
+    entry = market * (1 + SLIPPAGE_RATE if side == "LONG" else 1 - SLIPPAGE_RATE)
     buf = market * 0.0002
-    stop = (
-        float(sig["pattern_low"]) - buf
-        if side == "LONG"
-        else float(sig["pattern_high"]) + buf
-    )
+    stop = (float(sig["pattern_low"]) - buf if side == "LONG"
+            else float(sig["pattern_high"]) + buf)
     loss = -est_net_unit(side, entry, stop)
     if loss <= 0:
         sig["reason"] = "Neplatná vzdálenost stop-lossu"
@@ -428,16 +393,12 @@ def open_position(sig, market):
 
     total_cap = paper_balance * MAX_TOTAL_NOTIONAL_SHARE
     available_notional = max(0.0, total_cap - open_notional())
-    per_trade_cap = paper_balance * MAX_NOTIONAL_SHARE
-    notional_cap = min(per_trade_cap, available_notional)
+    notional_cap = min(paper_balance * MAX_NOTIONAL_SHARE, available_notional)
     if notional_cap <= 0:
         sig["reason"] = "Není volný kapitál pro další pozici"
         return False
 
-    qty = min(
-        (paper_balance * RISK_PER_TRADE) / loss,
-        notional_cap / entry,
-    )
+    qty = min((paper_balance * RISK_PER_TRADE) / loss, notional_cap / entry)
     if qty <= 0:
         sig["reason"] = "Vypočtené množství je nulové"
         return False
@@ -465,29 +426,16 @@ def close_position(symbol, market, reason):
     p = paper_positions.get(symbol)
     if not p:
         return
-
-    ex = market * (
-        1 - SLIPPAGE_RATE if p["side"] == "LONG" else 1 + SLIPPAGE_RATE
-    )
-    gross = (
-        (ex - p["entry_price"]) * p["qty"]
-        if p["side"] == "LONG"
-        else (p["entry_price"] - ex) * p["qty"]
-    )
+    ex = market * (1 - SLIPPAGE_RATE if p["side"] == "LONG" else 1 + SLIPPAGE_RATE)
+    gross = ((ex - p["entry_price"]) * p["qty"] if p["side"] == "LONG"
+             else (p["entry_price"] - ex) * p["qty"])
     fees = (p["entry_price"] * p["qty"] + ex * p["qty"]) * FEE_RATE
     net = gross - fees
     paper_balance += net
-
-    history.insert(
-        0,
-        {
-            **p,
-            "exit_price": ex,
-            "net_pnl": net,
-            "reason": reason,
-            "exit_time": datetime.now(timezone.utc).isoformat(),
-        },
-    )
+    history.insert(0, {
+        **p, "exit_price": ex, "net_pnl": net, "reason": reason,
+        "exit_time": datetime.now(timezone.utc).isoformat(),
+    })
     del history[100:]
     paper_positions.pop(symbol, None)
     save_state()
@@ -496,23 +444,15 @@ def close_position(symbol, market, reason):
 async def manage_positions(client):
     symbols = list(paper_positions)
     if not symbols:
-        return {}
-
-    quotes = await asyncio.gather(
-        *(price(client, symbol) for symbol in symbols),
-        return_exceptions=True,
-    )
-    marks = {}
+        return
+    quotes = await asyncio.gather(*(price(client, symbol) for symbol in symbols), return_exceptions=True)
     now = datetime.now(timezone.utc)
-
     for symbol, px in zip(symbols, quotes):
         if isinstance(px, Exception):
             continue
-        marks[symbol] = float(px)
         p = paper_positions.get(symbol)
         if not p:
             continue
-
         age = (now - datetime.fromisoformat(p["entry_time"])).total_seconds() / 60
         if p["side"] == "LONG":
             if px <= p["stop_loss"]:
@@ -528,25 +468,17 @@ async def manage_positions(client):
             if px <= p["take_profit"]:
                 close_position(symbol, px, "TAKE_PROFIT")
                 continue
-
         if symbol in paper_positions and age >= MAX_TRADE_MINUTES:
             close_position(symbol, px, "TIME_EXIT")
-
-    return marks
 
 
 async def marked_positions(client):
     symbols = list(paper_positions)
     if not symbols:
         return [], 0.0
-
-    quotes = await asyncio.gather(
-        *(price(client, symbol) for symbol in symbols),
-        return_exceptions=True,
-    )
+    quotes = await asyncio.gather(*(price(client, symbol) for symbol in symbols), return_exceptions=True)
     out = []
     total_upnl = 0.0
-
     for symbol, px in zip(symbols, quotes):
         p = paper_positions.get(symbol)
         if not p:
@@ -556,12 +488,7 @@ async def marked_positions(client):
         px = float(px)
         upnl = est_net_unit(p["side"], p["entry_price"], px) * p["qty"]
         total_upnl += upnl
-        out.append({
-            **p,
-            "current_price": px,
-            "unrealized_pnl": upnl,
-        })
-
+        out.append({**p, "current_price": px, "unrealized_pnl": upnl})
     return out, total_upnl
 
 
@@ -573,7 +500,6 @@ async def cycle():
 
 async def _cycle():
     global last_scan, last_signal, last_signals, last_scan_at
-
     async with httpx.AsyncClient() as client:
         if not last_scan or time.monotonic() - last_scan_at >= 60:
             last_scan = await build_scan(client)
@@ -582,32 +508,17 @@ async def _cycle():
         await manage_positions(client)
 
         opened_symbols = []
-        slots = max(0, MAX_OPEN_POSITIONS - len(paper_positions))
-        if slots > 0:
-            # Every configured coin is watched. Strength rank only prioritizes
-            # otherwise-valid simultaneous signals; it is no longer a gate.
-            watch = [
-                row for row in last_scan
-                if row["symbol"] not in paper_positions
-            ]
-            signals = [
-                s
-                for s in await asyncio.gather(
-                    *(signal_for(client, row) for row in watch)
-                )
-                if s
-            ]
-
+        if len(paper_positions) < MAX_OPEN_POSITIONS:
+            watch = [row for row in last_scan if row["symbol"] not in paper_positions]
+            signals = [s for s in await asyncio.gather(
+                *(signal_for(client, row) for row in watch)
+            ) if s]
             priority = {"EARLY_BREAKOUT": 3, "EARLY_MOMENTUM": 2}
-            signals.sort(
-                key=lambda x: (
-                    priority.get(x["setup"], 0),
-                    x["trend_strength"],
-                    x["volume_ratio"],
-                    abs(x["strength"]),
-                ),
-                reverse=True,
-            )
+            signals.sort(key=lambda x: (
+                priority.get(x["setup"], 0),
+                1 if x.get("trend_filter") == "ALIGNED_15M" else 0,
+                x["volume_ratio"], abs(x["strength"]),
+            ), reverse=True)
             last_signals = [dict(s) for s in signals[:10]]
 
             if signals:
@@ -625,8 +536,8 @@ async def _cycle():
                 last_signal = {
                     "side": "WAIT",
                     "reason": (
-                        "Čekám na časný 1m průraz/momentum ve směru 15m trendu. "
-                        "Sleduji všechny coiny."
+                        "Čekám na časný 1m průraz. Jasný 15m trend musí souhlasit; "
+                        "v neutrální 15m zóně stačí silnější 1m svíčka a objem."
                     ),
                 }
         else:
@@ -638,18 +549,14 @@ async def _cycle():
 
         positions_out, total_upnl = await marked_positions(client)
         primary = positions_out[0] if positions_out else None
-        primary_upnl = float(primary["unrealized_pnl"]) if primary else 0.0
-        primary_price = float(primary["current_price"]) if primary else None
-
         return {
             "bot": "V8 Candle Scanner",
             "mode": "PAPER",
             "balance": paper_balance,
             "equity": paper_balance + total_upnl,
-            # Legacy fields keep the combined dashboard compatible.
-            "unrealized_pnl": primary_upnl,
+            "unrealized_pnl": float(primary["unrealized_pnl"]) if primary else 0.0,
             "total_unrealized_pnl": total_upnl,
-            "price": primary_price,
+            "price": float(primary["current_price"]) if primary else None,
             "position": primary,
             "positions": positions_out,
             "open_positions": len(positions_out),
@@ -669,6 +576,10 @@ async def _cycle():
             "breakout_lookback": BREAKOUT_LOOKBACK,
             "max_entry_deviation": MAX_ENTRY_DEVIATION,
             "max_trigger_extension": MAX_TRIGGER_EXTENSION,
+            "trend_filter_mode": "adaptive_15m",
+            "trend_neutral_strength": TREND_NEUTRAL_STRENGTH,
+            "neutral_volume_ratio": NEUTRAL_VOLUME_RATIO,
+            "neutral_body_ratio": NEUTRAL_BODY_RATIO,
             "enabled_setups": ["EARLY_BREAKOUT", "EARLY_MOMENTUM"],
             "risk_per_trade": RISK_PER_TRADE,
             "risk_reward": RISK_REWARD,
@@ -698,10 +609,11 @@ async def health():
         "status": "ok",
         "bot": "V8 Candle Scanner",
         "symbols": len(SYMBOLS),
-        "strategy": "all coins + early 1m breakout/momentum + 15m trend + multi-position",
+        "strategy": "all coins + early 1m + adaptive 15m trend + multi-position",
         "rr": "1:2",
         "max_open_positions": MAX_OPEN_POSITIONS,
         "breakout_lookback": BREAKOUT_LOOKBACK,
+        "trend_filter_mode": "adaptive_15m",
     }
 
 
@@ -716,8 +628,7 @@ async def analyze():
 @app.get("/", response_class=HTMLResponse)
 async def dashboard():
     return '''<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>V8 Candle Scanner</title>
-<style>body{margin:0;background:#07111f;color:#f4f7fb;font-family:system-ui}.w{max-width:920px;margin:auto;padding:18px}.card{background:#0f1b2d;border:1px solid #243650;border-radius:18px;padding:18px;margin:12px 0}.row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.big{font-size:34px;font-weight:800}.muted{color:#8ea1b8}.green{color:#21d19f}.red{color:#ff647c}.amber{color:#f8c55c}.pos{padding:10px 0;border-bottom:1px solid #243650}table{width:100%;border-collapse:collapse}td,th{padding:9px;border-bottom:1px solid #243650;text-align:left;font-size:13px}@media(max-width:650px){.row{grid-template-columns:1fr}.big{font-size:29px}}</style></head>
-<body><div class="w"><h1>V8 Candle Scanner</h1><div class="muted">Všechny coiny · EARLY BREAKOUT/MOMENTUM 1m · trend 15m · více pozic · PAPER</div>
-<div class="row"><div class="card"><div class="muted">BALANCE</div><div id="bal" class="big">-</div></div><div class="card"><div class="muted">EQUITY</div><div id="eq" class="big">-</div></div></div>
-<div class="card"><h2>Aktuální pozice</h2><div id="pos">Načítám…</div></div><div class="card"><h2>Market scanner</h2><div id="scan">Načítám…</div></div><div class="card"><h2>Poslední obchody</h2><div id="hist">Načítám…</div></div></div>
-<script>async function go(){let d=await (await fetch('/analyze')).json();bal.textContent=d.balance.toFixed(2)+' USDT';eq.textContent=d.equity.toFixed(2)+' USDT';pos.innerHTML=d.positions?.length?d.positions.map(p=>`<div class="pos"><b>${p.symbol}</b> <span class="${p.side==='LONG'?'green':'red'}">${p.side}</span> · ${p.setup}<br>Entry ${p.entry_price.toFixed(5)} · Now ${p.current_price.toFixed(5)} · SL ${p.stop_loss.toFixed(5)} · TP ${p.take_profit.toFixed(5)} · P/L <b class="${p.unrealized_pnl>=0?'green':'red'}">${p.unrealized_pnl.toFixed(2)} USDT</b></div>`).join(''):'Žádná otevřená pozice';scan.innerHTML='<table><tr><th>Coin</th><th>1h</th><th>4h</th><th>Strength</th><th>Rank</th></tr>'+d.scan.map(x=>`<tr><td>${x.symbol}</td><td>${x.m1h.toFixed(2)}%</td><td>${x.m4h.toFixed(2)}%</td><td>${x.strength.toFixed(2)}</td><td>${x.rank}</td></tr>`).join('')+'</table>';hist.innerHTML=d.history.length?d.history.slice(0,20).map(x=>`<div>${x.symbol} ${x.side} · ${x.setup} · ${x.reason} · <b>${x.net_pnl.toFixed(2)} USDT</b></div>`).join(''):'Zatím bez uzavřených obchodů'}go();setInterval(go,15000)</script></body></html>'''
+<style>body{margin:0;background:#07111f;color:#f4f7fb;font-family:system-ui}.w{max-width:920px;margin:auto;padding:18px}.card{background:#0f1b2d;border:1px solid #243650;border-radius:18px;padding:18px;margin:12px 0}.row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.big{font-size:34px;font-weight:800}.muted{color:#8ea1b8}.green{color:#21d19f}.red{color:#ff647c}.pos{padding:10px 0;border-bottom:1px solid #243650}@media(max-width:650px){.row{grid-template-columns:1fr}}</style></head>
+<body><div class="w"><h1>V8 Candle Scanner</h1><div class="muted">Všechny coiny · EARLY 1m · adaptivní 15m filtr · více pozic · PAPER</div>
+<div class="row"><div class="card"><div class="muted">BALANCE</div><div id="bal" class="big">-</div></div><div class="card"><div class="muted">EQUITY</div><div id="eq" class="big">-</div></div></div><div class="card"><h2>Aktuální pozice</h2><div id="pos">Načítám…</div></div></div>
+<script>async function go(){let d=await (await fetch('/analyze')).json();bal.textContent=d.balance.toFixed(2)+' USDT';eq.textContent=d.equity.toFixed(2)+' USDT';pos.innerHTML=d.positions?.length?d.positions.map(p=>`<div class="pos"><b>${p.symbol}</b> <span class="${p.side==='LONG'?'green':'red'}">${p.side}</span> · ${p.setup} · ${p.trend_filter||''}<br>Entry ${p.entry_price.toFixed(5)} · Now ${p.current_price.toFixed(5)} · P/L <b class="${p.unrealized_pnl>=0?'green':'red'}">${p.unrealized_pnl.toFixed(2)} USDT</b></div>`).join(''):'Žádná otevřená pozice'}go();setInterval(go,15000)</script></body></html>'''
