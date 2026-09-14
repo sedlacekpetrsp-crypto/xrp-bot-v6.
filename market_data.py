@@ -3,6 +3,7 @@ import asyncio
 import copy
 import json
 import math
+import os
 import re
 import time
 from datetime import datetime, timezone
@@ -11,7 +12,7 @@ from urllib.parse import urlsplit, parse_qsl
 
 import httpx
 
-BUILD = "market-data-guard-20260913-3"
+BUILD = "market-data-guard-20260913-4"
 INTERVALS = {"1m": 1, "5m": 5, "15m": 15, "30m": 30,
              "1h": 60, "4h": 240, "1d": 1440}
 
@@ -88,7 +89,6 @@ class MarketData:
         symbol = str(params.get("symbol", ""))
         if not symbol or not symbol.isalnum():
             raise MarketDataUnavailable("Chybí podporovaný obchodní pár")
-        # Keep the quote currency exactly: USDC is never silently replaced by USD/USDT.
         pair = "XBT" + symbol[3:] if symbol.startswith("BTC") else symbol
         query = {"pair": pair}
         if path == "/api/v3/klines":
@@ -145,8 +145,6 @@ class MarketData:
 
     async def get(self, client, url, params=None, timeout=15):
         parsed = urlsplit(str(url))
-        # Callers supply their existing trusted BINANCE_API deployment setting.
-        # Preserve Binance-compatible configured gateways, including path prefixes.
         if parsed.scheme not in {"https", "http"} or not parsed.hostname:
             raise MarketDataUnavailable("Neplatná adresa zdroje dat")
         params = {**dict(parse_qsl(parsed.query)), **(params or {})}
@@ -158,8 +156,6 @@ class MarketData:
         async with self.key_locks.setdefault(key, asyncio.Lock()):
             if time.monotonic() < self.transition_until:
                 raise MarketDataUnavailable("Změna zdroje na Kraken; čekám na nový cyklus")
-            # Remain on the fallback for the lifetime of this process: no mixed-source cycles.
-            # On a later restart Binance will be tried once and Retry-After respected again.
             cached = self.cache.get(key)
             now = time.monotonic()
             if cached and cached[0] > now and cached[1] == self.provider:
@@ -181,17 +177,12 @@ class MarketData:
                         self.cache.clear()
                         self.last_error = f"Binance nedostupná ({status or type(exc).__name__}); PAPER zdroj Kraken"
                         print("MARKET_DATA_SOURCE", self.last_error, flush=True)
-                        # Abort the transitioning cycle instead of combining exchange data.
                         raise MarketDataUnavailable("Změna zdroje na Kraken; čekám na nový cyklus") from exc
                 else:
                     data = await self.kraken(client, path, params, timeout)
                 self.validate(path, params, data)
                 ttl = 1.0 if path.endswith("price") else 0.0 if path.endswith("depth") else 15.0
                 if path.endswith("klines") and params.get("interval") in INTERVALS:
-                    # Bots trade only on closed candles. Keep the current kline response
-                    # until that candle boundary instead of downloading identical history
-                    # every 15 seconds. If the provider is a fraction late publishing the
-                    # new candle, retry quickly rather than caching stale history for a full interval.
                     seconds = INTERVALS[params["interval"]] * 60
                     wall_now = time.time()
                     current_bucket_ms = int(wall_now // seconds * seconds * 1000)
@@ -224,6 +215,39 @@ market_get = market.get
 
 def install_data_health(app):
     from fastapi.responses import JSONResponse
+
+    if getattr(app, "title", "") == "V8 Candle Combined":
+        keepalive_url = os.getenv(
+            "V81_KEEPALIVE_URL",
+            "https://xrp-bot-v8-1-candle.onrender.com/health",
+        )
+        keepalive_task = None
+
+        async def keep_v81_awake():
+            await asyncio.sleep(10)
+            async with httpx.AsyncClient(follow_redirects=True) as client:
+                while True:
+                    try:
+                        response = await client.head(keepalive_url, timeout=30)
+                        print(
+                            f"V81_KEEPALIVE status={response.status_code} target={keepalive_url}",
+                            flush=True,
+                        )
+                    except Exception as exc:
+                        print(f"V81_KEEPALIVE_ERROR {exc!r}", flush=True)
+                    await asyncio.sleep(240)
+
+        @app.on_event("startup")
+        async def start_v81_keepalive():
+            nonlocal keepalive_task
+            keepalive_task = asyncio.create_task(keep_v81_awake())
+
+        @app.on_event("shutdown")
+        async def stop_v81_keepalive():
+            nonlocal keepalive_task
+            if keepalive_task:
+                keepalive_task.cancel()
+                await asyncio.gather(keepalive_task, return_exceptions=True)
 
     @app.get("/data-health")
     async def data_health():
