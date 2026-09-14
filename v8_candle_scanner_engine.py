@@ -1,11 +1,11 @@
-from market_data import market_get, market, install_data_health
+from market_data import market_get, install_data_health
 import os
 import time
 from entry_rules import ENTRY_INTERVAL, STRATEGY_VERSION, MAX_ENTRY_DEVIATION, rejection
 import json
 import psycopg
 import asyncio
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 from typing import Dict, Any, Optional, List
 
 import httpx
@@ -27,62 +27,124 @@ RISK_REWARD = float(os.getenv("RISK_REWARD", "2.0"))
 FEE_RATE = float(os.getenv("FEE_RATE", "0.0005"))
 SLIPPAGE_RATE = float(os.getenv("SLIPPAGE_RATE", "0.0002"))
 MAX_NOTIONAL_SHARE = float(os.getenv("MAX_NOTIONAL_SHARE", "0.50"))
-MIN_VOLUME_RATIO = float(os.getenv("MIN_VOLUME_RATIO", "1.20"))
-MIN_TREND_STRENGTH = float(os.getenv("MIN_TREND_STRENGTH", "0.0012"))
-BREAKOUT_LOOKBACK = int(os.getenv("BREAKOUT_LOOKBACK", "10"))
-BREAKOUT_VOLUME_RATIO = float(os.getenv("BREAKOUT_VOLUME_RATIO", "1.10"))
-BREAKOUT_TREND_STRENGTH = float(os.getenv("BREAKOUT_TREND_STRENGTH", "0.0008"))
-MOMENTUM_MIN_MOVE = float(os.getenv("MOMENTUM_MIN_MOVE", "0.0025"))
-MOMENTUM_BODY_RATIO = float(os.getenv("MOMENTUM_BODY_RATIO", "0.60"))
-MOMENTUM_VOLUME_RATIO = float(os.getenv("MOMENTUM_VOLUME_RATIO", "1.15"))
+MAX_TOTAL_NOTIONAL_SHARE = float(os.getenv("MAX_TOTAL_NOTIONAL_SHARE", "1.00"))
+MAX_OPEN_POSITIONS = int(os.getenv("MAX_OPEN_POSITIONS", "5"))
+
+# New early-entry settings use new env names so older Render overrides cannot
+# accidentally keep the old 10-candle / late-entry behaviour.
+BREAKOUT_LOOKBACK = int(os.getenv("EARLY_BREAKOUT_LOOKBACK", "4"))
+BREAKOUT_VOLUME_RATIO = float(os.getenv("EARLY_BREAKOUT_VOLUME_RATIO", "1.05"))
+BREAKOUT_TREND_STRENGTH = float(os.getenv("EARLY_TREND_STRENGTH", "0.0005"))
+MOMENTUM_MIN_MOVE = float(os.getenv("EARLY_MOMENTUM_MIN_MOVE", "0.0015"))
+MOMENTUM_BODY_RATIO = float(os.getenv("EARLY_MOMENTUM_BODY_RATIO", "0.55"))
+MOMENTUM_VOLUME_RATIO = float(os.getenv("EARLY_MOMENTUM_VOLUME_RATIO", "1.05"))
+MAX_TRIGGER_EXTENSION = float(os.getenv("MAX_TRIGGER_EXTENSION", "0.0020"))
+
+# TOP_N is now display/ranking information only. Every configured coin may trade.
 TOP_N = int(os.getenv("TOP_N", "5"))
-SCAN_SECONDS = 15
+SCAN_SECONDS = int(os.getenv("SCAN_SECONDS", "15"))
 last_scan_at = 0.0
 MAX_TRADE_MINUTES = int(os.getenv("MAX_TRADE_MINUTES", "120"))
 COOLDOWN_AFTER_LOSS_MIN = 0
 
 paper_balance = STARTING_BALANCE
+paper_positions: Dict[str, Dict[str, Any]] = {}
+# Compatibility alias for the combined dashboard/database verifier.
 paper_position: Optional[Dict[str, Any]] = None
 history: List[Dict[str, Any]] = []
 last_scan: List[Dict[str, Any]] = []
 last_signal: Dict[str, Any] = {"side": "WAIT"}
+last_signals: List[Dict[str, Any]] = []
 cooldown_until: Optional[datetime] = None
 last_entry_candle: Dict[str, int] = {}
 bot_task = None
-
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 cycle_lock = asyncio.Lock()
 state_loaded = False
 
 
+def sync_legacy_position():
+    global paper_position
+    paper_position = next(iter(paper_positions.values()), None)
+
+
 def save_state():
-    state = {"paper_balance": paper_balance, "paper_position": paper_position,
-             "history": history, "last_entry_candle": last_entry_candle}
+    if not DATABASE_URL:
+        return
+    sync_legacy_position()
+    state = {
+        "paper_balance": paper_balance,
+        "paper_positions": paper_positions,
+        "paper_position": paper_position,
+        "history": history,
+        "last_entry_candle": last_entry_candle,
+    }
     with psycopg.connect(DATABASE_URL) as conn:
-        conn.execute("INSERT INTO candle_v8_scanner_state (id, state) VALUES (1, %s::jsonb) ON CONFLICT (id) DO UPDATE SET state=EXCLUDED.state", (json.dumps(state),))
+        conn.execute(
+            "INSERT INTO candle_v8_scanner_state (id, state) VALUES (1, %s::jsonb) "
+            "ON CONFLICT (id) DO UPDATE SET state=EXCLUDED.state",
+            (json.dumps(state),),
+        )
 
 
 def load_state():
-    global paper_balance, paper_position, history, last_entry_candle, state_loaded
+    global paper_balance, paper_positions, history, last_entry_candle, state_loaded
     if state_loaded:
         return
     if not DATABASE_URL:
         raise RuntimeError("Scanner: DATABASE_URL chybí; nelze bezpečně ukládat historii")
     with psycopg.connect(DATABASE_URL) as conn:
-        conn.execute("CREATE TABLE IF NOT EXISTS candle_v8_scanner_state (id INTEGER PRIMARY KEY, state JSONB NOT NULL)")
-        row = conn.execute("SELECT state FROM candle_v8_scanner_state WHERE id=1").fetchone()
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS candle_v8_scanner_state "
+            "(id INTEGER PRIMARY KEY, state JSONB NOT NULL)"
+        )
+        row = conn.execute(
+            "SELECT state FROM candle_v8_scanner_state WHERE id=1"
+        ).fetchone()
+
     state = row[0] if row else json.loads(os.getenv("SCANNER_INITIAL_STATE", "{}"))
     paper_balance = float(state.get("paper_balance", STARTING_BALANCE))
-    paper_position = state.get("paper_position")
+
+    stored_positions = state.get("paper_positions")
+    if isinstance(stored_positions, dict):
+        paper_positions = {
+            str(symbol): position
+            for symbol, position in stored_positions.items()
+            if isinstance(position, dict)
+        }
+    elif isinstance(stored_positions, list):
+        paper_positions = {
+            str(position.get("symbol")): position
+            for position in stored_positions
+            if isinstance(position, dict) and position.get("symbol")
+        }
+    else:
+        # Seamless migration from the old single-position state.
+        old = state.get("paper_position")
+        paper_positions = (
+            {str(old.get("symbol", "XRPUSDT")): old}
+            if isinstance(old, dict)
+            else {}
+        )
+
     history = state.get("history", [])
     last_entry_candle = state.get("last_entry_candle", {})
+    sync_legacy_position()
     save_state()
     state_loaded = True
 
 
 def c(k):
-    return {"t": int(k[0]), "o": float(k[1]), "h": float(k[2]), "l": float(k[3]), "c": float(k[4]), "v": float(k[5])}
+    return {
+        "t": int(k[0]),
+        "o": float(k[1]),
+        "h": float(k[2]),
+        "l": float(k[3]),
+        "c": float(k[4]),
+        "v": float(k[5]),
+    }
+
 
 def ema(vals, period):
     if len(vals) < period:
@@ -93,30 +155,51 @@ def ema(vals, period):
         e = a * x + (1 - a) * e
     return e
 
-def bullish(x): return x["c"] > x["o"]
-def bearish(x): return x["c"] < x["o"]
-def body(x): return abs(x["c"] - x["o"])
-def rng(x): return max(x["h"] - x["l"], 1e-12)
 
-def bull_engulf(a, b):
-    return bearish(a) and bullish(b) and b["o"] <= a["c"] and b["c"] >= a["o"] and body(b) > body(a)
+def bullish(x):
+    return x["c"] > x["o"]
 
-def bear_engulf(a, b):
-    return bullish(a) and bearish(b) and b["o"] >= a["c"] and b["c"] <= a["o"] and body(b) > body(a)
+
+def bearish(x):
+    return x["c"] < x["o"]
+
+
+def body(x):
+    return abs(x["c"] - x["o"])
+
+
+def rng(x):
+    return max(x["h"] - x["l"], 1e-12)
+
 
 async def klines(client, symbol, interval, limit):
-    r = await market_get(client, f"{BINANCE_API}/api/v3/klines", params={"symbol": symbol, "interval": interval, "limit": limit}, timeout=15)
+    r = await market_get(
+        client,
+        f"{BINANCE_API}/api/v3/klines",
+        params={"symbol": symbol, "interval": interval, "limit": limit},
+        timeout=15,
+    )
     r.raise_for_status()
     return r.json()
 
+
 async def price(client, symbol):
-    r = await market_get(client, f"{BINANCE_API}/api/v3/ticker/price", params={"symbol": symbol}, timeout=15)
+    r = await market_get(
+        client,
+        f"{BINANCE_API}/api/v3/ticker/price",
+        params={"symbol": symbol},
+        timeout=15,
+    )
     r.raise_for_status()
     return float(r.json()["price"])
 
+
 async def strength_for(client, symbol):
     try:
-        h1, h4 = await asyncio.gather(klines(client, symbol, "1h", 6), klines(client, symbol, "4h", 6))
+        h1, h4 = await asyncio.gather(
+            klines(client, symbol, "1h", 6),
+            klines(client, symbol, "4h", 6),
+        )
         h1 = [c(x) for x in h1][:-1]
         h4 = [c(x) for x in h4][:-1]
         m1 = (h1[-1]["c"] / h1[-5]["o"] - 1) * 100 if len(h1) >= 5 else 0
@@ -126,27 +209,55 @@ async def strength_for(client, symbol):
     except Exception:
         return None
 
+
 async def build_scan(client):
-    rows = [r for r in await asyncio.gather(*(strength_for(client, s) for s in SYMBOLS)) if r]
+    rows = [
+        r
+        for r in await asyncio.gather(*(strength_for(client, s) for s in SYMBOLS))
+        if r
+    ]
     rows.sort(key=lambda x: x["strength"], reverse=True)
     longs = {x["symbol"] for x in rows[:TOP_N]}
     shorts = {x["symbol"] for x in rows[-TOP_N:]}
-    for x in rows:
-        x["bucket"] = "LONG" if x["symbol"] in longs else "SHORT" if x["symbol"] in shorts else "NEUTRAL"
+    for rank, x in enumerate(rows, start=1):
+        x["rank"] = rank
+        x["bucket"] = (
+            "LONG"
+            if x["symbol"] in longs
+            else "SHORT"
+            if x["symbol"] in shorts
+            else "NEUTRAL"
+        )
+        x["tradable"] = True
     return rows
+
+
+def trigger_extension(side, trigger_level, current):
+    if trigger_level <= 0 or current <= 0:
+        return float("inf")
+    if side == "LONG":
+        return current / trigger_level - 1
+    return trigger_level / current - 1
+
 
 async def signal_for(client, row):
     symbol = row["symbol"]
+    if symbol in paper_positions:
+        return None
     try:
-        raw5, raw15 = await asyncio.gather(klines(client, symbol, ENTRY_INTERVAL, 60), klines(client, symbol, "15m", 70))
-        m = [c(x) for x in raw5][:-1]
+        raw1, raw15 = await asyncio.gather(
+            klines(client, symbol, ENTRY_INTERVAL, 60),
+            klines(client, symbol, "15m", 70),
+        )
+        m = [c(x) for x in raw1][:-1]
         s = [c(x) for x in raw15][:-1]
         if len(m) < max(25, BREAKOUT_LOOKBACK + 3):
             return None
 
         a, b, conf = m[-3], m[-2], m[-1]
-        avg_vol = sum(x["v"] for x in m[-22:-2]) / 20
-        vol = conf["v"] / avg_vol if avg_vol else 0
+        avg_vol = sum(x["v"] for x in m[-21:-1]) / 20
+        vol = conf["v"] / avg_vol if avg_vol else 0.0
+
         closes = [x["c"] for x in s]
         e20, e50 = ema(closes, 20), ema(closes, 50)
         if not e20 or not e50:
@@ -154,57 +265,79 @@ async def signal_for(client, row):
 
         trend = "LONG" if e20 > e50 else "SHORT"
         trend_strength = abs(e20 - e50) / conf["c"]
+
         side = None
         setup = None
         p_low = None
         p_high = None
-        required_vol = MIN_VOLUME_RATIO
-        required_trend = MIN_TREND_STRENGTH
+        trigger_level = None
+        required_vol = BREAKOUT_VOLUME_RATIO
 
-        if side is None:
-            prev = m[-(BREAKOUT_LOOKBACK + 1):-1]
-            prev_high = max(x["h"] for x in prev)
-            prev_low = min(x["l"] for x in prev)
-            if bullish(conf) and conf["c"] > prev_high:
-                side = "LONG"
-                setup = "MOMENTUM_BREAKOUT"
-                p_low = min(x["l"] for x in m[-4:])
-                p_high = conf["h"]
-                required_vol = BREAKOUT_VOLUME_RATIO
-                required_trend = BREAKOUT_TREND_STRENGTH
-            elif bearish(conf) and conf["c"] < prev_low:
-                side = "SHORT"
-                setup = "MOMENTUM_BREAKOUT"
-                p_low = conf["l"]
-                p_high = max(x["h"] for x in m[-4:])
-                required_vol = BREAKOUT_VOLUME_RATIO
-                required_trend = BREAKOUT_TREND_STRENGTH
+        prev = m[-(BREAKOUT_LOOKBACK + 1):-1]
+        prev_high = max(x["h"] for x in prev)
+        prev_low = min(x["l"] for x in prev)
 
+        # Primary early entry: first confirmed 1m close through only the previous
+        # four 1m candles, instead of waiting for a 10-candle breakout.
+        if bullish(conf) and conf["c"] > prev_high:
+            side = "LONG"
+            setup = "EARLY_BREAKOUT"
+            trigger_level = prev_high
+            p_low = min(x["l"] for x in m[-4:])
+            p_high = conf["h"]
+            required_vol = BREAKOUT_VOLUME_RATIO
+        elif bearish(conf) and conf["c"] < prev_low:
+            side = "SHORT"
+            setup = "EARLY_BREAKOUT"
+            trigger_level = prev_low
+            p_low = conf["l"]
+            p_high = max(x["h"] for x in m[-4:])
+            required_vol = BREAKOUT_VOLUME_RATIO
+
+        # Secondary path catches a strong impulse before it clears the full
+        # four-candle range, but still requires a clean body and 15m trend.
         if side is None:
             move = abs(conf["c"] / conf["o"] - 1)
             body_ratio = body(conf) / rng(conf)
             above_prev = conf["c"] > max(a["h"], b["h"])
             below_prev = conf["c"] < min(a["l"], b["l"])
-            if bullish(conf) and move >= MOMENTUM_MIN_MOVE and body_ratio >= MOMENTUM_BODY_RATIO and above_prev:
+            if (
+                bullish(conf)
+                and move >= MOMENTUM_MIN_MOVE
+                and body_ratio >= MOMENTUM_BODY_RATIO
+                and above_prev
+            ):
                 side = "LONG"
-                setup = "MOMENTUM"
+                setup = "EARLY_MOMENTUM"
+                trigger_level = max(a["h"], b["h"])
                 p_low = min(x["l"] for x in m[-4:])
                 p_high = conf["h"]
                 required_vol = MOMENTUM_VOLUME_RATIO
-                required_trend = BREAKOUT_TREND_STRENGTH
-            elif bearish(conf) and move >= MOMENTUM_MIN_MOVE and body_ratio >= MOMENTUM_BODY_RATIO and below_prev:
+            elif (
+                bearish(conf)
+                and move >= MOMENTUM_MIN_MOVE
+                and body_ratio >= MOMENTUM_BODY_RATIO
+                and below_prev
+            ):
                 side = "SHORT"
-                setup = "MOMENTUM"
+                setup = "EARLY_MOMENTUM"
+                trigger_level = min(a["l"], b["l"])
                 p_low = conf["l"]
                 p_high = max(x["h"] for x in m[-4:])
                 required_vol = MOMENTUM_VOLUME_RATIO
-                required_trend = BREAKOUT_TREND_STRENGTH
 
         if not side:
             return None
-        if side != row["bucket"] or side != trend:
+
+        # Relative-strength TOP_N no longer blocks entries. All configured
+        # symbols may trade, but they still must align with the 15m EMA trend.
+        if side != trend:
             return None
-        if vol < required_vol or trend_strength < required_trend:
+        if vol < required_vol or trend_strength < BREAKOUT_TREND_STRENGTH:
+            return None
+
+        extension = trigger_extension(side, trigger_level, conf["c"])
+        if extension < 0 or extension > MAX_TRIGGER_EXTENSION:
             return None
         if last_entry_candle.get(symbol) == conf["t"]:
             return None
@@ -214,12 +347,15 @@ async def signal_for(client, row):
             "side": side,
             "setup": setup,
             "entry": conf["c"],
-            "trigger_level": (prev_high if side == "LONG" else prev_low) if setup == "MOMENTUM_BREAKOUT" else (max(a["h"], b["h"]) if side == "LONG" else min(a["l"], b["l"])),
+            "trigger_level": trigger_level,
+            "trigger_extension": extension,
             "pattern_low": p_low,
             "pattern_high": p_high,
             "volume_ratio": vol,
             "trend_strength": trend_strength,
+            "trend": trend,
             "strength": row["strength"],
+            "strength_bucket": row["bucket"],
             "candle_time": conf["t"],
         }
     except Exception:
@@ -227,9 +363,16 @@ async def signal_for(client, row):
 
 
 def est_net_unit(side, entry, exit_market):
-    exit_exec = exit_market * (1 - SLIPPAGE_RATE if side == "LONG" else 1 + SLIPPAGE_RATE)
-    gross = (exit_exec - entry) if side == "LONG" else (entry - exit_exec)
+    exit_exec = exit_market * (
+        1 - SLIPPAGE_RATE if side == "LONG" else 1 + SLIPPAGE_RATE
+    )
+    gross = (
+        (exit_exec - entry)
+        if side == "LONG"
+        else (entry - exit_exec)
+    )
     return gross - (entry + exit_exec) * FEE_RATE
+
 
 def target_for_net(side, entry, target):
     f, s = FEE_RATE, SLIPPAGE_RATE
@@ -239,25 +382,68 @@ def target_for_net(side, entry, target):
     ex = (entry * (1 - f) - target) / (1 + f)
     return ex / (1 + s)
 
+
+def open_notional():
+    return sum(
+        float(p.get("entry_price", 0)) * float(p.get("qty", 0))
+        for p in paper_positions.values()
+    )
+
+
 def open_position(sig, market):
-    global paper_position
+    symbol = sig["symbol"]
+    if symbol in paper_positions:
+        sig["reason"] = "Na tomto coinu už je otevřená pozice"
+        return False
+    if len(paper_positions) >= MAX_OPEN_POSITIONS:
+        sig["reason"] = "Dosažen maximální počet souběžných pozic"
+        return False
+
     error = rejection(sig, market)
     if error:
         sig["reason"] = error
-        sig["side"] = "WAIT"
         return False
+
+    market_extension = trigger_extension(sig["side"], float(sig["trigger_level"]), market)
+    if market_extension < 0 or market_extension > MAX_TRIGGER_EXTENSION:
+        sig["reason"] = (
+            f"NO CHASE: cena je {market_extension * 100:.2f} % od průrazu"
+        )
+        return False
+
     side = sig["side"]
-    entry = market * (1 + SLIPPAGE_RATE if side == "LONG" else 1 - SLIPPAGE_RATE)
+    entry = market * (
+        1 + SLIPPAGE_RATE if side == "LONG" else 1 - SLIPPAGE_RATE
+    )
     buf = market * 0.0002
-    stop = (sig["pattern_low"] - buf) if side == "LONG" else (sig["pattern_high"] + buf)
+    stop = (
+        float(sig["pattern_low"]) - buf
+        if side == "LONG"
+        else float(sig["pattern_high"]) + buf
+    )
     loss = -est_net_unit(side, entry, stop)
     if loss <= 0:
+        sig["reason"] = "Neplatná vzdálenost stop-lossu"
         return False
-    qty = min((paper_balance * RISK_PER_TRADE) / loss, (paper_balance * MAX_NOTIONAL_SHARE) / entry)
+
+    total_cap = paper_balance * MAX_TOTAL_NOTIONAL_SHARE
+    available_notional = max(0.0, total_cap - open_notional())
+    per_trade_cap = paper_balance * MAX_NOTIONAL_SHARE
+    notional_cap = min(per_trade_cap, available_notional)
+    if notional_cap <= 0:
+        sig["reason"] = "Není volný kapitál pro další pozici"
+        return False
+
+    qty = min(
+        (paper_balance * RISK_PER_TRADE) / loss,
+        notional_cap / entry,
+    )
     if qty <= 0:
+        sig["reason"] = "Vypočtené množství je nulové"
         return False
+
     tp = target_for_net(side, entry, loss * RISK_REWARD)
-    paper_position = {
+    paper_positions[symbol] = {
         **sig,
         "strategy_version": STRATEGY_VERSION,
         "signal_price": sig["entry"],
@@ -269,95 +455,227 @@ def open_position(sig, market):
         "risk_usdt": qty * loss,
         "entry_time": datetime.now(timezone.utc).isoformat(),
     }
-    last_entry_candle[sig["symbol"]] = sig["candle_time"]
+    last_entry_candle[symbol] = sig["candle_time"]
     save_state()
     return True
 
-def close_position(market, reason):
-    global paper_balance, paper_position, cooldown_until
-    if not paper_position:
+
+def close_position(symbol, market, reason):
+    global paper_balance
+    p = paper_positions.get(symbol)
+    if not p:
         return
-    p = paper_position
-    ex = market * (1 - SLIPPAGE_RATE if p["side"] == "LONG" else 1 + SLIPPAGE_RATE)
-    gross = (ex - p["entry_price"]) * p["qty"] if p["side"] == "LONG" else (p["entry_price"] - ex) * p["qty"]
+
+    ex = market * (
+        1 - SLIPPAGE_RATE if p["side"] == "LONG" else 1 + SLIPPAGE_RATE
+    )
+    gross = (
+        (ex - p["entry_price"]) * p["qty"]
+        if p["side"] == "LONG"
+        else (p["entry_price"] - ex) * p["qty"]
+    )
     fees = (p["entry_price"] * p["qty"] + ex * p["qty"]) * FEE_RATE
     net = gross - fees
     paper_balance += net
-    history.insert(0, {**p, "exit_price": ex, "net_pnl": net, "reason": reason, "exit_time": datetime.now(timezone.utc).isoformat()})
+
+    history.insert(
+        0,
+        {
+            **p,
+            "exit_price": ex,
+            "net_pnl": net,
+            "reason": reason,
+            "exit_time": datetime.now(timezone.utc).isoformat(),
+        },
+    )
     del history[100:]
-    cooldown_until = None
-    paper_position = None
+    paper_positions.pop(symbol, None)
     save_state()
+
+
+async def manage_positions(client):
+    symbols = list(paper_positions)
+    if not symbols:
+        return {}
+
+    quotes = await asyncio.gather(
+        *(price(client, symbol) for symbol in symbols),
+        return_exceptions=True,
+    )
+    marks = {}
+    now = datetime.now(timezone.utc)
+
+    for symbol, px in zip(symbols, quotes):
+        if isinstance(px, Exception):
+            continue
+        marks[symbol] = float(px)
+        p = paper_positions.get(symbol)
+        if not p:
+            continue
+
+        age = (now - datetime.fromisoformat(p["entry_time"])).total_seconds() / 60
+        if p["side"] == "LONG":
+            if px <= p["stop_loss"]:
+                close_position(symbol, px, "STOP_LOSS")
+                continue
+            if px >= p["take_profit"]:
+                close_position(symbol, px, "TAKE_PROFIT")
+                continue
+        else:
+            if px >= p["stop_loss"]:
+                close_position(symbol, px, "STOP_LOSS")
+                continue
+            if px <= p["take_profit"]:
+                close_position(symbol, px, "TAKE_PROFIT")
+                continue
+
+        if symbol in paper_positions and age >= MAX_TRADE_MINUTES:
+            close_position(symbol, px, "TIME_EXIT")
+
+    return marks
+
+
+async def marked_positions(client):
+    symbols = list(paper_positions)
+    if not symbols:
+        return [], 0.0
+
+    quotes = await asyncio.gather(
+        *(price(client, symbol) for symbol in symbols),
+        return_exceptions=True,
+    )
+    out = []
+    total_upnl = 0.0
+
+    for symbol, px in zip(symbols, quotes):
+        p = paper_positions.get(symbol)
+        if not p:
+            continue
+        if isinstance(px, Exception):
+            px = float(p.get("entry_market", p["entry_price"]))
+        px = float(px)
+        upnl = est_net_unit(p["side"], p["entry_price"], px) * p["qty"]
+        total_upnl += upnl
+        out.append({
+            **p,
+            "current_price": px,
+            "unrealized_pnl": upnl,
+        })
+
+    return out, total_upnl
+
 
 async def cycle():
     async with cycle_lock:
         load_state()
         return await _cycle()
 
+
 async def _cycle():
-    global last_scan, last_signal, last_scan_at
+    global last_scan, last_signal, last_signals, last_scan_at
+
     async with httpx.AsyncClient() as client:
         if not last_scan or time.monotonic() - last_scan_at >= 60:
             last_scan = await build_scan(client)
             last_scan_at = time.monotonic()
-        if paper_position:
-            px = await price(client, paper_position["symbol"])
-            p = paper_position
-            age = (datetime.now(timezone.utc) - datetime.fromisoformat(p["entry_time"])).total_seconds() / 60
-            if p["side"] == "LONG":
-                if px <= p["stop_loss"]:
-                    close_position(px, "STOP_LOSS")
-                elif px >= p["take_profit"]:
-                    close_position(px, "TAKE_PROFIT")
-            else:
-                if px >= p["stop_loss"]:
-                    close_position(px, "STOP_LOSS")
-                elif px <= p["take_profit"]:
-                    close_position(px, "TAKE_PROFIT")
-            if paper_position and age >= MAX_TRADE_MINUTES:
-                close_position(px, "TIME_EXIT")
 
-        cd = False
-        if not paper_position and not cd:
-            watch = [r for r in last_scan if r["bucket"] in ("LONG", "SHORT")]
-            signals = [s for s in await asyncio.gather(*(signal_for(client, r) for r in watch)) if s]
+        await manage_positions(client)
+
+        opened_symbols = []
+        slots = max(0, MAX_OPEN_POSITIONS - len(paper_positions))
+        if slots > 0:
+            # Every configured coin is watched. Strength rank only prioritizes
+            # otherwise-valid simultaneous signals; it is no longer a gate.
+            watch = [
+                row for row in last_scan
+                if row["symbol"] not in paper_positions
+            ]
+            signals = [
+                s
+                for s in await asyncio.gather(
+                    *(signal_for(client, row) for row in watch)
+                )
+                if s
+            ]
+
+            priority = {"EARLY_BREAKOUT": 3, "EARLY_MOMENTUM": 2}
+            signals.sort(
+                key=lambda x: (
+                    priority.get(x["setup"], 0),
+                    x["trend_strength"],
+                    x["volume_ratio"],
+                    abs(x["strength"]),
+                ),
+                reverse=True,
+            )
+            last_signals = [dict(s) for s in signals[:10]]
+
             if signals:
-                priority = {"MOMENTUM_BREAKOUT": 3, "MOMENTUM": 2}
-                signals.sort(key=lambda x: (priority.get(x["setup"], 0), abs(x["strength"]), x["volume_ratio"]), reverse=True)
                 last_signal = signals[0]
-                market = await price(client, last_signal["symbol"])
-                open_position(last_signal, market)
+                for sig in signals:
+                    if len(paper_positions) >= MAX_OPEN_POSITIONS:
+                        break
+                    try:
+                        market = await price(client, sig["symbol"])
+                    except Exception:
+                        continue
+                    if open_position(sig, market):
+                        opened_symbols.append(sig["symbol"])
             else:
-                last_signal = {"side": "WAIT", "reason": "Čekám na průraz nebo momentum ve směru 15m trendu s dostatečným objemem."}
+                last_signal = {
+                    "side": "WAIT",
+                    "reason": (
+                        "Čekám na časný 1m průraz/momentum ve směru 15m trendu. "
+                        "Sleduji všechny coiny."
+                    ),
+                }
+        else:
+            last_signal = {
+                "side": "WAIT",
+                "reason": f"Otevřeno {len(paper_positions)}/{MAX_OPEN_POSITIONS} pozic.",
+            }
+            last_signals = []
 
-        eq = paper_balance
-        upnl = 0.0
-        if paper_position:
-            px = await price(client, paper_position["symbol"])
-            upnl = est_net_unit(paper_position["side"], paper_position["entry_price"], px) * paper_position["qty"]
-            eq += upnl
+        positions_out, total_upnl = await marked_positions(client)
+        primary = positions_out[0] if positions_out else None
+        primary_upnl = float(primary["unrealized_pnl"]) if primary else 0.0
+        primary_price = float(primary["current_price"]) if primary else None
+
         return {
             "bot": "V8 Candle Scanner",
             "mode": "PAPER",
             "balance": paper_balance,
-            "equity": eq,
-            "unrealized_pnl": upnl,
-            "position": paper_position,
+            "equity": paper_balance + total_upnl,
+            # Legacy fields keep the combined dashboard compatible.
+            "unrealized_pnl": primary_upnl,
+            "total_unrealized_pnl": total_upnl,
+            "price": primary_price,
+            "position": primary,
+            "positions": positions_out,
+            "open_positions": len(positions_out),
+            "max_open_positions": MAX_OPEN_POSITIONS,
+            "opened_this_cycle": opened_symbols,
             "signal": last_signal,
+            "signals": last_signals,
             "scan": last_scan,
             "history": history,
             "cooldown_until": None,
             "cooldown_after_loss_min": 0,
             "history_persistent": state_loaded,
             "top_n": TOP_N,
+            "all_symbols_tradable": True,
             "strategy_version": STRATEGY_VERSION,
             "entry_interval": ENTRY_INTERVAL,
+            "breakout_lookback": BREAKOUT_LOOKBACK,
             "max_entry_deviation": MAX_ENTRY_DEVIATION,
-            "enabled_setups": ["MOMENTUM_BREAKOUT", "MOMENTUM"],
+            "max_trigger_extension": MAX_TRIGGER_EXTENSION,
+            "enabled_setups": ["EARLY_BREAKOUT", "EARLY_MOMENTUM"],
             "risk_per_trade": RISK_PER_TRADE,
             "risk_reward": RISK_REWARD,
+            "max_total_notional_share": MAX_TOTAL_NOTIONAL_SHARE,
             "time": datetime.now(timezone.utc).isoformat(),
         }
+
 
 async def loop():
     while True:
@@ -367,10 +685,12 @@ async def loop():
             print("SCANNER LOOP ERROR", repr(e))
         await asyncio.sleep(SCAN_SECONDS)
 
+
 @app.on_event("startup")
 async def startup():
     global bot_task
     bot_task = asyncio.create_task(loop())
+
 
 @app.get("/health")
 async def health():
@@ -378,9 +698,12 @@ async def health():
         "status": "ok",
         "bot": "V8 Candle Scanner",
         "symbols": len(SYMBOLS),
-        "strategy": "market strength + momentum/breakout + 15m trend + volume",
+        "strategy": "all coins + early 1m breakout/momentum + 15m trend + multi-position",
         "rr": "1:2",
+        "max_open_positions": MAX_OPEN_POSITIONS,
+        "breakout_lookback": BREAKOUT_LOOKBACK,
     }
+
 
 @app.get("/analyze")
 async def analyze():
@@ -389,12 +712,12 @@ async def analyze():
     except Exception as e:
         return JSONResponse({"ok": False, "error": str(e)}, status_code=500)
 
+
 @app.get("/", response_class=HTMLResponse)
 async def dashboard():
     return '''<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>V8 Candle Scanner</title>
-<style>body{margin:0;background:#07111f;color:#f4f7fb;font-family:system-ui}.w{max-width:920px;margin:auto;padding:18px}.card{background:#0f1b2d;border:1px solid #243650;border-radius:18px;padding:18px;margin:12px 0}.row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.big{font-size:34px;font-weight:800}.muted{color:#8ea1b8}.green{color:#21d19f}.red{color:#ff647c}.amber{color:#f8c55c}table{width:100%;border-collapse:collapse}td,th{padding:9px;border-bottom:1px solid #243650;text-align:left;font-size:13px}@media(max-width:650px){.row{grid-template-columns:1fr}.big{font-size:29px}}</style></head>
-<body><div class="w"><h1>V8 Candle Scanner</h1><div class="muted">Market strength + MOMENTUM/BREAKOUT + 15m trend + volume · PAPER</div>
+<style>body{margin:0;background:#07111f;color:#f4f7fb;font-family:system-ui}.w{max-width:920px;margin:auto;padding:18px}.card{background:#0f1b2d;border:1px solid #243650;border-radius:18px;padding:18px;margin:12px 0}.row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.big{font-size:34px;font-weight:800}.muted{color:#8ea1b8}.green{color:#21d19f}.red{color:#ff647c}.amber{color:#f8c55c}.pos{padding:10px 0;border-bottom:1px solid #243650}table{width:100%;border-collapse:collapse}td,th{padding:9px;border-bottom:1px solid #243650;text-align:left;font-size:13px}@media(max-width:650px){.row{grid-template-columns:1fr}.big{font-size:29px}}</style></head>
+<body><div class="w"><h1>V8 Candle Scanner</h1><div class="muted">Všechny coiny · EARLY BREAKOUT/MOMENTUM 1m · trend 15m · více pozic · PAPER</div>
 <div class="row"><div class="card"><div class="muted">BALANCE</div><div id="bal" class="big">-</div></div><div class="card"><div class="muted">EQUITY</div><div id="eq" class="big">-</div></div></div>
 <div class="card"><h2>Aktuální pozice</h2><div id="pos">Načítám…</div></div><div class="card"><h2>Market scanner</h2><div id="scan">Načítám…</div></div><div class="card"><h2>Poslední obchody</h2><div id="hist">Načítám…</div></div></div>
-<script>async function go(){let d=await (await fetch('/analyze')).json();bal.textContent=d.balance.toFixed(2)+' USDT';eq.textContent=d.equity.toFixed(2)+' USDT';pos.innerHTML=d.position?`<b>${d.position.symbol}</b> <span class="${d.position.side==='LONG'?'green':'red'}">${d.position.side}</span><br>Setup ${d.position.setup} · Entry ${d.position.entry_price.toFixed(5)} · SL ${d.position.stop_loss.toFixed(5)} · TP ${d.position.take_profit.toFixed(5)}`:'Žádná otevřená pozice';scan.innerHTML='<table><tr><th>Coin</th><th>1h</th><th>4h</th><th>Strength</th><th>Směr</th></tr>'+d.scan.map(x=>`<tr><td>${x.symbol}</td><td>${x.m1h.toFixed(2)}%</td><td>${x.m4h.toFixed(2)}%</td><td>${x.strength.toFixed(2)}</td><td class="${x.bucket==='LONG'?'green':x.bucket==='SHORT'?'red':'muted'}">${x.bucket}</td></tr>`).join('')+'</table>';hist.innerHTML=d.history.length?d.history.map(x=>`<div>${x.symbol} ${x.side} · ${x.setup} · ${x.reason} · <b>${x.net_pnl.toFixed(2)} USDT</b></div>`).join(''):'Zatím bez uzavřených obchodů'}go();setInterval(go,15000)</script></body></html>'''
-
+<script>async function go(){let d=await (await fetch('/analyze')).json();bal.textContent=d.balance.toFixed(2)+' USDT';eq.textContent=d.equity.toFixed(2)+' USDT';pos.innerHTML=d.positions?.length?d.positions.map(p=>`<div class="pos"><b>${p.symbol}</b> <span class="${p.side==='LONG'?'green':'red'}">${p.side}</span> · ${p.setup}<br>Entry ${p.entry_price.toFixed(5)} · Now ${p.current_price.toFixed(5)} · SL ${p.stop_loss.toFixed(5)} · TP ${p.take_profit.toFixed(5)} · P/L <b class="${p.unrealized_pnl>=0?'green':'red'}">${p.unrealized_pnl.toFixed(2)} USDT</b></div>`).join(''):'Žádná otevřená pozice';scan.innerHTML='<table><tr><th>Coin</th><th>1h</th><th>4h</th><th>Strength</th><th>Rank</th></tr>'+d.scan.map(x=>`<tr><td>${x.symbol}</td><td>${x.m1h.toFixed(2)}%</td><td>${x.m4h.toFixed(2)}%</td><td>${x.strength.toFixed(2)}</td><td>${x.rank}</td></tr>`).join('')+'</table>';hist.innerHTML=d.history.length?d.history.slice(0,20).map(x=>`<div>${x.symbol} ${x.side} · ${x.setup} · ${x.reason} · <b>${x.net_pnl.toFixed(2)} USDT</b></div>`).join(''):'Zatím bez uzavřených obchodů'}go();setInterval(go,15000)</script></body></html>'''
