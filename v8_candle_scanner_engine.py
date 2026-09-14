@@ -38,11 +38,14 @@ MOMENTUM_VOLUME_RATIO = float(os.getenv("EARLY_MOMENTUM_VOLUME_RATIO", "1.05"))
 MAX_TRIGGER_EXTENSION = float(os.getenv("MAX_TRIGGER_EXTENSION", "0.0020"))
 
 # 15m trend is now an adaptive filter, not a hard yes/no gate.
-# When EMA20/EMA50 are very close, the 15m market is treated as neutral and
-# a strong 1m breakout may enter in either direction with stricter confirmation.
 TREND_NEUTRAL_STRENGTH = float(os.getenv("TREND_NEUTRAL_STRENGTH", "0.00035"))
 NEUTRAL_VOLUME_RATIO = float(os.getenv("NEUTRAL_VOLUME_RATIO", "1.20"))
 NEUTRAL_BODY_RATIO = float(os.getenv("NEUTRAL_BODY_RATIO", "0.62"))
+
+# Break-even protection: once a trade reaches +1R net, the stop is moved to a
+# market level that produces approximately 0 USDT net after fees + slippage.
+BREAK_EVEN_ENABLED = os.getenv("BREAK_EVEN_ENABLED", "true").lower() in {"1", "true", "yes", "on"}
+BREAK_EVEN_TRIGGER_R = float(os.getenv("BREAK_EVEN_TRIGGER_R", "1.0"))
 
 TOP_N = int(os.getenv("TOP_N", "5"))
 SCAN_SECONDS = int(os.getenv("SCAN_SECONDS", "15"))
@@ -296,10 +299,6 @@ async def signal_for(client, row):
         if not side:
             return None
 
-        # Adaptive 15m filter:
-        # 1) clear 15m trend -> only trade with that trend;
-        # 2) neutral 15m EMA zone -> allow either direction, but only with
-        #    stronger volume and a stronger 1m candle.
         if trend_state == "NEUTRAL":
             required_vol = max(required_vol, NEUTRAL_VOLUME_RATIO)
             if conf_body_ratio < NEUTRAL_BODY_RATIO:
@@ -357,6 +356,40 @@ def target_for_net(side, entry, target):
     return ex / (1 + s)
 
 
+def ensure_break_even_fields(p):
+    """Add fee/slippage-aware BE metadata, including migration for open old trades."""
+    if not BREAK_EVEN_ENABLED:
+        return False
+    changed = False
+    entry = float(p["entry_price"])
+    side = p["side"]
+
+    if "initial_stop_loss" not in p:
+        p["initial_stop_loss"] = float(p["stop_loss"])
+        changed = True
+
+    if "initial_risk_unit" not in p:
+        risk_unit = -est_net_unit(side, entry, float(p["initial_stop_loss"]))
+        if risk_unit <= 0:
+            return changed
+        p["initial_risk_unit"] = risk_unit
+        changed = True
+
+    risk_unit = float(p["initial_risk_unit"])
+    if "break_even_trigger" not in p:
+        p["break_even_trigger"] = target_for_net(
+            side, entry, risk_unit * BREAK_EVEN_TRIGGER_R
+        )
+        changed = True
+    if "break_even_stop" not in p:
+        p["break_even_stop"] = target_for_net(side, entry, 0.0)
+        changed = True
+    if "break_even_active" not in p:
+        p["break_even_active"] = False
+        changed = True
+    return changed
+
+
 def open_notional():
     return sum(float(p.get("entry_price", 0)) * float(p.get("qty", 0))
                for p in paper_positions.values())
@@ -404,16 +437,23 @@ def open_position(sig, market):
         return False
 
     tp = target_for_net(side, entry, loss * RISK_REWARD)
+    be_trigger = target_for_net(side, entry, loss * BREAK_EVEN_TRIGGER_R)
+    be_stop = target_for_net(side, entry, 0.0)
     paper_positions[symbol] = {
         **sig,
         "strategy_version": STRATEGY_VERSION,
         "signal_price": sig["entry"],
         "entry_market": market,
         "entry_price": entry,
+        "initial_stop_loss": stop,
         "stop_loss": stop,
         "take_profit": tp,
         "qty": qty,
         "risk_usdt": qty * loss,
+        "initial_risk_unit": loss,
+        "break_even_trigger": be_trigger,
+        "break_even_stop": be_stop,
+        "break_even_active": False,
         "entry_time": datetime.now(timezone.utc).isoformat(),
     }
     last_entry_candle[symbol] = sig["candle_time"]
@@ -447,29 +487,59 @@ async def manage_positions(client):
         return
     quotes = await asyncio.gather(*(price(client, symbol) for symbol in symbols), return_exceptions=True)
     now = datetime.now(timezone.utc)
+    state_changed = False
+
     for symbol, px in zip(symbols, quotes):
         if isinstance(px, Exception):
             continue
         p = paper_positions.get(symbol)
         if not p:
             continue
+
+        if ensure_break_even_fields(p):
+            state_changed = True
+
         age = (now - datetime.fromisoformat(p["entry_time"])).total_seconds() / 60
-        if p["side"] == "LONG":
+        side = p["side"]
+
+        # Activate BE once the market reaches +1R net. We move the stop to the
+        # exact fee/slippage-aware zero-net market level, never back toward risk.
+        if BREAK_EVEN_ENABLED and not p.get("break_even_active", False):
+            be_trigger = float(p.get("break_even_trigger", 0))
+            hit_be = (
+                (side == "LONG" and px >= be_trigger) or
+                (side == "SHORT" and px <= be_trigger)
+            ) if be_trigger > 0 else False
+            if hit_be:
+                be_stop = float(p["break_even_stop"])
+                if side == "LONG":
+                    p["stop_loss"] = max(float(p["stop_loss"]), be_stop)
+                else:
+                    p["stop_loss"] = min(float(p["stop_loss"]), be_stop)
+                p["break_even_active"] = True
+                p["break_even_activated_time"] = now.isoformat()
+                state_changed = True
+
+        if side == "LONG":
             if px <= p["stop_loss"]:
-                close_position(symbol, px, "STOP_LOSS")
+                close_position(symbol, px, "BREAK_EVEN" if p.get("break_even_active") else "STOP_LOSS")
                 continue
             if px >= p["take_profit"]:
                 close_position(symbol, px, "TAKE_PROFIT")
                 continue
         else:
             if px >= p["stop_loss"]:
-                close_position(symbol, px, "STOP_LOSS")
+                close_position(symbol, px, "BREAK_EVEN" if p.get("break_even_active") else "STOP_LOSS")
                 continue
             if px <= p["take_profit"]:
                 close_position(symbol, px, "TAKE_PROFIT")
                 continue
+
         if symbol in paper_positions and age >= MAX_TRADE_MINUTES:
             close_position(symbol, px, "TIME_EXIT")
+
+    if state_changed:
+        save_state()
 
 
 async def marked_positions(client):
@@ -580,6 +650,9 @@ async def _cycle():
             "trend_neutral_strength": TREND_NEUTRAL_STRENGTH,
             "neutral_volume_ratio": NEUTRAL_VOLUME_RATIO,
             "neutral_body_ratio": NEUTRAL_BODY_RATIO,
+            "break_even_enabled": BREAK_EVEN_ENABLED,
+            "break_even_trigger_r": BREAK_EVEN_TRIGGER_R,
+            "break_even_net_of_fees_slippage": True,
             "enabled_setups": ["EARLY_BREAKOUT", "EARLY_MOMENTUM"],
             "risk_per_trade": RISK_PER_TRADE,
             "risk_reward": RISK_REWARD,
@@ -609,11 +682,13 @@ async def health():
         "status": "ok",
         "bot": "V8 Candle Scanner",
         "symbols": len(SYMBOLS),
-        "strategy": "all coins + early 1m + adaptive 15m trend + multi-position",
+        "strategy": "all coins + early 1m + adaptive 15m + multi-position + 1R break-even",
         "rr": "1:2",
         "max_open_positions": MAX_OPEN_POSITIONS,
         "breakout_lookback": BREAKOUT_LOOKBACK,
         "trend_filter_mode": "adaptive_15m",
+        "break_even_enabled": BREAK_EVEN_ENABLED,
+        "break_even_trigger_r": BREAK_EVEN_TRIGGER_R,
     }
 
 
@@ -629,6 +704,6 @@ async def analyze():
 async def dashboard():
     return '''<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>V8 Candle Scanner</title>
 <style>body{margin:0;background:#07111f;color:#f4f7fb;font-family:system-ui}.w{max-width:920px;margin:auto;padding:18px}.card{background:#0f1b2d;border:1px solid #243650;border-radius:18px;padding:18px;margin:12px 0}.row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.big{font-size:34px;font-weight:800}.muted{color:#8ea1b8}.green{color:#21d19f}.red{color:#ff647c}.pos{padding:10px 0;border-bottom:1px solid #243650}@media(max-width:650px){.row{grid-template-columns:1fr}}</style></head>
-<body><div class="w"><h1>V8 Candle Scanner</h1><div class="muted">Všechny coiny · EARLY 1m · adaptivní 15m filtr · více pozic · PAPER</div>
+<body><div class="w"><h1>V8 Candle Scanner</h1><div class="muted">Všechny coiny · EARLY 1m · adaptivní 15m filtr · BE po +1R · více pozic · PAPER</div>
 <div class="row"><div class="card"><div class="muted">BALANCE</div><div id="bal" class="big">-</div></div><div class="card"><div class="muted">EQUITY</div><div id="eq" class="big">-</div></div></div><div class="card"><h2>Aktuální pozice</h2><div id="pos">Načítám…</div></div></div>
-<script>async function go(){let d=await (await fetch('/analyze')).json();bal.textContent=d.balance.toFixed(2)+' USDT';eq.textContent=d.equity.toFixed(2)+' USDT';pos.innerHTML=d.positions?.length?d.positions.map(p=>`<div class="pos"><b>${p.symbol}</b> <span class="${p.side==='LONG'?'green':'red'}">${p.side}</span> · ${p.setup} · ${p.trend_filter||''}<br>Entry ${p.entry_price.toFixed(5)} · Now ${p.current_price.toFixed(5)} · P/L <b class="${p.unrealized_pnl>=0?'green':'red'}">${p.unrealized_pnl.toFixed(2)} USDT</b></div>`).join(''):'Žádná otevřená pozice'}go();setInterval(go,15000)</script></body></html>'''
+<script>async function go(){let d=await (await fetch('/analyze')).json();bal.textContent=d.balance.toFixed(2)+' USDT';eq.textContent=d.equity.toFixed(2)+' USDT';pos.innerHTML=d.positions?.length?d.positions.map(p=>`<div class="pos"><b>${p.symbol}</b> <span class="${p.side==='LONG'?'green':'red'}">${p.side}</span> · ${p.setup} · ${p.trend_filter||''} · BE ${p.break_even_active?'AKTIVNÍ':'čeká'}<br>Entry ${p.entry_price.toFixed(5)} · Now ${p.current_price.toFixed(5)} · SL ${p.stop_loss.toFixed(5)} · TP ${p.take_profit.toFixed(5)} · P/L <b class="${p.unrealized_pnl>=0?'green':'red'}">${p.unrealized_pnl.toFixed(2)} USDT</b></div>`).join(''):'Žádná otevřená pozice'}go();setInterval(go,15000)</script></body></html>'''
