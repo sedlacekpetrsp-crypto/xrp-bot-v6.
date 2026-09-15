@@ -16,7 +16,7 @@ from v8_fly_layer import install as install_fly
 install_fly(fly)
 FLY_ENABLED = os.getenv("FLY_INTEGRATED_ENABLED", "false").lower() == "true"
 
-BUILD = "combined-fixed-scanner-fly-2"
+BUILD = "combined-fixed-scanner-fly-3-short-track-fix"
 app = FastAPI(title="V8 Candle Combined")
 install_data_health(app)
 log = logging.getLogger(__name__)
@@ -309,7 +309,7 @@ function positionProgress(p,price){
  if(!p||!Number.isFinite(Number(price)))return 50;
  const sl=Number(p.stop_loss),tp=Number(p.take_profit),px=Number(price);
  if(![sl,tp,px].every(Number.isFinite)||sl===tp)return 50;
- const lo=Math.min(sl,tp),hi=Math.max(sl,tp);return Math.max(0,Math.min(100,(px-lo)/(hi-lo)*100));
+ return Math.max(0,Math.min(100,(px-sl)/(tp-sl)*100));
 }
 function renderPosition(data){
  const p=data.position;if(!p)return '<span class="muted">Bez otevřené pozice</span>';
@@ -319,7 +319,7 @@ function renderPosition(data){
 }
 function card(d,el,reason,stats,name){const side=d.position?d.position.side:(d.signal?.side||'WAIT');el.innerHTML='<div class="big '+(side==='WAIT'?'':'ok')+'">'+side+'</div><div>Balance: '+historyNumber(d.balance,2)+' USDT</div><div>Equity: '+historyNumber(d.equity,2)+' USDT</div><div>'+renderPosition(d)+'</div>';reason.textContent=d.error||d.signal?.reason||(d.signal?.reasons||[]).join(' · ')||'';renderStats(d,stats,name)}
 function historyCount(data,fallback){const h=Array.isArray(data?.history)?data.history:[];const local=h.filter(t=>Number.isFinite(Number(t?.net_pnl))).length;return Number.isFinite(Number(fallback))?Number(fallback):local}
-async function load(){try{const r=await fetch('/analyze',{cache:'no-store'});const j=await r.json();const f=j.monitoring?.fly;flyState.textContent=!f?.enabled?'Připraveno — čeká na pozastavení původní Fly služby':f.ok?'Fly běží ve stejné službě · historie: '+f.history_count:'Fly čeká na aktuální cyklus nebo hlásí chybu';flyState.className=f?.ok?'ok':'wait';const bad=!r.ok||j.monitoring?.status!=='ok';refresh.textContent=bad?'Poslední kontrola hlásí problém':'Aktualizováno '+new Date().toLocaleTimeString('cs-CZ');refresh.className='refresh '+(bad?'errtxt':'oktxt');runtimeState.textContent=bad?'Některý běh nebo databáze není aktuální.':'Fixed i Scanner běží na pozadí a uložený stav je ověřen.';runtimeState.className=bad?'red':'ok';scannerCount.textContent=historyCount(j.scanner,j.monitoring?.database?.scanner_history_count)+' uzavřených';fixedCount.textContent=historyCount(j.fixed,j.monitoring?.database?.fixed_history_count)+' uzavřených';card(j.scanner,scanner,scannerReason,scannerStats,'Scanneru');card(j.fixed,fixed,fixedReason,fixedStats,'Fixed');historyRows(j.scanner,scannerHistory);historyRows(j.fixed,fixedHistory);scan.innerHTML=(j.scanner.scan||[]).map(x=>x.symbol+' · '+x.bucket+' · '+Number(x.strength).toFixed(2)).join('<br>')||'—'}catch(e){refresh.textContent='Aktualizace se nezdařila';refresh.className='refresh errtxt';runtimeState.textContent='Nelze ověřit aktuální běh.';runtimeState.className='red'}}
+async function load(){try{const r=await fetch('/analyze',{cache:'no-store'});const j=await r.json();const f=j.monitoring?.fly;flyState.textContent=!f?.enabled?'Připraveno — čeká na pozastavení původní Fly služby':f.ok?'Fly běží ve stejné službě · historie: '+f.history_count:'Fly čeká na aktuální cyklus nebo hlásí chybu';flyState.className=f?.ok?'ok':'wait';const bad=!r.ok||j.monitoring?.status!=='ok';refresh.textContent=bad?'Poslední kontrola hlásí problém':'Aktualizováno '+new Date().toLocaleTimeString('cs-CZ');refresh.className='refresh '+(bad?'errtxt':'oktxt');runtimeState.textContent=bad?'Některý běh nebo databáze není aktuální.':'Fixed i Scanner běží na pozadí a uložený stav je ověřen.';runtimeState.className=bad?'red':'ok';scannerCount.textContent=historyCount(j.scanner,j.monitoring?.database?.scanner_history_count)+' uzavřených';fixedCount.textContent=historyCount(j.fixed,j.monitoring?.database?.fixed_history_count)+' uzavřených';card(j.scanner,scanner,scannerReason,scannerStats,'Scanneru');card(j.fixed,fixedReason?fixed:fixed,fixedReason,fixedStats,'Fixed');historyRows(j.scanner,scannerHistory);historyRows(j.fixed,fixedHistory);scan.innerHTML=(j.scanner.scan||[]).map(x=>x.symbol+' · '+x.bucket+' · '+Number(x.strength).toFixed(2)).join('<br>')||'—'}catch(e){refresh.textContent='Aktualizace se nezdařila';refresh.className='refresh errtxt';runtimeState.textContent='Nelze ověřit aktuální běh.';runtimeState.className='red'}}
 setInterval(tick,1000);tick();setInterval(load,15000);load();
 </script></body></html>'''
 
