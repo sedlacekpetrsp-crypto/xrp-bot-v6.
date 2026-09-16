@@ -2,7 +2,7 @@ import asyncio, math, statistics, time
 from datetime import datetime
 from fib_strategy import fib_pullback
 
-BUILD="v8-fly-fib-20260916-1"
+BUILD="v8-fly-early-breakout-20260916-1"
 Z_ARMED=0.40; Z_STRONG=0.80; Z_DANGER=0.55; ARMED_MAX_DISTANCE_ATR=0.18
 MAX_REAL_SPREAD_PCT=0.0008; DANGER_EXIT_SCORE=2; DANGER_MAX_MR=0.45
 BREAKEVEN_TRIGGER_R=0.75; PROFIT_MODE_R=0.90; PROFIT_GIVEBACK_R=0.35; PROFIT_MIN_LOCK_R=0.20; MONITOR_REFRESH_SECONDS=30.0
@@ -52,6 +52,7 @@ async def strategy(symbol):
         if regime=='TREND_LONG' and 0<=ld<=ARMED_MAX_DISTANCE_ATR and ls>=max(5,m.MIN_SCORE-1) and vr>=m.MIN_TREND_VOLUME and z>=Z_ARMED and imb>=m.BOOK_LONG_MIN:armed_side,armed_trigger,armed_dist='LONG',bh,ld
         elif regime=='TREND_SHORT' and 0<=sd<=ARMED_MAX_DISTANCE_ATR and ss>=max(5,m.MIN_SCORE-1) and vr>=m.MIN_TREND_VOLUME and z<=-Z_ARMED and imb<=m.BOOK_SHORT_MAX:armed_side,armed_trigger,armed_dist='SHORT',bl,sd
     zclass='STRONG_LONG' if z>=Z_STRONG else 'ARMED_LONG' if z>=Z_ARMED else 'STRONG_SHORT' if z<=-Z_STRONG else 'ARMED_SHORT' if z<=-Z_ARMED else 'IGNORE'; reason=f'{symbol} {regime} raw={raw} setup={setup} L/S={ls}/{ss} book={imb:.3f} spread={spread*100:.3f}% vol={vr:.2f}x z={z:.2f} edge={edge*100:.3f}%'
+    if armed_side:reason+=f' ARMED={armed_side}@{armed_trigger:.8f}'
     if reject:reason+=f' REJECT={reject}'
     out={'symbol':symbol,'price':float(k1[-1][4]),'signal':signal,'raw_signal':raw,'setup':setup,'score':score,'candle_time':ct,'regime':regime,'rsi':rv,'atr':av,'adx5':ad,'volume_ratio':vr,'book_imbalance':imb,'real_spread_pct':spread,'z_momentum':z,'z_class':zclass,'armed_side':armed_side,'armed_trigger':armed_trigger,'armed_distance_atr':armed_dist,'reason':reason}
     if fib:out.update({k:fib[k] for k in ('fib_0618','fib_0786','swing_high','swing_low')})
@@ -64,7 +65,7 @@ def open_trade(a,price):
     side=a['signal']; entry=price*(1+m.SLIPPAGE_RATE if side=='LONG' else 1-m.SLIPPAGE_RATE); sl=entry-dist if side=='LONG' else entry+dist; nloss=-m.estimated_net_per_unit(side,entry,sl)
     if nloss<=0:return
     risk=m.PAPER_BALANCE*m.RISK_PER_TRADE; tp=m.target_market_for_net_profit(side,entry,nloss*m.NET_RISK_REWARD); qty=min(risk/nloss,m.PAPER_BALANCE*m.MAX_NOTIONAL_SHARE/entry)
-    m.paper_position={'symbol':a['symbol'],'side':side,'setup':setup,'regime':a['regime'],'score':a.get('score',0),'entry_price':entry,'qty':qty,'stop_loss':sl,'take_profit':tp,'risk_distance':dist,'initial_risk_usdc':qty*nloss,'net_rr':m.NET_RISK_REWARD,'mae_r':0.,'mfe_r':0.,'breakeven_moved':False,'profit_mode':False,'z_entry':float(a.get('z_momentum') or 0),'entry_trigger':float(a.get('entry_trigger') or a.get('armed_trigger') or price),'entry_spread_pct':float(a.get('real_spread_pct') or 0),'entry_kind':a.get('entry_kind','CLOSED_CANDLE'),'last_danger_score':0,'opened_at':m.utcnow().isoformat()}; m.last_entry_candle[a['symbol']]=a['candle_time']; m.save_state(); m.log_signal(a,'ENTER',f'{setup} z={m.paper_position["z_entry"]:.2f}')
+    m.paper_position={'symbol':a['symbol'],'side':side,'setup':setup,'regime':a['regime'],'score':a.get('score',0),'entry_price':entry,'qty':qty,'stop_loss':sl,'take_profit':tp,'risk_distance':dist,'initial_risk_usdc':qty*nloss,'net_rr':m.NET_RISK_REWARD,'mae_r':0.,'mfe_r':0.,'breakeven_moved':False,'profit_mode':False,'z_entry':float(a.get('z_momentum') or 0),'entry_trigger':float(a.get('entry_trigger') or a.get('armed_trigger') or price),'entry_spread_pct':float(a.get('real_spread_pct') or 0),'entry_kind':a.get('entry_kind','CLOSED_CANDLE'),'last_danger_score':0,'opened_at':m.utcnow().isoformat()}; m.last_entry_candle[a['symbol']]=a['candle_time']; m.save_state(); m.log_signal(a,'ENTER',f'{setup} {m.paper_position["entry_kind"]} z={m.paper_position["z_entry"]:.2f}')
 
 def close_trade(price,reason):
     if not m.paper_position:return
@@ -80,8 +81,10 @@ async def manage_position():
     if age>=m.MAX_TRADE_MINUTES:close_trade(price,'TIME EXIT')
 
 def choose_best(rows):
-    x=[r for r in rows if r.get('signal') in ('LONG','SHORT') and m.last_entry_candle.get(r['symbol'])!=r.get('candle_time')]
-    return sorted(x,key=lambda r:(int(r.get('score',0)),abs(float(r.get('z_momentum') or 0))),reverse=True)[0] if x else None
+    confirmed=[r for r in rows if r.get('signal') in ('LONG','SHORT') and m.last_entry_candle.get(r['symbol'])!=r.get('candle_time')]
+    if confirmed:return sorted(confirmed,key=lambda r:(int(r.get('score',0)),abs(float(r.get('z_momentum') or 0))),reverse=True)[0]
+    armed=[r for r in rows if r.get('armed_side') in ('LONG','SHORT') and m.last_entry_candle.get(r['symbol'])!=r.get('candle_time')]
+    return sorted(armed,key=lambda r:(abs(float(r.get('z_momentum') or 0)),-float(r.get('armed_distance_atr') or 999)),reverse=True)[0] if armed else None
 
 async def cycle():
     try:
@@ -89,7 +92,18 @@ async def cycle():
         if m.paper_position:return
         if m.cooldown_until and m.utcnow()<m.cooldown_until:return
         rows=await m.analyze_all();best=choose_best(rows)
-        if best:open_trade(best,await m.get_live_price(best['symbol'],max_age=1.))
+        if not best:return
+        price=await m.get_live_price(best['symbol'],max_age=1.)
+        if best.get('signal') in ('LONG','SHORT'):
+            open_trade(best,price);return
+        side=best.get('armed_side'); trigger=best.get('armed_trigger')
+        if side not in ('LONG','SHORT') or trigger is None:return
+        crossed=(side=='LONG' and price>=float(trigger)) or (side=='SHORT' and price<=float(trigger))
+        if not crossed:return
+        # Early BREAKOUT: live price may trigger before the 1m candle closes, but only after
+        # the completed-candle trend/momentum/volume/order-book/spread filters armed it.
+        early=dict(best); early['signal']=side; early['raw_signal']=side; early['setup']='BREAKOUT'; early['entry_kind']='LIVE_ARMED_BREAKOUT'; early['entry_trigger']=float(trigger)
+        open_trade(early,price)
     finally:m.last_cycle_at=m.utcnow().isoformat()
 
 def install(module):
