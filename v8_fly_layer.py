@@ -2,11 +2,12 @@ import asyncio, math, statistics, time
 from datetime import datetime
 from fib_strategy import fib_pullback
 
-BUILD="v8-fly-early-breakout-20260916-1"
+BUILD="v8-fly-antifakeout-20260916-1"
 Z_ARMED=0.40; Z_STRONG=0.80; Z_DANGER=0.55; ARMED_MAX_DISTANCE_ATR=0.18
 MAX_REAL_SPREAD_PCT=0.0008; DANGER_EXIT_SCORE=2; DANGER_MAX_MR=0.45
 BREAKEVEN_TRIGGER_R=0.75; PROFIT_MODE_R=0.90; PROFIT_GIVEBACK_R=0.35; PROFIT_MIN_LOCK_R=0.20; MONITOR_REFRESH_SECONDS=30.0
-m=None; _monitor_cache={}
+ANTI_STRONG_VOL=1.20; ANTI_BOOK_MARGIN=0.03; RETEST_TOL_ATR=0.08; RETEST_MAX_SECONDS=120.0
+m=None; _monitor_cache={}; _breakout_watch={}
 
 def z_momentum(closes,minutes=5,vol_window=30):
     if len(closes)<max(vol_window+2,minutes+2):return 0.0
@@ -65,7 +66,7 @@ def open_trade(a,price):
     side=a['signal']; entry=price*(1+m.SLIPPAGE_RATE if side=='LONG' else 1-m.SLIPPAGE_RATE); sl=entry-dist if side=='LONG' else entry+dist; nloss=-m.estimated_net_per_unit(side,entry,sl)
     if nloss<=0:return
     risk=m.PAPER_BALANCE*m.RISK_PER_TRADE; tp=m.target_market_for_net_profit(side,entry,nloss*m.NET_RISK_REWARD); qty=min(risk/nloss,m.PAPER_BALANCE*m.MAX_NOTIONAL_SHARE/entry)
-    m.paper_position={'symbol':a['symbol'],'side':side,'setup':setup,'regime':a['regime'],'score':a.get('score',0),'entry_price':entry,'qty':qty,'stop_loss':sl,'take_profit':tp,'risk_distance':dist,'initial_risk_usdc':qty*nloss,'net_rr':m.NET_RISK_REWARD,'mae_r':0.,'mfe_r':0.,'breakeven_moved':False,'profit_mode':False,'z_entry':float(a.get('z_momentum') or 0),'entry_trigger':float(a.get('entry_trigger') or a.get('armed_trigger') or price),'entry_spread_pct':float(a.get('real_spread_pct') or 0),'entry_kind':a.get('entry_kind','CLOSED_CANDLE'),'last_danger_score':0,'opened_at':m.utcnow().isoformat()}; m.last_entry_candle[a['symbol']]=a['candle_time']; m.save_state(); m.log_signal(a,'ENTER',f'{setup} {m.paper_position["entry_kind"]} z={m.paper_position["z_entry"]:.2f}')
+    m.paper_position={'symbol':a['symbol'],'side':side,'setup':setup,'regime':a['regime'],'score':a.get('score',0),'entry_price':entry,'qty':qty,'stop_loss':sl,'take_profit':tp,'risk_distance':dist,'initial_risk_usdc':qty*nloss,'net_rr':m.NET_RISK_REWARD,'mae_r':0.,'mfe_r':0.,'breakeven_moved':False,'profit_mode':False,'z_entry':float(a.get('z_momentum') or 0),'entry_trigger':float(a.get('entry_trigger') or a.get('armed_trigger') or price),'entry_spread_pct':float(a.get('real_spread_pct') or 0),'entry_book_imbalance':float(a.get('book_imbalance') or .5),'entry_volume_ratio':float(a.get('volume_ratio') or 0),'entry_kind':a.get('entry_kind','CLOSED_CANDLE'),'last_danger_score':0,'opened_at':m.utcnow().isoformat()}; m.last_entry_candle[a['symbol']]=a['candle_time']; m.save_state(); m.log_signal(a,'ENTER',f'{setup} {m.paper_position["entry_kind"]} z={m.paper_position["z_entry"]:.2f}')
 
 def close_trade(price,reason):
     if not m.paper_position:return
@@ -86,6 +87,12 @@ def choose_best(rows):
     armed=[r for r in rows if r.get('armed_side') in ('LONG','SHORT') and m.last_entry_candle.get(r['symbol'])!=r.get('candle_time')]
     return sorted(armed,key=lambda r:(abs(float(r.get('z_momentum') or 0)),-float(r.get('armed_distance_atr') or 999)),reverse=True)[0] if armed else None
 
+def strong_breakout(a,side):
+    z=float(a.get('z_momentum') or 0); vr=float(a.get('volume_ratio') or 0); imb=float(a.get('book_imbalance') or .5)
+    if vr<ANTI_STRONG_VOL:return False
+    if side=='LONG':return z>=Z_STRONG and imb>=min(.95,m.BOOK_LONG_MIN+ANTI_BOOK_MARGIN)
+    return z<=-Z_STRONG and imb<=max(.05,m.BOOK_SHORT_MAX-ANTI_BOOK_MARGIN)
+
 async def cycle():
     try:
         await manage_position()
@@ -96,14 +103,23 @@ async def cycle():
         price=await m.get_live_price(best['symbol'],max_age=1.)
         if best.get('signal') in ('LONG','SHORT'):
             open_trade(best,price);return
-        side=best.get('armed_side'); trigger=best.get('armed_trigger')
+        side=best.get('armed_side'); trigger=best.get('armed_trigger'); symbol=best['symbol']
         if side not in ('LONG','SHORT') or trigger is None:return
-        crossed=(side=='LONG' and price>=float(trigger)) or (side=='SHORT' and price<=float(trigger))
-        if not crossed:return
-        # Early BREAKOUT: live price may trigger before the 1m candle closes, but only after
-        # the completed-candle trend/momentum/volume/order-book/spread filters armed it.
-        early=dict(best); early['signal']=side; early['raw_signal']=side; early['setup']='BREAKOUT'; early['entry_kind']='LIVE_ARMED_BREAKOUT'; early['entry_trigger']=float(trigger)
-        open_trade(early,price)
+        trigger=float(trigger); atr=max(float(best.get('atr') or 0),1e-12); crossed=(side=='LONG' and price>=trigger) or (side=='SHORT' and price<=trigger); now=time.time(); watch=_breakout_watch.get(symbol)
+        if crossed and strong_breakout(best,side):
+            early=dict(best); early['signal']=side; early['raw_signal']=side; early['setup']='BREAKOUT'; early['entry_kind']='ANTI_STRONG_BREAKOUT'; early['entry_trigger']=trigger; _breakout_watch.pop(symbol,None); open_trade(early,price);return
+        if crossed:
+            if not watch or watch.get('side')!=side or abs(float(watch.get('trigger',0))-trigger)>atr*.02:_breakout_watch[symbol]={'side':side,'trigger':trigger,'crossed_at':now,'retested':False}
+            return
+        if not watch:return
+        if now-float(watch.get('crossed_at',now))>RETEST_MAX_SECONDS:_breakout_watch.pop(symbol,None);return
+        if watch.get('side')!=side:return
+        tol=atr*RETEST_TOL_ATR
+        touched=(side=='LONG' and trigger-tol<=price<=trigger+tol) or (side=='SHORT' and trigger-tol<=price<=trigger+tol)
+        if touched:watch['retested']=True;return
+        held=(side=='LONG' and watch.get('retested') and price>trigger+tol*.25) or (side=='SHORT' and watch.get('retested') and price<trigger-tol*.25)
+        if held:
+            ret=dict(best); ret['signal']=side; ret['raw_signal']=side; ret['setup']='BREAKOUT'; ret['entry_kind']='ANTI_RETEST_BREAKOUT'; ret['entry_trigger']=trigger; _breakout_watch.pop(symbol,None); open_trade(ret,price)
     finally:m.last_cycle_at=m.utcnow().isoformat()
 
 def install(module):
