@@ -51,7 +51,7 @@ async def analyze_live():
             return_exceptions=True,
         )
 
-    unrealized = 0.0
+    unrealized_net = 0.0
     for symbol, result in zip(symbols, results):
         position = data["open_positions"][symbol]
         if isinstance(result, Exception):
@@ -66,9 +66,20 @@ async def analyze_live():
         row["price_source"] = "BINANCE_SPOT"
         entry = float(position["entry_price"])
         qty = float(position["qty"])
-        unrealized += (price - entry) * qty if position["side"] == "LONG" else (entry - price) * qty
+        side = position["side"]
+        gross = ((price - entry) if side == "LONG" else (entry - price)) * qty
+        exit_exec = core.execute_exit_price(price, side)
+        execution_gross = ((exit_exec - entry) if side == "LONG" else (entry - exit_exec)) * qty
+        fees = (entry * qty + exit_exec * qty) * core.FEE_RATE
+        net = execution_gross - fees
+        costs = max(gross - net, 0.0)
+        row["unrealized_gross_pnl"] = gross
+        row["unrealized_net_pnl"] = net
+        row["estimated_costs"] = costs
+        unrealized_net += net
 
-    data["equity"] = float(data.get("paper_balance", 0.0)) + unrealized
+    data["unrealized_pnl"] = unrealized_net
+    data["equity"] = float(data.get("paper_balance", 0.0)) + unrealized_net
     data["live_price_source"] = "BINANCE_SPOT"
     data["live_price_refresh_seconds"] = 3
     data["live_price_errors"] = live_errors
@@ -79,6 +90,9 @@ async def analyze_live():
 async def dashboard_live():
     response = await _original_dashboard()
     body = response.body.decode("utf-8") if hasattr(response, "body") else str(response)
+    old = "<span class='position-label'>Průběžný výsledek před poplatky</span><div class='position-result ${gross===null?'muted':cls(gross)}'>${gross===null?'Nedostupný':(gross>0?'+':'')+f(gross)+' USDT'}</div><p class='position-note'>Výsledek se mění s cenou. Do historie se obchod zapíše až při uzavření.</p>"
+    new = "<span class='position-label'>Průběžný výsledek</span><div class='row'><span>Hrubý P/L</span><b class='${gross===null?'muted':cls(gross)}'>${gross===null?'Nedostupný':(gross>=0?'+':'')+f(gross)+' USDT'}</b></div><div class='row'><span>Čistý P/L</span><b class='${current===null?'muted':cls(d.symbols?.[p.symbol]?.unrealized_net_pnl)}'>${current===null?'Nedostupný':(Number(d.symbols?.[p.symbol]?.unrealized_net_pnl)>=0?'+':'')+f(d.symbols?.[p.symbol]?.unrealized_net_pnl)+' USDT'}</b></div><div class='row'><span>Odhad nákladů</span><span>${current===null?'—':f(d.symbols?.[p.symbol]?.estimated_costs)+' USDT'}</span></div><p class='position-note'>Hrubý P/L ukazuje samotný pohyb ceny. Čistý P/L zahrnuje simulované poplatky a slippage.</p>"
+    body = body.replace(old, new)
     body = body.replace("setInterval(go,15000)", "setInterval(go,3000)")
     body = body.replace("setInterval(go,10000)", "setInterval(go,3000)")
     body = body.replace("setInterval(go,5000)", "setInterval(go,3000)")
