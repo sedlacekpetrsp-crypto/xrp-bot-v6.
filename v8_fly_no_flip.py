@@ -5,17 +5,14 @@ import v8_fly_layer as base
 NO_FLIP_BUILD = "v8-adaptive-market-quality-multi3-5m-candle-stop-no-flip-20260917-7"
 
 
-def install(module):
-    # Reuse the current V8 strategy, entries, 5m candle stops, dashboard and persistence.
-    base.SCALP_BUILD = NO_FLIP_BUILD
-    base.install(module)
+def patch(module):
     module.FLY_LAYER_BUILD = NO_FLIP_BUILD
+    base.SCALP_BUILD = NO_FLIP_BUILD
 
     def close_trade(symbol, price, reason):
         pos = module.paper_positions.get(symbol)
         if not pos:
             return False
-
         entry = float(pos["entry_price"])
         qty = float(pos.get("qty") or 0.0)
         initial_qty = float(pos.get("initial_qty") or qty)
@@ -25,7 +22,6 @@ def install(module):
         else:
             exit_exec = price * (1 + module.SLIPPAGE_RATE)
             gross = (entry - exit_exec) * qty
-
         fees = (entry * qty + exit_exec * qty) * module.FEE_RATE
         net = gross - fees
         partial_gross = float(pos.get("partial_realized_gross") or 0.0)
@@ -41,7 +37,6 @@ def install(module):
             f"{reason} | R={rr:.2f} MFE={float(pos.get('mfe_r', 0)):.2f} "
             f"MAE={float(pos.get('mae_r', 0)):.2f} DUR={age:.1f}m Z={float(pos.get('z_entry', 0)):.2f}"
         )
-
         module.PAPER_BALANCE += net
         now = module.utcnow()
         trade = {
@@ -73,7 +68,6 @@ def install(module):
         pos = module.paper_positions.get(symbol)
         if not pos:
             return
-
         price = await module.get_live_price(symbol, max_age=1.0)
         entry = float(pos["entry_price"])
         qty = float(pos.get("qty") or 0.0)
@@ -81,7 +75,6 @@ def install(module):
         mr = (price - entry) / dist if pos["side"] == "LONG" else (entry - price) / dist
         pos["mfe_r"] = max(float(pos.get("mfe_r", 0.0)), mr)
         pos["mae_r"] = min(float(pos.get("mae_r", 0.0)), mr)
-
         partial_net = float(pos.get("partial_realized_pnl") or 0.0)
         net_if_closed = partial_net + module.estimated_net_per_unit(pos["side"], entry, price) * qty
         pos["scalp_net_if_closed"] = net_if_closed
@@ -93,7 +86,6 @@ def install(module):
             close_trade(symbol, price, "MARKET STOP")
             return
 
-        # Keep the existing +5 USDC net logic. A strong trend can still become a runner.
         if net_if_closed >= base.SCALP_NET_TARGET_USDC:
             strong = False
             try:
@@ -111,11 +103,9 @@ def install(module):
                 )
             except Exception:
                 strong = False
-
             if not strong:
                 close_trade(symbol, price, "MARKET +5 NET / NO STRONG CONTINUATION")
                 return
-
             if qty > 0:
                 lock_price = module.target_market_for_net_profit(
                     pos["side"], entry, base.SCALP_LOCK_NET_USDC / qty
@@ -126,14 +116,10 @@ def install(module):
                     pos["stop_loss"] = min(float(pos["stop_loss"]), lock_price)
             pos["scalp_runner"] = True
 
-        # Intentionally NO momentum-flip exit here.
-        # A LONG is not converted to SHORT and a SHORT is not converted to LONG.
-
         tp = float(pos["take_profit"])
         if (pos["side"] == "LONG" and price >= tp) or (pos["side"] == "SHORT" and price <= tp):
             close_trade(symbol, price, "MARKET TAKE PROFIT")
             return
-
         module.save_state()
 
     async def manage_positions():
@@ -164,14 +150,12 @@ def install(module):
                 if module.last_entry_candle.get(symbol) == row.get("candle_time"):
                     continue
                 candidates.append(row)
-
             candidates.sort(key=candidate_rank, reverse=True)
             slots = max(0, base.MAX_OPEN_POSITIONS - len(module.paper_positions))
             for row in candidates[:slots]:
                 price = await module.get_live_price(row["symbol"], max_age=1.0)
                 if module.open_trade(row, price):
                     open_symbols.add(row["symbol"])
-
             module.last_cycle_at = module.utcnow().isoformat()
             module.last_error = None
         except Exception as exc:
@@ -182,3 +166,4 @@ def install(module):
     module.close_trade = close_trade
     module.manage_position = manage_positions
     module.cycle = no_flip_cycle
+    print("V8_NO_FLIP_PATCH_APPLIED", NO_FLIP_BUILD, flush=True)
