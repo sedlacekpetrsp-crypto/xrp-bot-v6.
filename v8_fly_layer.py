@@ -99,5 +99,14 @@ def install(module):
         html = html.replace("</body>", '<div style="max-width:900px;margin:16px auto;padding:0 16px"><a href="v10/" style="color:#8ea1b8;font-weight:700;margin-right:16px">V10 Precision XRP →</a><a href="v11/" style="color:#21d19f;font-weight:800">V11 Evidence XRP →</a></div></body>')
         return HTMLResponse(html, headers={"Cache-Control": "no-store"})
 
+    async def v10_head():
+        return HTMLResponse("", status_code=200, headers={"Cache-Control": "no-store"})
+
+    async def v11_head():
+        return HTMLResponse("", status_code=200, headers={"Cache-Control": "no-store"})
+
+    v10.app.add_api_route("/", v10_head, methods=["HEAD"], include_in_schema=False)
+    v11.app.add_api_route("/", v11_head, methods=["HEAD"], include_in_schema=False)
+
     module.app.mount("/v10", v10.app)
     module.app.mount("/v11", v11.app)
