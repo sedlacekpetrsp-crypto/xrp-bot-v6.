@@ -11,7 +11,7 @@ import v11_evidence_bot as v11
 
 v11.now = lambda: datetime.now(timezone.utc)
 
-SCALP_BUILD = "v8-adaptive-market-quality-multi3-20260917-4"
+SCALP_BUILD = "v8-adaptive-market-quality-multi3-candle-stop-20260917-5"
 SCALP_NET_TARGET_USDC = 5.0
 SCALP_LOCK_NET_USDC = 2.0
 RAPID_MIN_SCORE = 5
@@ -25,6 +25,8 @@ RAPID_STRONG_VOLUME = 1.00
 MAX_OPEN_POSITIONS = 3
 MAX_POSITION_NOTIONAL_SHARE = 0.33
 MAX_TOTAL_NOTIONAL_SHARE = 0.90
+CANDLE_STOP_LOOKBACK = 5
+CANDLE_STOP_BUFFER_PCT = 0.00010
 RESET_MARKER = "v8-scalp5-reset-10000-20260917"
 
 
@@ -82,7 +84,6 @@ def install(module):
     module.ENABLED_SETUPS = {"RAPID_MOMENTUM"}
     module.paper_positions = {}
 
-    original_save_state = module.save_state
     original_load_state = module.load_state
 
     def sync_compat_position():
@@ -149,6 +150,7 @@ def install(module):
             core.book(symbol),
         )
         a1, a5 = k1[:-1], k5[:-1]
+        o = [float(x[1]) for x in a1]
         h = [float(x[2]) for x in a1]
         l = [float(x[3]) for x in a1]
         c = [float(x[4]) for x in a1]
@@ -184,6 +186,14 @@ def install(module):
         five_up = e9_5 is not None and e21_5 is not None and (e9_5 >= e21_5 or c5[-1] >= e9_5)
         five_dn = e9_5 is not None and e21_5 is not None and (e9_5 <= e21_5 or c5[-1] <= e9_5)
         spread_ok = spread <= RAPID_MAX_SPREAD_PCT
+
+        start = max(0, len(c) - CANDLE_STOP_LOOKBACK)
+        long_anchor_index = next((i for i in range(len(c) - 1, start - 1, -1) if c[i] > o[i]), None)
+        short_anchor_index = next((i for i in range(len(c) - 1, start - 1, -1) if c[i] < o[i]), None)
+        long_stop_anchor_low = l[long_anchor_index] if long_anchor_index is not None else l[-1]
+        short_stop_anchor_high = h[short_anchor_index] if short_anchor_index is not None else h[-1]
+        long_anchor_time = int(a1[long_anchor_index][0]) if long_anchor_index is not None else int(a1[-1][0])
+        short_anchor_time = int(a1[short_anchor_index][0]) if short_anchor_index is not None else int(a1[-1][0])
 
         long_score = sum([
             e5 is not None and e13 is not None and e5 >= e13,
@@ -274,6 +284,10 @@ def install(module):
             "z_momentum": z,
             "long_score": long_score,
             "short_score": short_score,
+            "long_stop_anchor_low": long_stop_anchor_low,
+            "short_stop_anchor_high": short_stop_anchor_high,
+            "long_stop_anchor_time": long_anchor_time,
+            "short_stop_anchor_time": short_anchor_time,
             "reason": reason,
         }
 
@@ -295,17 +309,44 @@ def install(module):
             return False
         if len(module.paper_positions) >= MAX_OPEN_POSITIONS or not a.get("atr"):
             return False
-        params = module.SETUP_PARAMS.get(a.get("setup") or "RAPID_MOMENTUM", module.SETUP_PARAMS["RAPID_MOMENTUM"])
-        dist = max(float(a["atr"]) * params["atr_mult"], price * module.MIN_STOP_RATE)
-        if dist / price > module.MAX_STOP_RATE:
-            module.log_signal(a, "REJECT", "STOP_OUT_OF_RANGE")
-            return False
 
+        params = module.SETUP_PARAMS.get(a.get("setup") or "RAPID_MOMENTUM", module.SETUP_PARAMS["RAPID_MOMENTUM"])
+        baseline_dist = max(float(a["atr"]) * params["atr_mult"], price * module.MIN_STOP_RATE)
         side = a["signal"]
         entry = price * (1 + module.SLIPPAGE_RATE if side == "LONG" else 1 - module.SLIPPAGE_RATE)
-        sl = entry - dist if side == "LONG" else entry + dist
-        net_loss_per_unit = -module.estimated_net_per_unit(side, entry, sl)
-        if net_loss_per_unit <= 0:
+
+        # Keep the existing take-profit calculation exactly as before, using the
+        # old ATR/min-stop baseline. Only stop-loss changes to candle structure.
+        baseline_sl = entry - baseline_dist if side == "LONG" else entry + baseline_dist
+        baseline_net_loss_per_unit = -module.estimated_net_per_unit(side, entry, baseline_sl)
+        if baseline_net_loss_per_unit <= 0:
+            return False
+        tp = module.target_market_for_net_profit(
+            side, entry, baseline_net_loss_per_unit * module.NET_RISK_REWARD
+        )
+
+        spread_buffer = price * max(float(a.get("real_spread_pct") or 0.0) * 1.5, CANDLE_STOP_BUFFER_PCT)
+        if side == "LONG":
+            anchor = float(a.get("long_stop_anchor_low") or (entry - baseline_dist))
+            sl = anchor - spread_buffer
+            anchor_time = a.get("long_stop_anchor_time")
+            anchor_color = "GREEN"
+            if sl >= entry:
+                sl = entry - baseline_dist
+                anchor_time = None
+                anchor_color = "FALLBACK_ATR"
+        else:
+            anchor = float(a.get("short_stop_anchor_high") or (entry + baseline_dist))
+            sl = anchor + spread_buffer
+            anchor_time = a.get("short_stop_anchor_time")
+            anchor_color = "RED"
+            if sl <= entry:
+                sl = entry + baseline_dist
+                anchor_time = None
+                anchor_color = "FALLBACK_ATR"
+
+        actual_net_loss_per_unit = -module.estimated_net_per_unit(side, entry, sl)
+        if actual_net_loss_per_unit <= 0:
             return False
 
         risk = module.PAPER_BALANCE * module.RISK_PER_TRADE
@@ -317,7 +358,7 @@ def install(module):
         available_notional = max(0.0, total_limit - existing_notional)
         per_position_limit = max(module.PAPER_BALANCE, 0.0) * MAX_POSITION_NOTIONAL_SHARE
         qty = min(
-            risk / net_loss_per_unit,
+            risk / actual_net_loss_per_unit,
             per_position_limit / entry if entry > 0 else 0.0,
             available_notional / entry if entry > 0 else 0.0,
         )
@@ -325,8 +366,6 @@ def install(module):
             module.log_signal(a, "REJECT", "MULTI_NOTIONAL_LIMIT")
             return False
 
-        target_net_per_unit = net_loss_per_unit * module.NET_RISK_REWARD
-        tp = module.target_market_for_net_profit(side, entry, target_net_per_unit)
         pos = {
             "symbol": symbol,
             "side": side,
@@ -338,8 +377,9 @@ def install(module):
             "initial_qty": qty,
             "stop_loss": sl,
             "take_profit": tp,
-            "risk_distance": dist,
-            "initial_risk_usdc": qty * net_loss_per_unit,
+            "risk_distance": abs(entry - sl),
+            "baseline_tp_distance": baseline_dist,
+            "initial_risk_usdc": qty * actual_net_loss_per_unit,
             "net_rr": module.NET_RISK_REWARD,
             "mae_r": 0.0,
             "mfe_r": 0.0,
@@ -358,6 +398,11 @@ def install(module):
             "entry_book_imbalance": float(a.get("book_imbalance") or 0.5),
             "entry_volume_ratio": float(a.get("volume_ratio") or 0.0),
             "entry_kind": "MARKET_QUALITY_MULTI",
+            "stop_mode": "BELOW_GREEN_CANDLE" if side == "LONG" else "ABOVE_RED_CANDLE",
+            "stop_anchor_color": anchor_color,
+            "stop_anchor_price": anchor,
+            "stop_anchor_time": anchor_time,
+            "stop_buffer": spread_buffer,
             "scalp_target_usdc": SCALP_NET_TARGET_USDC,
             "opened_at": module.utcnow().isoformat(),
         }
@@ -365,8 +410,24 @@ def install(module):
         module.last_entry_candle[symbol] = a.get("candle_time")
         sync_compat_position()
         module.save_state()
-        module.log_signal(a, "ENTER", f"MULTI accepted slot={len(module.paper_positions)}/{MAX_OPEN_POSITIONS}")
-        print("OPEN V8 MULTI", symbol, side, entry, f"slots={len(module.paper_positions)}", flush=True)
+        module.log_signal(
+            a,
+            "ENTER",
+            f"MULTI candle-stop={anchor_color} anchor={anchor:.8f} sl={sl:.8f} slot={len(module.paper_positions)}/{MAX_OPEN_POSITIONS}",
+        )
+        print(
+            "OPEN V8 MULTI",
+            symbol,
+            side,
+            entry,
+            "SL",
+            sl,
+            anchor_color,
+            "TP",
+            tp,
+            f"slots={len(module.paper_positions)}",
+            flush=True,
+        )
         return True
 
     def multi_close_trade(symbol, price, reason):
@@ -617,10 +678,14 @@ def install(module):
         }
         data["scalp_mode"] = {
             "build": SCALP_BUILD,
-            "mode": "MARKET_QUALITY_MULTI3_NO_TIME_EXIT",
+            "mode": "MARKET_QUALITY_MULTI3_CANDLE_STOP_NO_TIME_EXIT",
             "min_score": RAPID_MIN_SCORE,
             "scan_seconds": RAPID_LOOP_SECONDS,
             "time_exit": False,
+            "stop_mode_long": "BELOW_GREEN_1M_CANDLE",
+            "stop_mode_short": "ABOVE_RED_1M_CANDLE",
+            "candle_stop_lookback": CANDLE_STOP_LOOKBACK,
+            "take_profit_logic": "UNCHANGED_BASELINE",
             "net_target_usdc_per_trade": SCALP_NET_TARGET_USDC,
             "runner_lock_net_usdc": SCALP_LOCK_NET_USDC,
         }
@@ -645,10 +710,10 @@ def install(module):
     async def dashboard_with_pnl_breakdown():
         html = await original_dashboard()
         old = "const p=d.position; document.getElementById('position').innerHTML=p?`<b>${p.symbol} ${p.side}</b> • entry ${f(p.entry_price,6)} • SL ${f(p.stop_loss,6)} • TP ${f(p.take_profit,6)} • uPnL ${f(d.unrealized_pnl,2)}`:'Žádná otevřená pozice';"
-        new = "const ps=d.positions||[]; document.getElementById('position').innerHTML=ps.length?ps.map(p=>`<div style=\"padding:8px 0;border-bottom:1px solid #29343e\"><b>${p.symbol} ${p.side}</b> • entry ${f(p.entry_price,6)} • SL ${f(p.stop_loss,6)} • TP ${f(p.take_profit,6)}<br>Čistý P/L <b class=\"${Number(p.unrealized_net_pnl)>=0?'green':'red'}\">${Number(p.unrealized_net_pnl)>=0?'+':''}${f(p.unrealized_net_pnl,2)} USDC</b> • Náklady ${f(p.estimated_costs,2)} USDC</div>`).join(''):'Žádná otevřená pozice';"
+        new = "const ps=d.positions||[]; document.getElementById('position').innerHTML=ps.length?ps.map(p=>`<div style=\"padding:8px 0;border-bottom:1px solid #29343e\"><b>${p.symbol} ${p.side}</b> • entry ${f(p.entry_price,6)} • SL ${f(p.stop_loss,6)} • TP ${f(p.take_profit,6)}<br><span class=\"muted\">SL: ${p.stop_mode||'původní'}${p.stop_anchor_price?' @ '+f(p.stop_anchor_price,6):''}</span><br>Čistý P/L <b class=\"${Number(p.unrealized_net_pnl)>=0?'green':'red'}\">${Number(p.unrealized_net_pnl)>=0?'+':''}${f(p.unrealized_net_pnl,2)} USDC</b> • Náklady ${f(p.estimated_costs,2)} USDC</div>`).join(''):'Žádná otevřená pozice';"
         html = html.replace(old, new)
         html = html.replace("<h2>📌 Otevřená pozice</h2>", "<h2>📌 Otevřené pozice (max 3)</h2>")
-        html = html.replace("PAPER • pouze BREAKOUT • čisté R:R 1:1,3", "PAPER • MARKET QUALITY MULTI • max 3 pozice • bez time exitu • +5 USDC NET/obchod")
+        html = html.replace("PAPER • pouze BREAKOUT • čisté R:R 1:1,3", "PAPER • MARKET QUALITY MULTI • SL pod/nad svíčku • bez time exitu • +5 USDC NET/obchod")
         html = html.replace("setInterval(refresh,10000)", "setInterval(refresh,2000)")
         html = html.replace("</body>", '<div style="max-width:900px;margin:16px auto;padding:0 16px"><a href="v10/" style="color:#8ea1b8;font-weight:700;margin-right:16px">V10 Precision XRP →</a><a href="v11/" style="color:#21d19f;font-weight:800">V11 Evidence XRP →</a></div></body>')
         return HTMLResponse(html, headers={"Cache-Control": "no-store"})
