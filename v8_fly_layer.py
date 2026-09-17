@@ -2,6 +2,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 import v8_fly_layer_core as core
 from v8_fly_layer_core import *
 import v10_precision_bot as v10
+import v11_evidence_bot as v11
 
 
 def install(module):
@@ -19,8 +20,18 @@ def install(module):
             print("V10_PRECISION_STARTED", v10.BUILD, flush=True)
         except Exception as exc:
             print("V10_PRECISION_START_FAILED", repr(exc), flush=True)
+        try:
+            if not v11.bot_task or v11.bot_task.done():
+                await v11.startup()
+            print("V11_EVIDENCE_STARTED", v11.BUILD, flush=True)
+        except Exception as exc:
+            print("V11_EVIDENCE_START_FAILED", repr(exc), flush=True)
 
     async def combined_shutdown():
+        try:
+            await v11.shutdown()
+        except Exception as exc:
+            print("V11_EVIDENCE_SHUTDOWN_FAILED", repr(exc), flush=True)
         try:
             await v10.shutdown()
         except Exception as exc:
@@ -64,6 +75,14 @@ def install(module):
             "error": v10.last_error,
             "dashboard": "/v10/",
         }
+        data["v11_evidence"] = {
+            "build": v11.BUILD,
+            "running": bool(v11.bot_task and not v11.bot_task.done()),
+            "last_cycle_at": v11.last_cycle_at,
+            "error": v11.last_error,
+            "dashboard": "/v11/",
+            "validation": v11.snapshot().get("validation"),
+        }
         return JSONResponse(data, headers={"Cache-Control": "no-store"})
 
     @module.app.get("/", response_class=HTMLResponse)
@@ -73,7 +92,8 @@ def install(module):
         new = "const p=d.position; document.getElementById('position').innerHTML=p?`<b>${p.symbol} ${p.side}</b> • entry ${f(p.entry_price,6)} • SL ${f(p.stop_loss,6)} • TP ${f(p.take_profit,6)}<br>Hrubý P/L <b class=\"${Number(d.unrealized_gross_pnl)>=0?'green':'red'}\">${Number(d.unrealized_gross_pnl)>=0?'+':''}${f(d.unrealized_gross_pnl,2)} USDC</b> • Čistý P/L <b class=\"${Number(d.unrealized_pnl)>=0?'green':'red'}\">${Number(d.unrealized_pnl)>=0?'+':''}${f(d.unrealized_pnl,2)} USDC</b> • Náklady ${f(d.estimated_costs,2)} USDC`:'Žádná otevřená pozice';"
         html = html.replace(old, new)
         html = html.replace("setInterval(refresh,10000)", "setInterval(refresh,3000)")
-        html = html.replace("</body>", '<div style="max-width:900px;margin:16px auto;padding:0 16px"><a href="v10/" style="color:#21d19f;font-weight:700">Otevřít V10 Precision XRP →</a></div></body>')
+        html = html.replace("</body>", '<div style="max-width:900px;margin:16px auto;padding:0 16px"><a href="v10/" style="color:#8ea1b8;font-weight:700;margin-right:16px">V10 Precision XRP →</a><a href="v11/" style="color:#21d19f;font-weight:800">V11 Evidence XRP →</a></div></body>')
         return HTMLResponse(html, headers={"Cache-Control": "no-store"})
 
     module.app.mount("/v10", v10.app)
+    module.app.mount("/v11", v11.app)
