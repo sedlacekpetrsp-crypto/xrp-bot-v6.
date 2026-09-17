@@ -11,13 +11,11 @@ import v11_evidence_bot as v11
 
 v11.now = lambda: datetime.now(timezone.utc)
 
-SCALP_BUILD = "v8-adaptive-rapid-best-score-20260917-2"
+SCALP_BUILD = "v8-adaptive-market-quality-no-time-exit-20260917-3"
 SCALP_NET_TARGET_USDC = 5.0
 SCALP_LOCK_NET_USDC = 2.0
 RAPID_MIN_SCORE = 5
 RAPID_LOOP_SECONDS = 5
-RAPID_MAX_HOLD_SECONDS = 55
-RAPID_RUNNER_MAX_SECONDS = 180
 RAPID_MAX_ENTRY_Z = 2.20
 RAPID_MAX_SPREAD_PCT = 0.0010
 RAPID_STRONG_SCORE = 7
@@ -68,7 +66,7 @@ def _reset_v8_scalp_once(module):
 def install(module):
     core.install(module)
 
-    # High-frequency PAPER experiment. Keep V10/V11 unchanged.
+    # Market-driven PAPER scalp. Trade count is never a target.
     module.FLY_LAYER_BUILD = SCALP_BUILD
     core.BUILD = SCALP_BUILD
     module.LOOP_SECONDS = RAPID_LOOP_SECONDS
@@ -147,32 +145,52 @@ def install(module):
             bear >= 0.48,
         ])
 
-        if live > prev_hi:
+        long_break = live > prev_hi
+        short_break = live < prev_lo
+        if long_break:
             long_score += 2
-        if live < prev_lo:
+        if short_break:
             short_score += 2
 
         signal = "WAIT"
         score = max(long_score, short_score)
-        if spread_ok and abs(z) <= RAPID_MAX_ENTRY_Z and score >= RAPID_MIN_SCORE:
-            if long_score > short_score:
-                signal = "LONG"
-                score = long_score
-            elif short_score > long_score:
-                signal = "SHORT"
-                score = short_score
-            elif z > 0:
-                signal = "LONG"
-                score = long_score
-            elif z < 0:
-                signal = "SHORT"
-                score = short_score
+        preferred = "LONG" if long_score > short_score else "SHORT" if short_score > long_score else ("LONG" if z > 0 else "SHORT" if z < 0 else None)
 
+        # Score 6+ is enough by itself. Score 5 is allowed when the market supplies
+        # at least two extra quality confirmations. This keeps it active without
+        # forcing trades in dead/choppy conditions.
+        if preferred == "LONG":
+            quality_support = sum([
+                z >= 0.18,
+                vr >= 0.80,
+                float(ad or 0.0) >= 18.0,
+                imb >= 0.505,
+                five_up,
+                long_break,
+            ])
+        elif preferred == "SHORT":
+            quality_support = sum([
+                z <= -0.18,
+                vr >= 0.80,
+                float(ad or 0.0) >= 18.0,
+                imb <= 0.495,
+                five_dn,
+                short_break,
+            ])
+        else:
+            quality_support = 0
+
+        quality_ok = score >= 6 or (score == RAPID_MIN_SCORE and quality_support >= 2)
+        if spread_ok and abs(z) <= RAPID_MAX_ENTRY_Z and preferred and quality_ok:
+            signal = preferred
+            score = long_score if signal == "LONG" else short_score
+
+        quality = "HIGH" if score >= 8 else "GOOD" if score >= 6 else "OK" if quality_support >= 2 else "LOW"
         regime = "FAST_LONG" if five_up else "FAST_SHORT" if five_dn else "CHOP"
         reason = (
-            f"{symbol} RAPID signal={signal} L/S={long_score}/{short_score} "
-            f"z={z:.2f} vol={vr:.2f}x book={imb:.3f} spread={spread*100:.3f}% "
-            f"rsi={rv:.1f} adx5={float(ad or 0):.1f}"
+            f"{symbol} MARKET_QUALITY={quality} signal={signal} L/S={long_score}/{short_score} "
+            f"support={quality_support} z={z:.2f} vol={vr:.2f}x book={imb:.3f} "
+            f"spread={spread*100:.3f}% rsi={rv:.1f} adx5={float(ad or 0):.1f}"
         )
         return {
             "symbol": symbol,
@@ -180,7 +198,9 @@ def install(module):
             "signal": signal,
             "raw_signal": signal,
             "setup": "RAPID_MOMENTUM" if signal in ("LONG", "SHORT") else None,
-            "score": int(score if signal != "WAIT" else max(long_score, short_score)),
+            "score": int(score),
+            "market_quality": quality,
+            "quality_support": int(quality_support),
             "candle_time": candle_time,
             "regime": regime,
             "rsi": rv,
@@ -206,6 +226,7 @@ def install(module):
             candidates,
             key=lambda r: (
                 int(r.get("score") or 0),
+                int(r.get("quality_support") or 0),
                 abs(float(r.get("z_momentum") or 0.0)),
                 float(r.get("volume_ratio") or 0.0),
                 float(r.get("adx5") or 0.0),
@@ -217,15 +238,15 @@ def install(module):
 
     original_close_trade = core.close_trade
 
-    def rapid_close_trade(price, reason):
+    def market_close_trade(price, reason):
         original_close_trade(price, reason)
         module.cooldown_until = None
         module.save_state()
 
-    core.close_trade = rapid_close_trade
-    module.close_trade = rapid_close_trade
+    core.close_trade = market_close_trade
+    module.close_trade = market_close_trade
 
-    async def rapid_manage_position():
+    async def market_manage_position():
         p = module.paper_position
         if not p:
             return
@@ -243,18 +264,18 @@ def install(module):
 
         sl = float(p["stop_loss"])
         if (p["side"] == "LONG" and price <= sl) or (p["side"] == "SHORT" and price >= sl):
-            rapid_close_trade(price, "RAPID STOP")
+            market_close_trade(price, "MARKET STOP")
             return
 
-        age = (module.utcnow() - datetime.fromisoformat(p["opened_at"])).total_seconds()
-        analysis = None
+        try:
+            analysis = await aggressive_strategy(p["symbol"])
+        except Exception:
+            analysis = None
 
         if net_if_closed >= SCALP_NET_TARGET_USDC:
-            try:
-                analysis = await aggressive_strategy(p["symbol"])
-                same_side_score = int(
-                    analysis.get("long_score") if p["side"] == "LONG" else analysis.get("short_score") or 0
-                )
+            strong = False
+            if analysis:
+                same_side_score = int((analysis.get("long_score") if p["side"] == "LONG" else analysis.get("short_score")) or 0)
                 z = float(analysis.get("z_momentum") or 0.0)
                 z_ok = z >= RAPID_STRONG_Z if p["side"] == "LONG" else z <= -RAPID_STRONG_Z
                 strong = bool(
@@ -263,11 +284,9 @@ def install(module):
                     and float(analysis.get("volume_ratio") or 0.0) >= RAPID_STRONG_VOLUME
                     and z_ok
                 )
-            except Exception:
-                strong = False
 
             if not strong:
-                rapid_close_trade(price, "RAPID +5 NET")
+                market_close_trade(price, "MARKET +5 NET / NO STRONG CONTINUATION")
                 return
 
             if qty > 0:
@@ -279,35 +298,26 @@ def install(module):
                 else:
                     p["stop_loss"] = min(float(p["stop_loss"]), lock_price)
             p["scalp_runner"] = True
-            module.save_state()
 
-        if age >= 20:
-            if analysis is None:
-                try:
-                    analysis = await aggressive_strategy(p["symbol"])
-                except Exception:
-                    analysis = None
-            if analysis:
-                own = int(analysis.get("long_score") if p["side"] == "LONG" else analysis.get("short_score") or 0)
-                opp = int(analysis.get("short_score") if p["side"] == "LONG" else analysis.get("long_score") or 0)
-                if opp >= own + 2:
-                    rapid_close_trade(price, "RAPID MOMENTUM FLIP")
-                    return
-
-        max_age = RAPID_RUNNER_MAX_SECONDS if p.get("scalp_runner") else RAPID_MAX_HOLD_SECONDS
-        if age >= max_age:
-            rapid_close_trade(price, f"RAPID TIME EXIT {int(age)}s")
-            return
+        # Exit only when the market actually flips against the position.
+        # There is deliberately NO age/max-hold/time-exit rule.
+        if analysis:
+            own = int((analysis.get("long_score") if p["side"] == "LONG" else analysis.get("short_score")) or 0)
+            opp = int((analysis.get("short_score") if p["side"] == "LONG" else analysis.get("long_score")) or 0)
+            opposite_signal = analysis.get("signal") == ("SHORT" if p["side"] == "LONG" else "LONG")
+            if opposite_signal and opp >= max(6, own + 2):
+                market_close_trade(price, "MARKET MOMENTUM FLIP")
+                return
 
         tp = float(p["take_profit"])
         if (p["side"] == "LONG" and price >= tp) or (p["side"] == "SHORT" and price <= tp):
-            rapid_close_trade(price, "RAPID TAKE PROFIT")
+            market_close_trade(price, "MARKET TAKE PROFIT")
             return
 
         module.save_state()
 
-    core.manage_position = rapid_manage_position
-    module.manage_position = rapid_manage_position
+    core.manage_position = market_manage_position
+    module.manage_position = market_manage_position
 
     original_analyze = module.analyze
     original_dashboard = module.dashboard
@@ -380,10 +390,10 @@ def install(module):
         data["equity"] = float(data.get("paper_balance", 0.0)) + net
         data["scalp_mode"] = {
             "build": SCALP_BUILD,
-            "mode": "AGGRESSIVE_RAPID_BEST_SCORE",
+            "mode": "MARKET_QUALITY_NO_TIME_EXIT",
             "min_score": RAPID_MIN_SCORE,
             "scan_seconds": RAPID_LOOP_SECONDS,
-            "normal_max_hold_seconds": RAPID_MAX_HOLD_SECONDS,
+            "time_exit": False,
             "net_target_usdc": SCALP_NET_TARGET_USDC,
             "runner_lock_net_usdc": SCALP_LOCK_NET_USDC,
         }
@@ -410,7 +420,8 @@ def install(module):
         old = "const p=d.position; document.getElementById('position').innerHTML=p?`<b>${p.symbol} ${p.side}</b> • entry ${f(p.entry_price,6)} • SL ${f(p.stop_loss,6)} • TP ${f(p.take_profit,6)} • uPnL ${f(d.unrealized_pnl,2)}`:'Žádná otevřená pozice';"
         new = "const p=d.position; document.getElementById('position').innerHTML=p?`<b>${p.symbol} ${p.side}</b> • entry ${f(p.entry_price,6)} • SL ${f(p.stop_loss,6)} • TP ${f(p.take_profit,6)}<br>Hrubý P/L <b class=\"${Number(d.unrealized_gross_pnl)>=0?'green':'red'}\">${Number(d.unrealized_gross_pnl)>=0?'+':''}${f(d.unrealized_gross_pnl,2)} USDC</b> • Čistý P/L <b class=\"${Number(d.unrealized_pnl)>=0?'green':'red'}\">${Number(d.unrealized_pnl)>=0?'+':''}${f(d.unrealized_pnl,2)} USDC</b> • Náklady ${f(d.estimated_costs,2)} USDC`:'Žádná otevřená pozice';"
         html = html.replace(old, new)
-        html = html.replace("PAPER • pouze BREAKOUT • čisté R:R 1:1,3", "PAPER • AGGRESSIVE RAPID SCALP • best-score vstup • +5 USDC NET")
+        html = html.replace("PAPER • pouze BREAKOUT • čisté R:R 1:1,3", "PAPER • MARKET QUALITY SCALP • bez time exitu • +5 USDC NET")
+        html = html.replace("PAPER • AGGRESSIVE RAPID SCALP • best-score vstup • +5 USDC NET", "PAPER • MARKET QUALITY SCALP • bez time exitu • +5 USDC NET")
         html = html.replace("setInterval(refresh,10000)", "setInterval(refresh,2000)")
         html = html.replace("</body>", '<div style="max-width:900px;margin:16px auto;padding:0 16px"><a href="v10/" style="color:#8ea1b8;font-weight:700;margin-right:16px">V10 Precision XRP →</a><a href="v11/" style="color:#21d19f;font-weight:800">V11 Evidence XRP →</a></div></body>')
         return HTMLResponse(html, headers={"Cache-Control": "no-store"})
