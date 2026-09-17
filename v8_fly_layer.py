@@ -1,8 +1,12 @@
+from datetime import datetime, timezone
 from fastapi.responses import HTMLResponse, JSONResponse
 import v8_fly_layer_core as core
 from v8_fly_layer_core import *
 import v10_precision_bot as v10
 import v11_evidence_bot as v11
+
+# Runtime guard for V11 build 2: override the UTC helper so a stale typo cannot stop the loop.
+v11.now = lambda: datetime.now(timezone.utc)
 
 
 def install(module):
@@ -78,8 +82,8 @@ def install(module):
         data["v11_evidence"] = {
             "build": v11.BUILD,
             "running": bool(v11.bot_task and not v11.bot_task.done()),
-            "last_cycle_at": v11.last_cycle_at,
-            "error": v11.last_error,
+            "last_cycle_at": v11.LAST_CYCLE,
+            "error": v11.ERR,
             "dashboard": "/v11/",
             "validation": v11.snapshot().get("validation"),
         }
