@@ -14,12 +14,17 @@ jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - name: Wake XRP Bot V8 Candle Fixed
+      - name: Wake V8 Candle Scanner (includes Fly V10/V11)
         run: |
-          curl --fail --silent --show-error --max-time 90 \
-            https://xrp-bot-v8-candle.onrender.com/ > /dev/null
+          curl --fail --silent --show-error --retry 2 --max-time 90 \
+            https://xrp-bot-v8-candle-scanner.onrender.com/health > /dev/null
 
-      - name: Wake BOT V8.1 BREAKOUT FIXED
+      - name: Wake V8.1 Candle
         run: |
-          curl --fail --silent --show-error --max-time 90 \
-            https://xrp-bot-v8-1-candle.onrender.com/ > /dev/null
+          curl --fail --silent --show-error --retry 2 --max-time 90 \
+            https://xrp-bot-v8-1-candle.onrender.com/health > /dev/null
+
+      - name: Wake V9 Best-Of
+        run: |
+          curl --fail --silent --show-error --retry 2 --max-time 90 \
+            https://xrp-bot-v9-best-of.onrender.com/ > /dev/null
