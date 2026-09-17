@@ -11,7 +11,7 @@ import v11_evidence_bot as v11
 
 v11.now = lambda: datetime.now(timezone.utc)
 
-SCALP_BUILD = "v8-adaptive-market-quality-no-time-exit-20260917-3"
+SCALP_BUILD = "v8-adaptive-market-quality-multi3-20260917-4"
 SCALP_NET_TARGET_USDC = 5.0
 SCALP_LOCK_NET_USDC = 2.0
 RAPID_MIN_SCORE = 5
@@ -22,6 +22,9 @@ RAPID_STRONG_SCORE = 7
 RAPID_STRONG_ADX = 20.0
 RAPID_STRONG_Z = 0.50
 RAPID_STRONG_VOLUME = 1.00
+MAX_OPEN_POSITIONS = 3
+MAX_POSITION_NOTIONAL_SHARE = 0.33
+MAX_TOTAL_NOTIONAL_SHARE = 0.90
 RESET_MARKER = "v8-scalp5-reset-10000-20260917"
 
 
@@ -31,6 +34,7 @@ def _reset_v8_scalp_once(module):
     state = {
         "paper_balance": 10000.0,
         "paper_position": None,
+        "paper_positions": {},
         "last_entry_candle": {},
         "cooldown_until": None,
     }
@@ -55,6 +59,7 @@ def _reset_v8_scalp_once(module):
         conn.commit()
     module.PAPER_BALANCE = 10000.0
     module.paper_position = None
+    module.paper_positions = {}
     module.trade_history = []
     module.last_entry_candle = {}
     module.cooldown_until = None
@@ -66,16 +71,76 @@ def _reset_v8_scalp_once(module):
 def install(module):
     core.install(module)
 
-    # Market-driven PAPER scalp. Trade count is never a target.
     module.FLY_LAYER_BUILD = SCALP_BUILD
     core.BUILD = SCALP_BUILD
     module.LOOP_SECONDS = RAPID_LOOP_SECONDS
     module.RISK_PER_TRADE = 0.0015
     module.MIN_STOP_RATE = 0.0015
     module.MAX_STOP_RATE = 0.0060
-    module.MAX_NOTIONAL_SHARE = 0.50
+    module.MAX_NOTIONAL_SHARE = MAX_POSITION_NOTIONAL_SHARE
     module.SETUP_PARAMS["RAPID_MOMENTUM"] = {"atr_mult": 0.55, "rr": 0.90}
     module.ENABLED_SETUPS = {"RAPID_MOMENTUM"}
+    module.paper_positions = {}
+
+    original_save_state = module.save_state
+    original_load_state = module.load_state
+
+    def sync_compat_position():
+        positions = getattr(module, "paper_positions", {}) or {}
+        if positions:
+            first_symbol = sorted(positions.keys())[0]
+            module.paper_position = positions[first_symbol]
+        else:
+            module.paper_position = None
+
+    def multi_load_state():
+        original_load_state()
+        positions = {}
+        try:
+            if module.DATABASE_URL:
+                with module.get_db() as conn:
+                    with conn.cursor() as cur:
+                        cur.execute("SELECT state FROM v8fixed_state WHERE id=1")
+                        row = cur.fetchone()
+                state = (row[0] if row else {}) or {}
+                saved_positions = state.get("paper_positions")
+                if isinstance(saved_positions, dict):
+                    positions = {
+                        str(symbol): dict(pos)
+                        for symbol, pos in saved_positions.items()
+                        if isinstance(pos, dict) and pos.get("symbol")
+                    }
+        except Exception as exc:
+            print("MULTI LOAD STATE", repr(exc), flush=True)
+        if not positions and module.paper_position:
+            positions = {module.paper_position["symbol"]: module.paper_position}
+        module.paper_positions = positions
+        sync_compat_position()
+
+    def multi_save_state():
+        sync_compat_position()
+        if not module.DATABASE_URL:
+            return
+        state = {
+            "paper_balance": module.PAPER_BALANCE,
+            "paper_position": module.paper_position,
+            "paper_positions": module.paper_positions,
+            "last_entry_candle": module.last_entry_candle,
+            "cooldown_until": module.cooldown_until.isoformat() if module.cooldown_until else None,
+        }
+        try:
+            with module.get_db() as conn:
+                with conn.cursor() as cur:
+                    cur.execute("""
+                        INSERT INTO v8fixed_state(id,state) VALUES(1,%s::jsonb)
+                        ON CONFLICT(id) DO UPDATE SET state=EXCLUDED.state
+                    """, (json.dumps(state),))
+                conn.commit()
+        except Exception as exc:
+            print("MULTI SAVE STATE", repr(exc), flush=True)
+
+    module.load_state = multi_load_state
+    module.save_state = multi_save_state
 
     async def aggressive_strategy(symbol):
         k1, k5, bk = await asyncio.gather(
@@ -156,9 +221,6 @@ def install(module):
         score = max(long_score, short_score)
         preferred = "LONG" if long_score > short_score else "SHORT" if short_score > long_score else ("LONG" if z > 0 else "SHORT" if z < 0 else None)
 
-        # Score 6+ is enough by itself. Score 5 is allowed when the market supplies
-        # at least two extra quality confirmations. This keeps it active without
-        # forcing trades in dead/choppy conditions.
         if preferred == "LONG":
             quality_support = sum([
                 z >= 0.18,
@@ -218,106 +280,246 @@ def install(module):
     core.strategy = aggressive_strategy
     module.strategy_analysis = aggressive_strategy
 
-    def aggressive_choose_best(rows):
-        candidates = [r for r in rows if r.get("signal") in ("LONG", "SHORT")]
-        if not candidates:
-            return None
-        return sorted(
-            candidates,
-            key=lambda r: (
-                int(r.get("score") or 0),
-                int(r.get("quality_support") or 0),
-                abs(float(r.get("z_momentum") or 0.0)),
-                float(r.get("volume_ratio") or 0.0),
-                float(r.get("adx5") or 0.0),
-            ),
-            reverse=True,
-        )[0]
+    def candidate_rank(row):
+        return (
+            int(row.get("score") or 0),
+            int(row.get("quality_support") or 0),
+            abs(float(row.get("z_momentum") or 0.0)),
+            float(row.get("volume_ratio") or 0.0),
+            float(row.get("adx5") or 0.0),
+        )
 
-    core.choose_best = aggressive_choose_best
+    def multi_open_trade(a, price):
+        symbol = a.get("symbol")
+        if not symbol or symbol in module.paper_positions:
+            return False
+        if len(module.paper_positions) >= MAX_OPEN_POSITIONS or not a.get("atr"):
+            return False
+        params = module.SETUP_PARAMS.get(a.get("setup") or "RAPID_MOMENTUM", module.SETUP_PARAMS["RAPID_MOMENTUM"])
+        dist = max(float(a["atr"]) * params["atr_mult"], price * module.MIN_STOP_RATE)
+        if dist / price > module.MAX_STOP_RATE:
+            module.log_signal(a, "REJECT", "STOP_OUT_OF_RANGE")
+            return False
 
-    original_close_trade = core.close_trade
+        side = a["signal"]
+        entry = price * (1 + module.SLIPPAGE_RATE if side == "LONG" else 1 - module.SLIPPAGE_RATE)
+        sl = entry - dist if side == "LONG" else entry + dist
+        net_loss_per_unit = -module.estimated_net_per_unit(side, entry, sl)
+        if net_loss_per_unit <= 0:
+            return False
 
-    def market_close_trade(price, reason):
-        original_close_trade(price, reason)
-        module.cooldown_until = None
+        risk = module.PAPER_BALANCE * module.RISK_PER_TRADE
+        existing_notional = sum(
+            abs(float(pos.get("entry_price") or 0.0) * float(pos.get("qty") or 0.0))
+            for pos in module.paper_positions.values()
+        )
+        total_limit = max(module.PAPER_BALANCE, 0.0) * MAX_TOTAL_NOTIONAL_SHARE
+        available_notional = max(0.0, total_limit - existing_notional)
+        per_position_limit = max(module.PAPER_BALANCE, 0.0) * MAX_POSITION_NOTIONAL_SHARE
+        qty = min(
+            risk / net_loss_per_unit,
+            per_position_limit / entry if entry > 0 else 0.0,
+            available_notional / entry if entry > 0 else 0.0,
+        )
+        if qty <= 1e-12:
+            module.log_signal(a, "REJECT", "MULTI_NOTIONAL_LIMIT")
+            return False
+
+        target_net_per_unit = net_loss_per_unit * module.NET_RISK_REWARD
+        tp = module.target_market_for_net_profit(side, entry, target_net_per_unit)
+        pos = {
+            "symbol": symbol,
+            "side": side,
+            "setup": a.get("setup") or "RAPID_MOMENTUM",
+            "regime": a.get("regime"),
+            "score": int(a.get("score") or 0),
+            "entry_price": entry,
+            "qty": qty,
+            "initial_qty": qty,
+            "stop_loss": sl,
+            "take_profit": tp,
+            "risk_distance": dist,
+            "initial_risk_usdc": qty * net_loss_per_unit,
+            "net_rr": module.NET_RISK_REWARD,
+            "mae_r": 0.0,
+            "mfe_r": 0.0,
+            "breakeven_moved": False,
+            "partial_taken": False,
+            "partial_fraction": 0.0,
+            "partial_qty": 0.0,
+            "partial_exit_price": None,
+            "partial_realized_gross": 0.0,
+            "partial_realized_fees": 0.0,
+            "partial_realized_pnl": 0.0,
+            "profit_mode": False,
+            "z_entry": float(a.get("z_momentum") or 0.0),
+            "entry_trigger": float(a.get("entry_trigger") or price),
+            "entry_spread_pct": float(a.get("real_spread_pct") or 0.0),
+            "entry_book_imbalance": float(a.get("book_imbalance") or 0.5),
+            "entry_volume_ratio": float(a.get("volume_ratio") or 0.0),
+            "entry_kind": "MARKET_QUALITY_MULTI",
+            "scalp_target_usdc": SCALP_NET_TARGET_USDC,
+            "opened_at": module.utcnow().isoformat(),
+        }
+        module.paper_positions[symbol] = pos
+        module.last_entry_candle[symbol] = a.get("candle_time")
+        sync_compat_position()
         module.save_state()
+        module.log_signal(a, "ENTER", f"MULTI accepted slot={len(module.paper_positions)}/{MAX_OPEN_POSITIONS}")
+        print("OPEN V8 MULTI", symbol, side, entry, f"slots={len(module.paper_positions)}", flush=True)
+        return True
 
-    core.close_trade = market_close_trade
-    module.close_trade = market_close_trade
+    def multi_close_trade(symbol, price, reason):
+        pos = module.paper_positions.get(symbol)
+        if not pos:
+            return False
+        entry = float(pos["entry_price"])
+        qty = float(pos.get("qty") or 0.0)
+        initial_qty = float(pos.get("initial_qty") or qty)
+        if pos["side"] == "LONG":
+            exit_exec = price * (1 - module.SLIPPAGE_RATE)
+            gross = (exit_exec - entry) * qty
+        else:
+            exit_exec = price * (1 + module.SLIPPAGE_RATE)
+            gross = (entry - exit_exec) * qty
+        fees = (entry * qty + exit_exec * qty) * module.FEE_RATE
+        net = gross - fees
+        partial_gross = float(pos.get("partial_realized_gross") or 0.0)
+        partial_fees = float(pos.get("partial_realized_fees") or 0.0)
+        partial_net = float(pos.get("partial_realized_pnl") or 0.0)
+        total_gross = partial_gross + gross
+        total_fees = partial_fees + fees
+        total_net = partial_net + net
+        risk = max(float(pos.get("initial_risk_usdc") or 0.0), 1e-12)
+        rr = total_net / risk
+        age = (module.utcnow() - datetime.fromisoformat(pos["opened_at"])).total_seconds() / 60.0
+        detail = (
+            f"{reason} | R={rr:.2f} MFE={float(pos.get('mfe_r', 0)):.2f} "
+            f"MAE={float(pos.get('mae_r', 0)):.2f} DUR={age:.1f}m Z={float(pos.get('z_entry', 0)):.2f}"
+        )
+        module.PAPER_BALANCE += net
+        now = module.utcnow()
+        trade = {
+            **pos,
+            "qty": initial_qty,
+            "remaining_qty_at_final_exit": qty,
+            "exit_price": exit_exec,
+            "gross_pnl": total_gross,
+            "fees": total_fees,
+            "pnl": total_net,
+            "reason": detail,
+            "closed_at": now.isoformat(),
+        }
+        module.save_trade(trade)
+        module.trade_history.insert(0, trade)
+        module.trade_history = module.trade_history[:500]
+        module.paper_positions.pop(symbol, None)
+        module.cooldown_until = None
+        sync_compat_position()
+        module.save_state()
+        print("CLOSE V8 MULTI", symbol, reason, total_net, f"slots={len(module.paper_positions)}", flush=True)
+        return True
 
-    async def market_manage_position():
-        p = module.paper_position
-        if not p:
+    async def manage_one_position(symbol):
+        pos = module.paper_positions.get(symbol)
+        if not pos:
             return
-        price = await module.get_live_price(p["symbol"], max_age=1.0)
-        entry = float(p["entry_price"])
-        qty = float(p.get("qty") or 0.0)
-        dist = max(float(p.get("risk_distance") or 0.0), 1e-12)
-        mr = (price - entry) / dist if p["side"] == "LONG" else (entry - price) / dist
-        p["mfe_r"] = max(float(p.get("mfe_r", 0.0)), mr)
-        p["mae_r"] = min(float(p.get("mae_r", 0.0)), mr)
-        partial_net = float(p.get("partial_realized_pnl") or 0.0)
-        net_if_closed = partial_net + module.estimated_net_per_unit(p["side"], entry, price) * qty
-        p["scalp_net_if_closed"] = net_if_closed
-        p["scalp_target_usdc"] = SCALP_NET_TARGET_USDC
+        price = await module.get_live_price(symbol, max_age=1.0)
+        entry = float(pos["entry_price"])
+        qty = float(pos.get("qty") or 0.0)
+        dist = max(float(pos.get("risk_distance") or 0.0), 1e-12)
+        mr = (price - entry) / dist if pos["side"] == "LONG" else (entry - price) / dist
+        pos["mfe_r"] = max(float(pos.get("mfe_r", 0.0)), mr)
+        pos["mae_r"] = min(float(pos.get("mae_r", 0.0)), mr)
+        partial_net = float(pos.get("partial_realized_pnl") or 0.0)
+        net_if_closed = partial_net + module.estimated_net_per_unit(pos["side"], entry, price) * qty
+        pos["scalp_net_if_closed"] = net_if_closed
+        pos["scalp_target_usdc"] = SCALP_NET_TARGET_USDC
 
-        sl = float(p["stop_loss"])
-        if (p["side"] == "LONG" and price <= sl) or (p["side"] == "SHORT" and price >= sl):
-            market_close_trade(price, "MARKET STOP")
+        stop = float(pos["stop_loss"])
+        if (pos["side"] == "LONG" and price <= stop) or (pos["side"] == "SHORT" and price >= stop):
+            multi_close_trade(symbol, price, "MARKET STOP")
             return
 
         try:
-            analysis = await aggressive_strategy(p["symbol"])
+            analysis = await aggressive_strategy(symbol)
         except Exception:
             analysis = None
 
         if net_if_closed >= SCALP_NET_TARGET_USDC:
             strong = False
             if analysis:
-                same_side_score = int((analysis.get("long_score") if p["side"] == "LONG" else analysis.get("short_score")) or 0)
+                same_side_score = int((analysis.get("long_score") if pos["side"] == "LONG" else analysis.get("short_score")) or 0)
                 z = float(analysis.get("z_momentum") or 0.0)
-                z_ok = z >= RAPID_STRONG_Z if p["side"] == "LONG" else z <= -RAPID_STRONG_Z
+                z_ok = z >= RAPID_STRONG_Z if pos["side"] == "LONG" else z <= -RAPID_STRONG_Z
                 strong = bool(
                     same_side_score >= RAPID_STRONG_SCORE
                     and float(analysis.get("adx5") or 0.0) >= RAPID_STRONG_ADX
                     and float(analysis.get("volume_ratio") or 0.0) >= RAPID_STRONG_VOLUME
                     and z_ok
                 )
-
             if not strong:
-                market_close_trade(price, "MARKET +5 NET / NO STRONG CONTINUATION")
+                multi_close_trade(symbol, price, "MARKET +5 NET / NO STRONG CONTINUATION")
                 return
-
             if qty > 0:
-                lock_price = module.target_market_for_net_profit(
-                    p["side"], entry, SCALP_LOCK_NET_USDC / qty
-                )
-                if p["side"] == "LONG":
-                    p["stop_loss"] = max(float(p["stop_loss"]), lock_price)
+                lock_price = module.target_market_for_net_profit(pos["side"], entry, SCALP_LOCK_NET_USDC / qty)
+                if pos["side"] == "LONG":
+                    pos["stop_loss"] = max(float(pos["stop_loss"]), lock_price)
                 else:
-                    p["stop_loss"] = min(float(p["stop_loss"]), lock_price)
-            p["scalp_runner"] = True
+                    pos["stop_loss"] = min(float(pos["stop_loss"]), lock_price)
+            pos["scalp_runner"] = True
 
-        # Exit only when the market actually flips against the position.
-        # There is deliberately NO age/max-hold/time-exit rule.
         if analysis:
-            own = int((analysis.get("long_score") if p["side"] == "LONG" else analysis.get("short_score")) or 0)
-            opp = int((analysis.get("short_score") if p["side"] == "LONG" else analysis.get("long_score")) or 0)
-            opposite_signal = analysis.get("signal") == ("SHORT" if p["side"] == "LONG" else "LONG")
+            own = int((analysis.get("long_score") if pos["side"] == "LONG" else analysis.get("short_score")) or 0)
+            opp = int((analysis.get("short_score") if pos["side"] == "LONG" else analysis.get("long_score")) or 0)
+            opposite_signal = analysis.get("signal") == ("SHORT" if pos["side"] == "LONG" else "LONG")
             if opposite_signal and opp >= max(6, own + 2):
-                market_close_trade(price, "MARKET MOMENTUM FLIP")
+                multi_close_trade(symbol, price, "MARKET MOMENTUM FLIP")
                 return
 
-        tp = float(p["take_profit"])
-        if (p["side"] == "LONG" and price >= tp) or (p["side"] == "SHORT" and price <= tp):
-            market_close_trade(price, "MARKET TAKE PROFIT")
+        tp = float(pos["take_profit"])
+        if (pos["side"] == "LONG" and price >= tp) or (pos["side"] == "SHORT" and price <= tp):
+            multi_close_trade(symbol, price, "MARKET TAKE PROFIT")
             return
-
         module.save_state()
 
-    core.manage_position = market_manage_position
-    module.manage_position = market_manage_position
+    async def multi_manage_positions():
+        for symbol in list(module.paper_positions.keys()):
+            await manage_one_position(symbol)
+
+    async def multi_cycle():
+        try:
+            await multi_manage_positions()
+            rows = await module.analyze_all()
+            open_symbols = set(module.paper_positions.keys())
+            candidates = []
+            for row in rows:
+                if row.get("signal") not in ("LONG", "SHORT"):
+                    continue
+                symbol = row.get("symbol")
+                if symbol in open_symbols:
+                    continue
+                if module.last_entry_candle.get(symbol) == row.get("candle_time"):
+                    continue
+                candidates.append(row)
+            candidates.sort(key=candidate_rank, reverse=True)
+            slots = max(0, MAX_OPEN_POSITIONS - len(module.paper_positions))
+            for row in candidates[:slots]:
+                price = await module.get_live_price(row["symbol"], max_age=1.0)
+                if multi_open_trade(row, price):
+                    open_symbols.add(row["symbol"])
+            module.last_cycle_at = module.utcnow().isoformat()
+            module.last_error = None
+        except Exception as exc:
+            module.last_error = f"{type(exc).__name__}: {exc}"
+            print("V8 MULTI CYCLE", repr(exc), flush=True)
+            module.last_cycle_at = module.utcnow().isoformat()
+
+    core.open_trade = multi_open_trade
+    module.open_trade = multi_open_trade
+    core.manage_position = multi_manage_positions
+    module.manage_position = multi_manage_positions
+    module.cycle = multi_cycle
 
     original_analyze = module.analyze
     original_dashboard = module.dashboard
@@ -329,7 +531,7 @@ def install(module):
         try:
             did_reset = _reset_v8_scalp_once(module)
             print(
-                f"V8_SCALP_RESET applied={did_reset} balance={module.PAPER_BALANCE:.2f} history={len(module.trade_history)}",
+                f"V8_SCALP_RESET applied={did_reset} balance={module.PAPER_BALANCE:.2f} history={len(module.trade_history)} positions={len(module.paper_positions)}",
                 flush=True,
             )
         except Exception as exc:
@@ -372,29 +574,54 @@ def install(module):
     @module.app.get("/analyze")
     async def analyze_with_pnl_breakdown():
         data = await original_analyze()
-        p = data.get("position")
-        gross = net = costs = 0.0
-        if p:
-            cached = module.price_cache.get(p["symbol"])
+        position_rows = []
+        total_gross = 0.0
+        total_net = 0.0
+        total_costs = 0.0
+        for symbol in sorted(module.paper_positions.keys()):
+            pos = module.paper_positions[symbol]
+            row = dict(pos)
+            cached = module.price_cache.get(symbol)
+            gross = net = costs = 0.0
             if cached:
                 px = float(cached["price"])
-                entry = float(p["entry_price"])
-                qty = float(p["qty"])
-                side = p["side"]
-                gross = ((px - entry) if side == "LONG" else (entry - px)) * qty
-                net = module.estimated_net_per_unit(side, entry, px) * qty + float(p.get("partial_realized_pnl") or 0.0)
-                costs = max(gross - (net - float(p.get("partial_realized_pnl") or 0.0)), 0.0)
-        data["unrealized_gross_pnl"] = gross
-        data["unrealized_pnl"] = net
-        data["estimated_costs"] = costs
-        data["equity"] = float(data.get("paper_balance", 0.0)) + net
+                entry = float(pos["entry_price"])
+                qty = float(pos.get("qty") or 0.0)
+                gross = ((px - entry) if pos["side"] == "LONG" else (entry - px)) * qty
+                partial_net = float(pos.get("partial_realized_pnl") or 0.0)
+                net = module.estimated_net_per_unit(pos["side"], entry, px) * qty + partial_net
+                costs = max(gross - (net - partial_net), 0.0)
+                row["current_price"] = px
+            row["unrealized_gross_pnl"] = gross
+            row["unrealized_net_pnl"] = net
+            row["estimated_costs"] = costs
+            position_rows.append(row)
+            total_gross += gross
+            total_net += net
+            total_costs += costs
+
+        data["positions"] = position_rows
+        data["position"] = position_rows[0] if position_rows else None
+        data["open_positions"] = len(position_rows)
+        data["unrealized_gross_pnl"] = total_gross
+        data["unrealized_pnl"] = total_net
+        data["estimated_costs"] = total_costs
+        data["equity"] = float(module.PAPER_BALANCE) + total_net
+        data["paper_balance"] = float(module.PAPER_BALANCE)
+        data["multi_position_mode"] = {
+            "enabled": True,
+            "max_open_positions": MAX_OPEN_POSITIONS,
+            "one_position_per_symbol": True,
+            "max_position_notional_share": MAX_POSITION_NOTIONAL_SHARE,
+            "max_total_notional_share": MAX_TOTAL_NOTIONAL_SHARE,
+        }
         data["scalp_mode"] = {
             "build": SCALP_BUILD,
-            "mode": "MARKET_QUALITY_NO_TIME_EXIT",
+            "mode": "MARKET_QUALITY_MULTI3_NO_TIME_EXIT",
             "min_score": RAPID_MIN_SCORE,
             "scan_seconds": RAPID_LOOP_SECONDS,
             "time_exit": False,
-            "net_target_usdc": SCALP_NET_TARGET_USDC,
+            "net_target_usdc_per_trade": SCALP_NET_TARGET_USDC,
             "runner_lock_net_usdc": SCALP_LOCK_NET_USDC,
         }
         data["v10_precision"] = {
@@ -418,10 +645,10 @@ def install(module):
     async def dashboard_with_pnl_breakdown():
         html = await original_dashboard()
         old = "const p=d.position; document.getElementById('position').innerHTML=p?`<b>${p.symbol} ${p.side}</b> • entry ${f(p.entry_price,6)} • SL ${f(p.stop_loss,6)} • TP ${f(p.take_profit,6)} • uPnL ${f(d.unrealized_pnl,2)}`:'Žádná otevřená pozice';"
-        new = "const p=d.position; document.getElementById('position').innerHTML=p?`<b>${p.symbol} ${p.side}</b> • entry ${f(p.entry_price,6)} • SL ${f(p.stop_loss,6)} • TP ${f(p.take_profit,6)}<br>Hrubý P/L <b class=\"${Number(d.unrealized_gross_pnl)>=0?'green':'red'}\">${Number(d.unrealized_gross_pnl)>=0?'+':''}${f(d.unrealized_gross_pnl,2)} USDC</b> • Čistý P/L <b class=\"${Number(d.unrealized_pnl)>=0?'green':'red'}\">${Number(d.unrealized_pnl)>=0?'+':''}${f(d.unrealized_pnl,2)} USDC</b> • Náklady ${f(d.estimated_costs,2)} USDC`:'Žádná otevřená pozice';"
+        new = "const ps=d.positions||[]; document.getElementById('position').innerHTML=ps.length?ps.map(p=>`<div style=\"padding:8px 0;border-bottom:1px solid #29343e\"><b>${p.symbol} ${p.side}</b> • entry ${f(p.entry_price,6)} • SL ${f(p.stop_loss,6)} • TP ${f(p.take_profit,6)}<br>Čistý P/L <b class=\"${Number(p.unrealized_net_pnl)>=0?'green':'red'}\">${Number(p.unrealized_net_pnl)>=0?'+':''}${f(p.unrealized_net_pnl,2)} USDC</b> • Náklady ${f(p.estimated_costs,2)} USDC</div>`).join(''):'Žádná otevřená pozice';"
         html = html.replace(old, new)
-        html = html.replace("PAPER • pouze BREAKOUT • čisté R:R 1:1,3", "PAPER • MARKET QUALITY SCALP • bez time exitu • +5 USDC NET")
-        html = html.replace("PAPER • AGGRESSIVE RAPID SCALP • best-score vstup • +5 USDC NET", "PAPER • MARKET QUALITY SCALP • bez time exitu • +5 USDC NET")
+        html = html.replace("<h2>📌 Otevřená pozice</h2>", "<h2>📌 Otevřené pozice (max 3)</h2>")
+        html = html.replace("PAPER • pouze BREAKOUT • čisté R:R 1:1,3", "PAPER • MARKET QUALITY MULTI • max 3 pozice • bez time exitu • +5 USDC NET/obchod")
         html = html.replace("setInterval(refresh,10000)", "setInterval(refresh,2000)")
         html = html.replace("</body>", '<div style="max-width:900px;margin:16px auto;padding:0 16px"><a href="v10/" style="color:#8ea1b8;font-weight:700;margin-right:16px">V10 Precision XRP →</a><a href="v11/" style="color:#21d19f;font-weight:800">V11 Evidence XRP →</a></div></body>')
         return HTMLResponse(html, headers={"Cache-Control": "no-store"})
