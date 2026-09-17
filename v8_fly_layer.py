@@ -1,3 +1,4 @@
+import json
 from datetime import datetime, timezone
 from fastapi.responses import HTMLResponse, JSONResponse
 import v8_fly_layer_core as core
@@ -15,6 +16,47 @@ SCALP_MAX_ENTRY_Z = 1.40
 SCALP_STRONG_ADX_MIN = 23.0
 SCALP_STRONG_Z_MIN = 0.65
 SCALP_STRONG_VOLUME_MIN = 1.10
+RESET_MARKER = "v8-scalp5-reset-10000-20260917"
+
+
+def _reset_v8_scalp_once(module):
+    """One-time clean slate for V8 Adaptive only; does not touch V10/V11 tables."""
+    if not module.DATABASE_URL:
+        return False
+    state = {
+        "paper_balance": 10000.0,
+        "paper_position": None,
+        "last_entry_candle": {},
+        "cooldown_until": None,
+    }
+    with module.get_db() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS v8_scalp_migrations(
+                    marker TEXT PRIMARY KEY,
+                    applied_at TIMESTAMPTZ DEFAULT NOW()
+                )
+            """)
+            cur.execute("SELECT 1 FROM v8_scalp_migrations WHERE marker=%s", (RESET_MARKER,))
+            if cur.fetchone():
+                return False
+            cur.execute("DELETE FROM v8fixed_trades")
+            cur.execute("DELETE FROM v8fixed_signals")
+            cur.execute("""
+                INSERT INTO v8fixed_state(id,state) VALUES(1,%s::jsonb)
+                ON CONFLICT(id) DO UPDATE SET state=EXCLUDED.state
+            """, (json.dumps(state),))
+            cur.execute("INSERT INTO v8_scalp_migrations(marker) VALUES(%s)", (RESET_MARKER,))
+        conn.commit()
+
+    module.PAPER_BALANCE = 10000.0
+    module.paper_position = None
+    module.trade_history = []
+    module.last_entry_candle = {}
+    module.cooldown_until = None
+    module.last_analysis = {}
+    module.save_state()
+    return True
 
 
 def install(module):
@@ -135,6 +177,11 @@ def install(module):
 
     async def combined_startup():
         await original_startup()
+        try:
+            did_reset = _reset_v8_scalp_once(module)
+            print(f"V8_SCALP_RESET applied={did_reset} balance={module.PAPER_BALANCE:.2f} history={len(module.trade_history)}", flush=True)
+        except Exception as exc:
+            print("V8_SCALP_RESET_FAILED", repr(exc), flush=True)
         try:
             if not v10.bot_task or v10.bot_task.done():
                 await v10.startup()
