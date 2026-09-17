@@ -1,168 +1,156 @@
-import asyncio, json, math, os, statistics, time
-from datetime import datetime, timezone, timedelta
-import httpx, psycopg
+import asyncio,json,math,os,time
+from datetime import datetime,timezone,timedelta
+import httpx,psycopg
 from fastapi import FastAPI
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse,JSONResponse
 from market_data import market_get
 import app_v8_fly_engine as ind
 
-app = FastAPI(title='V11 Evidence XRP')
-BUILD = STRATEGY_VERSION = 'v11-evidence-xrp-20260917-1'
-SYMBOL, BTC_SYMBOL = 'XRPUSDC', 'BTCUSDC'
-BINANCE_API = 'https://data-api.binance.vision'
-DATABASE_URL = os.getenv('DATABASE_URL')
-STARTING_BALANCE = 10000.0
-TRADING_MODE = 'PAPER'
+app=FastAPI(title='V11 Evidence XRP')
+BUILD='v11-evidence-xrp-20260917-2'; SYMBOL='XRPUSDC'; BTC='BTCUSDC'; API='https://data-api.binance.vision'; DB=os.getenv('DATABASE_URL')
+BAL=10000.0; POS=None; HIST=[]; WATCH=None; LAST=None; CD=None; LAST_CYCLE=None; ERR=None; DECISION='STARTING'; CLIENT=None; bot_task=None
+FEE=.0005; SLIP=.0002; COST=2*(FEE+SLIP); BASE_RISK=.0015; MAX_NOTIONAL=.30
+PARTIAL_R=.80; PARTIAL_FRAC=.60; RUNNER_R=2.20; MAX_MIN=60
 
-BASE_RISK_PER_TRADE = 0.0015
-MAX_NOTIONAL_SHARE = 0.30
-FEE_RATE, SLIPPAGE_RATE = 0.0005, 0.0002
-ROUND_TRIP_COST = 2 * (FEE_RATE + SLIPPAGE_RATE)
-BREAKOUT_LOOKBACK_5M = 20
-RETEST_SECONDS, RETEST_TOL_ATR1 = 240, 0.12
-BREAKOUT_BUFFER_ATR5 = 0.04
-MIN_VOLUME_RATIO_5M, MIN_VOLUME_RATIO_1M = 1.20, 1.05
-MAX_SPREAD_PCT = 0.00040
-BOOK_LONG_MIN, BOOK_SHORT_MAX = 0.54, 0.46
-MIN_ADX_15M, MIN_EMA_SEP_15M = 18.0, 0.0008
-MIN_ATR5_RATE, MAX_ATR5_RATE = 0.0025, 0.0150
-BTC_SHOCK_5M = 0.0050
-MIN_STOP_RATE, MAX_STOP_RATE, ATR5_STOP_MULT = 0.0045, 0.0090, 0.90
-MIN_EDGE_TO_COST = 2.50
-PARTIAL_TAKE_R, PARTIAL_FRACTION = 0.80, 0.60
-RUNNER_CAP_R = 2.20
-TRAIL_START_R, TRAIL_LOCK_1_R = 1.20, 0.35
-TRAIL_LOCK_2_TRIGGER_R, TRAIL_LOCK_2_R = 1.65, 0.85
-MAX_TRADE_MINUTES = 60
-MAX_TRADES_PER_UTC_DAY, DAILY_LOSS_LIMIT_R = 4, 1.50
-MAX_CONSECUTIVE_LOSSES, LOSS_STREAK_COOLDOWN_MIN = 2, 60
-NORMAL_COOLDOWN_MIN = 5
-OFI_SNAPSHOTS, OFI_DELAY_SECONDS = 3, 0.40
-MIN_OFI_NORM, MIN_OFI_SIGN_CONSISTENCY = 0.05, 1.0
-
-paper_balance = STARTING_BALANCE
-paper_position = None
-trade_history, watch = [], None
-last_entry_candle = cooldown_until = None
-last_cycle_at = last_error = last_analysis = None
-last_decision = 'STARTING'
-http_client = bot_task = None
-
-def utcnow(): return datetime.now(timezone.utc)
-def get_db(): return psycopg.connect(DATABASE_URL) if DATABASE_URL else None
+def now(): return datetime.now(timezone.utb)
+def db(): return psycopg.connect(DB) if DB else None
 
 def init_db():
-    if not DATABASE_URL: return
-    with get_db() as c:
-        c.execute('''CREATE TABLE IF NOT EXISTS v11_evidence_trades(
-            id SERIAL PRIMARY KEY,strategy_version TEXT NOT NULL,symbol TEXT NOT NULL,side TEXT NOT NULL,
-            entry_price DOUBLE PRECISION NOT NULL,exit_price DOUBLE PRECISION NOT NULL,qty DOUBLE PRECISION NOT NULL,
-            gross_pnl DOUBLE PRECISION NOT NULL,fees DOUBLE PRECISION NOT NULL,pnl DOUBLE PRECISION NOT NULL,
-            initial_risk_usdc DOUBLE PRECISION,risk_multiplier DOUBLE PRECISION,metadata JSONB,reason TEXT,
-            opened_at TIMESTAMPTZ,closed_at TIMESTAMPTZ DEFAULT NOW())''')
-        c.execute('''CREATE TABLE IF NOT EXISTS v11_evidence_state(id INTEGER PRIMARY KEY,state JSONB NOT NULL)''')
-        c.commit()
+    if not DB:return
+    with db() as c:
+        c.execute('CREATE TABLE IF NOT EXISTS v11_evidence_state(id int primary key,state jsonb not null)')
+        c.execute('''CREATE TABLE IF NOT EXISTS v11_evidence_trades(id serial primary key,version text,symbol text,side text,entry float8,exit float8,qty float8,pnl float8,risk float8,meta jsonb,reason text,opened timestamptz,closed timestamptz default now())''');c.commit()
 
-def load_state():
-    global paper_balance,paper_position,last_entry_candle,cooldown_until,trade_history,last_decision
-    if not DATABASE_URL: return
-    with get_db() as c:
-        r=c.execute('SELECT state FROM v11_evidence_state WHERE id=1').fetchone()
+def load():
+    global BAL,POS,HIST,LAST,CD
+    if not DB:return
+    with db() as c:
+        r=c.execute('select state from v11_evidence_state where id=1').fetchone()
         if r:
-            s=r[0] or {};paper_balance=float(s.get('paper_balance',STARTING_BALANCE));paper_position=s.get('paper_position')
-            last_entry_candle=s.get('last_entry_candle');cd=s.get('cooldown_until');cooldown_until=datetime.fromisoformat(cd) if cd else None
-            last_decision=s.get('last_decision','RESTORED')
-        rows=c.execute('''SELECT strategy_version,symbol,side,entry_price,exit_price,qty,gross_pnl,fees,pnl,
-            initial_risk_usdc,risk_multiplier,metadata,reason,opened_at,closed_at FROM v11_evidence_trades ORDER BY id DESC LIMIT 500''').fetchall()
-    trade_history=[{'strategy_version':r[0],'symbol':r[1],'side':r[2],'entry_price':r[3],'exit_price':r[4],'qty':r[5],
-        'gross_pnl':r[6],'fees':r[7],'pnl':r[8],'initial_risk_usdc':r[9],'risk_multiplier':r[10],'metadata':r[11] or {},
-        'reason':r[12],'opened_at':r[13].isoformat() if r[13] else None,'closed_at':r[14].isoformat() if r[14] else None} for r in rows]
+            s=r[0] or {};BAL=float(s.get('bal',BAL));POS=s.get('pos');LAST=s.get('last');x=s.get('cd');CD=datetime.fromisoformat(x) if x else None
+        rows=c.execute('select version,symbol,side,entry,exit,qty,pnl,risk,meta,reason,opened,closed from v11_evidence_trades order by id desc limit 300').fetchall()
+    HIST=[{'version':r[0],'symbol':r[1],'side':r[2],'entry':r[3],'exit':r[4],'qty':r[5],'pnl':r[6],'risk':r[7],'meta':r[8] or {},'reason':r[9],'opened':r[10].isoformat() if r[10] else None,'closed':r[11].isoformat() if r[11] else None} for r in rows]
 
 def save_state():
-    if not DATABASE_URL:return
-    s={'paper_balance':paper_balance,'paper_position':paper_position,'last_entry_candle':last_entry_candle,
-       'cooldown_until':cooldown_until.isoformat() if cooldown_until else None,'last_decision':last_decision}
-    with get_db() as c:
-        c.execute('''INSERT INTO v11_evidence_state(id,state) VALUES(1,%s::jsonb)
-            ON CONFLICT(id) DO UPDATE SET state=EXCLUDED.state''',(json.dumps(s),));c.commit()
+    if not DB:return
+    s={'bal':BAL,'pos':POS,'last':LAST,'cd':CD.isoformat() if CD else None}
+    with db() as c:c.execute("insert into v11_evidence_state values(1,%s::jsonb) on conflict(id) do update set state=excluded.state",(json.dumps(s),));c.commit()
 
 def save_trade(t):
-    if not DATABASE_URL:return
-    with get_db() as c:
-        c.execute('''INSERT INTO v11_evidence_trades(strategy_version,symbol,side,entry_price,exit_price,qty,gross_pnl,fees,pnl,
-            initial_risk_usdc,risk_multiplier,metadata,reason,opened_at,closed_at) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s::jsonb,%s,%s,%s)''',
-            (t['strategy_version'],t['symbol'],t['side'],t['entry_price'],t['exit_price'],t['qty'],t['gross_pnl'],t['fees'],t['pnl'],
-             t['initial_risk_usdc'],t['risk_multiplier'],json.dumps(t.get('metadata') or {}),t['reason'],t['opened_at'],t['closed_at']));c.commit()
+    if not DB:return
+    with db() as c:c.execute('insert into v11_evidence_trades(version,symbol,side,entry,exit,qty,pnl,risk,meta,reason,opened,closed) values(%s,%s,%s,%s,%s,%s,%s,%s,%s::jsonb,%s,%s,%s)',(t['version'],t['symbol'],t['side'],t['entry'],t['exit'],t['qty'],t['pnl'],t['risk'],json.dumps(t['meta']),t['reason'],t['opened'],t['closed']));c.commit()
 
-async def fetch(path,params):
-    r=await market_get(http_client,BINANCE_API+path,params=params,timeout=12);r.raise_for_status();return r.json()
-async def klines(symbol,interval,limit=250): return await fetch('/api/v3/klines',{'symbol':symbol,'interval':interval,'limit':limit})
-async def live_price(symbol=SYMBOL): return float((await fetch('/api/v3/ticker/price',{'symbol':symbol}))['price'])
-async def depth(symbol=SYMBOL): return await fetch('/api/v3/depth',{'symbol':symbol,'limit':20})
+async def get(path,p):
+    r=await market_get(CLIENT,API+path,params=p,timeout=12);r.raise_for_status();return r.json()
+async def kl(s,i,n=220):return await get('/api/v3/klines',{'symbol':s,'interval':i,'limit':n})
+async def price():return float((await get('/api/v3/ticker/price',{'symbol':SYMBOL}))['price'])
+async def book():return await get('/api/v3/depth',{'symbol':SYMBOL,'limit':20})
+def oc(k):
+    x=k[:-1];return [float(r[2]) for r in x],[float(r[3]) for r in x],[float(r[4]) for r in x],[float(r[5]) for r in x],int(x[-1][0])
+def vr(v,n=20):
+    a=sum(v[-n-1:-1])/n;return v[-1]/a if a else 0
 
-def _ohlcv(rows):
-    x=rows[:-1];return [float(r[2]) for r in x],[float(r[3]) for r in x],[float(r[4]) for r in x],[float(r[5]) for r in x],int(x[-1][0])
-
-def _book_snapshot(d):
-    bids,asks=d.get('bids') or [],d.get('asks') or []
-    if not bids or not asks:return None
-    bv=sum(float(p)*float(q) for p,q in bids[:5]);av=sum(float(p)*float(q) for p,q in asks[:5])
-    bid,bq=float(bids[0][0]),float(bids[0][1]);ask,aq=float(asks[0][0]),float(asks[0][1]);mid=(bid+ask)/2
-    return {'bid':bid,'bid_qty':bq,'ask':ask,'ask_qty':aq,'imbalance':bv/max(bv+av,1e-12),'spread_pct':(ask-bid)/max(mid,1e-12),'depth_top':max((bq+aq)/2,1e-12)}
-
-def _ofi(a,b):
-    e=(b['bid_qty'] if b['bid']>=a['bid'] else 0)-(a['bid_qty'] if b['bid']<=a['bid'] else 0)
-    e-=(b['ask_qty'] if b['ask']<=a['ask'] else 0);e+=(a['ask_qty'] if b['ask']>=a['ask'] else 0)
-    return e/max((a['depth_top']+b['depth_top'])/2,1e-12)
-
-async def microstructure():
+def snap(d):
+    b,a=d['bids'],d['asks'];bv=sum(float(p)*float(q) for p,q in b[:5]);av=sum(float(p)*float(q) for p,q in a[:5]);bp,bq=float(b[0][0]),float(b[0][1]);ap,aq=float(a[0][0]),float(a[0][1]);m=(bp+ap)/2
+    return {'bp':bp,'bq':bq,'ap':ap,'aq':aq,'imb':bv/(bv+av),'spr':(ap-bp)/m}
+def ofi(a,b):
+    e=(b['bq'] if b['bp']>=a['bp'] else 0)-(a['bq'] if b['bp']<=a['bp'] else 0)-(b['aq'] if b['ap']<=a['ap'] else 0)+(a['aq'] if b['ap']>=a['ap'] else 0)
+    return e/max((a['bq']+a['aq']+b['bq']+b['aq'])/4,1e-12)
+async def micro():
     s=[]
-    for i in range(OFI_SNAPSHOTS):
-        z=_book_snapshot(await depth())
-        if not z:return {'ok':False,'reason':'EMPTY_BOOK'}
-        s.append(z)
-        if i<OFI_SNAPSHOTS-1:await asyncio.sleep(OFI_DELAY_SECONDS)
-    o=[_ofi(s[i-1],s[i]) for i in range(1,len(s))]
-    return {'ok':True,'imbalance':sum(x['imbalance'] for x in s)/len(s),'spread_pct':max(x['spread_pct'] for x in s),
-        'ofi_norm':sum(o)/max(len(o),1),'ofi_values':o,'positive_fraction':sum(x>0 for x in o)/max(len(o),1),'negative_fraction':sum(x<0 for x in o)/max(len(o),1)}
+    for i in range(3):
+        s.append(snap(await book()))
+        if i<2:await asyncio.sleep(.4)
+    o=[ofi(s[0],s[1]),ofi(s[1],s[2])]
+    return {'imb':sum(x['imc'] for x in s)/3,'spr':max(x['spr'] for x in s),'ofi':sum(o)/2,'same':(o[0]>0 and o[1]>0) or (o[0]<0 and o[1]<0)}
 
-def _stdlog(c,n):
-    if len(c)<n+1:return 0.0
-    x=[math.log(b/a) for a,b in zip(c[-n-1:-1],c[-n:]) if a>0 and b>0];return statistics.pstdev(x) if len(x)>1 else 0.0
+def net(side,e,m):
+    x=m*(1-SLIP if side=='LONG' else 1+SLIP);g=x-e if side=='LONG' else e-x;return g-(e+x)*FEE
+def target(side,e,n):
+    if side=='LONG':return ((n+e*(1+FEE))/(1-FEE))/(1-SLIP)
+    return ((e*(1-FEE)-n)/(1+FEE))/(1+SLIP)
 
-def _risk_multiplier(c5):
-    f,s=_stdlog(c5,12),_stdlog(c5,72);r=f/s if s>1e-12 else 1.0
-    return (0.50 if r>=1.60 else 0.75 if r>=1.30 else 1.0),f,s,r
+def vol_mult(c):
+    def sd(n):
+        x=[math.log(b/a) for a,b in zip(c[-n-1:-1],c[-n:]) if a>0 and b>0];m=sum(x)/len(x);return math.sqrt(sum((z-m)**2 for z in x)/len(x)) if x else 0
+    f,s=sd(12),sd(72);r=f/s if s else 1
+    return .5 if r>=1.6 else .75 if r>=1.3 else 1
 
-def _vr(v,n=20):
-    p=v[-n-1:-1];a=sum(p)/len(p) if p else 0;return v[-1]/a if a>0 else 0
+async def analyze():
+    k1,k5,k15,kb=await asyncio.gather(kl(SYMBOL,'1m'),kl(SYMBOL,'5m'),kl(SYMBOL,'15m'),kl(BTC,'5m',60));h1,l1,c1,v1,_=oc(k1);h5,l5,c5,v5,t=oc(k5);h15,l15,c15,v15,_=oc(k15);_,_,bc,_,_=oc(kb)
+    px=float(k1[-1][4]);a1=ind.atr_wilder(h1,l1,c1);a5=ind.atr_wilder(h5,l5,c5);adx=ind.adx_wilder(h15,l15,c15);e20,e50=ind.ema(c15,20),ind.ema(c15,50);f20,f50=ind.ema(c5,20),ind.ema(c5,50);vw=ind.vwap(h5,l5,c5,v5)
+    bh=max(h5[-21:-1]);bl=min(l5[-21:-1]);buf=(a5 or 0)*.04;sep=abs(e20-e50)/px if e20 is not None and e50 is not None else 0;atr=(a5 or 0)/px;btc=bc[-1]/bc[-2]-1
+    common=adx is not None and adx>=18 and sep>=.0008 and vr(v5)>=1.2 and vr(v1)>=1.05 and .0025<=atr<=.015
+    lc=common and e20>e50 and c15[-1]>e20 and f20>f50 and c5[-1]>f20 and c5[-1]>=vw and btc>-.005
+    sc=common and e20<e50 and c15[-1]<e20 and f20<f50 and c5[-1]<f20 and c5[-1]<=vw and btc<.005
+    stop=max((a5 or 0)*.9/px,.0045);edge=stop*PARTIAL_R/COST
+    return {'px':px,'atr1':a1,'atr5':a5,'t':t,'bh':bh,'bl':bl,'lc':lc,'sc':sc,'lb':c5[-1]>bh+buf,'sb':c5[-1]<bl-buf,'edge':edge,'ok':edge>=2.5 and stop<=.009,'vm':vol_mult(c5),'btc':btc,'adx':adx,'vr5':vr(v5)}
 
-def _today_rows():
-    d=utcnow().date();return [t for t in trade_history if t.get('closed_at') and datetime.fromisoformat(t['closed_at']).date()==d and t.get('strategy_version')==STRATEGY_VERSION]
+def openpos(a,side,px,tr,m):
+    global POS,LAST,DECISION
+    e=px*(1+SLIP if side=='LONG' else 1-SLIP);d=max(float(a['atr5'] or 0)*.9,px*.0045);sl=e-d if side=='LONG' else e+d;r=-net(side,e,sl)
+    if r<=0 or d/px>.009:return
+    risk=BAL*BASE_RISK*a['vm'];q=min(risk/r,BAL*MAX_NOTIONAL/e);POS={'side':side,'entry':e,'qty':q,'iq':q,'sl':sl,'tp':target(side,e,r*RUNNER_R),'rpu':r,'risk':q*r,'partial':False,'pnl_part':0.0,'opened':now().isoformat(),'meta':{'ofi':m['ofi'],'imb':m['imc'],'spr':m['spr'],'edge':a['edge'],'vm':a['vm'],'btc':a['btc'],'adx':a['adx'],'vr5':a['vr5']}};LAST=a['t'];DECISION='ENTER_'+side;save_state()
 
-def _safety():
-    r=_today_rows();ar=sum(float(t.get('initial_risk_usdc') or 0) for t in r)/len(r) if r else 0;p=sum(float(t.get('pnl') or 0) for t in r)
-    streak=0
-    for t in r:
-        if float(t.get('pnl') or 0)<0:streak+=1
-        else:break
-    return len(r),max(0,-p/max(ar,1e-12)) if r else 0,streak
+def partial(px):
+    global BAL,DECISION
+    p=POS;q=p['qty']*PARTIAL_FRAC;x=px*(1-SLIP if p['side']=='LONG' else 1+SLIP);n=((x-p['entry']) if p['side']=='LONG' else (p['entry']-x))*q-(p['entry']+x)*q*FEE;BAL+=n;p['qty']-=q;p['pnl_part']=n;p['partial']=True;p['sl']=target(p['side'],p['entry'],0);DECISION='PARTIAL_60';save_state()
 
-async def analysis():
-    global last_analysis
-    k1,k5,k15,kb=await asyncio.gather(klines(SYMBOL,'1m'),klines(SYMBOL,'5m'),klines(SYMBOL,'15m'),klines(BTC_SYMBOL,'5m',60))
-    h1,l1,c1,v1,ct1=_ohlcv(k1);h5,l5,c5,v5,ct5=_ohlcv(k5);h1,l15,c15,v15,_=_ohlcv(k15);_,_,btc5,_,_=_ohlcv(kb)
-    px=float(k1[-1][4]);atr1=ind.atr_wilder(h1,l1,c1);atr5=ind.atr_wilder(h5,l5,c5);adx15=ind.adx_wilder(h15,l15,c15)
-    e20_5,e50_5=ind.ema(c5,20),ind.ema(c5,50);e20_15,e50_15=ind.ema(c15,20),ind.ema(c15,50);vw5=ind.vwap(h5,l5,c5,v95)
-    vr5,vr1=_vr(v5),_vr(v1);sep=abs(e20_15-e50_15)/px if e20_15 is not None and e50_15 is not None else 0;atr_rate=(atr5 or 0)/px
-    rm,rvf,rvs,vratio=_risk_multiplier(c5);bh=max(h5[-BREAKOUT_LOOKBACK_5M-1:-1]);bl=min(l5[-BREAKOUT_LOOKBACK_5M-1:-1]);buf=(atr5 or 0)*BREAKOUT_BUFFER_ATR5
-    long15=e20_15 is not None and e50_15 is not None and e20_15>e50_15 and c15[-1]>e20_15;short15=e20_15 is not None and e50_15 is not None and e20_15<e50_15 and c15[-1]<e20_15
-    long5=e20_5 is not None and e50_5 is not None and e20_5>e50_5 and c5[-1]>e20_5;short5=e20_5 is not None and e50_5 is not None and e20_5<e50_5 and c5[-1]<e20_5
-    btc=btc5[-1]/btc5[-2]-1 if len(btc5)>1 and btc5[-2] else 0;common=adx15 is not None and adx15>=MIN_ADX_15M and sep>=MIN_EMA_SEP_15M and vr5>=MIN_VOLUME_RATIO_5M and vr1>=MIN_VOLUME_RATIO_1M and MIN_ATR5_RATE<=atr_rate<=MAX_ATR5_RATE
-    long_ctx=common and long15 and long5 and vw5 is not None and c5[-1]>=vw5 and btc>-BTC_SHOCK_5M;short_ctx=common and short15 and short5 and vw5 is not None and c5[-1]<=vw5 and btc<BTC_SHOCK_5M
-    stop_rate=max((atr5 or 0)*ATR5_STOP_MULT/px,MIN_STOP_RATE);edge=(stop_rate*PARTIAL_TAKE_R)/ROUND_TRIP_COST;edge_ok=edge>=MIN_EDGE_TO_COST and stop_rate<=MAX_STOP_RATE
-    last_analysis={'price':px,'candle_time_5m':ct5,'atr1':atr1,'atr5':atr5,'adx15':adx15,'volume_ratio_5m':vr5,'volume_ratio_1m':vr1,
-        'breakout_high_5m':bh,'breakout_low_5m':bl,'long_break_close':c5[-1]>bh+buf,'short_break_close':c5[-1]<bl-buf,'long_context':long_ctx,'short_context':short_ctx,
-        'btc_return_5m':btc,'risk_multiplier':rm,'vol_ratio':vratio,'atr5_rate':atr_rate,'edge_to_cost':edge,'edge_ok':edge_ok}
-    return last_analysis
+def close(px,why):
+    global BAL,POS,HIST,CD,DECISION
+    p=POS;x=px*(1-SLIP if p['side']=='LONG' else 1+SLIP);n=((x-p['entry']) if p['side']=='LONG' else (p['entry']-x))*p['qty']-(p['entry']+x)*p['qty']*FEE
+    n+=p.get('pnl_part',0);BAL+=n-p.get('pnl_part',0);t={'version':BUILD,'symbol':SYMBOL,'side':p['side'],'entry':p['entry'],'exit':x,'qty':p['iq'],'pnl':n,'risk':p['risk'],'meta':p['meta'],'reason':why,'opened':p['opened'],'closed':now().isoformat()};save_trade(t);HIST.insert(0,t);HIST=HIST[:300];CD=now()+timedelta(minutes=15 if n<0 else 5);POS=None;DECISION='CLOSE_'+why;save_state()
 
+async def manage():
+    if not POS:return
+    p=POS;px=await price();r=net(p['side'],p['entry'],px)*p['iq']/max(p['risk'],1e-12)
+    if not p['partial'] and r>=PARTIAL_R:partial(px);p=POS
+    if (p['side']=='LONG' and px<=p['sl']) or (p['side']=='SHORT' and px>=p['sl']):close(px,'STOP');return
+    if (p['side']=='LONG' and px>=p['tp']) or (p['side']=='SHORT' and px<=p['tp']):close(px,'RUNNER');return
+    if (now()-datetime.fromisoformat(p['opened'])).total_seconds()/60>=MAX_MIN:close(px,'TIME')
+
+async def cycle():
+    global WATCH,LAST_CYCLE,ERR,DECISION
+    try:
+        await manage()
+        if POS:return
+        if CD and now()<CD:DECISION='COOLDOWN';return
+        a=await analyze()
+        if not a['ok']:DECISION='WAIT_COST';WATCH=None;return
+        side='LONG' if a['lc'] and a['lb'] else 'SHORT' if a['sc'] and a['sb'] else None
+        if not side:DECISION='WAIT';WATCH=None;return
+        tr=a['bh'] if side=='LONG' else a['bl'];px=await price();tol=max(float(a['atr1'] or 0),1e-12)*.12
+        if not WATCH or WATCH.get('t')!=a['t'] or WATCH.get('side')!=side:WATCH={'t':a['t'],'side':side,'tr':tr,'at':time.time(),'rt':False};DECISION='ARM_'+side;return
+        if time.time()-WATCH['at']>240:WATCH=None;DECISION='TIMEOUT';return
+        if not WATCH['rt']:
+            if tr-tol<=px<=tr+tol:WATCH['rt']=True;DECISION='RETEST'
+            return
+        if not ((side=='LONG' and px>=tr+tol*.4) or (side=='SHORT' and px<=tr-tol*.4)):return
+        m=await micro();good=m['same'] and m['spr']<=.0004 and ((side=='LONG' and m['imb']>=.54 and m['ofi']>=.05) or (side=='SHORT' and m['imb']<=.46 and m['ofi']<=-.05))
+        if not good:DECISION='REJECT_MICRO';return
+        if a['t']==LAST:return
+        openpos(a,side,px,tr,m);WATCH=None;ERR=None
+    except Exception as e:ERR=repr(e);DECISION='ERROR';raise
+    finally:LAST_CYCLE=now().isoformat()
+
+async def loop():
+    while True:
+        try:await cycle()
+        except Exception as e:print('V11 LOOP',repr(e),flush=True)
+        await asyncio.sleep(5)
+
+async def startup():
+    global CLIENT,bot_task
+    init_db();load();CLIENT=CLIENT or httpx.AsyncClient();bot_task=bot_task if bot_task and not bot_task.done() else asyncio.create_task(loop())
+async def shutdown():
+    global CLIENT,bot_task
+    if bot_task:bot_task.cancel();await asyncio.gather(bot_task,return_exceptions=True);bot_task=None
+    if CLIENT:await CLIENT.aclose();CLIENT=None
+
+def snapshot():
+    r=[x for x in HIST if x['version']==BUILD];w=[x for x in r if x['pnl']>0];gp=sum(x['pnl'] for x in w);gl=abs(sum(x['pnl'] for x in r if x['pnl']<0));pf=gp/gl if gl else (999 if gp else 0);exp=sum(x['pnl']/max(x['risk'],1e-12) for x in r)/len(r) if r else 0
+    return {'build':BUILD,'balance':BAL,'position':POS,'trades':len(r),'wins':len(w),'win_rate':len(w)/len(r)*100 if r else 0,'pnl':sum(x['pnl'] for x in r),'profit_factor':pf,'expectancy_r':exp,'validation':'COLLECTING_SAMPLE' if len(r)<30 else 'PROMISING' if pf>=1.2 and exp>0 else 'REVISE','history':r[:50],'last_cycle_at':LAST_CYCLE,'last_error':ERR,'last_decision':DECISION}
+@app.get('/analyze')
+async def ar():return JSONResponse(snapshot(),headers={'Cache-Control':'no-store'})
+@app.get('/',response_class=HTMLResponse)
+async def dash():return HTMLResponse('<html><body style="background:#08121f;color:white;font-family:system-ui"><h1>V11 Evidence XRP</h1><p>PAPER · XRPUSDC · breakout + retest + OFI + volatility risk scaling</p><pre id="x"></pre><script>setInterval(async()=>x.textContent=JSON.stringify(await(await fetch("analyze")).json(),null,2),5000)</script></body></html>')
