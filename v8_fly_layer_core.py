@@ -2,10 +2,11 @@ import asyncio, math, statistics, time
 from datetime import datetime
 from fib_strategy import fib_pullback
 
-BUILD="v8-fly-smart-time-exit-20260916-1"
+BUILD="v8-fly-partial-profit-20260917-1"
 Z_ARMED=0.40; Z_STRONG=0.80; Z_DANGER=0.55; ARMED_MAX_DISTANCE_ATR=0.18
 MAX_REAL_SPREAD_PCT=0.0008; DANGER_EXIT_SCORE=2; DANGER_MAX_MR=0.45
-BREAKEVEN_TRIGGER_R=0.75; PROFIT_MODE_R=0.90; PROFIT_GIVEBACK_R=0.35; PROFIT_MIN_LOCK_R=0.20; MONITOR_REFRESH_SECONDS=30.0
+PARTIAL_TAKE_R=0.60; PARTIAL_CLOSE_FRACTION=0.60; BREAKEVEN_TRIGGER_R=0.60
+PROFIT_MODE_R=0.90; PROFIT_GIVEBACK_R=0.35; PROFIT_MIN_LOCK_R=0.20; MONITOR_REFRESH_SECONDS=30.0
 ANTI_STRONG_VOL=1.20; ANTI_BOOK_MARGIN=0.03; RETEST_TOL_ATR=0.08; RETEST_MAX_SECONDS=120.0
 SMART_TIME_GRACE_MINUTES=5.0; SMART_TIME_MAX_EXTENSIONS=3
 m=None; _monitor_cache={}; _breakout_watch={}
@@ -65,16 +66,39 @@ def open_trade(a,price):
     side=a['signal']; entry=price*(1+m.SLIPPAGE_RATE if side=='LONG' else 1-m.SLIPPAGE_RATE); sl=entry-dist if side=='LONG' else entry+dist; nloss=-m.estimated_net_per_unit(side,entry,sl)
     if nloss<=0:return
     risk=m.PAPER_BALANCE*m.RISK_PER_TRADE; tp=m.target_market_for_net_profit(side,entry,nloss*m.NET_RISK_REWARD); qty=min(risk/nloss,m.PAPER_BALANCE*m.MAX_NOTIONAL_SHARE/entry)
-    m.paper_position={'symbol':a['symbol'],'side':side,'setup':setup,'regime':a['regime'],'score':a.get('score',0),'entry_price':entry,'qty':qty,'stop_loss':sl,'take_profit':tp,'risk_distance':dist,'initial_risk_usdc':qty*nloss,'net_rr':m.NET_RISK_REWARD,'mae_r':0.,'mfe_r':0.,'breakeven_moved':False,'profit_mode':False,'z_entry':float(a.get('z_momentum') or 0),'entry_trigger':float(a.get('entry_trigger') or a.get('armed_trigger') or price),'entry_spread_pct':float(a.get('real_spread_pct') or 0),'entry_book_imbalance':float(a.get('book_imbalance') or .5),'entry_volume_ratio':float(a.get('volume_ratio') or 0),'entry_kind':a.get('entry_kind','CLOSED_CANDLE'),'last_danger_score':0,'time_extensions':0,'next_time_check_min':float(m.MAX_TRADE_MINUTES),'opened_at':m.utcnow().isoformat()}; m.last_entry_candle[a['symbol']]=a['candle_time']; m.save_state(); m.log_signal(a,'ENTER',f'{setup} {m.paper_position["entry_kind"]} z={m.paper_position["z_entry"]:.2f}')
+    m.paper_position={'symbol':a['symbol'],'side':side,'setup':setup,'regime':a['regime'],'score':a.get('score',0),'entry_price':entry,'qty':qty,'initial_qty':qty,'stop_loss':sl,'take_profit':tp,'risk_distance':dist,'initial_risk_usdc':qty*nloss,'net_rr':m.NET_RISK_REWARD,'mae_r':0.,'mfe_r':0.,'breakeven_moved':False,'partial_taken':False,'partial_fraction':0.0,'partial_qty':0.0,'partial_exit_price':None,'partial_realized_gross':0.0,'partial_realized_fees':0.0,'partial_realized_pnl':0.0,'profit_mode':False,'z_entry':float(a.get('z_momentum') or 0),'entry_trigger':float(a.get('entry_trigger') or a.get('armed_trigger') or price),'entry_spread_pct':float(a.get('real_spread_pct') or 0),'entry_book_imbalance':float(a.get('book_imbalance') or .5),'entry_volume_ratio':float(a.get('volume_ratio') or 0),'entry_kind':a.get('entry_kind','CLOSED_CANDLE'),'last_danger_score':0,'time_extensions':0,'next_time_check_min':float(m.MAX_TRADE_MINUTES),'opened_at':m.utcnow().isoformat()}; m.last_entry_candle[a['symbol']]=a['candle_time']; m.save_state(); m.log_signal(a,'ENTER',f'{setup} {m.paper_position["entry_kind"]} z={m.paper_position["z_entry"]:.2f}')
+
+def take_partial_profit(price):
+    if not m.paper_position:return False
+    p=m.paper_position
+    if p.get('partial_taken'):return False
+    e=float(p['entry_price']); q=float(p['qty']); close_qty=q*PARTIAL_CLOSE_FRACTION; remain=q-close_qty
+    if close_qty<=0 or remain<=1e-12:return False
+    x=price*(1-m.SLIPPAGE_RATE if p['side']=='LONG' else 1+m.SLIPPAGE_RATE)
+    gross=(x-e)*close_qty if p['side']=='LONG' else (e-x)*close_qty
+    fees=(e*close_qty+x*close_qty)*m.FEE_RATE; net=gross-fees
+    m.PAPER_BALANCE+=net
+    p.setdefault('initial_qty',q); p['qty']=remain; p['partial_taken']=True; p['partial_fraction']=PARTIAL_CLOSE_FRACTION; p['partial_qty']=float(p.get('partial_qty') or 0)+close_qty; p['partial_exit_price']=x
+    p['partial_realized_gross']=float(p.get('partial_realized_gross') or 0)+gross; p['partial_realized_fees']=float(p.get('partial_realized_fees') or 0)+fees; p['partial_realized_pnl']=float(p.get('partial_realized_pnl') or 0)+net
+    p['stop_loss']=m.target_market_for_net_profit(p['side'],e,0.0); p['breakeven_moved']=True
+    m.save_state(); return True
 
 def close_trade(price,reason):
     if not m.paper_position:return
-    p=m.paper_position;e=float(p['entry_price']);q=float(p['qty']);x=price*(1-m.SLIPPAGE_RATE if p['side']=='LONG' else 1+m.SLIPPAGE_RATE);gross=(x-e)*q if p['side']=='LONG' else (e-x)*q;fees=(e*q+x*q)*m.FEE_RATE;net=gross-fees;risk=max(float(p.get('initial_risk_usdc') or 0),1e-12);rr=net/risk;mfe=float(p.get('mfe_r',0));mae=float(p.get('mae_r',0));cap=(rr/mfe*100) if mfe>0 and rr>0 else 0;age=(m.utcnow()-datetime.fromisoformat(p['opened_at'])).total_seconds()/60;detail=f'{reason} | R={rr:.2f} MFE={mfe:.2f} MAE={mae:.2f} CAP={cap:.0f}% DUR={age:.1f}m Z={float(p.get("z_entry",0)):.2f}';m.PAPER_BALANCE+=net;now=m.utcnow();t={**p,'exit_price':x,'gross_pnl':gross,'fees':fees,'pnl':net,'reason':detail,'closed_at':now.isoformat()};m.save_trade(t);m.trade_history.insert(0,t);m.trade_history=m.trade_history[:500];m.cooldown_until=now+m.timedelta(minutes=2 if net<0 else 0);m.paper_position=None;m.save_state()
+    p=m.paper_position;e=float(p['entry_price']);q=float(p['qty']);initial_q=float(p.get('initial_qty') or q);x=price*(1-m.SLIPPAGE_RATE if p['side']=='LONG' else 1+m.SLIPPAGE_RATE);gross=(x-e)*q if p['side']=='LONG' else (e-x)*q;fees=(e*q+x*q)*m.FEE_RATE;net=gross-fees
+    partial_gross=float(p.get('partial_realized_gross') or 0);partial_fees=float(p.get('partial_realized_fees') or 0);partial_net=float(p.get('partial_realized_pnl') or 0);total_gross=partial_gross+gross;total_fees=partial_fees+fees;total_net=partial_net+net
+    risk=max(float(p.get('initial_risk_usdc') or 0),1e-12);rr=total_net/risk;mfe=float(p.get('mfe_r',0));mae=float(p.get('mae_r',0));cap=(rr/mfe*100) if mfe>0 and rr>0 else 0;age=(m.utcnow()-datetime.fromisoformat(p['opened_at'])).total_seconds()/60;partial_note=f' PARTIAL={int(PARTIAL_CLOSE_FRACTION*100)}%@{PARTIAL_TAKE_R:.2f}R' if p.get('partial_taken') else '';detail=f'{reason}{partial_note} | R={rr:.2f} MFE={mfe:.2f} MAE={mae:.2f} CAP={cap:.0f}% DUR={age:.1f}m Z={float(p.get("z_entry",0)):.2f}'
+    m.PAPER_BALANCE+=net;now=m.utcnow();t={**p,'qty':initial_q,'remaining_qty_at_final_exit':q,'exit_price':x,'gross_pnl':total_gross,'fees':total_fees,'pnl':total_net,'reason':detail,'closed_at':now.isoformat()};m.save_trade(t);m.trade_history.insert(0,t);m.trade_history=m.trade_history[:500];m.cooldown_until=now+m.timedelta(minutes=2 if total_net<0 else 0);m.paper_position=None;m.save_state()
 
 async def manage_position():
     if not m.paper_position:return
     p=m.paper_position;price=await m.get_live_price(p['symbol'],max_age=1.);e=float(p['entry_price']);d=float(p['risk_distance']);mr=(price-e)/d if p['side']=='LONG' else (e-price)/d;p['mfe_r']=max(float(p.get('mfe_r',0)),mr);p['mae_r']=min(float(p.get('mae_r',0)),mr)
-    if not p.get('breakeven_moved') and mr>=BREAKEVEN_TRIGGER_R:p['stop_loss']=e*(1+m.ROUND_TRIP_COST) if p['side']=='LONG' else e*(1-m.ROUND_TRIP_COST);p['breakeven_moved']=True;m.save_state()
+    initial_q=float(p.get('initial_qty') or p.get('qty') or 0);risk=max(float(p.get('initial_risk_usdc') or 0),1e-12);net_r=(m.estimated_net_per_unit(p['side'],e,price)*initial_q)/risk if initial_q>0 else -999.0
+    if not p.get('partial_taken') and net_r>=PARTIAL_TAKE_R:
+        take_partial_profit(price);p=m.paper_position
+        if not p:return
+    if not p.get('breakeven_moved') and net_r>=BREAKEVEN_TRIGGER_R:
+        p['stop_loss']=m.target_market_for_net_profit(p['side'],e,0.0);p['breakeven_moved']=True;m.save_state()
     if (p['side']=='LONG' and price<=float(p['stop_loss'])) or (p['side']=='SHORT' and price>=float(p['stop_loss'])):close_trade(price,'STOP/BREAKEVEN');return
     if (p['side']=='LONG' and price>=float(p['take_profit'])) or (p['side']=='SHORT' and price<=float(p['take_profit'])):close_trade(price,'TAKE PROFIT');return
     age=(m.utcnow()-datetime.fromisoformat(p['opened_at'])).total_seconds()/60; due=float(p.get('next_time_check_min',m.MAX_TRADE_MINUTES))
