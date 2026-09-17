@@ -7,12 +7,12 @@ from market_data import market_get
 import app_v8_fly_engine as ind
 
 app=FastAPI(title='V11 Evidence XRP')
-BUILD='v11-evidence-xrp-20260917-2'; SYMBOL='XRPUSDC'; BTC='BTCUSDC'; API='https://data-api.binance.vision'; DB=os.getenv('DATABASE_URL')
+BUILD='v11-evidence-xrp-20260917-3'; SYMBOL='XRPUSDC'; BTC='BTCUSDC'; API='https://data-api.binance.vision'; DB=os.getenv('DATABASE_URL')
 BAL=10000.0; POS=None; HIST=[]; WATCH=None; LAST=None; CD=None; LAST_CYCLE=None; ERR=None; DECISION='STARTING'; CLIENT=None; bot_task=None
 FEE=.0005; SLIP=.0002; COST=2*(FEE+SLIP); BASE_RISK=.0015; MAX_NOTIONAL=.30
 PARTIAL_R=.80; PARTIAL_FRAC=.60; RUNNER_R=2.20; MAX_MIN=60
 
-def now(): return datetime.now(timezone.utb)
+def now(): return datetime.now(timezone.utc)
 def db(): return psycopg.connect(DB) if DB else None
 
 def init_db():
@@ -62,7 +62,7 @@ async def micro():
         s.append(snap(await book()))
         if i<2:await asyncio.sleep(.4)
     o=[ofi(s[0],s[1]),ofi(s[1],s[2])]
-    return {'imb':sum(x['imc'] for x in s)/3,'spr':max(x['spr'] for x in s),'ofi':sum(o)/2,'same':(o[0]>0 and o[1]>0) or (o[0]<0 and o[1]<0)}
+    return {'imb':sum(x['imb'] for x in s)/3,'spr':max(x['spr'] for x in s),'ofi':sum(o)/2,'same':(o[0]>0 and o[1]>0) or (o[0]<0 and o[1]<0)}
 
 def net(side,e,m):
     x=m*(1-SLIP if side=='LONG' else 1+SLIP);g=x-e if side=='LONG' else e-x;return g-(e+x)*FEE
@@ -90,7 +90,7 @@ def openpos(a,side,px,tr,m):
     global POS,LAST,DECISION
     e=px*(1+SLIP if side=='LONG' else 1-SLIP);d=max(float(a['atr5'] or 0)*.9,px*.0045);sl=e-d if side=='LONG' else e+d;r=-net(side,e,sl)
     if r<=0 or d/px>.009:return
-    risk=BAL*BASE_RISK*a['vm'];q=min(risk/r,BAL*MAX_NOTIONAL/e);POS={'side':side,'entry':e,'qty':q,'iq':q,'sl':sl,'tp':target(side,e,r*RUNNER_R),'rpu':r,'risk':q*r,'partial':False,'pnl_part':0.0,'opened':now().isoformat(),'meta':{'ofi':m['ofi'],'imb':m['imc'],'spr':m['spr'],'edge':a['edge'],'vm':a['vm'],'btc':a['btc'],'adx':a['adx'],'vr5':a['vr5']}};LAST=a['t'];DECISION='ENTER_'+side;save_state()
+    risk=BAL*BASE_RISK*a['vm'];q=min(risk/r,BAL*MAX_NOTIONAL/e);POS={'side':side,'entry':e,'qty':q,'iq':q,'sl':sl,'tp':target(side,e,r*RUNNER_R),'rpu':r,'risk':q*r,'partial':False,'pnl_part':0.0,'opened':now().isoformat(),'meta':{'ofi':m['ofi'],'imb':m['imb'],'spr':m['spr'],'edge':a['edge'],'vm':a['vm'],'btc':a['btc'],'adx':a['adx'],'vr5':a['vr5']}};LAST=a['t'];DECISION='ENTER_'+side;save_state()
 
 def partial(px):
     global BAL,DECISION
@@ -153,4 +153,5 @@ def snapshot():
 @app.get('/analyze')
 async def ar():return JSONResponse(snapshot(),headers={'Cache-Control':'no-store'})
 @app.get('/',response_class=HTMLResponse)
-async def dash():return HTMLResponse('<html><body style="background:#08121f;color:white;font-family:system-ui"><h1>V11 Evidence XRP</h1><p>PAPER · XRPUSDC · breakout + retest + OFI + volatility risk scaling</p><pre id="x"></pre><script>setInterval(async()=>x.textContent=JSON.stringify(await(await fetch("analyze")).json(),null,2),5000)</script></body></html>')
+async def dash():
+    return HTMLResponse('''<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>V11 Evidence XRP</title><style>body{margin:0;background:#08121f;color:#fff;font-family:system-ui}.w{max-width:860px;margin:auto;padding:16px}.card{background:#101d2e;border:1px solid #26384e;border-radius:16px;padding:16px;margin:12px 0}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.v{font-size:24px;font-weight:800}.muted{color:#91a3b8}.ok{color:#35d690}.bad{color:#ff6b7a}.wait{color:#f3c75f}pre{white-space:pre-wrap;word-break:break-word}@media(max-width:560px){.grid{grid-template-columns:1fr}}</style></head><body><div class="w"><h1>V11 Evidence XRP</h1><p class="muted">PAPER · XRPUSDC · breakout + retest + OFI + volatility risk scaling</p><div id="status" class="card">Načítám data…</div><div class="grid"><div class="card"><div class="muted">Balance</div><div id="balance" class="v">—</div></div><div class="card"><div class="muted">Rozhodnutí</div><div id="decision" class="v">—</div></div><div class="card"><div class="muted">Obchody</div><div id="trades" class="v">—</div></div><div class="card"><div class="muted">Win rate</div><div id="wr" class="v">—</div></div><div class="card"><div class="muted">PnL</div><div id="pnl" class="v">—</div></div><div class="card"><div class="muted">Profit factor</div><div id="pf" class="v">—</div></div></div><div class="card"><b>Otevřená pozice</b><pre id="position">—</pre></div><div class="card"><b>Diagnostika</b><pre id="diag">—</pre></div></div><script>const el=id=>document.getElementById(id);const fmt=(v,d=2)=>Number.isFinite(Number(v))?Number(v).toLocaleString('cs-CZ',{minimumFractionDigits:d,maximumFractionDigits:d}):'—';async function refresh(){try{const r=await fetch('./analyze',{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);const d=await r.json();el('status').textContent=d.last_error?'Bot běží, ale hlásí chybu: '+d.last_error:'Bot běží · poslední cyklus '+(d.last_cycle_at?new Date(d.last_cycle_at).toLocaleTimeString('cs-CZ'):'—');el('status').className='card '+(d.last_error?'bad':'ok');el('balance').textContent=fmt(d.balance)+' USDC';el('decision').textContent=d.last_decision||'—';el('trades').textContent=d.trades??0;el('wr').textContent=fmt(d.win_rate,1)+' %';el('pnl').textContent=(Number(d.pnl)>=0?'+':'')+fmt(d.pnl)+' USDC';el('pnl').className='v '+(Number(d.pnl)>=0?'ok':'bad');el('pf').textContent=fmt(d.profit_factor,2);el('position').textContent=d.position?JSON.stringify(d.position,null,2):'Bez otevřené pozice';el('diag').textContent=JSON.stringify({build:d.build,validation:d.validation,last_cycle_at:d.last_cycle_at,last_error:d.last_error,last_decision:d.last_decision},null,2)}catch(e){el('status').textContent='Dashboard se nemůže načíst: '+e.message;el('status').className='card bad'}}refresh();setInterval(refresh,3000)</script></body></html>''',headers={'Cache-Control':'no-store'})
