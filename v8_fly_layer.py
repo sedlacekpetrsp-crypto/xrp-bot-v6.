@@ -11,7 +11,7 @@ import v11_evidence_bot as v11
 
 v11.now = lambda: datetime.now(timezone.utc)
 
-SCALP_BUILD = "v8-adaptive-market-quality-multi3-candle-stop-20260917-5"
+SCALP_BUILD = "v8-adaptive-market-quality-multi3-5m-candle-stop-20260917-6"
 SCALP_NET_TARGET_USDC = 5.0
 SCALP_LOCK_NET_USDC = 2.0
 RAPID_MIN_SCORE = 5
@@ -155,6 +155,7 @@ def install(module):
         l = [float(x[3]) for x in a1]
         c = [float(x[4]) for x in a1]
         v = [float(x[5]) for x in a1]
+        o5 = [float(x[1]) for x in a5]
         c5 = [float(x[4]) for x in a5]
         h5 = [float(x[2]) for x in a5]
         l5 = [float(x[3]) for x in a5]
@@ -187,13 +188,14 @@ def install(module):
         five_dn = e9_5 is not None and e21_5 is not None and (e9_5 <= e21_5 or c5[-1] <= e9_5)
         spread_ok = spread <= RAPID_MAX_SPREAD_PCT
 
-        start = max(0, len(c) - CANDLE_STOP_LOOKBACK)
-        long_anchor_index = next((i for i in range(len(c) - 1, start - 1, -1) if c[i] > o[i]), None)
-        short_anchor_index = next((i for i in range(len(c) - 1, start - 1, -1) if c[i] < o[i]), None)
-        long_stop_anchor_low = l[long_anchor_index] if long_anchor_index is not None else l[-1]
-        short_stop_anchor_high = h[short_anchor_index] if short_anchor_index is not None else h[-1]
-        long_anchor_time = int(a1[long_anchor_index][0]) if long_anchor_index is not None else int(a1[-1][0])
-        short_anchor_time = int(a1[short_anchor_index][0]) if short_anchor_index is not None else int(a1[-1][0])
+        # Stop anchor now comes from completed 5-minute candles.
+        start5 = max(0, len(c5) - CANDLE_STOP_LOOKBACK)
+        long_anchor_index = next((i for i in range(len(c5) - 1, start5 - 1, -1) if c5[i] > o5[i]), None)
+        short_anchor_index = next((i for i in range(len(c5) - 1, start5 - 1, -1) if c5[i] < o5[i]), None)
+        long_stop_anchor_low = l5[long_anchor_index] if long_anchor_index is not None else l5[-1]
+        short_stop_anchor_high = h5[short_anchor_index] if short_anchor_index is not None else h5[-1]
+        long_anchor_time = int(a5[long_anchor_index][0]) if long_anchor_index is not None else int(a5[-1][0])
+        short_anchor_time = int(a5[short_anchor_index][0]) if short_anchor_index is not None else int(a5[-1][0])
 
         long_score = sum([
             e5 is not None and e13 is not None and e5 >= e13,
@@ -288,6 +290,7 @@ def install(module):
             "short_stop_anchor_high": short_stop_anchor_high,
             "long_stop_anchor_time": long_anchor_time,
             "short_stop_anchor_time": short_anchor_time,
+            "stop_anchor_timeframe": "5m",
             "reason": reason,
         }
 
@@ -316,7 +319,7 @@ def install(module):
         entry = price * (1 + module.SLIPPAGE_RATE if side == "LONG" else 1 - module.SLIPPAGE_RATE)
 
         # Keep the existing take-profit calculation exactly as before, using the
-        # old ATR/min-stop baseline. Only stop-loss changes to candle structure.
+        # old ATR/min-stop baseline. Only stop-loss changes to 5m candle structure.
         baseline_sl = entry - baseline_dist if side == "LONG" else entry + baseline_dist
         baseline_net_loss_per_unit = -module.estimated_net_per_unit(side, entry, baseline_sl)
         if baseline_net_loss_per_unit <= 0:
@@ -330,7 +333,7 @@ def install(module):
             anchor = float(a.get("long_stop_anchor_low") or (entry - baseline_dist))
             sl = anchor - spread_buffer
             anchor_time = a.get("long_stop_anchor_time")
-            anchor_color = "GREEN"
+            anchor_color = "GREEN_5M"
             if sl >= entry:
                 sl = entry - baseline_dist
                 anchor_time = None
@@ -339,7 +342,7 @@ def install(module):
             anchor = float(a.get("short_stop_anchor_high") or (entry + baseline_dist))
             sl = anchor + spread_buffer
             anchor_time = a.get("short_stop_anchor_time")
-            anchor_color = "RED"
+            anchor_color = "RED_5M"
             if sl <= entry:
                 sl = entry + baseline_dist
                 anchor_time = None
@@ -398,10 +401,11 @@ def install(module):
             "entry_book_imbalance": float(a.get("book_imbalance") or 0.5),
             "entry_volume_ratio": float(a.get("volume_ratio") or 0.0),
             "entry_kind": "MARKET_QUALITY_MULTI",
-            "stop_mode": "BELOW_GREEN_CANDLE" if side == "LONG" else "ABOVE_RED_CANDLE",
+            "stop_mode": "BELOW_GREEN_5M_CANDLE" if side == "LONG" else "ABOVE_RED_5M_CANDLE",
             "stop_anchor_color": anchor_color,
             "stop_anchor_price": anchor,
             "stop_anchor_time": anchor_time,
+            "stop_anchor_timeframe": "5m",
             "stop_buffer": spread_buffer,
             "scalp_target_usdc": SCALP_NET_TARGET_USDC,
             "opened_at": module.utcnow().isoformat(),
@@ -413,7 +417,7 @@ def install(module):
         module.log_signal(
             a,
             "ENTER",
-            f"MULTI candle-stop={anchor_color} anchor={anchor:.8f} sl={sl:.8f} slot={len(module.paper_positions)}/{MAX_OPEN_POSITIONS}",
+            f"MULTI 5m-candle-stop={anchor_color} anchor={anchor:.8f} sl={sl:.8f} slot={len(module.paper_positions)}/{MAX_OPEN_POSITIONS}",
         )
         print(
             "OPEN V8 MULTI",
@@ -678,13 +682,14 @@ def install(module):
         }
         data["scalp_mode"] = {
             "build": SCALP_BUILD,
-            "mode": "MARKET_QUALITY_MULTI3_CANDLE_STOP_NO_TIME_EXIT",
+            "mode": "MARKET_QUALITY_MULTI3_5M_CANDLE_STOP_NO_TIME_EXIT",
             "min_score": RAPID_MIN_SCORE,
             "scan_seconds": RAPID_LOOP_SECONDS,
             "time_exit": False,
-            "stop_mode_long": "BELOW_GREEN_1M_CANDLE",
-            "stop_mode_short": "ABOVE_RED_1M_CANDLE",
+            "stop_mode_long": "BELOW_GREEN_5M_CANDLE",
+            "stop_mode_short": "ABOVE_RED_5M_CANDLE",
             "candle_stop_lookback": CANDLE_STOP_LOOKBACK,
+            "stop_anchor_timeframe": "5m",
             "take_profit_logic": "UNCHANGED_BASELINE",
             "net_target_usdc_per_trade": SCALP_NET_TARGET_USDC,
             "runner_lock_net_usdc": SCALP_LOCK_NET_USDC,
@@ -713,7 +718,7 @@ def install(module):
         new = "const ps=d.positions||[]; document.getElementById('position').innerHTML=ps.length?ps.map(p=>`<div style=\"padding:8px 0;border-bottom:1px solid #29343e\"><b>${p.symbol} ${p.side}</b> • entry ${f(p.entry_price,6)} • SL ${f(p.stop_loss,6)} • TP ${f(p.take_profit,6)}<br><span class=\"muted\">SL: ${p.stop_mode||'původní'}${p.stop_anchor_price?' @ '+f(p.stop_anchor_price,6):''}</span><br>Čistý P/L <b class=\"${Number(p.unrealized_net_pnl)>=0?'green':'red'}\">${Number(p.unrealized_net_pnl)>=0?'+':''}${f(p.unrealized_net_pnl,2)} USDC</b> • Náklady ${f(p.estimated_costs,2)} USDC</div>`).join(''):'Žádná otevřená pozice';"
         html = html.replace(old, new)
         html = html.replace("<h2>📌 Otevřená pozice</h2>", "<h2>📌 Otevřené pozice (max 3)</h2>")
-        html = html.replace("PAPER • pouze BREAKOUT • čisté R:R 1:1,3", "PAPER • MARKET QUALITY MULTI • SL pod/nad svíčku • bez time exitu • +5 USDC NET/obchod")
+        html = html.replace("PAPER • pouze BREAKOUT • čisté R:R 1:1,3", "PAPER • MARKET QUALITY MULTI • SL podle 5m svíčky • bez time exitu • +5 USDC NET/obchod")
         html = html.replace("setInterval(refresh,10000)", "setInterval(refresh,2000)")
         html = html.replace("</body>", '<div style="max-width:900px;margin:16px auto;padding:0 16px"><a href="v10/" style="color:#8ea1b8;font-weight:700;margin-right:16px">V10 Precision XRP →</a><a href="v11/" style="color:#21d19f;font-weight:800">V11 Evidence XRP →</a></div></body>')
         return HTMLResponse(html, headers={"Cache-Control": "no-store"})
