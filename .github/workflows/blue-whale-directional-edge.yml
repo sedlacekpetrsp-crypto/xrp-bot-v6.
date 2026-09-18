@@ -1,0 +1,18 @@
+name: Blue Whale directional-edge audit
+
+on:
+  push:
+    branches: [research-blue-whale-public]
+    paths:
+      - "audit_blue_whale_directional_edge.py"
+      - ".github/workflows/blue-whale-directional-edge.yml"
+  workflow_dispatch:
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Audit fixed-horizon directional edge
+        run: python audit_blue_whale_directional_edge.py
