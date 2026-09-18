@@ -6,16 +6,19 @@ on:
     paths:
       - "research_blue_whale_backtest.py"
       - "research_blue_whale_backtest_v2.py"
+      - "research_blue_whale_backtest_v3.py"
       - ".github/workflows/blue-whale-backtest.yml"
   workflow_dispatch:
 
 jobs:
   backtest:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - name: Run v1 walk-forward backtest
         run: python research_blue_whale_backtest.py
       - name: Run v2 multi-timeframe walk-forward backtest
         run: python research_blue_whale_backtest_v2.py
+      - name: Run v3 hold-or-break confirmation backtest
+        run: python research_blue_whale_backtest_v3.py
