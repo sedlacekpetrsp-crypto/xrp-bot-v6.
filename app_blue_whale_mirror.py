@@ -180,13 +180,140 @@ async def status(): return JSONResponse(state)
 
 @app.get("/",response_class=HTMLResponse)
 async def dashboard():
-    p=state["open_position"]; trades=state["trades"]; wins=sum(1 for t in trades if t["net_pnl"]>0); wr=100*wins/len(trades) if trades else 0
-    pos="Žádná otevřená pozice." if not p else f"{p['side']} BTC | entry {p['entry']:.2f} | SL {p['stop']:.2f} | TP {p['tp']:.2f}"
-    rows="".join(f"<tr><td>{t['signal_id']}</td><td>{t['side']}</td><td>{t['entry']:.2f}</td><td>{t['exit']:.2f}</td><td>{t['reason']}</td><td>{t['net_pnl']:.2f}</td></tr>" for t in reversed(trades[-20:]))
-    return f"""<html><body style='font-family:Arial;max-width:980px;margin:32px auto'>
-    <h1>{APP_NAME}</h1><p><b>PAPER ONLY</b></p>
-    <p>Balance: <b>{state['balance']:.2f} USD</b> | Equity: <b>{state['equity']:.2f} USD</b> | Trades: {len(trades)} | Winrate: {wr:.1f}%</p>
-    <h2>Open position</h2><p>{pos}</p>
-    <h2>Last signal</h2><pre>{state['last_signal']}</pre>
-    <h2>Recent trades</h2><table border='1' cellpadding='6'><tr><th>Signal</th><th>Side</th><th>Entry</th><th>Exit</th><th>Reason</th><th>Net PnL</th></tr>{rows}</table>
-    <p>Public-signal mirror. Hidden VIP entry/TP are not guessed. No live orders.</p></body></html>"""
+    return HTMLResponse("""
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Blue Whale Public Mirror</title>
+<style>
+body{margin:0;background:#0b1118;color:#edf3f8;font-family:Arial,sans-serif}
+.wrap{max-width:1050px;margin:auto;padding:14px}
+.card{background:#151c24;border:1px solid #26313d;border-radius:16px;padding:16px;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.coin{background:#10171f;border-radius:12px;padding:12px}
+.row{display:flex;justify-content:space-between;gap:12px;margin:7px 0}
+.green{color:#5ce68b}.red{color:#ff6b6b}.yellow{color:#ffd166}.muted{opacity:.65}
+.trade{display:grid;grid-template-columns:.8fr .7fr 1fr 1fr .8fr;gap:8px;padding:9px 0;border-bottom:1px solid #29343e;font-size:13px}
+h1{font-size:24px;margin:0 0 8px}h2{font-size:18px;margin:0 0 12px}
+.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#10271c;color:#5ce68b;font-size:12px;font-weight:700}
+@media(max-width:620px){.wrap{padding:10px}.card{padding:13px;border-radius:14px}.trade{grid-template-columns:1fr 1fr;font-size:12px}.trade span:nth-child(5){grid-column:1/-1}}
+</style>
+</head>
+<body><div class="wrap">
+
+<div class="card">
+  <h1>🐋 BLUE WHALE PUBLIC MIRROR</h1>
+  <div class="muted">PAPER • BTCUSDT • veřejné signály • risk 0,3 % • TP 2R • poplatky + slippage</div>
+</div>
+
+<div class="card"><div id="stats" class="grid"></div></div>
+
+<div class="card">
+  <h2>📡 Stav bota</h2>
+  <div id="statusbox" class="coin">Načítám…</div>
+</div>
+
+<div class="card">
+  <h2>📈 Otevřená pozice</h2>
+  <div id="position" class="coin muted">Načítám…</div>
+</div>
+
+<div class="card">
+  <h2>🎯 Poslední signál</h2>
+  <div id="signal" class="coin muted">Načítám…</div>
+</div>
+
+<div class="card">
+  <h2>🧾 Poslední obchody</h2>
+  <div id="trades"></div>
+</div>
+
+<div class="card muted" id="health">Načítám…</div>
+</div>
+
+<script>
+const f=(n,d=2)=>Number(n||0).toFixed(d);
+const cls=n=>Number(n)>=0?'green':'red';
+
+function kv(label,value){
+  return '<div class="coin"><div class="muted">'+label+'</div><b>'+value+'</b></div>';
+}
+function row(label,value,klass=''){
+  return '<div class="row"><span>'+label+'</span><b class="'+klass+'">'+value+'</b></div>';
+}
+
+async function refresh(){
+  try{
+    const r=await fetch('/status',{cache:'no-store'});
+    const d=await r.json();
+    const trades=d.trades||[];
+    const wins=trades.filter(x=>Number(x.net_pnl)>0).length;
+    const wr=trades.length?100*wins/trades.length:0;
+    const total=trades.reduce((a,x)=>a+Number(x.net_pnl||0),0);
+
+    document.getElementById('stats').innerHTML=
+      kv('Balance',f(d.balance,2)+' USD')+
+      kv('Equity',f(d.equity,2)+' USD')+
+      kv('Obchody',trades.length)+
+      kv('Win rate',f(wr,1)+' %')+
+      kv('Net PnL','<span class="'+cls(total)+'">'+(total>=0?'+':'')+f(total,2)+' USD</span>');
+
+    document.getElementById('statusbox').innerHTML=
+      row('Režim','PAPER','green')+
+      row('Status',d.status||'—',d.status==='running'?'green':'yellow')+
+      row('Poslední scan',d.last_scan||'—')+
+      row('Chyba',d.error||'žádná',d.error?'red':'green');
+
+    if(d.open_position){
+      const p=d.open_position;
+      document.getElementById('position').className='coin';
+      document.getElementById('position').innerHTML=
+        row('Směr',p.side,p.side==='LONG'?'green':'red')+
+        row('Entry',f(p.entry,2)+' USD')+
+        row('SL',f(p.stop,2)+' USD','red')+
+        row('TP',f(p.tp,2)+' USD','green')+
+        row('Risk',f(p.risk_dollars,2)+' USD')+
+        row('Notional',f(p.notional,2)+' USD')+
+        '<div class="muted">Signal ID: '+p.signal_id+'</div>';
+    }else{
+      document.getElementById('position').className='coin muted';
+      document.getElementById('position').innerHTML='Žádná otevřená pozice.';
+    }
+
+    if(d.last_signal){
+      const s=d.last_signal;
+      const side=s.side||'WAIT';
+      document.getElementById('signal').className='coin';
+      document.getElementById('signal').innerHTML=
+        row('Signal ID',s.id||'—')+
+        row('Směr',side,side==='LONG'?'green':side==='SHORT'?'red':'yellow')+
+        row('SL',s.stop_raw||'—')+
+        (s.rejected?row('Výsledek',s.rejected,'yellow'):'')+
+        (s.age_minutes!=null?row('Stáří',f(s.age_minutes,1)+' min'):'');
+    }else{
+      document.getElementById('signal').className='coin muted';
+      document.getElementById('signal').innerHTML='Čekám na nový veřejný BTC signál.';
+    }
+
+    document.getElementById('trades').innerHTML=trades.slice().reverse().slice(0,30).map(t=>
+      '<div class="trade">'+
+      '<span>#'+t.signal_id+'</span>'+
+      '<span class="'+(t.side==='LONG'?'green':'red')+'">'+t.side+'</span>'+
+      '<span>'+f(t.entry,2)+' → '+f(t.exit,2)+'</span>'+
+      '<span>'+t.reason+'</span>'+
+      '<span class="'+cls(t.net_pnl)+'">'+(Number(t.net_pnl)>=0?'+':'')+f(t.net_pnl,2)+' USD</span>'+
+      '</div>'
+    ).join('') || '<div class="coin muted">Zatím žádné uzavřené obchody.</div>';
+
+    document.getElementById('health').textContent=
+      'Blue Whale Public Mirror • PAPER ONLY • kontrola nového signálu každých 60 s';
+  }catch(e){
+    document.getElementById('health').textContent='Dashboard error: '+e;
+  }
+}
+refresh();
+setInterval(refresh,5000);
+</script>
+</body></html>
+""", headers={"Cache-Control":"no-store, no-cache, must-revalidate"})
