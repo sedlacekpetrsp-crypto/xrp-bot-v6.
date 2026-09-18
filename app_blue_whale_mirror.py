@@ -21,6 +21,7 @@ FEE_RATE=float(os.getenv("FEE_RATE","0.0005"))
 SLIPPAGE_RATE=float(os.getenv("SLIPPAGE_RATE","0.0002"))
 MAX_HOLD_HOURS=float(os.getenv("MAX_HOLD_HOURS","48"))
 SCAN_SECONDS=int(os.getenv("SCAN_SECONDS","60"))
+MAX_SIGNAL_AGE_MINUTES=float(os.getenv("MAX_SIGNAL_AGE_MINUTES","15"))
 
 app=FastAPI(title=APP_NAME)
 state={"balance":START_BALANCE,"equity":START_BALANCE,"open_position":None,"trades":[],"seen_signal_ids":[],"last_scan":None,"last_signal":None,"status":"starting","error":None}
@@ -82,10 +83,16 @@ async def latest_signal(client):
         mid=re.search(r'data-post="BlueWhaleCryptoTrading/(\d+)"',ch)
         if not mid:continue
         tm=re.search(r'<div class="tgme_widget_message_text[^>]*>(.*?)</div>',ch,flags=re.S)
+        dtm=re.search(r'<time[^>]+datetime="([^"]+)"',ch)
         text=clean_text(tm.group(1)) if tm else ""
         if "BTC" not in text.upper():continue
         stop=parse_stop(text)
-        if stop:candidates.append({"id":int(mid.group(1)),"text":text,"stop":stop})
+        if stop:
+            posted_at=None
+            if dtm:
+                try: posted_at=datetime.fromisoformat(dtm.group(1).replace("Z","+00:00"))
+                except Exception: posted_at=None
+            candidates.append({"id":int(mid.group(1)),"text":text,"stop":stop,"posted_at":posted_at.isoformat() if posted_at else None})
     return max(candidates,key=lambda x:x["id"]) if candidates else None
 
 def mark_to_market(price):
@@ -145,9 +152,19 @@ async def bot_loop():
                     s=await latest_signal(client)
                     if s and s["id"] not in state["seen_signal_ids"]:
                         state["seen_signal_ids"].append(s["id"]); state["seen_signal_ids"]=state["seen_signal_ids"][-200:]
-                        side=infer_side(s["text"],s["stop"],price)
-                        if side: open_paper(s,side,price)
-                        else: state["last_signal"]={"id":s["id"],"side":None,"stop_raw":s["stop"]["raw"],"rejected":"direction unclear","seen_at":utcnow().isoformat()}
+                        posted=datetime.fromisoformat(s["posted_at"]) if s.get("posted_at") else None
+                        age_min=((utcnow()-posted).total_seconds()/60.0) if posted else None
+                        if age_min is None or age_min>MAX_SIGNAL_AGE_MINUTES:
+                            state["last_signal"]={"id":s["id"],"side":None,"stop_raw":s["stop"]["raw"],"rejected":"stale public signal","age_minutes":age_min,"seen_at":utcnow().isoformat()}
+                            print("REJECT stale signal id={} age_min={}".format(s["id"],age_min),flush=True)
+                        else:
+                            side=infer_side(s["text"],s["stop"],price)
+                            if side:
+                                ok=open_paper(s,side,price)
+                                print("OPEN paper id={} side={} ok={} price={}".format(s["id"],side,ok,price),flush=True)
+                            else:
+                                state["last_signal"]={"id":s["id"],"side":None,"stop_raw":s["stop"]["raw"],"rejected":"direction unclear","age_minutes":age_min,"seen_at":utcnow().isoformat()}
+                                print("REJECT unclear direction id={}".format(s["id"]),flush=True)
             except Exception as e:
                 state["status"]="error"; state["error"]=repr(e)
             await asyncio.sleep(SCAN_SECONDS)
