@@ -74,7 +74,7 @@ def collect():
 def parse_stop(text):
     u=text.upper().replace("$","")
     # Examples: 68,6xx ; 75,8xx ; 78,4xx ; 80,0xx ; 748xx ; 76xxx ; 79,000
-    m=re.search(r'\bSL\s*[:=]?\s*([0-9]{2,3}(?:,[0-9]{1,3})?(?:X{2,3})?)',u)
+    m=re.search(r'\bSL\s*[:=]?\s*([0-9]{2,3}(?:,[0-9]{1,3})?(?:X{1,3})?)',u)
     if not m: return None
     raw=m.group(1).replace(",","")
     if "X" not in raw:
@@ -87,6 +87,21 @@ def parse_stop(text):
     if not prefix.isdigit(): return None
     base=int(prefix)*(10**n)
     return {"raw":m.group(1),"low":float(base),"high":float(base+(10**n)-1)}
+
+def infer_side(text, stop, entry):
+    """Prefer an explicit LONG/SHORT label; otherwise infer from stop placement."""
+    u=text.upper()
+    has_long=bool(re.search(r'\bLONG\b',u))
+    has_short=bool(re.search(r'\bSHORT\b',u))
+    if has_long and not has_short:
+        return "LONG"
+    if has_short and not has_long:
+        return "SHORT"
+    if stop["high"] < entry*0.995:
+        return "LONG"
+    if stop["low"] > entry*1.005:
+        return "SHORT"
+    return "UNKNOWN"
 
 def dtparse(s): return datetime.fromisoformat(s.replace("Z","+00:00"))
 def ms(x): return int(x.timestamp()*1000)
@@ -154,16 +169,15 @@ def main():
         end_close=float(last[4])
 
         sl=c["stop"]
-        if sl["high"] < entry*0.995:
-            side="LONG"
+        side=infer_side(c["first"]["text"],sl,entry)
+        if side=="LONG":
             if lo<=sl["low"]: stop_status="DEFINITELY_HIT"
             elif lo>sl["high"]: stop_status="DEFINITELY_NOT_HIT"
             else: stop_status="AMBIGUOUS_MASK"
             mfe=(hi/entry-1)*100
             mae=(lo/entry-1)*100
             endret=(end_close/entry-1)*100
-        elif sl["low"] > entry*1.005:
-            side="SHORT"
+        elif side=="SHORT":
             if hi>=sl["high"]: stop_status="DEFINITELY_HIT"
             elif hi<sl["low"]: stop_status="DEFINITELY_NOT_HIT"
             else: stop_status="AMBIGUOUS_MASK"
@@ -171,7 +185,6 @@ def main():
             mae=(entry/hi-1)*100
             endret=(entry/end_close-1)*100
         else:
-            side="UNKNOWN"
             stop_status="DIRECTION_UNCLEAR"
             mfe=mae=endret=None
 
