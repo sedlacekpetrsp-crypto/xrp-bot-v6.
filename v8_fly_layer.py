@@ -718,7 +718,7 @@ def install(module):
         new = "const ps=d.positions||[]; document.getElementById('position').innerHTML=ps.length?ps.map(p=>`<div style=\"padding:8px 0;border-bottom:1px solid #29343e\"><b>${p.symbol} ${p.side}</b> • entry ${f(p.entry_price,6)} • SL ${f(p.stop_loss,6)} • TP ${f(p.take_profit,6)}<br><span class=\"muted\">SL: ${p.stop_mode||'původní'}${p.stop_anchor_price?' @ '+f(p.stop_anchor_price,6):''}</span><br>Čistý P/L <b class=\"${Number(p.unrealized_net_pnl)>=0?'green':'red'}\">${Number(p.unrealized_net_pnl)>=0?'+':''}${f(p.unrealized_net_pnl,2)} USDC</b> • Náklady ${f(p.estimated_costs,2)} USDC</div>`).join(''):'Žádná otevřená pozice';"
         html = html.replace(old, new)
         html = html.replace("<h2>📌 Otevřená pozice</h2>", "<h2>📌 Otevřené pozice (max 3)</h2>")
-        html = html.replace("PAPER • pouze BREAKOUT • čisté R:R 1:1,3", "PAPER • MARKET QUALITY MULTI • SL podle 5m svíčky • bez time exitu • +5 USDC NET/obchod")
+        html = html.replace("PAPER • pouze BREAKOUT • čisté R:R 1:1,3", "PAPER • MARKET QUALITY MULTI • SL podle 5m svíčky • bez time exitu • ochrana od +0,55R • profit check +0,80R • TP +1,30R NET")
         html = html.replace("setInterval(refresh,10000)", "setInterval(refresh,2000)")
         html = html.replace("</body>", '<div style="max-width:900px;margin:16px auto;padding:0 16px"><a href="v10/" style="color:#8ea1b8;font-weight:700;margin-right:16px">V10 Precision XRP →</a><a href="v11/" style="color:#21d19f;font-weight:800">V11 Evidence XRP →</a></div></body>')
         return HTMLResponse(html, headers={"Cache-Control": "no-store"})
