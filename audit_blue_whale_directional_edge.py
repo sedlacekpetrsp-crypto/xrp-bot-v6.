@@ -68,12 +68,7 @@ def main():
         entry = float(first[4])
         sl = c["stop"]
 
-        if sl["high"] < entry * 0.995:
-            side = "LONG"
-        elif sl["low"] > entry * 1.005:
-            side = "SHORT"
-        else:
-            side = "UNKNOWN"
+        side = seq.infer_side(c["first"]["text"], sl, entry)
 
         if side == "UNKNOWN":
             calls.append({
