@@ -7,6 +7,7 @@ import asyncio, html, os, re
 from datetime import datetime, timezone
 from typing import Optional
 import httpx
+from market_data import market_get, market
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse, JSONResponse
 
@@ -70,8 +71,7 @@ def effective_stop(side,stop):
     return stop["low"] if stop["masked"] else stop["high"]
 
 async def btc_price(client):
-    r=await client.get(BINANCE_PRICE_URL,params={"symbol":SYMBOL},timeout=15)
-    r.raise_for_status()
+    r=await market_get(client,BINANCE_PRICE_URL,params={"symbol":SYMBOL},timeout=15)
     return float(r.json()["price"])
 
 async def latest_signal(client):
