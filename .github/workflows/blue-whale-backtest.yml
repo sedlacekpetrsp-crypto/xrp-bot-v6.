@@ -7,6 +7,7 @@ on:
       - "research_blue_whale_backtest.py"
       - "research_blue_whale_backtest_v2.py"
       - "research_blue_whale_backtest_v3.py"
+      - "research_blue_whale_robustness.py"
       - ".github/workflows/blue-whale-backtest.yml"
   workflow_dispatch:
 
@@ -22,3 +23,5 @@ jobs:
         run: python research_blue_whale_backtest_v2.py
       - name: Run v3 hold-or-break confirmation backtest
         run: python research_blue_whale_backtest_v3.py
+      - name: Run v4 robustness audit
+        run: python research_blue_whale_robustness.py
