@@ -28,3 +28,9 @@ jobs:
         run: |
           curl --fail --silent --show-error --retry 2 --max-time 90 \
             https://xrp-bot-v9-best-of.onrender.com/ > /dev/null
+
+      - name: Wake Blue Whale Paper Mirror
+        if: ${{ always() }}
+        run: |
+          curl --fail --silent --show-error --retry 2 --max-time 90 \
+            https://blue-whale-paper-mirror.onrender.com/health > /dev/null
