@@ -1,0 +1,18 @@
+name: Blue Whale public-strategy backtest
+
+on:
+  push:
+    branches: [research-blue-whale-public]
+    paths:
+      - "research_blue_whale_backtest.py"
+      - ".github/workflows/blue-whale-backtest.yml"
+  workflow_dispatch:
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run walk-forward backtest
+        run: python research_blue_whale_backtest.py
