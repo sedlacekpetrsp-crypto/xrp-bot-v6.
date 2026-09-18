@@ -1,0 +1,24 @@
+name: Blue Whale screenshot OCR
+
+on:
+  push:
+    branches: [research-blue-whale-public]
+    paths:
+      - "ocr_blue_whale_images.py"
+      - ".github/workflows/blue-whale-image-ocr.yml"
+  workflow_dispatch:
+
+jobs:
+  ocr:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install OCR dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tesseract-ocr
+          python -m pip install --upgrade pip
+          pip install pillow pytesseract
+      - name: OCR public BTC screenshots
+        run: python ocr_blue_whale_images.py
