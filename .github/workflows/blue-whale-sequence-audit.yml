@@ -1,0 +1,18 @@
+name: Blue Whale signal-sequence audit
+
+on:
+  push:
+    branches: [research-blue-whale-public]
+    paths:
+      - "audit_blue_whale_signal_sequences.py"
+      - ".github/workflows/blue-whale-sequence-audit.yml"
+  workflow_dispatch:
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Audit distinct public BTC signal sequences
+        run: python audit_blue_whale_signal_sequences.py
