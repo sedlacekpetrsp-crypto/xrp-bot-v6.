@@ -22,4 +22,6 @@ def install(module):
     _original_install(module)
     from v8_fly_no_flip import patch as _no_flip_patch
     _no_flip_patch(module)
-    print("V8_NO_FLIP_INSTALL_ACTIVE", getattr(module, "FLY_LAYER_BUILD", None), flush=True)
+    from v8_profit_patch import patch as _profit_patch
+    _profit_patch(module)
+    print("V8_PROFIT_INSTALL_ACTIVE", getattr(module, "FLY_LAYER_BUILD", None), flush=True)
