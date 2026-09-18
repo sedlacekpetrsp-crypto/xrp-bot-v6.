@@ -1,0 +1,29 @@
+name: Blue Whale evidence pack
+
+on:
+  push:
+    branches: [research-blue-whale-public]
+    paths:
+      - "build_blue_whale_evidence_pack.py"
+      - ".github/workflows/blue-whale-evidence-pack.yml"
+  workflow_dispatch:
+
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install OCR dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tesseract-ocr
+          python -m pip install --upgrade pip
+          pip install pillow pytesseract
+      - name: Build evidence pack
+        run: python build_blue_whale_evidence_pack.py
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: blue-whale-evidence-pack
+          path: blue_whale_evidence_pack.json
