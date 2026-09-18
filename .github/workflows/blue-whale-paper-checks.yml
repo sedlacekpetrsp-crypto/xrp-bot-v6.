@@ -1,0 +1,27 @@
+name: Blue Whale PAPER mirror checks
+
+on:
+  push:
+    branches: [blue-whale-paper-mirror]
+    paths:
+      - "app.py"
+      - "app_blue_whale_mirror.py"
+      - ".github/workflows/blue-whale-paper-checks.yml"
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install requirements
+        run: pip install -r requirements.txt
+      - name: Compile
+        run: python -m py_compile app.py app_blue_whale_mirror.py
+      - name: Import app
+        run: python -c "import app; print(app.app.title)"
