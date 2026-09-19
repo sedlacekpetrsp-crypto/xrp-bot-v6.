@@ -358,6 +358,7 @@ async function refresh(){
     document.getElementById('statusbox').innerHTML=
       row('Režim','PAPER','green')+
       row('Status',d.status||'—',d.status==='running'?'green':'yellow')+
+      row('Obchodní stav',d.open_position?'OBCHOD OTEVŘEN':'⏳ ČEKÁM NA OBCHOD',d.open_position?'green':'yellow')+
       row('Poslední scan',d.last_scan||'—')+
       row('Ukládání',d.persistence||'memory',d.persistence==='postgres'?'green':'yellow')+
       row('Chyba',d.error||d.persistence_error||'žádná',(d.error||d.persistence_error)?'red':'green');
@@ -375,7 +376,7 @@ async function refresh(){
         '<div class="muted">Signal ID: '+p.signal_id+'</div>';
     }else{
       document.getElementById('position').className='coin muted';
-      document.getElementById('position').innerHTML='Žádná otevřená pozice.';
+      document.getElementById('position').innerHTML='<b class="yellow">⏳ ČEKÁM NA OBCHOD</b><div style="margin-top:6px">Žádná otevřená pozice.</div>';
     }
 
     if(d.last_signal){
