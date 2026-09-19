@@ -1,11 +1,13 @@
 from fastapi.responses import HTMLResponse, JSONResponse
 import app_v8 as base
+import app_blue_whale_mirror as whale
 from v8_fly_layer import install
 
 install(base)
 app = base.app
 _original_analyze = base.analyze
 _original_dashboard = base.dashboard
+_whale_task = None
 
 app.router.routes[:] = [
     route for route in app.router.routes
@@ -46,3 +48,36 @@ async def dashboard_with_pnl_breakdown():
     html = html.replace(old, new)
     html = html.replace("setInterval(refresh,10000)", "setInterval(refresh,3000)")
     return HTMLResponse(html, headers={"Cache-Control": "no-store"})
+
+
+@app.on_event("startup")
+async def start_whale_worker():
+    global _whale_task
+    whale.init_persistence()
+    if _whale_task is None or _whale_task.done():
+        _whale_task = __import__("asyncio").create_task(whale.bot_loop())
+
+@app.get("/whale/status")
+async def whale_status():
+    return JSONResponse(whale.state, headers={"Cache-Control":"no-store"})
+
+@app.get("/combined/health")
+async def combined_health():
+    return JSONResponse({
+        "ok": True,
+        "fly": {
+            "last_cycle_at": getattr(base, "last_cycle_at", None),
+            "last_error": getattr(base, "last_error", None),
+            "balance": getattr(base, "PAPER_BALANCE", None),
+            "open_position": getattr(base, "paper_position", None),
+        },
+        "whale": {
+            "status": whale.state.get("status"),
+            "error": whale.state.get("error"),
+            "last_scan": whale.state.get("last_scan"),
+            "persistence": whale.state.get("persistence"),
+            "persistence_error": whale.state.get("persistence_error"),
+            "balance": whale.state.get("balance"),
+            "open_position": whale.state.get("open_position"),
+        }
+    }, headers={"Cache-Control":"no-store"})
