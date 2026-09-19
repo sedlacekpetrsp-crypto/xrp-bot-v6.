@@ -4,6 +4,8 @@ Public Telegram captions + public Binance market data. No live orders.
 """
 from __future__ import annotations
 import asyncio, html, os, re
+import psycopg
+from psycopg.types.json import Jsonb
 from datetime import datetime, timezone
 from typing import Optional
 import httpx
@@ -23,11 +25,99 @@ SLIPPAGE_RATE=float(os.getenv("SLIPPAGE_RATE","0.0002"))
 MAX_HOLD_HOURS=float(os.getenv("MAX_HOLD_HOURS","48"))
 SCAN_SECONDS=int(os.getenv("SCAN_SECONDS","60"))
 MAX_SIGNAL_AGE_MINUTES=float(os.getenv("MAX_SIGNAL_AGE_MINUTES","15"))
+DATABASE_URL=os.getenv("DATABASE_URL")
 
 app=FastAPI(title=APP_NAME)
-state={"balance":START_BALANCE,"equity":START_BALANCE,"open_position":None,"trades":[],"seen_signal_ids":[],"last_scan":None,"last_signal":None,"status":"starting","error":None}
+state={"balance":START_BALANCE,"equity":START_BALANCE,"open_position":None,"trades":[],"seen_signal_ids":[],"last_scan":None,"last_signal":None,"status":"starting","error":None,"persistence":"memory","persistence_error":None}
 
 def utcnow(): return datetime.now(timezone.utc)
+
+def _persistent_payload():
+    return {
+        "balance":state["balance"],
+        "equity":state["equity"],
+        "open_position":state["open_position"],
+        "trades":state["trades"][-100:],
+        "seen_signal_ids":state["seen_signal_ids"][-200:],
+        "last_scan":state["last_scan"],
+        "last_signal":state["last_signal"],
+    }
+
+def init_persistence():
+    if not DATABASE_URL:
+        state["persistence"]="memory"
+        state["persistence_error"]="DATABASE_URL is not configured"
+        return
+    try:
+        with psycopg.connect(DATABASE_URL, connect_timeout=8) as conn:
+            conn.execute("""CREATE TABLE IF NOT EXISTS blue_whale_state (
+                id integer PRIMARY KEY,
+                state jsonb NOT NULL,
+                updated_at timestamptz NOT NULL DEFAULT now()
+            )""")
+            conn.execute("""CREATE TABLE IF NOT EXISTS blue_whale_trades (
+                signal_id bigint PRIMARY KEY,
+                side text NOT NULL,
+                entry double precision NOT NULL,
+                exit double precision NOT NULL,
+                qty double precision NOT NULL,
+                net_pnl double precision NOT NULL,
+                reason text,
+                opened_at timestamptz,
+                closed_at timestamptz
+            )""")
+            row=conn.execute("SELECT state FROM blue_whale_state WHERE id=1").fetchone()
+            if row and isinstance(row[0],dict):
+                saved=row[0]
+                for key in ("balance","equity","open_position","trades","seen_signal_ids","last_scan","last_signal"):
+                    if key in saved:
+                        state[key]=saved[key]
+            else:
+                conn.execute(
+                    "INSERT INTO blue_whale_state (id,state,updated_at) VALUES (1,%s,now()) ON CONFLICT (id) DO NOTHING",
+                    (Jsonb(_persistent_payload()),),
+                )
+        state["persistence"]="postgres"
+        state["persistence_error"]=None
+    except Exception as e:
+        state["persistence"]="memory"
+        state["persistence_error"]=repr(e)
+        print("PERSISTENCE INIT ERROR {}".format(repr(e)),flush=True)
+
+def save_state():
+    if not DATABASE_URL:
+        return
+    try:
+        with psycopg.connect(DATABASE_URL, connect_timeout=8) as conn:
+            conn.execute(
+                """INSERT INTO blue_whale_state (id,state,updated_at) VALUES (1,%s,now())
+                   ON CONFLICT (id) DO UPDATE SET state=EXCLUDED.state, updated_at=now()""",
+                (Jsonb(_persistent_payload()),),
+            )
+        state["persistence"]="postgres"
+        state["persistence_error"]=None
+    except Exception as e:
+        state["persistence_error"]=repr(e)
+        print("PERSISTENCE SAVE ERROR {}".format(repr(e)),flush=True)
+
+def save_trade(trade):
+    if not DATABASE_URL:
+        return
+    try:
+        with psycopg.connect(DATABASE_URL, connect_timeout=8) as conn:
+            conn.execute(
+                """INSERT INTO blue_whale_trades
+                   (signal_id,side,entry,exit,qty,net_pnl,reason,opened_at,closed_at)
+                   VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                   ON CONFLICT (signal_id) DO UPDATE SET
+                     side=EXCLUDED.side, entry=EXCLUDED.entry, exit=EXCLUDED.exit,
+                     qty=EXCLUDED.qty, net_pnl=EXCLUDED.net_pnl, reason=EXCLUDED.reason,
+                     opened_at=EXCLUDED.opened_at, closed_at=EXCLUDED.closed_at""",
+                (trade["signal_id"],trade["side"],trade["entry"],trade["exit"],trade["qty"],trade["net_pnl"],trade.get("reason"),trade.get("opened_at"),trade.get("closed_at")),
+            )
+    except Exception as e:
+        state["persistence_error"]=repr(e)
+        print("PERSISTENCE TRADE ERROR {}".format(repr(e)),flush=True)
 
 def clean_text(raw):
     raw=re.sub(r"<br\s*/?>","\n",raw,flags=re.I)
@@ -116,6 +206,7 @@ def open_paper(signal,side,market_price):
     state["balance"]-=entry_fee
     state["open_position"]={"signal_id":signal["id"],"signal_text":signal["text"],"side":side,"entry":entry,"stop":stop,"tp":tp,"qty":qty,"notional":notional,"risk_dollars":risk,"opened_at":utcnow().isoformat(),"entry_fee":entry_fee}
     state["last_signal"]={"id":signal["id"],"side":side,"stop_raw":signal["stop"]["raw"],"accepted_at":utcnow().isoformat()}
+    save_state()
     return True
 
 def close_paper(price,reason):
@@ -129,6 +220,8 @@ def close_paper(price,reason):
     trade={**p,"exit":exit_price,"exit_fee":exit_fee,"net_pnl":net_after_exit-p["entry_fee"],"closed_at":utcnow().isoformat(),"reason":reason}
     state["trades"].append(trade); state["trades"]=state["trades"][-100:]
     state["open_position"]=None; state["equity"]=state["balance"]
+    save_trade(trade)
+    save_state()
 
 def age_hours():
     p=state["open_position"]
@@ -165,15 +258,18 @@ async def bot_loop():
                             else:
                                 state["last_signal"]={"id":s["id"],"side":None,"stop_raw":s["stop"]["raw"],"rejected":"direction unclear","age_minutes":age_min,"seen_at":utcnow().isoformat()}
                                 print("REJECT unclear direction id={}".format(s["id"]),flush=True)
+                save_state()
             except Exception as e:
                 state["status"]="error"; state["error"]=repr(e)
             await asyncio.sleep(SCAN_SECONDS)
 
 @app.on_event("startup")
-async def startup(): asyncio.create_task(bot_loop())
+async def startup():
+    init_persistence()
+    asyncio.create_task(bot_loop())
 
 @app.get("/health")
-async def health(): return {"ok":True,"mode":"PAPER","status":state["status"],"error":state["error"]}
+async def health(): return {"ok":True,"mode":"PAPER","status":state["status"],"error":state["error"],"persistence":state["persistence"],"persistence_error":state["persistence_error"]}
 
 @app.get("/status")
 async def status(): return JSONResponse(state)
@@ -263,7 +359,8 @@ async function refresh(){
       row('Režim','PAPER','green')+
       row('Status',d.status||'—',d.status==='running'?'green':'yellow')+
       row('Poslední scan',d.last_scan||'—')+
-      row('Chyba',d.error||'žádná',d.error?'red':'green');
+      row('Ukládání',d.persistence||'memory',d.persistence==='postgres'?'green':'yellow')+
+      row('Chyba',d.error||d.persistence_error||'žádná',(d.error||d.persistence_error)?'red':'green');
 
     if(d.open_position){
       const p=d.open_position;
