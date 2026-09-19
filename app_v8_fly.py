@@ -66,12 +66,13 @@ async function refreshWhale(){
   const wr=ts.length?100*wins/ts.length:0;
   document.getElementById('whaleStats').innerHTML=[
    ['Balance',f(w.balance,2)+' USD'],['Equity',f(w.equity,2)+' USD'],['Obchody',ts.length],
-   ['Win rate',f(wr,1)+' %'],['PnL',f(pnl,2)+' USD'],['Status',w.status||'—']
+   ['Win rate',f(wr,1)+' %'],['PnL',f(pnl,2)+' USD'],['Status',w.status||'—'],
+   ['Obchodní stav',w.open_position?'OBCHOD OTEVŘEN':'⏳ ČEKÁM NA OBCHOD']
   ].map(x=>`<div class="coin"><div class="muted">${x[0]}</div><b>${x[1]}</b></div>`).join('');
   const p=w.open_position;
   document.getElementById('whalePosition').innerHTML=p
    ? `<b>BTCUSDT ${p.side}</b> • entry ${f(p.entry,2)} • SL ${f(p.stop,2)} • TP ${f(p.tp,2)} • risk ${f(p.risk_dollars,2)} USD`
-   : 'Žádná otevřená Whale pozice.';
+   : '<b class="yellow">⏳ ČEKÁM NA OBCHOD</b><div style="margin-top:6px">Žádná otevřená Whale pozice.</div>';
   document.getElementById('whaleHealth').textContent=
    `Scan: ${w.last_scan||'—'} • ukládání: ${w.persistence||'memory'} • chyba: ${w.error||w.persistence_error||'žádná'}`;
  }catch(e){
