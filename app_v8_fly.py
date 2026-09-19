@@ -46,7 +46,40 @@ async def dashboard_with_pnl_breakdown():
     old = "const p=d.position; document.getElementById('position').innerHTML=p?`<b>${p.symbol} ${p.side}</b> • entry ${f(p.entry_price,6)} • SL ${f(p.stop_loss,6)} • TP ${f(p.take_profit,6)} • uPnL ${f(d.unrealized_pnl,2)}`:'Žádná otevřená pozice';"
     new = "const p=d.position; document.getElementById('position').innerHTML=p?`<b>${p.symbol} ${p.side}</b> • entry ${f(p.entry_price,6)} • SL ${f(p.stop_loss,6)} • TP ${f(p.take_profit,6)}<br>Hrubý P/L <b class=\"${Number(d.unrealized_gross_pnl)>=0?'green':'red'}\">${Number(d.unrealized_gross_pnl)>=0?'+':''}${f(d.unrealized_gross_pnl,2)} USDC</b> • Čistý P/L <b class=\"${Number(d.unrealized_pnl)>=0?'green':'red'}\">${Number(d.unrealized_pnl)>=0?'+':''}${f(d.unrealized_pnl,2)} USDC</b> • Náklady ${f(d.estimated_costs,2)} USDC`:'Žádná otevřená pozice';"
     html = html.replace(old, new)
-    html = html.replace("setInterval(refresh,10000)", "setInterval(refresh,3000)")
+    html = html.replace("⚡ BOT V8 ADAPTIVE BREAKOUT SCALPER", "⚡ FLY + 🐋 WHALE — 24/7 PAPER")
+    html = html.replace("PAPER • pouze BREAKOUT • čisté R:R 1:1,3", "Jeden Render server • dvě nezávislé strategie • PAPER")
+    whale_card = """
+<div class="card">
+  <h2>🐋 BLUE WHALE</h2>
+  <div id="whaleStats" class="grid"></div>
+  <div id="whalePosition" class="coin muted" style="margin-top:10px">Načítám…</div>
+  <div id="whaleHealth" class="muted" style="margin-top:10px">Načítám…</div>
+</div>
+"""
+    html = html.replace('<div class="card muted" id="health">', whale_card + '<div class="card muted" id="health">')
+    whale_js = """
+async function refreshWhale(){
+ try{
+  const r=await fetch('/whale/status',{cache:'no-store'}),w=await r.json(),ts=w.trades||[];
+  const wins=ts.filter(t=>Number(t.net_pnl)>0).length;
+  const pnl=ts.reduce((a,t)=>a+Number(t.net_pnl||0),0);
+  const wr=ts.length?100*wins/ts.length:0;
+  document.getElementById('whaleStats').innerHTML=[
+   ['Balance',f(w.balance,2)+' USD'],['Equity',f(w.equity,2)+' USD'],['Obchody',ts.length],
+   ['Win rate',f(wr,1)+' %'],['PnL',f(pnl,2)+' USD'],['Status',w.status||'—']
+  ].map(x=>`<div class="coin"><div class="muted">${x[0]}</div><b>${x[1]}</b></div>`).join('');
+  const p=w.open_position;
+  document.getElementById('whalePosition').innerHTML=p
+   ? `<b>BTCUSDT ${p.side}</b> • entry ${f(p.entry,2)} • SL ${f(p.stop,2)} • TP ${f(p.tp,2)} • risk ${f(p.risk_dollars,2)} USD`
+   : 'Žádná otevřená Whale pozice.';
+  document.getElementById('whaleHealth').textContent=
+   `Scan: ${w.last_scan||'—'} • ukládání: ${w.persistence||'memory'} • chyba: ${w.error||w.persistence_error||'žádná'}`;
+ }catch(e){
+  document.getElementById('whaleHealth').textContent='Whale dashboard error: '+e;
+ }
+}
+"""
+    html = html.replace("refresh();setInterval(refresh,10000);", whale_js + "refresh();refreshWhale();setInterval(refresh,3000);setInterval(refreshWhale,5000);")
     return HTMLResponse(html, headers={"Cache-Control": "no-store"})
 
 
