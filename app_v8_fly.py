@@ -1,6 +1,7 @@
 from fastapi.responses import HTMLResponse, JSONResponse
 import app_v8 as base
 import app_blue_whale_mirror as whale
+import lead_lag_scalper as leadlag
 from v8_fly_layer import install
 
 install(base)
@@ -93,12 +94,20 @@ async function refreshWhale(){
 async def start_whale_worker():
     global _whale_task
     whale.init_persistence()
+    leadlag.install(base)
     if _whale_task is None or _whale_task.done():
         _whale_task = __import__("asyncio").create_task(whale.bot_loop())
+    if not getattr(app.state, "leadlag_task", None) or app.state.leadlag_task.done():
+        app.state.leadlag_task = __import__("asyncio").create_task(leadlag.bot_loop())
 
 @app.get("/whale/status")
 async def whale_status():
     return JSONResponse(whale.state, headers={"Cache-Control":"no-store"})
+
+
+@app.get("/leadlag/status")
+async def leadlag_status():
+    return JSONResponse(leadlag.state, headers={"Cache-Control":"no-store"})
 
 @app.get("/combined/health")
 async def combined_health():
@@ -118,5 +127,14 @@ async def combined_health():
             "persistence_error": whale.state.get("persistence_error"),
             "balance": whale.state.get("balance"),
             "open_position": whale.state.get("open_position"),
+        },
+        "leadlag": {
+            "status": leadlag.state.get("status"),
+            "error": leadlag.state.get("error"),
+            "last_scan": leadlag.state.get("last_scan"),
+            "persistence": leadlag.state.get("persistence"),
+            "persistence_error": leadlag.state.get("persistence_error"),
+            "balance": leadlag.state.get("balance"),
+            "open_position": leadlag.state.get("open_position"),
         }
     }, headers={"Cache-Control":"no-store"})
