@@ -144,7 +144,9 @@ async def cycle():
         now=m.utcnow()
         if m.cooldown_until and now<m.cooldown_until: m.last_cycle_at=now.isoformat(); return
         _,streak,blocked,_=m.daily_risk_status()
-        if blocked or streak>=m.MAX_CONSECUTIVE_LOSSES: m.last_cycle_at=now.isoformat(); return
+        # After a loss streak, close_trade() already sets cooldown_until. Do not block
+        # the strategy for the rest of the UTC day once that cooldown expires.
+        if blocked: m.last_cycle_at=now.isoformat(); return
         rows=await m.analyze_all(); best=choose_best(rows)
         if best:
             price=await m.get_live_price(best['symbol'],max_age=1.0)
