@@ -11,7 +11,8 @@ from urllib.parse import urlsplit, parse_qsl
 
 import httpx
 
-BUILD = "market-data-guard-20260913-2"
+BUILD = "market-data-guard-20260920-3"
+KLINE_CLOSE_GRACE_SECONDS = 30
 INTERVALS = {"1m": 1, "5m": 5, "15m": 15, "30m": 30,
              "1h": 60, "4h": 240, "1d": 1440}
 
@@ -129,9 +130,16 @@ class MarketData:
             minutes = INTERVALS.get(str(params.get("interval")))
             if not data or len(data) < min(2, int(params.get("limit", 250))):
                 raise MarketDataUnavailable("Prázdná historie svíček")
-            if minutes and not (int(data[-1][0]) <= time.time()*1000 + 5000 and
-                               int(data[-1][0]) + minutes*60_000 > time.time()*1000 - 5000):
-                raise MarketDataUnavailable("Zastaralé svíčky; obchodování čeká na nová data")
+            if minutes:
+                now_ms = time.time() * 1000
+                open_ms = int(data[-1][0])
+                default_close_ms = open_ms + minutes * 60_000 - 1
+                close_ms = int(data[-1][6]) if len(data[-1]) > 6 else default_close_ms
+                # Binance can expose the just-closed candle briefly after a minute boundary
+                # before the new in-progress candle appears. Accept that short handoff window,
+                # but still reject genuinely stale or future-dated data.
+                if open_ms > now_ms + 5000 or close_ms < now_ms - KLINE_CLOSE_GRACE_SECONDS * 1000:
+                    raise MarketDataUnavailable("Zastaralé svíčky; obchodování čeká na nová data")
             for row in data:
                 if any(not math.isfinite(float(row[i])) or float(row[i]) <= 0 for i in (1, 2, 3, 4)):
                     raise MarketDataUnavailable("Neplatná cena svíčky")
