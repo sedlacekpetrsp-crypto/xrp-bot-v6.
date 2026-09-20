@@ -47,8 +47,8 @@ async def dashboard_with_pnl_breakdown():
     old = "const p=d.position; document.getElementById('position').innerHTML=p?`<b>${p.symbol} ${p.side}</b> • entry ${f(p.entry_price,6)} • SL ${f(p.stop_loss,6)} • TP ${f(p.take_profit,6)} • uPnL ${f(d.unrealized_pnl,2)}`:'Žádná otevřená pozice';"
     new = "const p=d.position; document.getElementById('position').innerHTML=p?`<b>${p.symbol} ${p.side}</b> • entry ${f(p.entry_price,6)} • SL ${f(p.stop_loss,6)} • TP ${f(p.take_profit,6)}<br>Hrubý P/L <b class=\"${Number(d.unrealized_gross_pnl)>=0?'green':'red'}\">${Number(d.unrealized_gross_pnl)>=0?'+':''}${f(d.unrealized_gross_pnl,2)} USDC</b> • Čistý P/L <b class=\"${Number(d.unrealized_pnl)>=0?'green':'red'}\">${Number(d.unrealized_pnl)>=0?'+':''}${f(d.unrealized_pnl,2)} USDC</b> • Náklady ${f(d.estimated_costs,2)} USDC`:'Žádná otevřená pozice';"
     html = html.replace(old, new)
-    html = html.replace("⚡ BOT V8 ADAPTIVE BREAKOUT SCALPER", "⚡ FLY + 🐋 WHALE — 24/7 PAPER")
-    html = html.replace("PAPER • pouze BREAKOUT • čisté R:R 1:1,3", "Jeden Render server • dvě nezávislé strategie • PAPER")
+    html = html.replace("⚡ BOT V8 ADAPTIVE BREAKOUT SCALPER", "⚡ FLY + 🐋 WHALE + 🔗 LEAD-LAG — 24/7 PAPER")
+    html = html.replace("PAPER • pouze BREAKOUT • čisté R:R 1:1,3", "Jeden Render server • tři nezávislé strategie • PAPER")
     whale_card = """
 <div class="card">
   <h2>🐋 BLUE WHALE</h2>
@@ -57,7 +57,19 @@ async def dashboard_with_pnl_breakdown():
   <div id="whaleHealth" class="muted" style="margin-top:10px">Načítám…</div>
 </div>
 """
-    html = html.replace('<div class="card muted" id="health">', whale_card + '<div class="card muted" id="health">')
+    leadlag_card = """
+<div class="card">
+  <h2>🔗 XRP LEAD-LAG SCALPER</h2>
+  <div class="muted" style="margin-bottom:10px">BTC + ETH lead • XRP lag • order book potvrzení • PAPER</div>
+  <div id="leadlagStats" class="grid"></div>
+  <div id="leadlagPosition" class="coin muted" style="margin-top:10px">Načítám…</div>
+  <div id="leadlagAnalysis" class="coin muted" style="margin-top:10px">Načítám analýzu…</div>
+  <div style="margin-top:12px"><b>Poslední obchody</b></div>
+  <div id="leadlagTrades" style="margin-top:6px"></div>
+  <div id="leadlagHealth" class="muted" style="margin-top:10px">Načítám…</div>
+</div>
+"""
+    html = html.replace('<div class="card muted" id="health">', whale_card + leadlag_card + '<div class="card muted" id="health">')
     whale_js = """
 async function refreshWhale(){
  try{
@@ -86,7 +98,42 @@ async function refreshWhale(){
  }
 }
 """
-    html = html.replace("refresh();setInterval(refresh,10000);", whale_js + "refresh();refreshWhale();setInterval(refresh,3000);setInterval(refreshWhale,5000);")
+    leadlag_js = """
+async function refreshLeadLag(){
+ try{
+  const r=await fetch('/leadlag/status',{cache:'no-store'}),w=await r.json(),ts=w.trades||[];
+  const wins=ts.filter(t=>Number(t.net_pnl)>0).length;
+  const pnl=ts.reduce((a,t)=>a+Number(t.net_pnl||0),0);
+  const fees=ts.reduce((a,t)=>a+Number(t.fees||0),0);
+  const wr=ts.length?100*wins/ts.length:0;
+  const p=w.open_position;
+  const unreal=Number(w.equity||0)-Number(w.balance||0);
+  const pnlText=`<span class="${pnl>=0?'green':'red'}">${pnl>=0?'+':''}${f(pnl,2)} USDC</span>`;
+  const unrealText=`<span class="${unreal>=0?'green':'red'}">${unreal>=0?'+':''}${f(unreal,2)} USDC</span>`;
+  document.getElementById('leadlagStats').innerHTML=[
+   ['Balance',f(w.balance,2)+' USDC'],['Equity',f(w.equity,2)+' USDC'],
+   ['Obchody',ts.length],['Win rate',f(wr,1)+' %'],
+   ['Realizované PnL',pnlText],['Poplatky',f(fees,2)+' USDC'],
+   ['Nerealizované PnL',unrealText],['Status',w.status||'—'],
+   ['Obchodní stav',p?'OBCHOD OTEVŘEN':'⏳ ČEKÁM NA OBCHOD']
+  ].map(x=>`<div class="coin"><div class="muted">${x[0]}</div><b>${x[1]}</b></div>`).join('');
+  document.getElementById('leadlagPosition').innerHTML=p
+   ? `<b>XRPUSDC ${p.side}</b> • entry ${f(p.entry,6)} • SL ${f(p.stop,6)} • TP ${f(p.tp,6)} • risk ${f(p.risk_dollars,2)} USDC • uPnL ${unreal>=0?'+':''}${f(unreal,2)} USDC`
+   : '<b class="yellow">⏳ ČEKÁM NA OBCHOD</b><div style="margin-top:6px">Žádná otevřená Lead-Lag pozice.</div>';
+  const a=w.analysis||{};
+  document.getElementById('leadlagAnalysis').innerHTML=
+   `Signal <b>${a.signal||'WAIT'}</b> • BTC ${f(Number(a.btc_return||0)*100,3)} % • ETH ${f(Number(a.eth_return||0)*100,3)} % • XRP ${f(Number(a.xrp_return||0)*100,3)} % • lag ${f(Number(a.lag_return||0)*100,3)} % • book ${f(a.book_imbalance,3)}`;
+  document.getElementById('leadlagTrades').innerHTML=ts.slice().reverse().slice(0,8).map(t=>
+    `<div class="trade"><span>${t.side}</span><span>${f(t.entry,6)} → ${f(t.exit,6)}</span><span>${t.reason||'—'}</span><span class="${Number(t.net_pnl)>=0?'green':'red'}">${Number(t.net_pnl)>=0?'+':''}${f(t.net_pnl,2)} USDC</span><span>${t.closed_at?new Date(t.closed_at).toLocaleString('cs-CZ'):'—'}</span></div>`
+  ).join('') || '<div class="coin muted">Zatím žádné uzavřené obchody.</div>';
+  document.getElementById('leadlagHealth').textContent=
+   `Scan: ${w.last_scan||'—'} • ukládání: ${w.persistence||'memory'} • chyba: ${w.error||w.persistence_error||'žádná'}`;
+ }catch(e){
+  document.getElementById('leadlagHealth').textContent='Lead-Lag dashboard error: '+e;
+ }
+}
+"""
+    html = html.replace("refresh();setInterval(refresh,10000);", whale_js + leadlag_js + "refresh();refreshWhale();refreshLeadLag();setInterval(refresh,3000);setInterval(refreshWhale,5000);setInterval(refreshLeadLag,5000);")
     return HTMLResponse(html, headers={"Cache-Control": "no-store"})
 
 
