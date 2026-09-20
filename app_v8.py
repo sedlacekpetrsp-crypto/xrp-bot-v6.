@@ -872,6 +872,14 @@ h1{font-size:24px;margin:0 0 8px}h2{font-size:18px}
 <div class="card muted" id="health">Načítám…</div>
 </div><script>
 const f=(n,d=2)=>n==null||!Number.isFinite(Number(n))?"—":Number(n).toFixed(d);
+const closedTime=(v)=>{
+ if(!v)return '—';
+ const d=new Date(v);
+ return Number.isNaN(d.getTime())?'—':d.toLocaleString('cs-CZ',{
+  timeZone:'Europe/Prague',day:'2-digit',month:'2-digit',year:'numeric',
+  hour:'2-digit',minute:'2-digit',second:'2-digit'
+ });
+};
 async function refresh(){
  try{
   const r=await fetch('/analyze',{cache:'no-store'}),d=await r.json(),s=d.stats||{};
@@ -887,7 +895,7 @@ async function refresh(){
    <div class="muted">${x.reason||''}</div></div>`;
   }).join('');
   const p=d.position; document.getElementById('position').innerHTML=p?`<b>${p.symbol} ${p.side}</b> • entry ${f(p.entry_price,6)} • SL ${f(p.stop_loss,6)} • TP ${f(p.take_profit,6)} • uPnL ${f(d.unrealized_pnl,2)}`:'Žádná otevřená pozice';
-  document.getElementById('trades').innerHTML=(d.trade_history||[]).map(t=>`<div class="trade"><span>${t.symbol}</span><span>${t.side}</span><span>${t.reason}</span><span class="${Number(t.pnl)>=0?'green':'red'}">${f(t.pnl,2)}</span></div>`).join('')||'<div class="muted">Zatím bez obchodů.</div>';
+  document.getElementById('trades').innerHTML=(d.trade_history||[]).map(t=>`<div class="trade"><span>${t.symbol}</span><span>${t.side}</span><span>${t.reason}<br><small class="muted">Uzavřeno: ${closedTime(t.closed_at)}</small></span><span class="${Number(t.pnl)>=0?'green':'red'}">${f(t.pnl,2)}</span></div>`).join('')||'<div class="muted">Zatím bez obchodů.</div>';
   document.getElementById('health').textContent=`Cyklus: ${d.last_cycle_at||'—'} • 429: ${d.http_429_count||0} • edge ×${d.min_edge_multiple} • zdroj: ${d.market_data?.provider||'—'} • data: ${d.market_data?.last_success||'—'} • chyba: ${d.market_data?.last_error||d.last_error||'žádná'}`;
  }catch(e){document.getElementById('health').textContent='Dashboard error: '+e}
 }
