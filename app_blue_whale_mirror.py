@@ -25,17 +25,25 @@ SLIPPAGE_RATE=float(os.getenv("SLIPPAGE_RATE","0.0002"))
 MAX_HOLD_HOURS=float(os.getenv("MAX_HOLD_HOURS","48"))
 SCAN_SECONDS=int(os.getenv("SCAN_SECONDS","60"))
 MAX_SIGNAL_AGE_MINUTES=float(os.getenv("MAX_SIGNAL_AGE_MINUTES","15"))
+MAX_OPEN_POSITIONS=int(os.getenv("MAX_OPEN_POSITIONS","2"))
+MAX_TOTAL_RISK_RATE=float(os.getenv("MAX_TOTAL_RISK_RATE","0.006"))
+SAME_SIDE_COOLDOWN_MINUTES=float(os.getenv("SAME_SIDE_COOLDOWN_MINUTES","30"))
 DATABASE_URL=os.getenv("DATABASE_URL")
 
 app=FastAPI(title=APP_NAME)
-state={"balance":START_BALANCE,"equity":START_BALANCE,"open_position":None,"trades":[],"seen_signal_ids":[],"last_scan":None,"last_signal":None,"status":"starting","error":None,"persistence":"memory","persistence_error":None}
+state={"balance":START_BALANCE,"equity":START_BALANCE,"open_positions":[],"open_position":None,"trades":[],"seen_signal_ids":[],"last_scan":None,"last_signal":None,"status":"starting","error":None,"persistence":"memory","persistence_error":None}
 
 def utcnow(): return datetime.now(timezone.utc)
+
+def _sync_legacy_open_position():
+    positions=state.get("open_positions") or []
+    state["open_position"]=positions[0] if positions else None
 
 def _persistent_payload():
     return {
         "balance":state["balance"],
         "equity":state["equity"],
+        "open_positions":state["open_positions"],
         "open_position":state["open_position"],
         "trades":state["trades"][-100:],
         "seen_signal_ids":state["seen_signal_ids"][-200:],
@@ -69,9 +77,16 @@ def init_persistence():
             row=conn.execute("SELECT state FROM blue_whale_state WHERE id=1").fetchone()
             if row and isinstance(row[0],dict):
                 saved=row[0]
-                for key in ("balance","equity","open_position","trades","seen_signal_ids","last_scan","last_signal"):
+                for key in ("balance","equity","trades","seen_signal_ids","last_scan","last_signal"):
                     if key in saved:
                         state[key]=saved[key]
+                if isinstance(saved.get("open_positions"),list):
+                    state["open_positions"]=saved["open_positions"][:MAX_OPEN_POSITIONS]
+                elif saved.get("open_position"):
+                    state["open_positions"]=[saved["open_position"]]
+                else:
+                    state["open_positions"]=[]
+                _sync_legacy_open_position()
             else:
                 conn.execute(
                     "INSERT INTO blue_whale_state (id,state,updated_at) VALUES (1,%s,now()) ON CONFLICT (id) DO NOTHING",
@@ -186,32 +201,66 @@ async def latest_signal(client):
     return max(candidates,key=lambda x:x["id"]) if candidates else None
 
 def mark_to_market(price):
-    p=state["open_position"]
-    if not p:
-        state["equity"]=state["balance"]; return
-    gross=(price-p["entry"])*p["qty"] if p["side"]=="LONG" else (p["entry"]-price)*p["qty"]
-    state["equity"]=state["balance"]+gross-price*p["qty"]*FEE_RATE
+    positions=state.get("open_positions") or []
+    if not positions:
+        state["equity"]=state["balance"]
+        _sync_legacy_open_position()
+        return
+    gross=0.0
+    exit_fees=0.0
+    for p in positions:
+        gross += (price-p["entry"])*p["qty"] if p["side"]=="LONG" else (p["entry"]-price)*p["qty"]
+        exit_fees += price*p["qty"]*FEE_RATE
+    state["equity"]=state["balance"]+gross-exit_fees
+    _sync_legacy_open_position()
+
+def _same_side_too_soon(side):
+    now=utcnow()
+    for p in state.get("open_positions") or []:
+        if p.get("side")!=side:
+            continue
+        try:
+            age_min=(now-datetime.fromisoformat(p["opened_at"])).total_seconds()/60.0
+        except Exception:
+            age_min=0.0
+        if age_min<SAME_SIDE_COOLDOWN_MINUTES:
+            return True
+    return False
 
 def open_paper(signal,side,market_price):
+    positions=state.get("open_positions") or []
+    if len(positions)>=MAX_OPEN_POSITIONS:
+        return False
+    if _same_side_too_soon(side):
+        state["last_signal"]={"id":signal["id"],"side":side,"stop_raw":signal["stop"]["raw"],"rejected":"same-side cooldown","seen_at":utcnow().isoformat()}
+        return False
     entry=market_price*(1+SLIPPAGE_RATE if side=="LONG" else 1-SLIPPAGE_RATE)
     stop=effective_stop(side,signal["stop"])
     stop_rate=(entry-stop)/entry if side=="LONG" else (stop-entry)/entry
     if stop_rate<=0 or stop_rate>0.10:return False
-    risk=state["balance"]*RISK_PER_TRADE
+    account_basis=state["balance"]+sum(float(p.get("entry_fee",0.0)) for p in positions)
+    risk=account_basis*RISK_PER_TRADE
+    open_risk=sum(float(p.get("risk_dollars",0.0)) for p in positions)
+    if open_risk+risk > account_basis*MAX_TOTAL_RISK_RATE+1e-9:
+        state["last_signal"]={"id":signal["id"],"side":side,"stop_raw":signal["stop"]["raw"],"rejected":"max total risk","seen_at":utcnow().isoformat()}
+        return False
     eff=stop_rate+2*(FEE_RATE+SLIPPAGE_RATE)
     notional=risk/eff; qty=notional/entry
     move=RR*eff
     tp=entry*(1+move) if side=="LONG" else entry*(1-move)
     entry_fee=entry*qty*FEE_RATE
     state["balance"]-=entry_fee
-    state["open_position"]={"signal_id":signal["id"],"signal_text":signal["text"],"side":side,"entry":entry,"stop":stop,"tp":tp,"qty":qty,"notional":notional,"risk_dollars":risk,"opened_at":utcnow().isoformat(),"entry_fee":entry_fee}
+    position={"signal_id":signal["id"],"signal_text":signal["text"],"side":side,"entry":entry,"stop":stop,"tp":tp,"qty":qty,"notional":notional,"risk_dollars":risk,"opened_at":utcnow().isoformat(),"entry_fee":entry_fee}
+    state["open_positions"].append(position)
+    _sync_legacy_open_position()
     state["last_signal"]={"id":signal["id"],"side":side,"stop_raw":signal["stop"]["raw"],"accepted_at":utcnow().isoformat()}
+    mark_to_market(market_price)
     save_state()
     return True
 
-def close_paper(price,reason):
-    p=state["open_position"]
-    if not p:return
+def close_paper(p,price,reason,mark_price=None):
+    positions=state.get("open_positions") or []
+    if p not in positions:return
     exit_price=price*(1-SLIPPAGE_RATE if p["side"]=="LONG" else 1+SLIPPAGE_RATE)
     gross=(exit_price-p["entry"])*p["qty"] if p["side"]=="LONG" else (p["entry"]-exit_price)*p["qty"]
     exit_fee=exit_price*p["qty"]*FEE_RATE
@@ -219,12 +268,13 @@ def close_paper(price,reason):
     state["balance"]+=net_after_exit
     trade={**p,"exit":exit_price,"exit_fee":exit_fee,"net_pnl":net_after_exit-p["entry_fee"],"closed_at":utcnow().isoformat(),"reason":reason}
     state["trades"].append(trade); state["trades"]=state["trades"][-100:]
-    state["open_position"]=None; state["equity"]=state["balance"]
+    state["open_positions"].remove(p)
+    _sync_legacy_open_position()
+    mark_to_market(mark_price if mark_price is not None else price)
     save_trade(trade)
     save_state()
 
-def age_hours():
-    p=state["open_position"]
+def age_hours(p):
     if not p:return 0
     return (utcnow()-datetime.fromisoformat(p["opened_at"])).total_seconds()/3600
 
@@ -235,13 +285,18 @@ async def bot_loop():
             try:
                 price=await btc_price(client)
                 state["last_scan"]=utcnow().isoformat(); state["status"]="running"; state["error"]=None
-                p=state["open_position"]
-                if p:
-                    mark_to_market(price)
-                    if (price<=p["stop"] if p["side"]=="LONG" else price>=p["stop"]):close_paper(p["stop"],"SL")
-                    elif (price>=p["tp"] if p["side"]=="LONG" else price<=p["tp"]):close_paper(p["tp"],"TP")
-                    elif age_hours()>=MAX_HOLD_HOURS:close_paper(price,"TIME")
-                else:
+
+                for p in list(state.get("open_positions") or []):
+                    if (price<=p["stop"] if p["side"]=="LONG" else price>=p["stop"]):
+                        close_paper(p,p["stop"],"SL",price)
+                    elif (price>=p["tp"] if p["side"]=="LONG" else price<=p["tp"]):
+                        close_paper(p,p["tp"],"TP",price)
+                    elif age_hours(p)>=MAX_HOLD_HOURS:
+                        close_paper(p,price,"TIME",price)
+
+                mark_to_market(price)
+
+                if len(state.get("open_positions") or [])<MAX_OPEN_POSITIONS:
                     s=await latest_signal(client)
                     if s and s["id"] not in state["seen_signal_ids"]:
                         state["seen_signal_ids"].append(s["id"]); state["seen_signal_ids"]=state["seen_signal_ids"][-200:]
@@ -254,7 +309,7 @@ async def bot_loop():
                             side=infer_side(s["text"],s["stop"],price)
                             if side:
                                 ok=open_paper(s,side,price)
-                                print("OPEN paper id={} side={} ok={} price={}".format(s["id"],side,ok,price),flush=True)
+                                print("OPEN paper id={} side={} ok={} price={} open_positions={}".format(s["id"],side,ok,price,len(state.get("open_positions") or [])),flush=True)
                             else:
                                 state["last_signal"]={"id":s["id"],"side":None,"stop_raw":s["stop"]["raw"],"rejected":"direction unclear","age_minutes":age_min,"seen_at":utcnow().isoformat()}
                                 print("REJECT unclear direction id={}".format(s["id"]),flush=True)
