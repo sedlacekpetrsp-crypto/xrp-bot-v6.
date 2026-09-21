@@ -14,12 +14,13 @@ import asyncio
 import json
 import math
 import os
+import time
 from datetime import datetime, timezone, timedelta
 
 import psycopg
 from psycopg.types.json import Jsonb
 
-BUILD = "lead-lag-v1-20260921"
+BUILD = "lead-lag-v2-heartbeat-20260921"
 MODE = "PAPER"
 
 TRADE_SYMBOL = "XRPUSDC"
@@ -31,6 +32,7 @@ RISK_PER_TRADE = float(os.getenv("LEADLAG_RISK_PER_TRADE", "0.002"))
 MAX_NOTIONAL_SHARE = float(os.getenv("LEADLAG_MAX_NOTIONAL_SHARE", "0.35"))
 
 SCAN_SECONDS = int(os.getenv("LEADLAG_SCAN_SECONDS", "12"))
+STATE_HEARTBEAT_SECONDS = float(os.getenv("LEADLAG_STATE_HEARTBEAT_SECONDS", "60"))
 MAX_HOLD_MINUTES = float(os.getenv("LEADLAG_MAX_HOLD_MINUTES", "8"))
 WIN_COOLDOWN_MINUTES = 2
 LOSS_COOLDOWN_MINUTES = 5
@@ -65,6 +67,7 @@ DB_SIGNAL_TABLE = "leadlag_signals"
 
 base = None
 DATABASE_URL = None
+_last_state_save = 0.0
 
 state = {
     "build": BUILD,
@@ -102,6 +105,11 @@ def _payload():
         "cooldown_until": state["cooldown_until"],
         "last_entry_candle": state["last_entry_candle"],
         "last_signal": state["last_signal"],
+        "status": state["status"],
+        "error": state["error"],
+        "last_scan": state["last_scan"],
+        "analysis": state["analysis"],
+        "build": state["build"],
     }
 
 
@@ -173,6 +181,7 @@ def init_persistence():
                 )
         state["persistence"] = "postgres"
         state["persistence_error"] = None
+        _last_state_save = time.monotonic()
     except Exception as e:
         state["persistence"] = "memory"
         state["persistence_error"] = repr(e)
@@ -180,6 +189,7 @@ def init_persistence():
 
 
 def save_state():
+    global _last_state_save
     if not DATABASE_URL:
         return
     try:
@@ -194,6 +204,11 @@ def save_state():
     except Exception as e:
         state["persistence_error"] = repr(e)
         print("LEADLAG SAVE STATE", repr(e), flush=True)
+
+
+def heartbeat_state(force=False):
+    if force or time.monotonic() - _last_state_save >= STATE_HEARTBEAT_SECONDS:
+        save_state()
 
 
 def save_signal(a, decision, reason):
@@ -637,6 +652,8 @@ async def bot_loop():
             state["status"] = "error"
             state["error"] = f"{type(e).__name__}: {e}"
             print("LEADLAG CYCLE", state["error"], flush=True)
+        finally:
+            heartbeat_state()
         await asyncio.sleep(SCAN_SECONDS)
 
 
@@ -644,4 +661,5 @@ def install(base_module):
     global base
     base = base_module
     init_persistence()
+    heartbeat_state(force=True)
     return state

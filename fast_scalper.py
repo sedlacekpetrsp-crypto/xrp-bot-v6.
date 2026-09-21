@@ -11,12 +11,13 @@ from __future__ import annotations
 
 import asyncio
 import os
+import time
 from datetime import datetime, timezone, timedelta
 
 import psycopg
 from psycopg.types.json import Jsonb
 
-BUILD = "fast-edge-v3-no-time-cutoff-20260921"
+BUILD = "fast-edge-v4-health-20260921"
 MODE = "PAPER"
 
 SYMBOLS = ("XRPUSDC", "ETHUSDC", "SOLUSDC")
@@ -25,6 +26,7 @@ RISK_PER_TRADE = float(os.getenv("FAST_RISK_PER_TRADE", "0.0015"))
 MAX_NOTIONAL_SHARE = float(os.getenv("FAST_MAX_NOTIONAL_SHARE", "0.30"))
 
 SCAN_SECONDS = 12
+STATE_HEARTBEAT_SECONDS = 60.0
 SOFT_HOLD_MINUTES = 5.0
 EMERGENCY_HOLD_MINUTES = 120.0
 WIN_COOLDOWN_SECONDS = 30
@@ -60,6 +62,7 @@ DB_TRADE_TABLE = "fast_scalp_trades"
 
 base = None
 DATABASE_URL = None
+_last_state_save = 0.0
 
 state = {
     "build": BUILD,
@@ -95,6 +98,11 @@ def _payload():
         "trades": state["trades"][-300:],
         "last_entry_candle": state["last_entry_candle"],
         "cooldown_until": state["cooldown_until"],
+        "status": state["status"],
+        "error": state["error"],
+        "last_scan": state["last_scan"],
+        "analysis": state["analysis"],
+        "build": state["build"],
     }
 
 
@@ -151,12 +159,14 @@ def init_persistence():
                 )
         state["persistence"] = "postgres"
         state["persistence_error"] = None
+        _last_state_save = time.monotonic()
     except Exception as e:
         state["persistence_error"] = repr(e)
         print("FAST PERSIST INIT", repr(e), flush=True)
 
 
 def save_state():
+    global _last_state_save
     if not DATABASE_URL:
         return
     try:
@@ -171,6 +181,11 @@ def save_state():
     except Exception as e:
         state["persistence_error"] = repr(e)
         print("FAST SAVE STATE", repr(e), flush=True)
+
+
+def heartbeat_state(force=False):
+    if force or time.monotonic() - _last_state_save >= STATE_HEARTBEAT_SECONDS:
+        save_state()
 
 
 def save_trade(t):
@@ -527,6 +542,8 @@ async def bot_loop():
             state["status"] = "error"
             state["error"] = f"{type(e).__name__}: {e}"
             print("FAST CYCLE", state["error"], flush=True)
+        finally:
+            heartbeat_state()
         await asyncio.sleep(SCAN_SECONDS)
 
 
@@ -534,4 +551,5 @@ def install(base_module):
     global base
     base = base_module
     init_persistence()
+    heartbeat_state(force=True)
     return state

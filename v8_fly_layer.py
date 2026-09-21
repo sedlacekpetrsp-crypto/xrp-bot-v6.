@@ -2,7 +2,7 @@ import asyncio, math, statistics, time
 from datetime import datetime
 import news_signal
 
-BUILD = "v8-fly-layer-20260921-7"
+BUILD = "v8-fly-layer-20260921-8-health"
 Z_ARMED = 0.60
 Z_STRONG = 0.80
 Z_DANGER = 0.55
@@ -15,6 +15,7 @@ PROFIT_MODE_R = 0.90
 PROFIT_GIVEBACK_R = 0.35
 PROFIT_MIN_LOCK_R = 0.20
 MONITOR_REFRESH_SECONDS = 30.0
+PERSIST_HEARTBEAT_SECONDS = 60.0
 
 NO_TRADE_MIN_ADX = 16.0
 NO_TRADE_MIN_VOL = 1.05
@@ -169,6 +170,15 @@ def quality_risk(a):
 
 m = None
 _monitor_cache = {}
+_last_persist_heartbeat = 0.0
+
+def _persistence_heartbeat():
+    global _last_persist_heartbeat
+    now = time.monotonic()
+    if now - _last_persist_heartbeat < PERSIST_HEARTBEAT_SECONDS:
+        return
+    m.save_state()
+    _last_persist_heartbeat = now
 
 def z_momentum(closes, minutes=5, vol_window=30):
     if len(closes) < max(vol_window + 2, minutes + 2): return 0.0
@@ -366,6 +376,7 @@ def choose_best(rows):
 
 async def cycle():
     try:
+        m.last_error = None
         await manage_position()
         if m.paper_position: m.last_cycle_at=m.utcnow().isoformat(); return
         now=m.utcnow()
@@ -392,6 +403,8 @@ async def cycle():
                     a=dict(best); a['signal']=side; a['raw_signal']=side; a['setup']='BREAKOUT'; a['score']=max(int(best.get('long_score') if side=='LONG' else best.get('short_score') or 0),m.MIN_SCORE); a['ensemble_score']=_ensemble_score(a); a['entry_kind']='ARMED_INTRABAR'; a['entry_trigger']=trigger; open_trade(a,price)
         m.last_cycle_at=m.utcnow().isoformat()
     except Exception as e: m.last_error=f'{type(e).__name__}: {e}'; print('V8 FLY CYCLE',e)
+    finally:
+        _persistence_heartbeat()
 
 def install(module):
     global m

@@ -1,4 +1,5 @@
 from fastapi.responses import HTMLResponse, JSONResponse
+from datetime import datetime, timezone
 import app_v8 as base
 import app_blue_whale_mirror as whale
 import lead_lag_scalper as leadlag
@@ -215,18 +216,43 @@ async def whale_status():
 async def leadlag_status():
     return JSONResponse(leadlag.state, headers={"Cache-Control":"no-store"})
 
+def _age_seconds(value):
+    if not value:
+        return None
+    try:
+        dt = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return max(0.0, (datetime.now(timezone.utc) - dt).total_seconds())
+    except Exception:
+        return None
+
+
 @app.get("/combined/health")
 async def combined_health():
+    fly_age = _age_seconds(getattr(base, "last_cycle_at", None))
+    whale_age = _age_seconds(whale.state.get("last_scan"))
+    leadlag_age = _age_seconds(leadlag.state.get("last_scan"))
+    fast_age = _age_seconds(fast.state.get("last_scan"))
+    fly_ok = fly_age is not None and fly_age < 90 and not getattr(base, "last_error", None)
+    whale_ok = whale_age is not None and whale_age < 180 and whale.state.get("persistence") == "postgres" and not whale.state.get("error")
+    leadlag_ok = leadlag_age is not None and leadlag_age < 90 and leadlag.state.get("persistence") == "postgres" and not leadlag.state.get("error")
+    fast_ok = fast_age is not None and fast_age < 90 and fast.state.get("persistence") == "postgres" and not fast.state.get("error")
     return JSONResponse({
-        "ok": True,
+        "ok": bool(fly_ok and whale_ok and leadlag_ok and fast_ok),
         "fly": {
+            "healthy": fly_ok,
+            "age_seconds": fly_age,
             "last_cycle_at": getattr(base, "last_cycle_at", None),
-            "recovery": base.recovery_status() if hasattr(base, "recovery_status") else {},
             "last_error": getattr(base, "last_error", None),
+            "persistence": "postgres" if getattr(base, "DATABASE_URL", None) else "memory",
+            "recovery": base.recovery_status() if hasattr(base, "recovery_status") else {},
             "balance": getattr(base, "PAPER_BALANCE", None),
             "open_position": getattr(base, "paper_position", None),
         },
         "whale": {
+            "healthy": whale_ok,
+            "age_seconds": whale_age,
             "status": whale.state.get("status"),
             "error": whale.state.get("error"),
             "last_scan": whale.state.get("last_scan"),
@@ -238,6 +264,8 @@ async def combined_health():
         },
         "news": news_signal.cached_state(),
         "fast": {
+            "healthy": fast_ok,
+            "age_seconds": fast_age,
             "status": fast.state.get("status"),
             "error": fast.state.get("error"),
             "last_scan": fast.state.get("last_scan"),
@@ -249,6 +277,8 @@ async def combined_health():
             "trades": len(fast.state.get("trades", [])),
         },
         "leadlag": {
+            "healthy": leadlag_ok,
+            "age_seconds": leadlag_age,
             "status": leadlag.state.get("status"),
             "error": leadlag.state.get("error"),
             "last_scan": leadlag.state.get("last_scan"),
@@ -258,6 +288,7 @@ async def combined_health():
             "open_position": leadlag.state.get("open_position"),
         }
     }, headers={"Cache-Control":"no-store"})
+
 
 
 @app.get("/news/status")

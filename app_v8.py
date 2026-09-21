@@ -127,7 +127,8 @@ def init_db():
             cur.execute("""
                 CREATE TABLE IF NOT EXISTS v8fixed_state (
                     id INTEGER PRIMARY KEY,
-                    state JSONB NOT NULL
+                    state JSONB NOT NULL,
+                    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
                 )
             """)
             cur.execute("""
@@ -146,6 +147,7 @@ def init_db():
             """)
             cur.execute("ALTER TABLE v8fixed_trades ADD COLUMN IF NOT EXISTS ensemble_score DOUBLE PRECISION")
             cur.execute("ALTER TABLE v8fixed_trades ADD COLUMN IF NOT EXISTS entry_features JSONB")
+            cur.execute("ALTER TABLE v8fixed_state ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()")
         conn.commit()
 
 
@@ -157,13 +159,15 @@ def save_state():
         "paper_position": paper_position,
         "last_entry_candle": last_entry_candle,
         "cooldown_until": cooldown_until.isoformat() if cooldown_until else None,
+        "last_cycle_at": globals().get("last_cycle_at"),
+        "last_error": globals().get("last_error"),
     }
     try:
         with get_db() as conn:
             with conn.cursor() as cur:
                 cur.execute("""
-                    INSERT INTO v8fixed_state(id,state) VALUES(1,%s::jsonb)
-                    ON CONFLICT(id) DO UPDATE SET state=EXCLUDED.state
+                    INSERT INTO v8fixed_state(id,state,updated_at) VALUES(1,%s::jsonb,NOW())
+                    ON CONFLICT(id) DO UPDATE SET state=EXCLUDED.state,updated_at=NOW()
                 """, (json.dumps(state),))
             conn.commit()
     except Exception as e:

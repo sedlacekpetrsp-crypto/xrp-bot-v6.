@@ -5,11 +5,13 @@ from datetime import datetime, timezone
 
 import httpx
 
-BUILD = "xrp-news-v1-20260921"
+BUILD = "xrp-news-v2-backoff-20260921"
 GDELT_URL = "https://api.gdeltproject.org/api/v2/doc/doc"
-CACHE_SECONDS = 60
+CACHE_SECONDS = 180
+FAILURE_BACKOFF_SECONDS = 180
+MAX_BACKOFF_SECONDS = 900
 LOOKBACK = "2h"
-MAX_RECORDS = 40
+MAX_RECORDS = 30
 
 POSITIVE = {
     "etf approved": 5, "approves xrp": 5, "approval": 2, "approved": 3,
@@ -43,10 +45,15 @@ _cache = {
         "sources": 0,
         "headlines": [],
         "checked_at": None,
+        "last_success_at": None,
+        "next_retry_at": None,
+        "failure_count": 0,
         "error": None,
     },
 }
 _lock = asyncio.Lock()
+_failure_count = 0
+_retry_not_before = 0.0
 
 
 def _headline_score(title):
@@ -159,15 +166,25 @@ async def _fetch():
 
 
 async def get_xrp_news(force=False):
+    global _failure_count, _retry_not_before
     now = time.monotonic()
+    if not force and now < _retry_not_before:
+        return _cache["data"]
     if not force and now - float(_cache["ts"]) < CACHE_SECONDS:
         return _cache["data"]
     async with _lock:
         now = time.monotonic()
+        if not force and now < _retry_not_before:
+            return _cache["data"]
         if not force and now - float(_cache["ts"]) < CACHE_SECONDS:
             return _cache["data"]
         try:
             data = await _fetch()
+            _failure_count = 0
+            _retry_not_before = 0.0
+            data["last_success_at"] = data.get("checked_at")
+            data["next_retry_at"] = None
+            data["failure_count"] = 0
             _cache["data"] = data
             _cache["ts"] = now
             print(
@@ -179,15 +196,32 @@ async def get_xrp_news(force=False):
                 flush=True,
             )
         except Exception as e:
+            _failure_count += 1
+            delay = min(MAX_BACKOFF_SECONDS, FAILURE_BACKOFF_SECONDS * (2 ** min(_failure_count - 1, 3)))
+            if isinstance(e, httpx.HTTPStatusError) and e.response is not None and e.response.status_code == 429:
+                delay = max(delay, 300)
+                raw = e.response.headers.get("Retry-After", "")
+                try:
+                    delay = max(delay, float(raw))
+                except (TypeError, ValueError):
+                    pass
+            _retry_not_before = now + delay
             previous = dict(_cache["data"])
-            previous["status"] = "error"
+            previous["status"] = "backoff"
             previous["error"] = f"{type(e).__name__}: {e}"
             previous["checked_at"] = datetime.now(timezone.utc).isoformat()
+            previous["next_retry_at"] = datetime.fromtimestamp(time.time() + delay, timezone.utc).isoformat()
+            previous["failure_count"] = _failure_count
             previous["bullish"] = False
             previous["bearish"] = False
             _cache["data"] = previous
             _cache["ts"] = now
-            print("NEWS_FEED_ERROR {}".format(previous["error"]), flush=True)
+            print(
+                "NEWS_FEED_BACKOFF seconds={} failure={} error={}".format(
+                    int(delay), _failure_count, previous["error"]
+                ),
+                flush=True,
+            )
         return _cache["data"]
 
 
