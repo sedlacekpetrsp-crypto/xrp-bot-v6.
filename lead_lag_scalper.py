@@ -345,10 +345,45 @@ async def analyze():
         and expected_move >= MIN_EXPECTED_MOVE
     )
 
+    blockers = []
     if long_ok:
         side, reason = "LONG", "BTC_ETH_LEAD_XRP_LAG"
     elif short_ok:
         side, reason = "SHORT", "BTC_ETH_LEAD_XRP_LAG"
+    else:
+        if leader_return >= 0:
+            reason = "WAIT_LONG_FILTERS"
+            checks = [
+                ("BTC není v růstu", rb > 0),
+                ("ETH není v růstu", re > 0),
+                (f"BTC momentum z < {LEADER_COMPONENT_MIN_Z:.2f}", zb >= LEADER_COMPONENT_MIN_Z),
+                (f"ETH momentum z < {LEADER_COMPONENT_MIN_Z:.2f}", ze >= LEADER_COMPONENT_MIN_Z),
+                (f"Leader z < {MOMENTUM_MIN_Z:.2f}", leader_z >= MOMENTUM_MIN_Z),
+                (f"Leader pohyb < {LEADER_RETURN_MIN*100:.2f} %", leader_return >= LEADER_RETURN_MIN),
+                (f"XRP lag gap z < {LAG_GAP_MIN_Z:.2f}", gap_z >= LAG_GAP_MIN_Z),
+                (f"XRP zaostání < {LAG_RETURN_MIN*100:.2f} %", lag_return >= LAG_RETURN_MIN),
+                ("XRP momentum je příliš záporné", zx > -0.35),
+                (f"Order book < {BOOK_LONG_MIN:.2f}", imbalance >= BOOK_LONG_MIN),
+                (f"Spread > {MAX_SPREAD_PCT*100:.3f} %", spread <= MAX_SPREAD_PCT),
+                (f"Očekávaný pohyb < {MIN_EXPECTED_MOVE*100:.2f} %", expected_move >= MIN_EXPECTED_MOVE),
+            ]
+        else:
+            reason = "WAIT_SHORT_FILTERS"
+            checks = [
+                ("BTC není v poklesu", rb < 0),
+                ("ETH není v poklesu", re < 0),
+                (f"BTC momentum z > {-LEADER_COMPONENT_MIN_Z:.2f}", zb <= -LEADER_COMPONENT_MIN_Z),
+                (f"ETH momentum z > {-LEADER_COMPONENT_MIN_Z:.2f}", ze <= -LEADER_COMPONENT_MIN_Z),
+                (f"Leader z > {-MOMENTUM_MIN_Z:.2f}", leader_z <= -MOMENTUM_MIN_Z),
+                (f"Leader pokles < {LEADER_RETURN_MIN*100:.2f} %", leader_return <= -LEADER_RETURN_MIN),
+                (f"XRP lag gap z > {-LAG_GAP_MIN_Z:.2f}", gap_z <= -LAG_GAP_MIN_Z),
+                (f"XRP zaostání < {LAG_RETURN_MIN*100:.2f} %", lag_return <= -LAG_RETURN_MIN),
+                ("XRP momentum je příliš kladné", zx < 0.35),
+                (f"Order book > {BOOK_SHORT_MAX:.2f}", imbalance <= BOOK_SHORT_MAX),
+                (f"Spread > {MAX_SPREAD_PCT*100:.3f} %", spread <= MAX_SPREAD_PCT),
+                (f"Očekávaný pohyb < {MIN_EXPECTED_MOVE*100:.2f} %", expected_move >= MIN_EXPECTED_MOVE),
+            ]
+        blockers = [label for label, ok in checks if not ok]
 
     out = {
         "signal": side,
@@ -369,6 +404,7 @@ async def analyze():
         "spread_pct": spread,
         "expected_move": expected_move,
         "atr_rate": atr_rate(xrp_k),
+        "blockers": blockers,
     }
     state["analysis"] = out
     return out
