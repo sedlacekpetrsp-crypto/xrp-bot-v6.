@@ -124,8 +124,14 @@ async function refreshLeadLag(){
    ? `<b>XRPUSDC ${p.side}</b> • entry ${f(p.entry,6)} • SL ${f(p.stop,6)} • TP ${f(p.tp,6)} • risk ${f(p.risk_dollars,2)} USDC • uPnL ${unreal>=0?'+':''}${f(unreal,2)} USDC`
    : '<b class="yellow">⏳ ČEKÁM NA OBCHOD</b><div style="margin-top:6px">Žádná otevřená Lead-Lag pozice.</div>';
   const a=w.analysis||{};
+  const scanText=w.last_scan?new Date(w.last_scan).toLocaleString('cs-CZ'):'—';
+  const blockerList=a.blockers||[];
+  const blockerText=blockerList.length
+   ? 'Blokuje vstup: '+blockerList.slice(0,5).join(' • ')
+   : (a.signal==='WAIT'?'Čekám na nový setup':'Vstupní podmínky splněny');
+  const tradeState=p?'🟢 OBCHOD OTEVŘEN':'⏳ ČEKÁM NA OBCHOD';
   document.getElementById('leadlagAnalysis').innerHTML=
-   `Signal <b>${a.signal||'WAIT'}</b> • BTC ${f(Number(a.btc_return||0)*100,3)} % • ETH ${f(Number(a.eth_return||0)*100,3)} % • XRP ${f(Number(a.xrp_return||0)*100,3)} % • lag ${f(Number(a.lag_return||0)*100,3)} % • book ${f(a.book_imbalance,3)}`;
+   `<b class="${p?'green':'yellow'}">${tradeState}</b> • poslední scan ${scanText}<br>Signal <b>${a.signal||'WAIT'}</b> • BTC ${f(Number(a.btc_return||0)*100,3)} % • ETH ${f(Number(a.eth_return||0)*100,3)} % • XRP ${f(Number(a.xrp_return||0)*100,3)} % • lag ${f(Number(a.lag_return||0)*100,3)} % • book ${f(a.book_imbalance,3)}<br><span class="muted">${blockerText}</span>`;
   document.getElementById('leadlagTrades').innerHTML=ts.slice().reverse().slice(0,8).map(t=>
     `<div class="trade"><span>${t.side}</span><span>${f(t.entry,6)} → ${f(t.exit,6)}</span><span>${t.reason||'—'}</span><span class="${Number(t.net_pnl)>=0?'green':'red'}">${Number(t.net_pnl)>=0?'+':''}${f(t.net_pnl,2)} USDC</span><span>${t.closed_at?new Date(t.closed_at).toLocaleString('cs-CZ'):'—'}</span></div>`
   ).join('') || '<div class="coin muted">Zatím žádné uzavřené obchody.</div>';
