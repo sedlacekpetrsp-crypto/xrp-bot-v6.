@@ -1,7 +1,7 @@
 import asyncio, math, statistics, time
 from datetime import datetime
 
-BUILD = "v8-fly-layer-20260921-2"
+BUILD = "v8-fly-layer-20260921-3"
 Z_ARMED = 0.60
 Z_STRONG = 0.80
 Z_DANGER = 0.55
@@ -14,6 +14,28 @@ PROFIT_MODE_R = 0.90
 PROFIT_GIVEBACK_R = 0.35
 PROFIT_MIN_LOCK_R = 0.20
 MONITOR_REFRESH_SECONDS = 30.0
+
+STRONG_RISK_RATE = 0.0035
+APLUS_RISK_RATE = 0.0050
+
+def quality_risk(a):
+    side = a.get('signal')
+    score = int(a.get('score') or 0)
+    vol = float(a.get('volume_ratio') or 0)
+    z = abs(float(a.get('z_momentum') or 0))
+    spread = float(a.get('real_spread_pct') or 1)
+    edge = float(a.get('expected_move_pct') or 0)
+    imb = float(a.get('book_imbalance') or 0.5)
+    book_strong = imb >= 0.56 if side == 'LONG' else imb <= 0.44
+    book_aplus = imb >= 0.58 if side == 'LONG' else imb <= 0.42
+
+    if (score >= 8 and vol >= 2.20 and z >= 1.30 and book_aplus
+            and spread <= 0.0004 and edge >= m.ROUND_TRIP_COST * 4.50):
+        return 'A+', APLUS_RISK_RATE
+    if (score >= 8 and vol >= 1.80 and z >= 1.00 and book_strong
+            and spread <= 0.0005 and edge >= m.ROUND_TRIP_COST * 3.50):
+        return 'STRONG', STRONG_RISK_RATE
+    return 'STANDARD', m.RISK_PER_TRADE
 
 m = None
 _monitor_cache = {}
@@ -87,15 +109,17 @@ def open_trade(a,price):
     side=a['signal']; entry=price*(1+m.SLIPPAGE_RATE if side=='LONG' else 1-m.SLIPPAGE_RATE); sl=entry-dist if side=='LONG' else entry+dist
     nloss=-m.estimated_net_per_unit(side,entry,sl)
     if nloss<=0:return
-    risk=m.PAPER_BALANCE*m.RISK_PER_TRADE; tp=m.target_market_for_net_profit(side,entry,nloss*m.NET_RISK_REWARD); qty=min(risk/nloss,m.PAPER_BALANCE*m.MAX_NOTIONAL_SHARE/entry)
-    m.paper_position={'symbol':a['symbol'],'side':side,'setup':'BREAKOUT','regime':a['regime'],'score':a.get('score',0),'entry_price':entry,'qty':qty,'stop_loss':sl,'take_profit':tp,'risk_distance':dist,'initial_risk_usdc':qty*nloss,'net_rr':m.NET_RISK_REWARD,'mae_r':0.0,'mfe_r':0.0,'breakeven_moved':False,'profit_mode':False,'z_entry':float(a.get('z_momentum') or 0),'entry_trigger':float(a.get('entry_trigger') or a.get('armed_trigger') or price),'entry_spread_pct':float(a.get('real_spread_pct') or 0),'entry_kind':a.get('entry_kind','CLOSED_CANDLE'),'last_danger_score':0,'opened_at':m.utcnow().isoformat()}
-    m.last_entry_candle[a['symbol']]=a['candle_time']; m.save_state(); m.log_signal(a,'ENTER',f"{m.paper_position['entry_kind']} z={m.paper_position['z_entry']:.2f}")
+    quality,risk_rate=quality_risk(a)
+    risk=m.PAPER_BALANCE*risk_rate; tp=m.target_market_for_net_profit(side,entry,nloss*m.NET_RISK_REWARD); qty=min(risk/nloss,m.PAPER_BALANCE*m.MAX_NOTIONAL_SHARE/entry)
+    actual_risk=qty*nloss
+    m.paper_position={'symbol':a['symbol'],'side':side,'setup':'BREAKOUT','regime':a['regime'],'score':a.get('score',0),'entry_price':entry,'qty':qty,'stop_loss':sl,'take_profit':tp,'risk_distance':dist,'initial_risk_usdc':actual_risk,'risk_rate':risk_rate,'quality_tier':quality,'net_rr':m.NET_RISK_REWARD,'mae_r':0.0,'mfe_r':0.0,'breakeven_moved':False,'profit_mode':False,'z_entry':float(a.get('z_momentum') or 0),'entry_trigger':float(a.get('entry_trigger') or a.get('armed_trigger') or price),'entry_spread_pct':float(a.get('real_spread_pct') or 0),'entry_kind':a.get('entry_kind','CLOSED_CANDLE'),'last_danger_score':0,'opened_at':m.utcnow().isoformat()}
+    m.last_entry_candle[a['symbol']]=a['candle_time']; m.save_state(); m.log_signal(a,'ENTER',f"{quality} risk={risk_rate*100:.2f}% {m.paper_position['entry_kind']} z={m.paper_position['z_entry']:.2f}")
 
 def close_trade(price,reason):
     if not m.paper_position:return
     p=m.paper_position; e=float(p['entry_price']); q=float(p['qty']); x=price*(1-m.SLIPPAGE_RATE if p['side']=='LONG' else 1+m.SLIPPAGE_RATE)
     gross=(x-e)*q if p['side']=='LONG' else (e-x)*q; fees=(e*q+x*q)*m.FEE_RATE; net=gross-fees; risk=max(float(p.get('initial_risk_usdc') or 0),1e-12); rr=net/risk; mfe=float(p.get('mfe_r',0)); mae=float(p.get('mae_r',0)); cap=(rr/mfe*100) if mfe>0 and rr>0 else 0; age=(m.utcnow()-datetime.fromisoformat(p['opened_at'])).total_seconds()/60
-    detail=f'{reason} | R={rr:.2f} MFE={mfe:.2f} MAE={mae:.2f} CAP={cap:.0f}% DUR={age:.1f}m Z={float(p.get("z_entry",0)):.2f} DANGER={int(p.get("last_danger_score",0))}'
+    detail=f'{reason} | {p.get("quality_tier","STANDARD")} risk={float(p.get("risk_rate",m.RISK_PER_TRADE))*100:.2f}% R={rr:.2f} MFE={mfe:.2f} MAE={mae:.2f} CAP={cap:.0f}% DUR={age:.1f}m Z={float(p.get("z_entry",0)):.2f} DANGER={int(p.get("last_danger_score",0))}'
     m.PAPER_BALANCE+=net; now=m.utcnow(); t={**p,'exit_price':x,'gross_pnl':gross,'fees':fees,'pnl':net,'reason':detail,'closed_at':now.isoformat(),'realized_r':rr,'profit_capture_pct':cap,'duration_min':age}; m.save_trade(t); m.trade_history.insert(0,t); m.trade_history=m.trade_history[:500]
     _,streak,_,_=m.daily_risk_status(); cd=2 if net<0 else 0
     if net<0 and streak>=m.MAX_CONSECUTIVE_LOSSES: cd=m.LOSS_STREAK_COOLDOWN_MIN
