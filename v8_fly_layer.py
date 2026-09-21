@@ -1,7 +1,8 @@
 import asyncio, math, statistics, time
 from datetime import datetime
+import news_signal
 
-BUILD = "v8-fly-layer-20260921-3"
+BUILD = "v8-fly-layer-20260921-4"
 Z_ARMED = 0.60
 Z_STRONG = 0.80
 Z_DANGER = 0.55
@@ -59,7 +60,11 @@ async def book(symbol):
     return {'imbalance':b/(a+b) if a+b else .5,'spread_pct':(ask-bid)/mid if mid else 1.0,'best_bid':bid,'best_ask':ask}
 
 async def strategy(symbol):
-    k1,k5,bk=await asyncio.gather(m.get_klines(symbol,'1m'),m.get_klines(symbol,'5m'),book(symbol))
+    if symbol == 'XRPUSDC':
+        k1,k5,bk,news=await asyncio.gather(m.get_klines(symbol,'1m'),m.get_klines(symbol,'5m'),book(symbol),news_signal.get_xrp_news())
+    else:
+        k1,k5,bk=await asyncio.gather(m.get_klines(symbol,'1m'),m.get_klines(symbol,'5m'),book(symbol))
+        news={'bullish':False,'bearish':False,'score':0,'headlines':[],'status':'n/a'}
     a1,a5=k1[:-1],k5[:-1]
     h=[float(x[2]) for x in a1]; l=[float(x[3]) for x in a1]; c=[float(x[4]) for x in a1]; v=[float(x[5]) for x in a1]
     h5=[float(x[2]) for x in a5]; l5=[float(x[3]) for x in a5]; c5=[float(x[4]) for x in a5]
@@ -80,13 +85,31 @@ async def strategy(symbol):
     ls=sum([e9>e21,cl>e9,40<=rv<=70,mac_up,bull>=.55,vr>=m.MIN_TREND_VOLUME,spread_ok and imb>=m.BOOK_LONG_MIN,vw is not None and cl>=vw])
     ss=sum([e9<e21,cl<e9,30<=rv<=60,mac_dn,bear>=.55,vr>=m.MIN_TREND_VOLUME,spread_ok and imb<=m.BOOK_SHORT_MAX,vw is not None and cl<=vw])
     raw='WAIT'; setup=None; score=0
-    if regime=='TREND_LONG' and cl>bh and vr>=max(m.MIN_BREAKOUT_VOLUME,1.50) and ls>=max(m.MIN_SCORE,8): raw,setup,score='LONG','BREAKOUT',ls
-    elif regime=='TREND_SHORT' and cl<bl and vr>=max(m.MIN_BREAKOUT_VOLUME,1.50) and ss>=max(m.MIN_SCORE,8): raw,setup,score='SHORT','BREAKOUT',ss
+    if regime=='TREND_LONG' and cl>bh and vr>=max(m.MIN_BREAKOUT_VOLUME,1.50) and ls>=max(m.MIN_SCORE,8):
+        raw,setup,score='LONG','BREAKOUT',ls
+    elif regime=='TREND_SHORT' and cl<bl and vr>=max(m.MIN_BREAKOUT_VOLUME,1.50) and ss>=max(m.MIN_SCORE,8):
+        raw,setup,score='SHORT','BREAKOUT',ss
+
+    # NEWS_LONG: positive XRP/Ripple news is allowed to create an entry only
+    # when price/volume/order-book confirm that the market is reacting.
+    if symbol=='XRPUSDC' and raw=='WAIT' and news.get('bullish') and not news.get('bearish'):
+        news_confirm = (
+            cl > e9 > e21
+            and cl >= bh * 0.999
+            and vr >= 1.80
+            and z >= 1.00
+            and spread_ok
+            and imb >= 0.56
+            and ls >= 7
+        )
+        if news_confirm:
+            raw,setup,score='LONG','NEWS_LONG',max(ls,8)
     signal=raw; reject=None; edge=0.0
     if raw in ('LONG','SHORT'):
-        p=m.SETUP_PARAMS[setup]; edge=(av*p['atr_mult']*p['rr'])/cl if av and cl else 0
+        p=m.SETUP_PARAMS['BREAKOUT']; edge=(av*p['atr_mult']*p['rr'])/cl if av and cl else 0
         if edge < m.ROUND_TRIP_COST*m.MIN_EDGE_MULTIPLE: signal,reject='WAIT','EDGE_TOO_SMALL'
         elif not spread_ok: signal,reject='WAIT',f'REAL_SPREAD_{spread*100:.3f}%'
+        elif raw=='LONG' and news.get('bearish'): signal,reject='WAIT','NEGATIVE_NEWS_BLOCK'
         elif raw=='LONG' and z<Z_ARMED: signal,reject='WAIT',f'Z_TOO_WEAK_{z:.2f}'
         elif raw=='SHORT' and z>-Z_ARMED: signal,reject='WAIT',f'Z_TOO_WEAK_{z:.2f}'
     armed_side=None; armed_trigger=None; armed_dist=None
@@ -97,10 +120,10 @@ async def strategy(symbol):
         elif regime=='TREND_SHORT' and 0<=sd<=ARMED_MAX_DISTANCE_ATR and ss>=max(8,m.MIN_SCORE) and vr>=max(m.MIN_BREAKOUT_VOLUME,1.50) and z<=-Z_STRONG and imb<=min(m.BOOK_SHORT_MAX,0.45):
             armed_side,armed_trigger,armed_dist='SHORT',bl,sd
     zclass='STRONG_LONG' if z>=Z_STRONG else 'ARMED_LONG' if z>=Z_ARMED else 'STRONG_SHORT' if z<=-Z_STRONG else 'ARMED_SHORT' if z<=-Z_ARMED else 'IGNORE'
-    reason=f'{symbol} {regime} raw={raw} L/S={ls}/{ss} book={imb:.3f} spread={spread*100:.3f}% vol={vr:.2f}x z={z:.2f} edge={edge*100:.3f}%'
+    reason=f'{symbol} {regime} raw={raw} L/S={ls}/{ss} book={imb:.3f} spread={spread*100:.3f}% vol={vr:.2f}x z={z:.2f} edge={edge*100:.3f}% news={int(news.get("score") or 0)}'
     if armed_side: reason+=f' ARMED={armed_side}@{armed_trigger:.6f}'
     if reject: reason+=f' REJECT={reject}'
-    return {'symbol':symbol,'price':float(k1[-1][4]),'signal':signal,'raw_signal':raw,'setup':setup,'score':score,'candle_time':ct,'regime':regime,'rsi':rv,'atr':av,'adx5':ad,'volume_ratio':vr,'book_imbalance':imb,'book_spread':spread,'real_spread_pct':spread,'best_bid':bk['best_bid'],'best_ask':bk['best_ask'],'long_score':ls,'short_score':ss,'breakout_high':bh,'breakout_low':bl,'expected_move_pct':edge,'z_momentum':z,'z_class':zclass,'armed_side':armed_side,'armed_trigger':armed_trigger,'armed_distance_atr':armed_dist,'reason':reason}
+    return {'symbol':symbol,'price':float(k1[-1][4]),'signal':signal,'raw_signal':raw,'setup':setup,'score':score,'news':news,'candle_time':ct,'regime':regime,'rsi':rv,'atr':av,'adx5':ad,'volume_ratio':vr,'book_imbalance':imb,'book_spread':spread,'real_spread_pct':spread,'best_bid':bk['best_bid'],'best_ask':bk['best_ask'],'long_score':ls,'short_score':ss,'breakout_high':bh,'breakout_low':bl,'expected_move_pct':edge,'z_momentum':z,'z_class':zclass,'armed_side':armed_side,'armed_trigger':armed_trigger,'armed_distance_atr':armed_dist,'reason':reason}
 
 def open_trade(a,price):
     if m.paper_position or not a.get('atr'): return
@@ -110,9 +133,12 @@ def open_trade(a,price):
     nloss=-m.estimated_net_per_unit(side,entry,sl)
     if nloss<=0:return
     quality,risk_rate=quality_risk(a)
+    if a.get('setup')=='NEWS_LONG':
+        quality='NEWS+' if quality=='STANDARD' else 'NEWS_'+quality
+        risk_rate=min(risk_rate, STRONG_RISK_RATE)
     risk=m.PAPER_BALANCE*risk_rate; tp=m.target_market_for_net_profit(side,entry,nloss*m.NET_RISK_REWARD); qty=min(risk/nloss,m.PAPER_BALANCE*m.MAX_NOTIONAL_SHARE/entry)
     actual_risk=qty*nloss
-    m.paper_position={'symbol':a['symbol'],'side':side,'setup':'BREAKOUT','regime':a['regime'],'score':a.get('score',0),'entry_price':entry,'qty':qty,'stop_loss':sl,'take_profit':tp,'risk_distance':dist,'initial_risk_usdc':actual_risk,'risk_rate':risk_rate,'quality_tier':quality,'net_rr':m.NET_RISK_REWARD,'mae_r':0.0,'mfe_r':0.0,'breakeven_moved':False,'profit_mode':False,'z_entry':float(a.get('z_momentum') or 0),'entry_trigger':float(a.get('entry_trigger') or a.get('armed_trigger') or price),'entry_spread_pct':float(a.get('real_spread_pct') or 0),'entry_kind':a.get('entry_kind','CLOSED_CANDLE'),'last_danger_score':0,'opened_at':m.utcnow().isoformat()}
+    m.paper_position={'symbol':a['symbol'],'side':side,'setup':a.get('setup') or 'BREAKOUT','regime':a['regime'],'score':a.get('score',0),'entry_price':entry,'qty':qty,'stop_loss':sl,'take_profit':tp,'risk_distance':dist,'initial_risk_usdc':actual_risk,'risk_rate':risk_rate,'quality_tier':quality,'net_rr':m.NET_RISK_REWARD,'mae_r':0.0,'mfe_r':0.0,'breakeven_moved':False,'profit_mode':False,'z_entry':float(a.get('z_momentum') or 0),'entry_trigger':float(a.get('entry_trigger') or a.get('armed_trigger') or price),'entry_spread_pct':float(a.get('real_spread_pct') or 0),'entry_kind':a.get('entry_kind','CLOSED_CANDLE'),'last_danger_score':0,'opened_at':m.utcnow().isoformat()}
     m.last_entry_candle[a['symbol']]=a['candle_time']; m.save_state(); m.log_signal(a,'ENTER',f"{quality} risk={risk_rate*100:.2f}% {m.paper_position['entry_kind']} z={m.paper_position['z_entry']:.2f}")
 
 def close_trade(price,reason):
