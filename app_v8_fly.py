@@ -2,6 +2,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 import app_v8 as base
 import app_blue_whale_mirror as whale
 import lead_lag_scalper as leadlag
+import fast_scalper as fast
 import news_signal
 from v8_fly_layer import install
 
@@ -197,10 +198,13 @@ async def start_whale_worker():
     global _whale_task
     whale.init_persistence()
     leadlag.install(base)
+    fast.install(base)
     if _whale_task is None or _whale_task.done():
         _whale_task = __import__("asyncio").create_task(whale.bot_loop())
     if not getattr(app.state, "leadlag_task", None) or app.state.leadlag_task.done():
         app.state.leadlag_task = __import__("asyncio").create_task(leadlag.bot_loop())
+    if not getattr(app.state, "fast_task", None) or app.state.fast_task.done():
+        app.state.fast_task = __import__("asyncio").create_task(fast.bot_loop())
 
 @app.get("/whale/status")
 async def whale_status():
@@ -233,6 +237,17 @@ async def combined_health():
             "open_positions": whale.state.get("open_positions", []),
         },
         "news": news_signal.cached_state(),
+        "fast": {
+            "status": fast.state.get("status"),
+            "error": fast.state.get("error"),
+            "last_scan": fast.state.get("last_scan"),
+            "persistence": fast.state.get("persistence"),
+            "persistence_error": fast.state.get("persistence_error"),
+            "balance": fast.state.get("balance"),
+            "equity": fast.state.get("equity"),
+            "open_position": fast.state.get("open_position"),
+            "trades": len(fast.state.get("trades", [])),
+        },
         "leadlag": {
             "status": leadlag.state.get("status"),
             "error": leadlag.state.get("error"),
@@ -249,3 +264,8 @@ async def combined_health():
 async def news_status():
     data = await news_signal.get_xrp_news()
     return JSONResponse(data, headers={"Cache-Control":"no-store"})
+
+
+@app.get("/fast/status")
+async def fast_status():
+    return JSONResponse(fast.state, headers={"Cache-Control":"no-store"})
