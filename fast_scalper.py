@@ -16,7 +16,7 @@ from datetime import datetime, timezone, timedelta
 import psycopg
 from psycopg.types.json import Jsonb
 
-BUILD = "fast-edge-v1-20260921"
+BUILD = "fast-edge-v2-adaptive-exit-20260921"
 MODE = "PAPER"
 
 SYMBOLS = ("XRPUSDC", "ETHUSDC", "SOLUSDC")
@@ -25,7 +25,8 @@ RISK_PER_TRADE = float(os.getenv("FAST_RISK_PER_TRADE", "0.0015"))
 MAX_NOTIONAL_SHARE = float(os.getenv("FAST_MAX_NOTIONAL_SHARE", "0.30"))
 
 SCAN_SECONDS = 12
-MAX_HOLD_MINUTES = 5.0
+SOFT_HOLD_MINUTES = 5.0
+HARD_HOLD_MINUTES = 20.0
 WIN_COOLDOWN_SECONDS = 30
 LOSS_COOLDOWN_SECONDS = 120
 LOSS_STREAK_COOLDOWN_MINUTES = 20
@@ -52,6 +53,7 @@ EARLY_PROFIT_USDC = 4.0
 PROFIT_LOCK_START_USDC = 6.0
 PROFIT_GIVEBACK_USDC = 2.0
 EARLY_EXIT_MIN_AGE = 0.75
+BREAKEVEN_TRIGGER_R = 0.60
 
 DB_STATE_TABLE = "fast_scalp_state"
 DB_TRADE_TABLE = "fast_scalp_trades"
@@ -373,6 +375,7 @@ def open_trade(a, market_price):
         "spread_pct": float(a.get("real_spread_pct") or a.get("book_spread") or 1),
         "edge_pct": float(a.get("expected_move_pct") or 0),
         "peak_net": 0.0,
+        "breakeven_moved": False,
         "opened_at": utcnow().isoformat(),
         "candle_time": a.get("candle_time"),
     }
@@ -447,12 +450,20 @@ async def manage_position(rows):
     age = (utcnow() - datetime.fromisoformat(p["opened_at"])).total_seconds() / 60.0
     row = next((x for x in rows if x.get("symbol") == p["symbol"]), None)
 
+    risk = max(float(p.get("risk_dollars") or 0), 1e-12)
+    if not p.get("breakeven_moved") and float(p.get("peak_net") or 0) >= risk * BREAKEVEN_TRIGGER_R:
+        p["stop"] = base.target_market_for_net_profit(p["side"], float(p["entry"]), 0.0)
+        p["breakeven_moved"] = True
+        save_state()
+
     if float(p.get("peak_net") or 0) >= PROFIT_LOCK_START_USDC:
         if float(p["peak_net"]) - net >= PROFIT_GIVEBACK_USDC:
             close_trade(price, "FAST PROFIT LOCK")
             return
 
-    if row and age >= EARLY_EXIT_MIN_AGE:
+    continuation = False
+    danger = False
+    if row:
         z = float(row.get("z_momentum") or 0)
         imb = float(row.get("book_imbalance") or 0.5)
         vr = float(row.get("volume_ratio") or 0)
@@ -463,15 +474,19 @@ async def manage_position(rows):
             continuation = z <= -0.35 and imb <= 0.50 and vr >= 0.90
             danger = z >= 0.35 or imb >= 0.53
 
-        if net >= EARLY_PROFIT_USDC and not continuation:
+        if age >= EARLY_EXIT_MIN_AGE and net >= EARLY_PROFIT_USDC and not continuation:
             close_trade(price, "FAST +4 NET / NO CONTINUATION")
             return
-        if net < 0 and danger:
+        if age >= EARLY_EXIT_MIN_AGE and net < 0 and danger:
             close_trade(price, "FAST MOMENTUM FLIP")
             return
 
-    if age >= MAX_HOLD_MINUTES:
-        close_trade(price, "FAST TIME EXIT")
+    if age >= SOFT_HOLD_MINUTES and (row is None or not continuation):
+        close_trade(price, "FAST ADAPTIVE EXIT / NO CONTINUATION")
+        return
+
+    if age >= HARD_HOLD_MINUTES:
+        close_trade(price, "FAST HARD TIME EXIT")
         return
 
     save_state()
