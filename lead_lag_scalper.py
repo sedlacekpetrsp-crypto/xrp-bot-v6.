@@ -19,7 +19,7 @@ from datetime import datetime, timezone, timedelta
 import psycopg
 from psycopg.types.json import Jsonb
 
-BUILD = "lead-lag-v1-20260920"
+BUILD = "lead-lag-v1-20260921"
 MODE = "PAPER"
 
 TRADE_SYMBOL = "XRPUSDC"
@@ -43,7 +43,7 @@ LEADER_COMPONENT_MIN_Z = 0.25
 LAG_GAP_MIN_Z = 0.50
 LEADER_RETURN_MIN = 0.0022
 LAG_RETURN_MIN = 0.0018
-MIN_EXPECTED_MOVE = 0.0030
+MIN_EXPECTED_MOVE = LAG_RETURN_MIN * 0.80  # consistent with expected_move = 80% of lag
 EXIT_LAG_RETURN = 0.00045
 LEADER_FADE_RETURN = 0.00045
 
