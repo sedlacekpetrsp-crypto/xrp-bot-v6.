@@ -20,7 +20,7 @@ from datetime import datetime, timezone, timedelta
 import psycopg
 from psycopg.types.json import Jsonb
 
-BUILD = "lead-lag-v2-balanced-20260921"
+BUILD = "lead-lag-v2-bookflip-confirm-20260921"
 MODE = "PAPER"
 
 TRADE_SYMBOL = "XRPUSDC"
@@ -479,6 +479,7 @@ def open_trade(a, market_price):
         "leader_z": a["leader_z"],
         "gap_z": a["gap_z"],
         "book_imbalance": a["book_imbalance"],
+        "book_flip_count": 0,
         "opened_at": utcnow().isoformat(),
         "candle_time": a["candle_time"],
     }
@@ -593,17 +594,31 @@ async def manage_position(a=None):
     if p["side"] == "LONG":
         if a["lag_return"] <= EXIT_LAG_RETURN:
             close_trade(price, "LAG CLOSED")
-        elif a["leader_return"] <= LEADER_FADE_RETURN:
+            return
+        if a["leader_return"] <= LEADER_FADE_RETURN:
             close_trade(price, "LEADER FADED")
-        elif a["book_imbalance"] <= BOOK_FLIP_LONG:
-            close_trade(price, "BOOK FLIP")
+            return
+        if a["book_imbalance"] <= BOOK_FLIP_LONG:
+            p["book_flip_count"] = int(p.get("book_flip_count", 0)) + 1
+            if p["book_flip_count"] >= 3:
+                close_trade(price, "BOOK FLIP x3")
+                return
+        else:
+            p["book_flip_count"] = 0
     else:
         if a["lag_return"] >= -EXIT_LAG_RETURN:
             close_trade(price, "LAG CLOSED")
-        elif a["leader_return"] >= -LEADER_FADE_RETURN:
+            return
+        if a["leader_return"] >= -LEADER_FADE_RETURN:
             close_trade(price, "LEADER FADED")
-        elif a["book_imbalance"] >= BOOK_FLIP_SHORT:
-            close_trade(price, "BOOK FLIP")
+            return
+        if a["book_imbalance"] >= BOOK_FLIP_SHORT:
+            p["book_flip_count"] = int(p.get("book_flip_count", 0)) + 1
+            if p["book_flip_count"] >= 3:
+                close_trade(price, "BOOK FLIP x3")
+                return
+        else:
+            p["book_flip_count"] = 0
 
 
 def cooldown_active():
