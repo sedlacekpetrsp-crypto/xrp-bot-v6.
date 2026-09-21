@@ -20,7 +20,7 @@ from datetime import datetime, timezone, timedelta
 import psycopg
 from psycopg.types.json import Jsonb
 
-BUILD = "lead-lag-v2-heartbeat-20260921"
+BUILD = "lead-lag-v2-balanced-20260921"
 MODE = "PAPER"
 
 TRADE_SYMBOL = "XRPUSDC"
@@ -42,15 +42,15 @@ MAX_DAILY_LOSS_PCT = 0.012
 
 MOMENTUM_MIN_Z = 0.80
 LEADER_COMPONENT_MIN_Z = 0.25
-LAG_GAP_MIN_Z = 0.50
-LEADER_RETURN_MIN = 0.0022
-LAG_RETURN_MIN = 0.0018
+LAG_GAP_MIN_Z = 0.35
+LEADER_RETURN_MIN = 0.0017
+LAG_RETURN_MIN = 0.0012
 MIN_EXPECTED_MOVE = LAG_RETURN_MIN * 0.80  # consistent with expected_move = 80% of lag
 EXIT_LAG_RETURN = 0.00045
 LEADER_FADE_RETURN = 0.00045
 
-BOOK_LONG_MIN = 0.54
-BOOK_SHORT_MAX = 0.46
+BOOK_LONG_MIN = 0.52
+BOOK_SHORT_MAX = 0.48
 BOOK_FLIP_LONG = 0.48
 BOOK_FLIP_SHORT = 0.52
 MAX_SPREAD_PCT = 0.0008
