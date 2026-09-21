@@ -1,11 +1,11 @@
 import asyncio, math, statistics, time
 from datetime import datetime
 
-BUILD = "v8-fly-layer-20260913-1"
-Z_ARMED = 0.40
+BUILD = "v8-fly-layer-20260921-2"
+Z_ARMED = 0.60
 Z_STRONG = 0.80
 Z_DANGER = 0.55
-ARMED_MAX_DISTANCE_ATR = 0.18
+ARMED_MAX_DISTANCE_ATR = 0.10
 MAX_REAL_SPREAD_PCT = 0.0008
 DANGER_EXIT_SCORE = 2
 DANGER_MAX_MR = 0.45
@@ -58,8 +58,8 @@ async def strategy(symbol):
     ls=sum([e9>e21,cl>e9,40<=rv<=70,mac_up,bull>=.55,vr>=m.MIN_TREND_VOLUME,spread_ok and imb>=m.BOOK_LONG_MIN,vw is not None and cl>=vw])
     ss=sum([e9<e21,cl<e9,30<=rv<=60,mac_dn,bear>=.55,vr>=m.MIN_TREND_VOLUME,spread_ok and imb<=m.BOOK_SHORT_MAX,vw is not None and cl<=vw])
     raw='WAIT'; setup=None; score=0
-    if regime=='TREND_LONG' and cl>bh and vr>=m.MIN_BREAKOUT_VOLUME and ls>=m.MIN_SCORE: raw,setup,score='LONG','BREAKOUT',ls
-    elif regime=='TREND_SHORT' and cl<bl and vr>=m.MIN_BREAKOUT_VOLUME and ss>=m.MIN_SCORE: raw,setup,score='SHORT','BREAKOUT',ss
+    if regime=='TREND_LONG' and cl>bh and vr>=max(m.MIN_BREAKOUT_VOLUME,1.50) and ls>=max(m.MIN_SCORE,8): raw,setup,score='LONG','BREAKOUT',ls
+    elif regime=='TREND_SHORT' and cl<bl and vr>=max(m.MIN_BREAKOUT_VOLUME,1.50) and ss>=max(m.MIN_SCORE,8): raw,setup,score='SHORT','BREAKOUT',ss
     signal=raw; reject=None; edge=0.0
     if raw in ('LONG','SHORT'):
         p=m.SETUP_PARAMS[setup]; edge=(av*p['atr_mult']*p['rr'])/cl if av and cl else 0
@@ -70,9 +70,9 @@ async def strategy(symbol):
     armed_side=None; armed_trigger=None; armed_dist=None
     if av and av>0 and spread_ok and raw=='WAIT':
         ld=(bh-cl)/av; sd=(cl-bl)/av
-        if regime=='TREND_LONG' and 0<=ld<=ARMED_MAX_DISTANCE_ATR and ls>=max(5,m.MIN_SCORE-1) and vr>=m.MIN_TREND_VOLUME and z>=Z_ARMED and imb>=m.BOOK_LONG_MIN:
+        if regime=='TREND_LONG' and 0<=ld<=ARMED_MAX_DISTANCE_ATR and ls>=max(8,m.MIN_SCORE) and vr>=max(m.MIN_BREAKOUT_VOLUME,1.50) and z>=Z_STRONG and imb>=max(m.BOOK_LONG_MIN,0.55):
             armed_side,armed_trigger,armed_dist='LONG',bh,ld
-        elif regime=='TREND_SHORT' and 0<=sd<=ARMED_MAX_DISTANCE_ATR and ss>=max(5,m.MIN_SCORE-1) and vr>=m.MIN_TREND_VOLUME and z<=-Z_ARMED and imb<=m.BOOK_SHORT_MAX:
+        elif regime=='TREND_SHORT' and 0<=sd<=ARMED_MAX_DISTANCE_ATR and ss>=max(8,m.MIN_SCORE) and vr>=max(m.MIN_BREAKOUT_VOLUME,1.50) and z<=-Z_STRONG and imb<=min(m.BOOK_SHORT_MAX,0.45):
             armed_side,armed_trigger,armed_dist='SHORT',bl,sd
     zclass='STRONG_LONG' if z>=Z_STRONG else 'ARMED_LONG' if z>=Z_ARMED else 'STRONG_SHORT' if z<=-Z_STRONG else 'ARMED_SHORT' if z<=-Z_ARMED else 'IGNORE'
     reason=f'{symbol} {regime} raw={raw} L/S={ls}/{ss} book={imb:.3f} spread={spread*100:.3f}% vol={vr:.2f}x z={z:.2f} edge={edge*100:.3f}%'
