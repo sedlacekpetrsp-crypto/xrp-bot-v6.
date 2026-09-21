@@ -2,7 +2,7 @@ import asyncio, math, statistics, time
 from datetime import datetime
 import news_signal
 
-BUILD = "v8-fly-layer-20260921-5"
+BUILD = "v8-fly-layer-20260921-6"
 Z_ARMED = 0.60
 Z_STRONG = 0.80
 Z_DANGER = 0.55
@@ -46,6 +46,10 @@ def _ensemble_score(a):
     news=a.get('news') or {}
     if side=='LONG' and news.get('bullish'): score+=1.0
     if side=='LONG' and news.get('bearish'): score-=2.0
+    leader=a.get('leader') or {}
+    lead_dir=leader.get('direction')
+    if a.get('symbol')=='XRPUSDC' and lead_dir==side and float(leader.get('strength') or 0)>=1.0: score+=1.0
+    if a.get('symbol')=='XRPUSDC' and lead_dir and lead_dir!=side and float(leader.get('strength') or 0)>=1.0: score-=1.0
     return score
 
 def _no_trade_reason(a):
@@ -111,12 +115,26 @@ async def book(symbol):
     bid=float(bids[0][0]); ask=float(asks[0][0]); mid=(bid+ask)/2
     return {'imbalance':b/(a+b) if a+b else .5,'spread_pct':(ask-bid)/mid if mid else 1.0,'best_bid':bid,'best_ask':ask}
 
+async def leader_context():
+    try:
+        kb,ke=await asyncio.gather(m.get_klines('BTCUSDC','1m',limit=10),m.get_klines('ETHUSDC','1m',limit=10))
+        cb=[float(x[4]) for x in kb[:-1]]; ce=[float(x[4]) for x in ke[:-1]]
+        if len(cb)<4 or len(ce)<4:return {'direction':None,'strength':0.0,'btc_return':0.0,'eth_return':0.0}
+        br=cb[-1]/cb[-4]-1; er=ce[-1]/ce[-4]-1
+        same=(br>0 and er>0) or (br<0 and er<0)
+        strength=(abs(br)+abs(er))/0.002 if same else 0.0
+        direction='LONG' if same and br>0 else 'SHORT' if same and br<0 else None
+        return {'direction':direction,'strength':strength,'btc_return':br,'eth_return':er}
+    except Exception:
+        return {'direction':None,'strength':0.0,'btc_return':0.0,'eth_return':0.0}
+
 async def strategy(symbol):
     if symbol == 'XRPUSDC':
-        k1,k5,bk,news=await asyncio.gather(m.get_klines(symbol,'1m'),m.get_klines(symbol,'5m'),book(symbol),news_signal.get_xrp_news())
+        k1,k5,bk,news,leader=await asyncio.gather(m.get_klines(symbol,'1m'),m.get_klines(symbol,'5m'),book(symbol),news_signal.get_xrp_news(),leader_context())
     else:
         k1,k5,bk=await asyncio.gather(m.get_klines(symbol,'1m'),m.get_klines(symbol,'5m'),book(symbol))
         news={'bullish':False,'bearish':False,'score':0,'headlines':[],'status':'n/a'}
+        leader={'direction':None,'strength':0.0,'btc_return':0.0,'eth_return':0.0}
     a1,a5=k1[:-1],k5[:-1]
     h=[float(x[2]) for x in a1]; l=[float(x[3]) for x in a1]; c=[float(x[4]) for x in a1]; v=[float(x[5]) for x in a1]
     h5=[float(x[2]) for x in a5]; l5=[float(x[3]) for x in a5]; c5=[float(x[4]) for x in a5]
@@ -174,7 +192,7 @@ async def strategy(symbol):
     zclass='STRONG_LONG' if z>=Z_STRONG else 'ARMED_LONG' if z>=Z_ARMED else 'STRONG_SHORT' if z<=-Z_STRONG else 'ARMED_SHORT' if z<=-Z_ARMED else 'IGNORE'
     reason=f'{symbol} {regime} raw={raw} L/S={ls}/{ss} book={imb:.3f} spread={spread*100:.3f}% vol={vr:.2f}x z={z:.2f} edge={edge*100:.3f}% news={int(news.get("score") or 0)}'
     if armed_side: reason+=f' ARMED={armed_side}@{armed_trigger:.6f}'
-    ensemble=_ensemble_score({'signal':signal,'raw_signal':raw,'regime':regime,'score':score,'volume_ratio':vr,'z_momentum':z,'book_imbalance':imb,'real_spread_pct':spread,'expected_move_pct':edge,'news':news})
+    ensemble=_ensemble_score({'symbol':symbol,'signal':signal,'raw_signal':raw,'regime':regime,'score':score,'volume_ratio':vr,'z_momentum':z,'book_imbalance':imb,'real_spread_pct':spread,'expected_move_pct':edge,'news':news,'leader':leader})
     no_trade=_no_trade_reason({'real_spread_pct':spread,'adx5':ad,'regime':regime,'volume_ratio':vr})
     health=_setup_health(symbol, signal if signal in ('LONG','SHORT') else raw, setup or 'BREAKOUT') if raw in ('LONG','SHORT') else {'enabled':True,'n':0,'expectancy_r':None,'winrate':None}
     if signal in ('LONG','SHORT'):
@@ -183,7 +201,7 @@ async def strategy(symbol):
         elif not health.get('enabled',True): signal,reject='WAIT','SETUP_AUTO_DISABLED'
     if reject: reason+=f' REJECT={reject}'
     reason+=f' ensemble={ensemble:.1f}'
-    return {'symbol':symbol,'price':float(k1[-1][4]),'signal':signal,'raw_signal':raw,'setup':setup,'score':score,'news':news,'candle_time':ct,'regime':regime,'rsi':rv,'atr':av,'adx5':ad,'volume_ratio':vr,'book_imbalance':imb,'book_spread':spread,'real_spread_pct':spread,'best_bid':bk['best_bid'],'best_ask':bk['best_ask'],'long_score':ls,'short_score':ss,'breakout_high':bh,'breakout_low':bl,'expected_move_pct':edge,'z_momentum':z,'z_class':zclass,'armed_side':armed_side,'armed_trigger':armed_trigger,'armed_distance_atr':armed_dist,'reason':reason,'ensemble_score':ensemble,'no_trade_reason':no_trade,'setup_health':health}
+    return {'symbol':symbol,'price':float(k1[-1][4]),'signal':signal,'raw_signal':raw,'setup':setup,'score':score,'news':news,'candle_time':ct,'regime':regime,'rsi':rv,'atr':av,'adx5':ad,'volume_ratio':vr,'book_imbalance':imb,'book_spread':spread,'real_spread_pct':spread,'best_bid':bk['best_bid'],'best_ask':bk['best_ask'],'long_score':ls,'short_score':ss,'breakout_high':bh,'breakout_low':bl,'expected_move_pct':edge,'z_momentum':z,'z_class':zclass,'armed_side':armed_side,'armed_trigger':armed_trigger,'armed_distance_atr':armed_dist,'reason':reason,'ensemble_score':ensemble,'no_trade_reason':no_trade,'setup_health':health,'leader':leader}
 
 def open_trade(a,price):
     if m.paper_position or not a.get('atr'): return
@@ -206,6 +224,8 @@ def open_trade(a,price):
         'z_momentum':a.get('z_momentum'),'book_imbalance':a.get('book_imbalance'),
         'real_spread_pct':a.get('real_spread_pct'),'expected_move_pct':a.get('expected_move_pct'),
         'adx5':a.get('adx5'),'rsi':a.get('rsi'),'news_score':(a.get('news') or {}).get('score'),
+        'leader_direction':(a.get('leader') or {}).get('direction'),'leader_strength':(a.get('leader') or {}).get('strength'),
+        'btc_return':(a.get('leader') or {}).get('btc_return'),'eth_return':(a.get('leader') or {}).get('eth_return'),
         'no_trade_reason':a.get('no_trade_reason'),'setup_health':a.get('setup_health')
     }
     m.paper_position={'symbol':a['symbol'],'side':side,'setup':a.get('setup') or 'BREAKOUT','regime':a['regime'],'score':a.get('score',0),'entry_price':entry,'qty':qty,'stop_loss':sl,'take_profit':tp,'risk_distance':dist,'initial_risk_usdc':actual_risk,'risk_rate':risk_rate,'quality_tier':quality,'ensemble_score':ensemble,'entry_features':features,'net_rr':m.NET_RISK_REWARD,'mae_r':0.0,'mfe_r':0.0,'breakeven_moved':False,'profit_mode':False,'z_entry':float(a.get('z_momentum') or 0),'entry_trigger':float(a.get('entry_trigger') or a.get('armed_trigger') or price),'entry_spread_pct':float(a.get('real_spread_pct') or 0),'entry_kind':a.get('entry_kind','CLOSED_CANDLE'),'last_danger_score':0,'opened_at':m.utcnow().isoformat()}
@@ -282,7 +302,7 @@ async def cycle():
             elif best.get('armed_side') in ('LONG','SHORT'):
                 side=best['armed_side']; trigger=float(best['armed_trigger']); crossed=price>=trigger if side=='LONG' else price<=trigger
                 if crossed and float(best.get('real_spread_pct') or 1)<=MAX_REAL_SPREAD_PCT:
-                    a=dict(best); a['signal']=side; a['raw_signal']=side; a['setup']='BREAKOUT'; a['score']=max(int(best.get('long_score') if side=='LONG' else best.get('short_score') or 0),m.MIN_SCORE); a['entry_kind']='ARMED_INTRABAR'; a['entry_trigger']=trigger; open_trade(a,price)
+                    a=dict(best); a['signal']=side; a['raw_signal']=side; a['setup']='BREAKOUT'; a['score']=max(int(best.get('long_score') if side=='LONG' else best.get('short_score') or 0),m.MIN_SCORE); a['ensemble_score']=_ensemble_score(a); a['entry_kind']='ARMED_INTRABAR'; a['entry_trigger']=trigger; open_trade(a,price)
         m.last_cycle_at=m.utcnow().isoformat()
     except Exception as e: m.last_error=f'{type(e).__name__}: {e}'; print('V8 FLY CYCLE',e)
 
