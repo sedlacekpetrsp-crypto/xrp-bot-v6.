@@ -40,7 +40,12 @@ async def analyze_with_pnl_breakdown():
     data["estimated_costs"] = costs
     data["equity"] = float(data.get("paper_balance", 0.0)) + net
     risk = data.get("risk_status") or {}
-    if risk.get("blocked"):
+    recovery = base.recovery_status() if hasattr(base, "recovery_status") else {}
+    data["recovery_status"] = recovery
+    if recovery.get("breached") and not recovery.get("used"):
+        data["trading_status"] = "RECOVERY_MODE"
+        data["trading_status_label"] = "RECOVERY MODE – ČEKÁM NA A+ XRP LONG"
+    elif risk.get("blocked"):
         data["trading_status"] = "DAILY_LOSS_LIMIT"
         data["trading_status_label"] = "BLOKOVÁNO – DAILY LOSS LIMIT"
     elif p:
@@ -96,8 +101,16 @@ async function refreshFlyGuard(){
   const guardText=document.getElementById('flyGuardText');
   if(!guard)return;
   const rs=d.risk_status||{};
-  if(rs.blocked){
+  const rec=d.recovery_status||{};
+  if(rec.breached && !rec.used){
    guard.style.display='block';
+   guard.querySelector('h2').innerHTML='🟠 FLY RECOVERY MODE';
+   guardText.className='yellow';
+   guardText.innerHTML=`ČEKÁM NA 1× A+ XRP LONG • risk 0,15 % • dnešní PnL ${f(rec.today_pnl,2)} USDC • limit -${f(rec.daily_loss_limit,2)} USDC`;
+  }else if(rs.blocked){
+   guard.style.display='block';
+   guard.querySelector('h2').innerHTML='🛑 FLY BLOKOVÁN';
+   guardText.className='red';
    guardText.innerHTML=`BLOKOVÁNO – DAILY LOSS LIMIT • dnešní PnL ${f(rs.today_pnl,2)} USDC • limit -${f(rs.daily_loss_limit,2)} USDC`;
   }else{
    guard.style.display='none';
@@ -204,6 +217,7 @@ async def combined_health():
         "ok": True,
         "fly": {
             "last_cycle_at": getattr(base, "last_cycle_at", None),
+            "recovery": base.recovery_status() if hasattr(base, "recovery_status") else {},
             "last_error": getattr(base, "last_error", None),
             "balance": getattr(base, "PAPER_BALANCE", None),
             "open_position": getattr(base, "paper_position", None),
