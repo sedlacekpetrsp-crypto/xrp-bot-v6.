@@ -2,6 +2,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 import app_v8 as base
 import app_blue_whale_mirror as whale
 import lead_lag_scalper as leadlag
+import news_signal
 from v8_fly_layer import install
 
 install(base)
@@ -213,6 +214,7 @@ async def combined_health():
             "open_position": whale.state.get("open_position"),
             "open_positions": whale.state.get("open_positions", []),
         },
+        "news": news_signal.cached_state(),
         "leadlag": {
             "status": leadlag.state.get("status"),
             "error": leadlag.state.get("error"),
@@ -223,3 +225,9 @@ async def combined_health():
             "open_position": leadlag.state.get("open_position"),
         }
     }, headers={"Cache-Control":"no-store"})
+
+
+@app.get("/news/status")
+async def news_status():
+    data = await news_signal.get_xrp_news()
+    return JSONResponse(data, headers={"Cache-Control":"no-store"})
