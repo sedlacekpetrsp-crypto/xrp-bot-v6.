@@ -16,7 +16,7 @@ from datetime import datetime, timezone, timedelta
 import psycopg
 from psycopg.types.json import Jsonb
 
-BUILD = "fast-edge-v2-adaptive-exit-20260921"
+BUILD = "fast-edge-v3-no-time-cutoff-20260921"
 MODE = "PAPER"
 
 SYMBOLS = ("XRPUSDC", "ETHUSDC", "SOLUSDC")
@@ -26,7 +26,7 @@ MAX_NOTIONAL_SHARE = float(os.getenv("FAST_MAX_NOTIONAL_SHARE", "0.30"))
 
 SCAN_SECONDS = 12
 SOFT_HOLD_MINUTES = 5.0
-HARD_HOLD_MINUTES = 20.0
+EMERGENCY_HOLD_MINUTES = 120.0
 WIN_COOLDOWN_SECONDS = 30
 LOSS_COOLDOWN_SECONDS = 120
 LOSS_STREAK_COOLDOWN_MINUTES = 20
@@ -485,8 +485,8 @@ async def manage_position(rows):
         close_trade(price, "FAST ADAPTIVE EXIT / NO CONTINUATION")
         return
 
-    if age >= HARD_HOLD_MINUTES:
-        close_trade(price, "FAST HARD TIME EXIT")
+    if age >= EMERGENCY_HOLD_MINUTES:
+        close_trade(price, "FAST EMERGENCY STALE EXIT")
         return
 
     save_state()
