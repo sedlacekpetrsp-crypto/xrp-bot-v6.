@@ -38,6 +38,16 @@ async def analyze_with_pnl_breakdown():
     data["unrealized_pnl"] = net
     data["estimated_costs"] = costs
     data["equity"] = float(data.get("paper_balance", 0.0)) + net
+    risk = data.get("risk_status") or {}
+    if risk.get("blocked"):
+        data["trading_status"] = "DAILY_LOSS_LIMIT"
+        data["trading_status_label"] = "BLOKOVÁNO – DAILY LOSS LIMIT"
+    elif p:
+        data["trading_status"] = "POSITION_OPEN"
+        data["trading_status_label"] = "OBCHOD OTEVŘEN"
+    else:
+        data["trading_status"] = "WAITING"
+        data["trading_status_label"] = "ČEKÁM NA SETUP"
     return JSONResponse(data, headers={"Cache-Control": "no-store"})
 
 
@@ -49,6 +59,13 @@ async def dashboard_with_pnl_breakdown():
     html = html.replace(old, new)
     html = html.replace("⚡ BOT V8 ADAPTIVE BREAKOUT SCALPER", "⚡ FLY + 🐋 WHALE + 🔗 LEAD-LAG — 24/7 PAPER")
     html = html.replace("PAPER • pouze BREAKOUT • čisté R:R 1:1,3", "Jeden Render server • tři nezávislé strategie • PAPER")
+    fly_guard_card = """
+<div class="card" id="flyGuardCard" style="display:none;border:1px solid #7a2b2b;background:#2a1518">
+  <h2 style="margin-top:0">🛑 FLY BLOKOVÁN</h2>
+  <div id="flyGuardText" class="red" style="font-weight:700">BLOKOVÁNO – DAILY LOSS LIMIT</div>
+</div>
+"""
+    html = html.replace('<div class="card"><h2>📡 Trhy</h2>', fly_guard_card + '<div class="card"><h2>📡 Trhy</h2>')
     whale_card = """
 <div class="card">
   <h2>🐋 BLUE WHALE</h2>
@@ -89,6 +106,17 @@ async function refreshWhale(){
    ['Nerealizované PnL',unrealText],['Status',w.status||'—'],
    ['Obchodní stav',p?'OBCHOD OTEVŘEN':'⏳ ČEKÁM NA OBCHOD']
   ].map(x=>`<div class="coin"><div class="muted">${x[0]}</div><b>${x[1]}</b></div>`).join('');
+  const guard=document.getElementById('flyGuardCard');
+  const guardText=document.getElementById('flyGuardText');
+  if(guard){
+   const rs=d.risk_status||{};
+   if(rs.blocked){
+    guard.style.display='block';
+    guardText.innerHTML=`BLOKOVÁNO – DAILY LOSS LIMIT • dnešní PnL ${f(rs.today_pnl,2)} USDC • limit -${f(rs.daily_loss_limit,2)} USDC`;
+   }else{
+    guard.style.display='none';
+   }
+  }
   document.getElementById('whalePosition').innerHTML=ps.length
    ? ps.map((p,i)=>`<div style="${i?'margin-top:10px;padding-top:10px;border-top:1px solid #29343e':''}"><b>#${i+1} BTCUSDT ${p.side}</b> • entry ${f(p.entry,2)} • SL ${f(p.stop,2)} • TP ${f(p.tp,2)} • risk ${f(p.risk_dollars,2)} USD</div>`).join('')+`<div style="margin-top:8px">Celkové uPnL <b class="${unreal>=0?'green':'red'}">${unreal>=0?'+':''}${f(unreal,2)} USD</b></div>`
    : (p
