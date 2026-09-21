@@ -89,6 +89,21 @@ async def dashboard_with_pnl_breakdown():
 """
     html = html.replace('<div class="card muted" id="health">', whale_card + leadlag_card + '<div class="card muted" id="health">')
     whale_js = """
+async function refreshFlyGuard(){
+ try{
+  const r=await fetch('/analyze',{cache:'no-store'}),d=await r.json();
+  const guard=document.getElementById('flyGuardCard');
+  const guardText=document.getElementById('flyGuardText');
+  if(!guard)return;
+  const rs=d.risk_status||{};
+  if(rs.blocked){
+   guard.style.display='block';
+   guardText.innerHTML=`BLOKOVÁNO – DAILY LOSS LIMIT • dnešní PnL ${f(rs.today_pnl,2)} USDC • limit -${f(rs.daily_loss_limit,2)} USDC`;
+  }else{
+   guard.style.display='none';
+  }
+ }catch(e){}
+}
 async function refreshWhale(){
  try{
   const r=await fetch('/whale/status',{cache:'no-store'}),w=await r.json(),ts=w.trades||[];
@@ -107,17 +122,6 @@ async function refreshWhale(){
    ['Nerealizované PnL',unrealText],['Status',w.status||'—'],
    ['Obchodní stav',p?'OBCHOD OTEVŘEN':'⏳ ČEKÁM NA OBCHOD']
   ].map(x=>`<div class="coin"><div class="muted">${x[0]}</div><b>${x[1]}</b></div>`).join('');
-  const guard=document.getElementById('flyGuardCard');
-  const guardText=document.getElementById('flyGuardText');
-  if(guard){
-   const rs=d.risk_status||{};
-   if(rs.blocked){
-    guard.style.display='block';
-    guardText.innerHTML=`BLOKOVÁNO – DAILY LOSS LIMIT • dnešní PnL ${f(rs.today_pnl,2)} USDC • limit -${f(rs.daily_loss_limit,2)} USDC`;
-   }else{
-    guard.style.display='none';
-   }
-  }
   document.getElementById('whalePosition').innerHTML=ps.length
    ? ps.map((p,i)=>`<div style="${i?'margin-top:10px;padding-top:10px;border-top:1px solid #29343e':''}"><b>#${i+1} BTCUSDT ${p.side}</b> • entry ${f(p.entry,2)} • SL ${f(p.stop,2)} • TP ${f(p.tp,2)} • risk ${f(p.risk_dollars,2)} USD</div>`).join('')+`<div style="margin-top:8px">Celkové uPnL <b class="${unreal>=0?'green':'red'}">${unreal>=0?'+':''}${f(unreal,2)} USD</b></div>`
    : (p
@@ -171,7 +175,7 @@ async function refreshLeadLag(){
  }
 }
 """
-    html = html.replace("refresh();setInterval(refresh,10000);", whale_js + leadlag_js + "refresh();refreshWhale();refreshLeadLag();setInterval(refresh,3000);setInterval(refreshWhale,5000);setInterval(refreshLeadLag,5000);")
+    html = html.replace("refresh();setInterval(refresh,10000);", whale_js + leadlag_js + "refresh();refreshFlyGuard();refreshWhale();refreshLeadLag();setInterval(refresh,3000);setInterval(refreshFlyGuard,5000);setInterval(refreshWhale,5000);setInterval(refreshLeadLag,5000);")
     return HTMLResponse(html, headers={"Cache-Control": "no-store"})
 
 
