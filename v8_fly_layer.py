@@ -2,7 +2,7 @@ import asyncio, math, statistics, time
 from datetime import datetime
 import news_signal
 
-BUILD = "v8-fly-layer-20260921-6"
+BUILD = "v8-fly-layer-20260921-7"
 Z_ARMED = 0.60
 Z_STRONG = 0.80
 Z_DANGER = 0.55
@@ -24,6 +24,14 @@ SETUP_WINDOW = 20
 SETUP_DISABLE_MIN_TRADES = 12
 SETUP_DISABLE_EXPECTANCY_R = -0.10
 SETUP_DISABLE_WINRATE = 0.30
+
+RECOVERY_RISK_RATE = 0.0015
+RECOVERY_MIN_ENSEMBLE = 7.5
+RECOVERY_MIN_VOLUME = 1.50
+RECOVERY_MIN_Z = 0.80
+RECOVERY_MIN_BOOK = 0.56
+RECOVERY_MAX_SPREAD = 0.0005
+RECOVERY_MIN_EDGE_MULTIPLE = 4.0
 
 STRONG_RISK_RATE = 0.0035
 APLUS_RISK_RATE = 0.0050
@@ -74,6 +82,71 @@ def _setup_health(symbol,side,setup):
     wr=wins/len(rows)
     enabled=not (exp<SETUP_DISABLE_EXPECTANCY_R and wr<SETUP_DISABLE_WINRATE)
     return {'enabled':enabled,'n':len(rows),'expectancy_r':exp,'winrate':wr}
+
+def _today_rows():
+    today=m.utcnow().date()
+    rows=[]
+    for t in m.trade_history:
+        try:
+            if datetime.fromisoformat(t.get('closed_at')).date()==today:
+                rows.append(t)
+        except Exception:
+            pass
+    return rows
+
+def recovery_status():
+    rows=_today_rows()
+    pnl=sum(float(t.get('pnl') or 0) for t in rows)
+    limit=max(m.PAPER_BALANCE,1)*m.RISK_PER_TRADE*m.DAILY_LOSS_LIMIT_R
+    running=0.0
+    min_running=0.0
+    for t in reversed(rows):
+        running+=float(t.get('pnl') or 0)
+        min_running=min(min_running,running)
+    breached=(pnl<=-limit) or (min_running<=-limit)
+    used=any(t.get('setup')=='RECOVERY_TREND' or t.get('entry_kind')=='RECOVERY_A_PLUS' for t in rows)
+    p=m.paper_position or {}
+    if p.get('setup')=='RECOVERY_TREND' or p.get('entry_kind')=='RECOVERY_A_PLUS':
+        used=True
+    return {'breached':breached,'used':used,'today_pnl':pnl,'daily_loss_limit':limit,'hard_block':breached and used}
+
+def _recovery_candidate(rows):
+    st=recovery_status()
+    if not st['breached'] or st['used']:
+        return None
+    candidates=[]
+    for x in rows:
+        if x.get('symbol')!='XRPUSDC':
+            continue
+        if not x.get('pullback_long'):
+            continue
+        if x.get('regime')!='TREND_LONG':
+            continue
+        if int(x.get('long_score') or 0)<8:
+            continue
+        if float(x.get('volume_ratio') or 0)<RECOVERY_MIN_VOLUME:
+            continue
+        if float(x.get('z_momentum') or 0)<RECOVERY_MIN_Z:
+            continue
+        if float(x.get('book_imbalance') or 0)<RECOVERY_MIN_BOOK:
+            continue
+        if float(x.get('real_spread_pct') or 1)>RECOVERY_MAX_SPREAD:
+            continue
+        if float(x.get('expected_move_pct') or 0)<m.ROUND_TRIP_COST*RECOVERY_MIN_EDGE_MULTIPLE:
+            continue
+        if (x.get('news') or {}).get('bearish'):
+            continue
+        a=dict(x)
+        a['signal']='LONG'; a['raw_signal']='LONG'; a['setup']='RECOVERY_TREND'
+        a['score']=max(8,int(x.get('long_score') or 0))
+        a['ensemble_score']=_ensemble_score(a)
+        if a['ensemble_score']<RECOVERY_MIN_ENSEMBLE:
+            continue
+        a['entry_kind']='RECOVERY_A_PLUS'
+        candidates.append((a['ensemble_score'],float(a.get('expected_move_pct') or 0),a))
+    if not candidates:
+        return None
+    return sorted(candidates,key=lambda z:(z[0],z[1]),reverse=True)[0][2]
 
 def quality_risk(a):
     side = a.get('signal')
@@ -154,6 +227,7 @@ async def strategy(symbol):
     spread_ok=spread<=MAX_REAL_SPREAD_PCT
     ls=sum([e9>e21,cl>e9,40<=rv<=70,mac_up,bull>=.55,vr>=m.MIN_TREND_VOLUME,spread_ok and imb>=m.BOOK_LONG_MIN,vw is not None and cl>=vw])
     ss=sum([e9<e21,cl<e9,30<=rv<=60,mac_dn,bear>=.55,vr>=m.MIN_TREND_VOLUME,spread_ok and imb<=m.BOOK_SHORT_MAX,vw is not None and cl<=vw])
+    pullback_long=bool(regime=='TREND_LONG' and lo<=max(e9,e21)*1.0015 and cl>e9 and vw is not None and cl>=vw)
     raw='WAIT'; setup=None; score=0
     if regime=='TREND_LONG' and cl>bh and vr>=max(m.MIN_BREAKOUT_VOLUME,1.50) and ls>=max(m.MIN_SCORE,8):
         raw,setup,score='LONG','BREAKOUT',ls
@@ -174,9 +248,10 @@ async def strategy(symbol):
         )
         if news_confirm:
             raw,setup,score='LONG','NEWS_LONG',max(ls,8)
-    signal=raw; reject=None; edge=0.0
+    p=m.SETUP_PARAMS['BREAKOUT']
+    edge=(av*p['atr_mult']*p['rr'])/cl if av and cl else 0
+    signal=raw; reject=None
     if raw in ('LONG','SHORT'):
-        p=m.SETUP_PARAMS['BREAKOUT']; edge=(av*p['atr_mult']*p['rr'])/cl if av and cl else 0
         if edge < m.ROUND_TRIP_COST*m.MIN_EDGE_MULTIPLE: signal,reject='WAIT','EDGE_TOO_SMALL'
         elif not spread_ok: signal,reject='WAIT',f'REAL_SPREAD_{spread*100:.3f}%'
         elif raw=='LONG' and news.get('bearish'): signal,reject='WAIT','NEGATIVE_NEWS_BLOCK'
@@ -201,7 +276,7 @@ async def strategy(symbol):
         elif not health.get('enabled',True): signal,reject='WAIT','SETUP_AUTO_DISABLED'
     if reject: reason+=f' REJECT={reject}'
     reason+=f' ensemble={ensemble:.1f}'
-    return {'symbol':symbol,'price':float(k1[-1][4]),'signal':signal,'raw_signal':raw,'setup':setup,'score':score,'news':news,'candle_time':ct,'regime':regime,'rsi':rv,'atr':av,'adx5':ad,'volume_ratio':vr,'book_imbalance':imb,'book_spread':spread,'real_spread_pct':spread,'best_bid':bk['best_bid'],'best_ask':bk['best_ask'],'long_score':ls,'short_score':ss,'breakout_high':bh,'breakout_low':bl,'expected_move_pct':edge,'z_momentum':z,'z_class':zclass,'armed_side':armed_side,'armed_trigger':armed_trigger,'armed_distance_atr':armed_dist,'reason':reason,'ensemble_score':ensemble,'no_trade_reason':no_trade,'setup_health':health,'leader':leader}
+    return {'symbol':symbol,'price':float(k1[-1][4]),'signal':signal,'raw_signal':raw,'setup':setup,'score':score,'news':news,'candle_time':ct,'regime':regime,'rsi':rv,'atr':av,'adx5':ad,'volume_ratio':vr,'book_imbalance':imb,'book_spread':spread,'real_spread_pct':spread,'best_bid':bk['best_bid'],'best_ask':bk['best_ask'],'long_score':ls,'short_score':ss,'breakout_high':bh,'breakout_low':bl,'expected_move_pct':edge,'z_momentum':z,'z_class':zclass,'armed_side':armed_side,'armed_trigger':armed_trigger,'armed_distance_atr':armed_dist,'reason':reason,'ensemble_score':ensemble,'no_trade_reason':no_trade,'setup_health':health,'leader':leader,'pullback_long':pullback_long}
 
 def open_trade(a,price):
     if m.paper_position or not a.get('atr'): return
@@ -217,6 +292,9 @@ def open_trade(a,price):
     if a.get('setup')=='NEWS_LONG':
         quality='NEWS+' if quality=='STANDARD' else 'NEWS_'+quality
         risk_rate=min(risk_rate, STRONG_RISK_RATE)
+    if a.get('setup')=='RECOVERY_TREND' or a.get('entry_kind')=='RECOVERY_A_PLUS':
+        quality='RECOVERY_A+'
+        risk_rate=RECOVERY_RISK_RATE
     risk=m.PAPER_BALANCE*risk_rate; tp=m.target_market_for_net_profit(side,entry,nloss*m.NET_RISK_REWARD); qty=min(risk/nloss,m.PAPER_BALANCE*m.MAX_NOTIONAL_SHARE/entry)
     actual_risk=qty*nloss
     features={
@@ -226,7 +304,8 @@ def open_trade(a,price):
         'adx5':a.get('adx5'),'rsi':a.get('rsi'),'news_score':(a.get('news') or {}).get('score'),
         'leader_direction':(a.get('leader') or {}).get('direction'),'leader_strength':(a.get('leader') or {}).get('strength'),
         'btc_return':(a.get('leader') or {}).get('btc_return'),'eth_return':(a.get('leader') or {}).get('eth_return'),
-        'no_trade_reason':a.get('no_trade_reason'),'setup_health':a.get('setup_health')
+        'no_trade_reason':a.get('no_trade_reason'),'setup_health':a.get('setup_health'),
+        'recovery_mode':a.get('setup')=='RECOVERY_TREND'
     }
     m.paper_position={'symbol':a['symbol'],'side':side,'setup':a.get('setup') or 'BREAKOUT','regime':a['regime'],'score':a.get('score',0),'entry_price':entry,'qty':qty,'stop_loss':sl,'take_profit':tp,'risk_distance':dist,'initial_risk_usdc':actual_risk,'risk_rate':risk_rate,'quality_tier':quality,'ensemble_score':ensemble,'entry_features':features,'net_rr':m.NET_RISK_REWARD,'mae_r':0.0,'mfe_r':0.0,'breakeven_moved':False,'profit_mode':False,'z_entry':float(a.get('z_momentum') or 0),'entry_trigger':float(a.get('entry_trigger') or a.get('armed_trigger') or price),'entry_spread_pct':float(a.get('real_spread_pct') or 0),'entry_kind':a.get('entry_kind','CLOSED_CANDLE'),'last_danger_score':0,'opened_at':m.utcnow().isoformat()}
     m.last_entry_candle[a['symbol']]=a['candle_time']; m.save_state(); m.log_signal(a,'ENTER',f"{quality} risk={risk_rate*100:.2f}% {m.paper_position['entry_kind']} z={m.paper_position['z_entry']:.2f}")
@@ -292,10 +371,18 @@ async def cycle():
         now=m.utcnow()
         if m.cooldown_until and now<m.cooldown_until: m.last_cycle_at=now.isoformat(); return
         _,streak,blocked,_=m.daily_risk_status()
-        # After a loss streak, close_trade() already sets cooldown_until. Do not block
-        # the strategy for the rest of the UTC day once that cooldown expires.
-        if blocked: m.last_cycle_at=now.isoformat(); return
-        rows=await m.analyze_all(); best=choose_best(rows)
+        recovery=recovery_status()
+        rows=await m.analyze_all()
+        if recovery['breached']:
+            best=_recovery_candidate(rows)
+            if not best:
+                m.last_cycle_at=now.isoformat(); return
+            price=await m.get_live_price(best['symbol'],max_age=1.0)
+            best['entry_trigger']=price
+            open_trade(best,price)
+            m.last_cycle_at=m.utcnow().isoformat()
+            return
+        best=choose_best(rows)
         if best:
             price=await m.get_live_price(best['symbol'],max_age=1.0)
             if best.get('signal') in ('LONG','SHORT'): best['entry_kind']='CLOSED_CANDLE'; best['entry_trigger']=price; open_trade(best,price)
@@ -309,5 +396,5 @@ async def cycle():
 def install(module):
     global m
     if getattr(module,'_fly_layer_installed',False):return module
-    m=module; module.strategy_analysis=strategy; module.open_trade=open_trade; module.close_trade=close_trade; module.manage_position=manage_position; module.choose_best=choose_best; module.cycle=cycle; module.FLY_LAYER_BUILD=BUILD; module.app.title='V8 Adaptive Breakout Scalper — Fly Layer'; module._fly_layer_installed=True
+    m=module; module.strategy_analysis=strategy; module.open_trade=open_trade; module.close_trade=close_trade; module.manage_position=manage_position; module.choose_best=choose_best; module.cycle=cycle; module.recovery_status=recovery_status; module.FLY_LAYER_BUILD=BUILD; module.app.title='V8 Adaptive Breakout Scalper — Fly Layer'; module._fly_layer_installed=True
     return module
