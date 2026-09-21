@@ -144,6 +144,8 @@ def init_db():
                     created_at TIMESTAMPTZ DEFAULT NOW()
                 )
             """)
+            cur.execute("ALTER TABLE v8fixed_trades ADD COLUMN IF NOT EXISTS ensemble_score DOUBLE PRECISION")
+            cur.execute("ALTER TABLE v8fixed_trades ADD COLUMN IF NOT EXISTS entry_features JSONB")
         conn.commit()
 
 
@@ -212,13 +214,15 @@ def save_trade(t):
             cur.execute("""
                 INSERT INTO v8fixed_trades(
                     symbol,side,setup,regime,score,entry_price,exit_price,qty,
-                    gross_pnl,fees,pnl,initial_risk_usdc,mae_r,mfe_r,reason,opened_at,closed_at
-                ) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                    gross_pnl,fees,pnl,initial_risk_usdc,mae_r,mfe_r,reason,opened_at,closed_at,
+                    ensemble_score,entry_features
+                ) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s::jsonb)
             """, (
                 t["symbol"], t["side"], t["setup"], t.get("regime"), t.get("score"),
                 t["entry_price"], t["exit_price"], t["qty"], t["gross_pnl"], t["fees"], t["pnl"],
                 t.get("initial_risk_usdc"), t.get("mae_r"), t.get("mfe_r"), t["reason"],
-                t["opened_at"], t["closed_at"]
+                t["opened_at"], t["closed_at"], t.get("ensemble_score"),
+                json.dumps(t.get("entry_features") or {})
             ))
         conn.commit()
 
