@@ -170,6 +170,14 @@ async def get_xrp_news(force=False):
             data = await _fetch()
             _cache["data"] = data
             _cache["ts"] = now
+            print(
+                "NEWS_FEED status={} bullish={} bearish={} score={} positive={} negative={} sources={}".format(
+                    data.get("status"), data.get("bullish"), data.get("bearish"),
+                    data.get("score"), data.get("positive_count"),
+                    data.get("negative_count"), data.get("sources")
+                ),
+                flush=True,
+            )
         except Exception as e:
             previous = dict(_cache["data"])
             previous["status"] = "error"
@@ -179,6 +187,7 @@ async def get_xrp_news(force=False):
             previous["bearish"] = False
             _cache["data"] = previous
             _cache["ts"] = now
+            print("NEWS_FEED_ERROR {}".format(previous["error"]), flush=True)
         return _cache["data"]
 
 
