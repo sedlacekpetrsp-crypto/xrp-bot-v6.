@@ -181,7 +181,7 @@ async function refreshLeadLag(){
   document.getElementById('leadlagAnalysis').innerHTML=
    `<b class="${p?'green':'yellow'}">${tradeState}</b> • poslední scan ${scanText}<br>Signal <b>${a.signal||'WAIT'}</b> • BTC ${f(Number(a.btc_return||0)*100,3)} % • ETH ${f(Number(a.eth_return||0)*100,3)} % • XRP ${f(Number(a.xrp_return||0)*100,3)} % • lag ${f(Number(a.lag_return||0)*100,3)} % • book ${f(a.book_imbalance,3)}<br><span class="muted">${blockerText}</span>`;
   document.getElementById('leadlagTrades').innerHTML=ts.slice().reverse().slice(0,8).map(t=>
-    `<div class="trade"><span>${t.side}</span><span>${f(t.entry,6)} → ${f(t.exit,6)}</span><span>${t.reason||'—'}</span><span class="${Number(t.net_pnl)>=0?'green':'red'}">${Number(t.net_pnl)>=0?'+':''}${f(t.net_pnl,2)} USDC</span><span>${t.closed_at?new Date(t.closed_at).toLocaleString('cs-CZ'):'—'}</span></div>`
+    `<div class="trade"><span><b>${t.symbol||'XRPUSDC'}</b> ${t.side}</span><span>${f(t.entry,6)} → ${f(t.exit,6)}</span><span>${t.reason||'—'}</span><span class="${Number(t.net_pnl)>=0?'green':'red'}">${Number(t.net_pnl)>=0?'+':''}${f(t.net_pnl,2)} USDC</span><span>${t.closed_at?new Date(t.closed_at).toLocaleString('cs-CZ'):'—'}</span></div>`
   ).join('') || '<div class="coin muted">Zatím žádné uzavřené obchody.</div>';
   document.getElementById('leadlagHealth').textContent=
    `Scan: ${w.last_scan||'—'} • ukládání: ${w.persistence||'memory'} • chyba: ${w.error||w.persistence_error||'žádná'}`;
