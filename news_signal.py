@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 
 import httpx
 
-BUILD = "xrp-news-v3-resilient-20260922"
+BUILD = "xrp-news-v3.1-resilient-20260922"
 GDELT_URL = "https://api.gdeltproject.org/api/v2/doc/doc"
 CACHE_SECONDS = 900
 FAILURE_BACKOFF_SECONDS = 900
@@ -209,8 +209,9 @@ async def get_xrp_news(force=False):
             _retry_not_before = now + delay
             previous = dict(_cache["data"])
             previous["status"] = "degraded"
+            upstream_error = f"{type(e).__name__}: {e}"
             previous["error"] = None
-            previous["upstream_error"] = f"{type(e).__name__}: {e}"
+            previous["upstream_error"] = upstream_error
             previous["checked_at"] = datetime.now(timezone.utc).isoformat()
             previous["next_retry_at"] = datetime.fromtimestamp(time.time() + delay, timezone.utc).isoformat()
             previous["failure_count"] = _failure_count
@@ -220,7 +221,7 @@ async def get_xrp_news(force=False):
             _cache["ts"] = now
             print(
                 "NEWS_FEED_BACKOFF seconds={} failure={} error={}".format(
-                    int(delay), _failure_count, previous["error"]
+                    int(delay), _failure_count, upstream_error
                 ),
                 flush=True,
             )
