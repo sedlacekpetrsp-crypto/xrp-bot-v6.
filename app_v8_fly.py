@@ -5,6 +5,7 @@ import app_blue_whale_mirror as whale
 import lead_lag_scalper as leadlag
 import fast_scalper as fast
 import news_signal
+import tv_consensus_scalper as tv
 from v8_fly_layer import install
 
 install(base)
@@ -12,6 +13,7 @@ app = base.app
 _original_analyze = base.analyze
 _original_dashboard = base.dashboard
 _whale_task = None
+_tv_task = None
 
 app.router.routes[:] = [
     route for route in app.router.routes
@@ -197,16 +199,19 @@ async function refreshLeadLag(){
 
 @app.on_event("startup")
 async def start_whale_worker():
-    global _whale_task
+    global _whale_task, _tv_task
     whale.init_persistence()
     leadlag.install(base)
     fast.install(base)
+    tv.install(base)
     if _whale_task is None or _whale_task.done():
         _whale_task = __import__("asyncio").create_task(whale.bot_loop())
     if not getattr(app.state, "leadlag_task", None) or app.state.leadlag_task.done():
         app.state.leadlag_task = __import__("asyncio").create_task(leadlag.bot_loop())
     if not getattr(app.state, "fast_task", None) or app.state.fast_task.done():
         app.state.fast_task = __import__("asyncio").create_task(fast.bot_loop())
+    if _tv_task is None or _tv_task.done():
+        _tv_task = __import__("asyncio").create_task(tv.bot_loop())
 
 @app.get("/whale/status")
 async def whale_status():
@@ -216,6 +221,10 @@ async def whale_status():
 @app.get("/leadlag/status")
 async def leadlag_status():
     return JSONResponse(leadlag.state, headers={"Cache-Control":"no-store"})
+
+@app.get("/tv/status")
+async def tv_status():
+    return JSONResponse(tv.state, headers={"Cache-Control":"no-store"})
 
 def _age_seconds(value):
     if not value:
@@ -235,12 +244,14 @@ async def combined_health():
     whale_age = _age_seconds(whale.state.get("last_scan"))
     leadlag_age = _age_seconds(leadlag.state.get("last_scan"))
     fast_age = _age_seconds(fast.state.get("last_scan"))
+    tv_age = _age_seconds(tv.state.get("last_scan"))
     fly_ok = fly_age is not None and fly_age < 90 and not getattr(base, "last_error", None)
     whale_ok = whale_age is not None and whale_age < 180 and whale.state.get("persistence") == "postgres" and not whale.state.get("error")
     leadlag_ok = leadlag_age is not None and leadlag_age < 90 and leadlag.state.get("persistence") == "postgres" and not leadlag.state.get("error")
     fast_ok = fast_age is not None and fast_age < 90 and fast.state.get("persistence") == "postgres" and not fast.state.get("error")
+    tv_ok = tv_age is not None and tv_age < 90 and tv.state.get("persistence") == "postgres" and not tv.state.get("error")
     return JSONResponse({
-        "ok": bool(fly_ok and whale_ok and leadlag_ok and fast_ok),
+        "ok": bool(fly_ok and whale_ok and leadlag_ok and fast_ok and tv_ok),
         "fly": {
             "healthy": fly_ok,
             "age_seconds": fly_age,
@@ -276,6 +287,20 @@ async def combined_health():
             "equity": fast.state.get("equity"),
             "open_position": fast.state.get("open_position"),
             "trades": len(fast.state.get("trades", [])),
+        },
+        "tv_consensus": {
+            "healthy": tv_ok,
+            "age_seconds": tv_age,
+            "status": tv.state.get("status"),
+            "error": tv.state.get("error"),
+            "last_scan": tv.state.get("last_scan"),
+            "persistence": tv.state.get("persistence"),
+            "persistence_error": tv.state.get("persistence_error"),
+            "balance": tv.state.get("balance"),
+            "equity": tv.state.get("equity"),
+            "open_position": tv.state.get("open_position"),
+            "analysis": tv.state.get("analysis"),
+            "trades": len(tv.state.get("trades", [])),
         },
         "leadlag": {
             "healthy": leadlag_ok,
