@@ -5,11 +5,11 @@ from datetime import datetime, timezone
 
 import httpx
 
-BUILD = "xrp-news-v2-backoff-20260921"
+BUILD = "xrp-news-v3-resilient-20260922"
 GDELT_URL = "https://api.gdeltproject.org/api/v2/doc/doc"
-CACHE_SECONDS = 180
-FAILURE_BACKOFF_SECONDS = 180
-MAX_BACKOFF_SECONDS = 900
+CACHE_SECONDS = 900
+FAILURE_BACKOFF_SECONDS = 900
+MAX_BACKOFF_SECONDS = 3600
 LOOKBACK = "2h"
 MAX_RECORDS = 30
 
@@ -97,7 +97,8 @@ async def _fetch():
         "sort": "datedesc",
     }
     headers = {"User-Agent": "xrp-paper-bot-news-monitor/1.0"}
-    async with httpx.AsyncClient(timeout=10.0, follow_redirects=True, headers=headers) as client:
+    timeout = httpx.Timeout(20.0, connect=20.0)
+    async with httpx.AsyncClient(timeout=timeout, follow_redirects=True, headers=headers) as client:
         r = await client.get(GDELT_URL, params=params)
         r.raise_for_status()
         payload = r.json()
@@ -207,8 +208,9 @@ async def get_xrp_news(force=False):
                     pass
             _retry_not_before = now + delay
             previous = dict(_cache["data"])
-            previous["status"] = "backoff"
-            previous["error"] = f"{type(e).__name__}: {e}"
+            previous["status"] = "degraded"
+            previous["error"] = None
+            previous["upstream_error"] = f"{type(e).__name__}: {e}"
             previous["checked_at"] = datetime.now(timezone.utc).isoformat()
             previous["next_retry_at"] = datetime.fromtimestamp(time.time() + delay, timezone.utc).isoformat()
             previous["failure_count"] = _failure_count
