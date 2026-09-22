@@ -214,10 +214,10 @@ async function refreshTV(){
    ['Balance',f(w.balance,2)+' USDC'],['Equity',f(w.equity,2)+' USDC'],
    ['Obchody',ts.length],['Win rate',f(wr,1)+' %'],
    ['PnL',(pnl>=0?'+':'')+f(pnl,2)+' USDC'],['Status',w.status||'—']
-  ].map(x=>\`<div class="coin"><div class="muted">\${x[0]}</div><b>\${x[1]}</b></div>\`).join('');
+  ].map(x=>`<div class="coin"><div class="muted">${x[0]}</div><b>${x[1]}</b></div>`).join('');
   const sig=a.signal||'WAIT', cls=sig==='LONG'?'green':sig==='SHORT'?'red':'yellow';
-  document.getElementById('tvSignal').innerHTML=\`<b class="\${cls}">\${sig}</b> • L/S \${f(a.long_score,1)} / \${f(a.short_score,1)} • accel \${f(a.long_accel,1)} / \${f(a.short_accel,1)} • 15m \${a.trend_15m||'—'}<br><span class="muted">MA buy/sell \${a.ma_buy??'—'}/\${a.ma_sell??'—'} • ADX \${f(a.adx5,1)} • volume \${f(a.volume_ratio,2)}x • \${p?'OBCHOD OTEVŘEN':'ČEKÁM NA SETUP'}</span>\`;
-  document.getElementById('tvTrades').innerHTML=ts.slice().reverse().slice(0,6).map(t=>\`<div class="trade"><span><b>\${t.side}</b></span><span>\${f(t.entry,6)} → \${f(t.exit,6)}</span><span>\${t.reason||'—'}</span><span class="\${Number(t.net_pnl)>=0?'green':'red'}">\${Number(t.net_pnl)>=0?'+':''}\${f(t.net_pnl,2)} USDC</span></div>\`).join('')||'<div class="muted">Zatím žádné uzavřené obchody.</div>';
+  document.getElementById('tvSignal').innerHTML=`<b class="${cls}">${sig}</b> • L/S ${f(a.long_score,1)} / ${f(a.short_score,1)} • accel ${f(a.long_accel,1)} / ${f(a.short_accel,1)} • 15m ${a.trend_15m||'—'}<br><span class="muted">MA buy/sell ${a.ma_buy??'—'}/${a.ma_sell??'—'} • ADX ${f(a.adx5,1)} • volume ${f(a.volume_ratio,2)}x • ${p?'OBCHOD OTEVŘEN':'ČEKÁM NA SETUP'}</span>`;
+  document.getElementById('tvTrades').innerHTML=ts.slice().reverse().slice(0,6).map(t=>`<div class="trade"><span><b>${t.side}</b></span><span>${f(t.entry,6)} → ${f(t.exit,6)}</span><span>${t.reason||'—'}</span><span class="${Number(t.net_pnl)>=0?'green':'red'}">${Number(t.net_pnl)>=0?'+':''}${f(t.net_pnl,2)} USDC</span></div>`).join('')||'<div class="muted">Zatím žádné uzavřené obchody.</div>';
  }catch(e){ document.getElementById('tvSignal').textContent='TV Consensus error: '+e; }
 }
 """
