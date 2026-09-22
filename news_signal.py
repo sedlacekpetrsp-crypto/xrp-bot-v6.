@@ -5,11 +5,11 @@ from datetime import datetime, timezone
 
 import httpx
 
-BUILD = "xrp-news-v3.1-resilient-20260922"
+BUILD = "xrp-news-v4-circuit-breaker-20260922"
 GDELT_URL = "https://api.gdeltproject.org/api/v2/doc/doc"
-CACHE_SECONDS = 900
-FAILURE_BACKOFF_SECONDS = 900
-MAX_BACKOFF_SECONDS = 3600
+CACHE_SECONDS = 21600
+FAILURE_BACKOFF_SECONDS = 21600
+MAX_BACKOFF_SECONDS = 21600
 LOOKBACK = "2h"
 MAX_RECORDS = 30
 
@@ -200,7 +200,7 @@ async def get_xrp_news(force=False):
             _failure_count += 1
             delay = min(MAX_BACKOFF_SECONDS, FAILURE_BACKOFF_SECONDS * (2 ** min(_failure_count - 1, 3)))
             if isinstance(e, httpx.HTTPStatusError) and e.response is not None and e.response.status_code == 429:
-                delay = max(delay, 300)
+                delay = MAX_BACKOFF_SECONDS
                 raw = e.response.headers.get("Retry-After", "")
                 try:
                     delay = max(delay, float(raw))
@@ -220,7 +220,7 @@ async def get_xrp_news(force=False):
             _cache["data"] = previous
             _cache["ts"] = now
             print(
-                "NEWS_FEED_BACKOFF seconds={} failure={} error={}".format(
+                "NEWS_FEED_DEGRADED seconds={} failure={} upstream_error={}".format(
                     int(delay), _failure_count, upstream_error
                 ),
                 flush=True,
