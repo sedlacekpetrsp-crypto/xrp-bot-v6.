@@ -2,7 +2,7 @@ import asyncio, math, statistics, time
 from datetime import datetime
 import news_signal
 
-BUILD = "v8-fly-layer-20260921-8-health"
+BUILD = "v8-fly-layer-20260922-9-pullback"
 Z_ARMED = 0.60
 Z_STRONG = 0.80
 Z_DANGER = 0.55
@@ -43,7 +43,7 @@ def _ensemble_score(a):
     score=0.0
     regime=a.get('regime')
     if (side=='LONG' and regime=='TREND_LONG') or (side=='SHORT' and regime=='TREND_SHORT'): score+=1.5
-    if int(a.get('score') or 0)>=8: score+=1.5
+    if int(a.get('score') or 0)>=(7 if a.get('setup')=='TREND_PULLBACK' else 8): score+=1.5
     if float(a.get('volume_ratio') or 0)>=1.5: score+=1.0
     z=float(a.get('z_momentum') or 0)
     if (side=='LONG' and z>=0.8) or (side=='SHORT' and z<=-0.8): score+=1.0
@@ -244,6 +244,28 @@ async def strategy(symbol):
     elif regime=='TREND_SHORT' and cl<bl and vr>=max(m.MIN_BREAKOUT_VOLUME,1.50) and ss>=max(m.MIN_SCORE,8):
         raw,setup,score='SHORT','BREAKOUT',ss
 
+    # A confirmed reclaim after an EMA pullback is a normal trend entry.
+    # Require a closed candle to break the previous candle, not just touch an EMA.
+    pullback_short = bool(regime=='TREND_SHORT' and hi>=min(e9,e21)*0.9985 and cl<e9 and vw is not None and cl<=vw)
+    pullback_confirm_long = bool(
+        av and av>0 and regime=='TREND_LONG' and e9>e21 and min(l[-3:])<=e9
+        and cl>e9 and cl>h[-2] and 0<cl-e9<=av
+        and vw is not None and cl>=vw and 45<=rv<=72
+        and bull>=0.55 and mac_up and ls>=7
+        and vr>=NO_TRADE_MIN_VOL and z>=Z_ARMED
+        and spread_ok and imb>=0.55)
+    pullback_confirm_short = bool(
+        av and av>0 and regime=='TREND_SHORT' and e9<e21 and max(h[-3:])>=e9
+        and cl<e9 and cl<l[-2] and 0<e9-cl<=av
+        and vw is not None and cl<=vw and 28<=rv<=55
+        and bear>=0.55 and mac_dn and ss>=7
+        and vr>=NO_TRADE_MIN_VOL and z<=-Z_ARMED
+        and spread_ok and imb<=0.45)
+    if raw=='WAIT' and pullback_confirm_long:
+        raw,setup,score='LONG','TREND_PULLBACK',ls
+    elif raw=='WAIT' and pullback_confirm_short:
+        raw,setup,score='SHORT','TREND_PULLBACK',ss
+
     # NEWS_LONG: positive XRP/Ripple news is allowed to create an entry only
     # when price/volume/order-book confirm that the market is reacting.
     if symbol=='XRPUSDC' and raw=='WAIT' and news.get('bullish') and not news.get('bearish'):
@@ -277,7 +299,7 @@ async def strategy(symbol):
     zclass='STRONG_LONG' if z>=Z_STRONG else 'ARMED_LONG' if z>=Z_ARMED else 'STRONG_SHORT' if z<=-Z_STRONG else 'ARMED_SHORT' if z<=-Z_ARMED else 'IGNORE'
     reason=f'{symbol} {regime} raw={raw} L/S={ls}/{ss} book={imb:.3f} spread={spread*100:.3f}% vol={vr:.2f}x z={z:.2f} edge={edge*100:.3f}% news={int(news.get("score") or 0)}'
     if armed_side: reason+=f' ARMED={armed_side}@{armed_trigger:.6f}'
-    ensemble=_ensemble_score({'symbol':symbol,'signal':signal,'raw_signal':raw,'regime':regime,'score':score,'volume_ratio':vr,'z_momentum':z,'book_imbalance':imb,'real_spread_pct':spread,'expected_move_pct':edge,'news':news,'leader':leader})
+    ensemble=_ensemble_score({'symbol':symbol,'signal':signal,'raw_signal':raw,'setup':setup,'regime':regime,'score':score,'volume_ratio':vr,'z_momentum':z,'book_imbalance':imb,'real_spread_pct':spread,'expected_move_pct':edge,'news':news,'leader':leader})
     no_trade=_no_trade_reason({'real_spread_pct':spread,'adx5':ad,'regime':regime,'volume_ratio':vr})
     health=_setup_health(symbol, signal if signal in ('LONG','SHORT') else raw, setup or 'BREAKOUT') if raw in ('LONG','SHORT') else {'enabled':True,'n':0,'expectancy_r':None,'winrate':None}
     if signal in ('LONG','SHORT'):
@@ -286,7 +308,39 @@ async def strategy(symbol):
         elif not health.get('enabled',True): signal,reject='WAIT','SETUP_AUTO_DISABLED'
     if reject: reason+=f' REJECT={reject}'
     reason+=f' ensemble={ensemble:.1f}'
-    return {'symbol':symbol,'price':float(k1[-1][4]),'signal':signal,'raw_signal':raw,'setup':setup,'score':score,'news':news,'candle_time':ct,'regime':regime,'rsi':rv,'atr':av,'adx5':ad,'volume_ratio':vr,'book_imbalance':imb,'book_spread':spread,'real_spread_pct':spread,'best_bid':bk['best_bid'],'best_ask':bk['best_ask'],'long_score':ls,'short_score':ss,'breakout_high':bh,'breakout_low':bl,'expected_move_pct':edge,'z_momentum':z,'z_class':zclass,'armed_side':armed_side,'armed_trigger':armed_trigger,'armed_distance_atr':armed_dist,'reason':reason,'ensemble_score':ensemble,'no_trade_reason':no_trade,'setup_health':health,'leader':leader,'pullback_long':pullback_long}
+    return {'symbol':symbol,'price':float(k1[-1][4]),'signal':signal,'raw_signal':raw,'setup':setup,'score':score,'news':news,'candle_time':ct,'regime':regime,'rsi':rv,'atr':av,'adx5':ad,'volume_ratio':vr,'book_imbalance':imb,'book_spread':spread,'real_spread_pct':spread,'best_bid':bk['best_bid'],'best_ask':bk['best_ask'],'long_score':ls,'short_score':ss,'breakout_high':bh,'breakout_low':bl,'expected_move_pct':edge,'z_momentum':z,'z_class':zclass,'armed_side':armed_side,'armed_trigger':armed_trigger,'armed_distance_atr':armed_dist,'reason':reason,'ensemble_score':ensemble,'no_trade_reason':reject or no_trade or ('NO_CONFIRMED_SETUP' if signal=='WAIT' else None),'setup_health':health,'leader':leader,'pullback_long':pullback_long,'pullback_short':pullback_short}
+
+def entry_blocker(a):
+    """Shared safety gates for closed-candle and armed entries."""
+    side = a.get('signal')
+    if side not in ('LONG', 'SHORT'):
+        return 'NO_CONFIRMED_SETUP'
+    if float(a.get('expected_move_pct') or 0) < m.ROUND_TRIP_COST*m.MIN_EDGE_MULTIPLE:
+        return 'EDGE_TOO_SMALL'
+    reason = _no_trade_reason(a)
+    if reason:
+        return reason
+    if side == 'LONG' and (a.get('news') or {}).get('bearish'):
+        return 'NEGATIVE_NEWS_BLOCK'
+    z = float(a.get('z_momentum') or 0)
+    if (side == 'LONG' and z < Z_ARMED) or (side == 'SHORT' and z > -Z_ARMED):
+        return 'WEAK_MOMENTUM'
+    if _ensemble_score(a) < ENSEMBLE_MIN_SCORE:
+        return 'LOW_ENSEMBLE_SCORE'
+    if not _setup_health(a['symbol'], side, a.get('setup') or 'BREAKOUT')['enabled']:
+        return 'SETUP_AUTO_DISABLED'
+    return None
+
+
+def armed_candidate(row):
+    side = row.get('armed_side')
+    if side not in ('LONG', 'SHORT'):
+        return None
+    candidate = dict(row)
+    candidate.update(signal=side, raw_signal=side, setup='BREAKOUT',
+                     score=int(row.get('long_score' if side == 'LONG' else 'short_score') or 0))
+    candidate['ensemble_score'] = _ensemble_score(candidate)
+    return candidate if entry_blocker(candidate) is None else None
 
 def open_trade(a,price):
     if m.paper_position or not a.get('atr'): return
@@ -364,11 +418,9 @@ def choose_best(rows):
             rank=(float(x.get('ensemble_score') or 0),float(x.get('expected_move_pct') or 0),abs(float(x.get('z_momentum') or 0)))
             confirmed.append((rank,x))
         elif x.get('armed_side') in ('LONG','SHORT') and m.last_entry_candle.get(x['symbol'])!=x.get('candle_time'):
-            side=x.get('armed_side')
-            tmp=dict(x); tmp['signal']=side
-            ens=_ensemble_score(tmp)
-            if not _no_trade_reason(tmp) and ens>=ENSEMBLE_MIN_SCORE:
-                rank=(ens,float(x.get('expected_move_pct') or 0),-float(x.get('armed_distance_atr') or 999))
+            candidate=armed_candidate(x)
+            if candidate:
+                rank=(candidate['ensemble_score'],float(x.get('expected_move_pct') or 0),-float(x.get('armed_distance_atr') or 0))
                 armed.append((rank,x))
     if confirmed: return sorted(confirmed,key=lambda z:z[0],reverse=True)[0][1]
     if armed:return sorted(armed,key=lambda z:z[0],reverse=True)[0][1]
@@ -400,7 +452,9 @@ async def cycle():
             elif best.get('armed_side') in ('LONG','SHORT'):
                 side=best['armed_side']; trigger=float(best['armed_trigger']); crossed=price>=trigger if side=='LONG' else price<=trigger
                 if crossed and float(best.get('real_spread_pct') or 1)<=MAX_REAL_SPREAD_PCT:
-                    a=dict(best); a['signal']=side; a['raw_signal']=side; a['setup']='BREAKOUT'; a['score']=max(int(best.get('long_score') if side=='LONG' else best.get('short_score') or 0),m.MIN_SCORE); a['ensemble_score']=_ensemble_score(a); a['entry_kind']='ARMED_INTRABAR'; a['entry_trigger']=trigger; open_trade(a,price)
+                    a=armed_candidate(best)
+                    if a is not None:
+                        a['entry_kind']='ARMED_INTRABAR'; a['entry_trigger']=trigger; open_trade(a,price)
         m.last_cycle_at=m.utcnow().isoformat()
     except Exception as e: m.last_error=f'{type(e).__name__}: {e}'; print('V8 FLY CYCLE',e)
     finally:
@@ -409,5 +463,6 @@ async def cycle():
 def install(module):
     global m
     if getattr(module,'_fly_layer_installed',False):return module
+    module.ENABLED_SETUPS = {'BREAKOUT', 'TREND_PULLBACK', 'NEWS_LONG'}
     m=module; module.strategy_analysis=strategy; module.open_trade=open_trade; module.close_trade=close_trade; module.manage_position=manage_position; module.choose_best=choose_best; module.cycle=cycle; module.recovery_status=recovery_status; module.FLY_LAYER_BUILD=BUILD; module.app.title='V8 Adaptive Breakout Scalper — Fly Layer'; module._fly_layer_installed=True
     return module

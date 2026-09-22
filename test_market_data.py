@@ -55,7 +55,9 @@ async def test_invalid_price_never_becomes_zero_or_cache():
  assert not m.cache
 @pytest.mark.asyncio
 async def test_stale_candles_rejected():
- m=MarketData();rows=candles();rows[-1][0]-=3600000
+ m=MarketData();rows=candles()
+ # Shift both timestamps: stale candles must not retain a current close time.
+ for row in rows: row[0]-=3600000;row[6]-=3600000
  c=Client(lambda u,p:response(data=rows))
  with pytest.raises(MarketDataUnavailable):await m.get(c,BASE+'klines',{'symbol':'XRPUSDT','interval':'1m'})
  assert not m.cache
