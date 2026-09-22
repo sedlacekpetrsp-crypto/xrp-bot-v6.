@@ -14,7 +14,7 @@ from datetime import datetime, timezone, timedelta
 import psycopg
 from psycopg.types.json import Jsonb
 
-BUILD = "tv-consensus-v1-20260922"
+BUILD = "tv-consensus-v2-20260922-risk-exits"
 MODE = "PAPER"
 SYMBOL = "XRPUSDC"
 
@@ -42,7 +42,10 @@ LOSS_COOLDOWN_SECONDS = 150
 MAX_CONSECUTIVE_LOSSES = 4
 MAX_DAILY_LOSS_PCT = 0.008
 SOFT_HOLD_MINUTES = 12.0
-HARD_HOLD_MINUTES = 45.0
+STALE_HOLD_MINUTES = 45.0
+BREAK_EVEN_TRIGGER_R = 0.75
+TRAIL_TRIGGER_R = 1.0
+TRAIL_GIVEBACK_R = 0.50
 FLIP_EXIT_MIN_AGE = 1.0
 
 DB_STATE_TABLE = "tv_consensus_state"
@@ -415,6 +418,24 @@ async def analyze_market():
         "threshold_long":long_thr,"threshold_short":short_thr,
         "reason":f"TV-like consensus L/S={long_score:.1f}/{short_score:.1f} accel={accel_l:.1f}/{accel_s:.1f} 15m={t15} MA={ma_buy}/{ma_sell} ADX={adx if adx is not None else 0:.1f} vol={vr:.2f}x"
     }
+    # Show the actual blocking gates instead of an unexplained WAIT.
+    blockers = []
+    preferred_long = long_score >= short_score
+    preferred_score = long_score if preferred_long else short_score
+    threshold = long_thr if preferred_long else short_thr
+    fast = fast_long if preferred_long else fast_short
+    acceleration = accel_l if preferred_long else accel_s
+    if preferred_score < threshold:
+        blockers.append(f"Skóre {preferred_score:.1f} < {threshold:.0f}")
+    if abs(long_score-short_score) < MIN_SCORE_EDGE:
+        blockers.append("Malý rozdíl LONG/SHORT")
+    if not (acceleration >= MIN_SCORE_ACCEL or fast or preferred_score >= 76):
+        blockers.append("Chybí potvrzení momenta")
+    if adx is not None and adx < MIN_ADX:
+        blockers.append(f"ADX {adx:.1f} < {MIN_ADX:.0f}")
+    if vr < MIN_VOLUME_RATIO:
+        blockers.append(f"Objem {vr:.2f} < {MIN_VOLUME_RATIO:.2f}x")
+    row["blockers"] = blockers
     state["previous_long_score"]=long_score
     state["previous_short_score"]=short_score
     state["analysis"]=row
@@ -454,6 +475,14 @@ def cooldown_active():
     if not raw: return False
     try: return utcnow()<datetime.fromisoformat(raw)
     except Exception: return False
+
+
+def loss_streak_pause_active():
+    # Anchor the pause to the last loss; do not restart it on every scan/reboot.
+    if consecutive_losses() < MAX_CONSECUTIVE_LOSSES:
+        return False
+    last = datetime.fromisoformat(state["trades"][-1]["closed_at"])
+    return utcnow() < last + timedelta(minutes=20)
 
 
 def open_trade(a, market_price):
@@ -513,7 +542,7 @@ def close_trade(market_price, reason):
     print(f"TV CONSENSUS CLOSE net={net:.2f} reason={reason}",flush=True)
 
 
-async def manage_position(a):
+async def manage_position(a=None):
     p=state["open_position"]
     if not p: return
     price=await base.get_live_price(SYMBOL,max_age=1.0)
@@ -521,12 +550,39 @@ async def manage_position(a):
     p["peak_net"]=max(float(p.get("peak_net") or 0),net)
     state["equity"]=float(state["balance"])+net
 
+    stop_reason = "TV PROFIT PROTECT" if p.get("profit_protected") else "TV STOP"
     if p["side"]=="LONG":
-        if price<=float(p["stop"]): close_trade(price,"TV STOP"); return
+        if price<=float(p["stop"]): close_trade(price,stop_reason); return
         if price>=float(p["tp"]): close_trade(price,"TV TAKE PROFIT"); return
     else:
-        if price>=float(p["stop"]): close_trade(price,"TV STOP"); return
+        if price>=float(p["stop"]): close_trade(price,stop_reason); return
         if price<=float(p["tp"]): close_trade(price,"TV TAKE PROFIT"); return
+
+    # Use NET profit and original risk, so fees/slippage are covered for both sides.
+    risk = float(p["risk_dollars"])
+    peak = float(p["peak_net"])
+    previous_stop = float(p["stop"])
+    if risk > 0 and peak >= BREAK_EVEN_TRIGGER_R * risk:
+        locked_net = 0.0
+        if peak >= TRAIL_TRIGGER_R * risk:
+            locked_net = max(0.0, peak - TRAIL_GIVEBACK_R * risk)
+        candidate = base.target_market_for_net_profit(p["side"], float(p["entry"]), locked_net / float(p["qty"]))
+        if p["side"] == "LONG":
+            p["stop"] = max(float(p["stop"]), candidate)
+            crossed = price <= p["stop"]
+        else:
+            p["stop"] = min(float(p["stop"]), candidate)
+            crossed = price >= p["stop"]
+        p["profit_protected"] = True
+        if crossed:
+            close_trade(price, "TV PROFIT PROTECT"); return
+        if float(p["stop"]) != previous_stop:
+            save_state()
+
+    # Price-based protection remains active even when indicator retrieval fails.
+    if a is None:
+        heartbeat_state()
+        return
 
     age=(utcnow()-datetime.fromisoformat(p["opened_at"])).total_seconds()/60.0
     long_score=float(a.get("long_score") or 0); short_score=float(a.get("short_score") or 0)
@@ -539,19 +595,24 @@ async def manage_position(a):
     continuation=(long_score>=60 and long_score>short_score) if p["side"]=="LONG" else (short_score>=60 and short_score>long_score)
     if age>=SOFT_HOLD_MINUTES and not continuation:
         close_trade(price,"TV NO CONTINUATION"); return
-    if age>=HARD_HOLD_MINUTES:
-        close_trade(price,"TV MAX HOLD"); return
+    if age>=STALE_HOLD_MINUTES and net<=0:
+        close_trade(price,"TV STALE TRADE"); return
 
-    save_state()
+    heartbeat_state()
 
 
 async def cycle():
+    # Check SL/TP before slow candle requests; an indicator outage must not skip exits.
+    had_position = bool(state["open_position"])
+    if had_position:
+        await manage_position()
     a=await analyze_market()
     state["last_scan"]=utcnow().isoformat()
     state["status"]="running"; state["error"]=None
 
-    if state["open_position"]:
-        await manage_position(a)
+    if had_position:
+        if state["open_position"]:
+            await manage_position(a)
         return
 
     state["equity"]=state["balance"]
@@ -561,7 +622,7 @@ async def cycle():
     max_daily_loss=max(START_BALANCE,float(state["balance"]))*MAX_DAILY_LOSS_PCT
     if daily_pnl()<=-max_daily_loss:
         state["status"]="daily_loss_guard"; return
-    if consecutive_losses()>=MAX_CONSECUTIVE_LOSSES:
+    if loss_streak_pause_active():
         state["status"]="loss_streak_guard"; return
 
     if a.get("signal") in ("LONG","SHORT"):
