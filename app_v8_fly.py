@@ -97,7 +97,16 @@ async def dashboard_with_pnl_breakdown():
   <div id="leadlagHealth" class="muted" style="margin-top:10px">Načítám…</div>
 </div>
 """
-    html = html.replace('<div class="card muted" id="health">', whale_card + leadlag_card + '<div class="card muted" id="health">')
+    tv_card = """
+<div class="card">
+  <h2>📊 TV CONSENSUS XRP</h2>
+  <div class="muted" style="margin-bottom:10px">MA + MACD/Momentum + RSI/Stoch/CCI + ADX • 15m trend • PAPER</div>
+  <div id="tvStats" class="grid"></div>
+  <div id="tvSignal" class="coin muted" style="margin-top:10px">Načítám…</div>
+  <div id="tvTrades" style="margin-top:10px"></div>
+</div>
+"""
+    html = html.replace('<div class="card muted" id="health">', whale_card + leadlag_card + tv_card + '<div class="card muted" id="health">')
     whale_js = """
 async function refreshFlyGuard(){
  try{
@@ -193,7 +202,26 @@ async function refreshLeadLag(){
  }
 }
 """
-    html = html.replace("refresh();setInterval(refresh,10000);", whale_js + leadlag_js + "refresh();refreshFlyGuard();refreshWhale();refreshLeadLag();setInterval(refresh,3000);setInterval(refreshFlyGuard,5000);setInterval(refreshWhale,5000);setInterval(refreshLeadLag,5000);")
+    tv_js = """
+async function refreshTV(){
+ try{
+  const r=await fetch('/tv/status',{cache:'no-store'}),w=await r.json(),a=w.analysis||{},ts=w.trades||[];
+  const p=w.open_position;
+  const wins=ts.filter(t=>Number(t.net_pnl)>0).length;
+  const wr=ts.length?100*wins/ts.length:0;
+  const pnl=ts.reduce((s,t)=>s+Number(t.net_pnl||0),0);
+  document.getElementById('tvStats').innerHTML=[
+   ['Balance',f(w.balance,2)+' USDC'],['Equity',f(w.equity,2)+' USDC'],
+   ['Obchody',ts.length],['Win rate',f(wr,1)+' %'],
+   ['PnL',(pnl>=0?'+':'')+f(pnl,2)+' USDC'],['Status',w.status||'—']
+  ].map(x=>\`<div class="coin"><div class="muted">\${x[0]}</div><b>\${x[1]}</b></div>\`).join('');
+  const sig=a.signal||'WAIT', cls=sig==='LONG'?'green':sig==='SHORT'?'red':'yellow';
+  document.getElementById('tvSignal').innerHTML=\`<b class="\${cls}">\${sig}</b> • L/S \${f(a.long_score,1)} / \${f(a.short_score,1)} • accel \${f(a.long_accel,1)} / \${f(a.short_accel,1)} • 15m \${a.trend_15m||'—'}<br><span class="muted">MA buy/sell \${a.ma_buy??'—'}/\${a.ma_sell??'—'} • ADX \${f(a.adx5,1)} • volume \${f(a.volume_ratio,2)}x • \${p?'OBCHOD OTEVŘEN':'ČEKÁM NA SETUP'}</span>\`;
+  document.getElementById('tvTrades').innerHTML=ts.slice().reverse().slice(0,6).map(t=>\`<div class="trade"><span><b>\${t.side}</b></span><span>\${f(t.entry,6)} → \${f(t.exit,6)}</span><span>\${t.reason||'—'}</span><span class="\${Number(t.net_pnl)>=0?'green':'red'}">\${Number(t.net_pnl)>=0?'+':''}\${f(t.net_pnl,2)} USDC</span></div>\`).join('')||'<div class="muted">Zatím žádné uzavřené obchody.</div>';
+ }catch(e){ document.getElementById('tvSignal').textContent='TV Consensus error: '+e; }
+}
+"""
+    html = html.replace("refresh();setInterval(refresh,10000);", whale_js + leadlag_js + tv_js + "refresh();refreshFlyGuard();refreshWhale();refreshLeadLag();refreshTV();setInterval(refresh,3000);setInterval(refreshFlyGuard,5000);setInterval(refreshWhale,5000);setInterval(refreshLeadLag,5000);setInterval(refreshTV,5000);")
     return HTMLResponse(html, headers={"Cache-Control": "no-store"})
 
 
