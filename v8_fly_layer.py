@@ -2,11 +2,11 @@ import asyncio, math, statistics, time
 from datetime import datetime
 import news_signal
 
-BUILD = "v8-fly-layer-20260922-9-pullback"
-Z_ARMED = 0.60
-Z_STRONG = 0.80
+BUILD = "v8-fly-layer-20260923-10-active-scalp"
+Z_ARMED = 0.50
+Z_STRONG = 0.70
 Z_DANGER = 0.55
-ARMED_MAX_DISTANCE_ATR = 0.10
+ARMED_MAX_DISTANCE_ATR = 0.18
 MAX_REAL_SPREAD_PCT = 0.0008
 DANGER_EXIT_SCORE = 2
 DANGER_MAX_MR = 0.45
@@ -18,9 +18,9 @@ MONITOR_REFRESH_SECONDS = 30.0
 PERSIST_HEARTBEAT_SECONDS = 60.0
 
 NO_TRADE_MIN_ADX = 16.0
-NO_TRADE_MIN_VOL = 1.05
+NO_TRADE_MIN_VOL = 0.90
 NO_TRADE_MAX_SPREAD = 0.0007
-ENSEMBLE_MIN_SCORE = 6.0
+ENSEMBLE_MIN_SCORE = 5.0
 SETUP_WINDOW = 20
 SETUP_DISABLE_MIN_TRADES = 12
 SETUP_DISABLE_EXPECTANCY_R = -0.10
@@ -239,9 +239,9 @@ async def strategy(symbol):
     ss=sum([e9<e21,cl<e9,30<=rv<=60,mac_dn,bear>=.55,vr>=m.MIN_TREND_VOLUME,spread_ok and imb<=m.BOOK_SHORT_MAX,vw is not None and cl<=vw])
     pullback_long=bool(regime=='TREND_LONG' and lo<=max(e9,e21)*1.0015 and cl>e9 and vw is not None and cl>=vw)
     raw='WAIT'; setup=None; score=0
-    if regime=='TREND_LONG' and cl>bh and vr>=max(m.MIN_BREAKOUT_VOLUME,1.50) and ls>=max(m.MIN_SCORE,8):
+    if regime=='TREND_LONG' and cl>bh and vr>=max(m.MIN_BREAKOUT_VOLUME,1.15) and ls>=max(m.MIN_SCORE,7):
         raw,setup,score='LONG','BREAKOUT',ls
-    elif regime=='TREND_SHORT' and cl<bl and vr>=max(m.MIN_BREAKOUT_VOLUME,1.50) and ss>=max(m.MIN_SCORE,8):
+    elif regime=='TREND_SHORT' and cl<bl and vr>=max(m.MIN_BREAKOUT_VOLUME,1.15) and ss>=max(m.MIN_SCORE,7):
         raw,setup,score='SHORT','BREAKOUT',ss
 
     # A confirmed reclaim after an EMA pullback is a normal trend entry.
@@ -292,9 +292,9 @@ async def strategy(symbol):
     armed_side=None; armed_trigger=None; armed_dist=None
     if av and av>0 and spread_ok and raw=='WAIT':
         ld=(bh-cl)/av; sd=(cl-bl)/av
-        if regime=='TREND_LONG' and 0<=ld<=ARMED_MAX_DISTANCE_ATR and ls>=max(8,m.MIN_SCORE) and vr>=max(m.MIN_BREAKOUT_VOLUME,1.50) and z>=Z_STRONG and imb>=max(m.BOOK_LONG_MIN,0.55):
+        if regime=='TREND_LONG' and 0<=ld<=ARMED_MAX_DISTANCE_ATR and ls>=max(7,m.MIN_SCORE) and vr>=max(m.MIN_BREAKOUT_VOLUME,1.15) and z>=Z_STRONG and imb>=max(m.BOOK_LONG_MIN,0.55):
             armed_side,armed_trigger,armed_dist='LONG',bh,ld
-        elif regime=='TREND_SHORT' and 0<=sd<=ARMED_MAX_DISTANCE_ATR and ss>=max(8,m.MIN_SCORE) and vr>=max(m.MIN_BREAKOUT_VOLUME,1.50) and z<=-Z_STRONG and imb<=min(m.BOOK_SHORT_MAX,0.45):
+        elif regime=='TREND_SHORT' and 0<=sd<=ARMED_MAX_DISTANCE_ATR and ss>=max(7,m.MIN_SCORE) and vr>=max(m.MIN_BREAKOUT_VOLUME,1.15) and z<=-Z_STRONG and imb<=min(m.BOOK_SHORT_MAX,0.45):
             armed_side,armed_trigger,armed_dist='SHORT',bl,sd
     zclass='STRONG_LONG' if z>=Z_STRONG else 'ARMED_LONG' if z>=Z_ARMED else 'STRONG_SHORT' if z<=-Z_STRONG else 'ARMED_SHORT' if z<=-Z_ARMED else 'IGNORE'
     reason=f'{symbol} {regime} raw={raw} L/S={ls}/{ss} book={imb:.3f} spread={spread*100:.3f}% vol={vr:.2f}x z={z:.2f} edge={edge*100:.3f}% news={int(news.get("score") or 0)}'
