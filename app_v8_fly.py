@@ -180,7 +180,7 @@ async function refreshLeadLag(){
    ['Realizované PnL',pnlText],['Poplatky',f(fees,2)+' USDC'],
    ['Nerealizované PnL',unrealText],['Status',w.status||'—'],
    ['Obchodní stav',p?'OBCHOD OTEVŘEN':'⏳ ČEKÁM NA OBCHOD']
-  ].map(x=>`<div class="coin"><div class="muted">${x[0]}</div><b>${x[1]}</b></div>`).join('');
+  ].map(x=>x[0]==='Obchody' ? `<div class="coin" onclick="const e=document.getElementById('tvTrades');const open=e.style.display!=='block';e.style.display=open?'block':'none';this.querySelector('.tv-arrow').textContent=open?'▲':'▼'" style="cursor:pointer"><div class="muted">Obchody <span class="tv-arrow">▼</span></div><b>${x[1]}</b><div class="muted" style="font-size:12px;margin-top:5px">Klepni pro historii</div></div>` : `<div class="coin"><div class="muted">${x[0]}</div><b>${x[1]}</b></div>`).join('');
   document.getElementById('leadlagPosition').innerHTML=p
    ? `<b>XRPUSDC ${p.side}</b> • entry ${f(p.entry,6)} • SL ${f(p.stop,6)} • TP ${f(p.tp,6)} • risk ${f(p.risk_dollars,2)} USDC • uPnL ${unreal>=0?'+':''}${f(unreal,2)} USDC`
    : '<b class="yellow">⏳ ČEKÁM NA OBCHOD</b><div style="margin-top:6px">Žádná otevřená Lead-Lag pozice.</div>';
