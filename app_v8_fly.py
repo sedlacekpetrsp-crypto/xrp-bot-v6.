@@ -82,6 +82,7 @@ async def dashboard_with_pnl_breakdown():
   <h2>🐋 BLUE WHALE</h2>
   <div id="whaleStats" class="grid"></div>
   <div id="whalePosition" class="coin muted" style="margin-top:10px">Načítám…</div>
+  <div id="whaleTrades" style="display:none;margin-top:10px"></div>
   <div id="whaleHealth" class="muted" style="margin-top:10px">Načítám…</div>
 </div>
 """
@@ -93,7 +94,7 @@ async def dashboard_with_pnl_breakdown():
   <div id="leadlagPosition" class="coin muted" style="margin-top:10px">Načítám…</div>
   <div id="leadlagAnalysis" class="coin muted" style="margin-top:10px">Načítám analýzu…</div>
   <div style="margin-top:12px"><b>Poslední obchody</b></div>
-  <div id="leadlagTrades" style="margin-top:6px"></div>
+  <div id="leadlagTrades" style="display:none;margin-top:6px"></div>
   <div id="leadlagHealth" class="muted" style="margin-top:10px">Načítám…</div>
 </div>
 """
@@ -149,12 +150,13 @@ async function refreshWhale(){
    ['Win rate',f(wr,1)+' %'],['Realizované PnL',realizedText],
    ['Nerealizované PnL',unrealText],['Status',w.status||'—'],
    ['Obchodní stav',p?'OBCHOD OTEVŘEN':'⏳ ČEKÁM NA OBCHOD']
-  ].map(x=>x[0]==='Obchody' ? `<div class="coin" onclick="const e=document.getElementById('tvTrades');e.style.display=e.style.display==='none'?'block':'none'" style="cursor:pointer"><div class="muted">Obchody ▼</div><b>${x[1]}</b><div class="muted" style="font-size:12px;margin-top:5px">Klepni pro historii</div></div>` : `<div class="coin"><div class="muted">${x[0]}</div><b>${x[1]}</b></div>`).join('');
+  ].map(x=>x[0]==='Uzavřené obchody' ? `<div class="coin" onclick="const e=document.getElementById('whaleTrades');const o=e.style.display!=='block';e.style.display=o?'block':'none';this.querySelector('.whale-arrow').textContent=o?'▲':'▼'" style="cursor:pointer"><div class="muted">Uzavřené obchody <span class="whale-arrow">▼</span></div><b>${x[1]}</b><div class="muted" style="font-size:12px;margin-top:5px">Klepni pro historii</div></div>` : `<div class="coin"><div class="muted">${x[0]}</div><b>${x[1]}</b></div>`).join('');
   document.getElementById('whalePosition').innerHTML=ps.length
    ? ps.map((p,i)=>`<div style="${i?'margin-top:10px;padding-top:10px;border-top:1px solid #29343e':''}"><b>#${i+1} BTCUSDT ${p.side}</b> • entry ${f(p.entry,2)} • SL ${f(p.stop,2)} • TP ${f(p.tp,2)} • risk ${f(p.risk_dollars,2)} USD</div>`).join('')+`<div style="margin-top:8px">Celkové uPnL <b class="${unreal>=0?'green':'red'}">${unreal>=0?'+':''}${f(unreal,2)} USD</b></div>`
    : (p
       ? `<b>BTCUSDT ${p.side}</b> • entry ${f(p.entry,2)} • SL ${f(p.stop,2)} • TP ${f(p.tp,2)} • risk ${f(p.risk_dollars,2)} USD • uPnL ${unreal>=0?'+':''}${f(unreal,2)} USD`
       : '<b class="yellow">⏳ ČEKÁM NA OBCHOD</b><div style="margin-top:6px">Žádná otevřená Whale pozice.</div>');
+  document.getElementById('whaleTrades').innerHTML=ts.slice().reverse().slice(0,20).map(t=>`<div class="trade"><span><b>${t.symbol||'BTCUSDT'}</b> ${t.side}</span><span>${f(t.entry,2)} → ${f(t.exit,2)}</span><span>${t.reason||'—'}</span><span class="${Number(t.net_pnl)>=0?'green':'red'}">${Number(t.net_pnl)>=0?'+':''}${f(t.net_pnl,2)} USD</span></div>`).join('')||'<div class="coin muted">Zatím žádné uzavřené obchody.</div>';
   document.getElementById('whaleHealth').textContent=
    `Scan: ${w.last_scan||'—'} • ukládání: ${w.persistence||'memory'} • chyba: ${w.error||w.persistence_error||'žádná'}`;
  }catch(e){
@@ -180,7 +182,7 @@ async function refreshLeadLag(){
    ['Realizované PnL',pnlText],['Poplatky',f(fees,2)+' USDC'],
    ['Nerealizované PnL',unrealText],['Status',w.status||'—'],
    ['Obchodní stav',p?'OBCHOD OTEVŘEN':'⏳ ČEKÁM NA OBCHOD']
-  ].map(x=>x[0]==='Obchody' ? `<div class="coin" onclick="const e=document.getElementById('tvTrades');const open=e.style.display!=='block';e.style.display=open?'block':'none';this.querySelector('.tv-arrow').textContent=open?'▲':'▼'" style="cursor:pointer"><div class="muted">Obchody <span class="tv-arrow">▼</span></div><b>${x[1]}</b><div class="muted" style="font-size:12px;margin-top:5px">Klepni pro historii</div></div>` : `<div class="coin"><div class="muted">${x[0]}</div><b>${x[1]}</b></div>`).join('');
+  ].map(x=>x[0]==='Obchody' ? `<div class="coin" onclick="const e=document.getElementById('leadlagTrades');const open=e.style.display!=='block';e.style.display=open?'block':'none';this.querySelector('.leadlag-arrow').textContent=open?'▲':'▼'" style="cursor:pointer"><div class="muted">Obchody <span class="leadlag-arrow">▼</span></div><b>${x[1]}</b><div class="muted" style="font-size:12px;margin-top:5px">Klepni pro historii</div></div>` : `<div class="coin"><div class="muted">${x[0]}</div><b>${x[1]}</b></div>`).join('');
   document.getElementById('leadlagPosition').innerHTML=p
    ? `<b>XRPUSDC ${p.side}</b> • entry ${f(p.entry,6)} • SL ${f(p.stop,6)} • TP ${f(p.tp,6)} • risk ${f(p.risk_dollars,2)} USDC • uPnL ${unreal>=0?'+':''}${f(unreal,2)} USDC`
    : '<b class="yellow">⏳ ČEKÁM NA OBCHOD</b><div style="margin-top:6px">Žádná otevřená Lead-Lag pozice.</div>';
