@@ -233,19 +233,29 @@ async function refreshTV(){
   const wins=ts.filter(t=>Number(t.net_pnl)>0).length;
   const wr=ts.length?100*wins/ts.length:0;
   const pnl=ts.reduce((s,t)=>s+Number(t.net_pnl||0),0);
-  document.getElementById('tvStats').innerHTML=[
-   ['Balance',f(w.balance,2)+' USDC'],['Equity',f(w.equity,2)+' USDC'],
-   ['Obchody',ts.length],['Win rate',f(wr,1)+' %'],
-   ['Zisk / ztráta uzavřených obchodů',(pnl>=0?'+':'')+f(pnl,2)+' USDC'],['Status',w.status||'—']
-  ].map(x=>`<div class="coin"><div class="muted">${x[0]}</div><b>${x[1]}</b></div>`).join('');
+  document.getElementById('tvStats').innerHTML=`
+   <div class="coin"><div class="muted">Balance</div><b>${f(w.balance,2)} USDC</b></div>
+   <div class="coin"><div class="muted">Equity</div><b>${f(w.equity,2)} USDC</b></div>
+   <div class="coin" id="tvTradesToggle" style="cursor:pointer;border:1px solid #334155">
+    <div class="muted">Obchody <span id="tvTradesArrow">▼</span></div><b>${ts.length}</b>
+    <div class="muted" style="font-size:12px;margin-top:5px">Klepni pro historii</div>
+   </div>
+   <div class="coin"><div class="muted">Win rate</div><b>${f(wr,1)} %</b></div>
+   <div class="coin"><div class="muted">Zisk / ztráta uzavřených obchodů</div><b>${pnl>=0?'+':''}${f(pnl,2)} USDC</b></div>
+   <div class="coin"><div class="muted">Status</div><b>${w.status||'—'}</b></div>`;
+  const toggle=document.getElementById('tvTradesToggle');
+  if(toggle) toggle.onclick=()=>{
+   const e=document.getElementById('tvTrades'),arrow=document.getElementById('tvTradesArrow');
+   const open=e.style.display!=='block'; e.style.display=open?'block':'none'; if(arrow)arrow.textContent=open?'▲':'▼';
+  };
   const sig=a.signal||'WAIT', cls=sig==='LONG'?'green':sig==='SHORT'?'red':'yellow';
   document.getElementById('tvSignal').innerHTML=`<b class="${cls}">${sig}</b> • L/S ${f(a.long_score,1)} / ${f(a.short_score,1)} • accel ${f(a.long_accel,1)} / ${f(a.short_accel,1)} • 15m ${a.trend_15m||'—'}<br><span class="muted">MA buy/sell ${a.ma_buy??'—'}/${a.ma_sell??'—'} • ADX ${f(a.adx5,1)} • volume ${f(a.volume_ratio,2)}x • ${p?'OBCHOD OTEVŘEN':'ČEKÁM NA SETUP'}</span>`;
   const tvDetails = p
     ? `<br><b>XRPUSDC ${p.side}</b> • vstup ${f(p.entry,6)} • SL ${f(p.stop,6)} • TP ${f(p.tp,6)}<br>Čistý otevřený P/L ${f(Number(w.equity)-Number(w.balance),2)} USDC • ${p.profit_protected?'OCHRANA ZISKU AKTIVNÍ':'Základní stop-loss'}`
     : `<br>${(a.blockers||[]).join(' • ') || 'Signál připraven / kontroluji rizikové limity'}${w.cooldown_until?' • Pauza do '+closedTime(w.cooldown_until):''}`;
   document.getElementById('tvSignal').innerHTML += tvDetails;
-  document.getElementById('tvTrades').style.display='none';
-   document.getElementById('tvTrades').innerHTML=ts.slice().reverse().slice(0,20).map(t=>`<div class="trade"><span><b>${t.side}</b></span><span>${f(t.entry,6)} → ${f(t.exit,6)}</span><span>${t.reason||'—'}</span><span class="${Number(t.net_pnl)>=0?'green':'red'}">${Number(t.net_pnl)>=0?'+':''}${f(t.net_pnl,2)} USDC</span></div>`).join('')||'<div class="muted">Zatím žádné uzavřené obchody.</div>';
+  if(!document.getElementById('tvTrades').dataset.init){document.getElementById('tvTrades').style.display='none';document.getElementById('tvTrades').dataset.init='1';}
+  document.getElementById('tvTrades').innerHTML=ts.slice().reverse().slice(0,20).map(t=>`<div class="trade"><span><b>${t.side}</b></span><span>${f(t.entry,6)} → ${f(t.exit,6)}</span><span>${t.reason||'—'}</span><span class="${Number(t.net_pnl)>=0?'green':'red'}">${Number(t.net_pnl)>=0?'+':''}${f(t.net_pnl,2)} USDC</span></div>`).join('')||'<div class="muted">Zatím žádné uzavřené obchody.</div>';
  }catch(e){
   document.getElementById('tvPosition').innerHTML='<b style="font-size:22px;color:#ffd166">⚠ STAV POZICE NELZE OVĚŘIT</b><div style="margin-top:10px">Spojení se nezdařilo. Čekám na nová data.</div>';
   document.getElementById('tvPosition').style.borderColor='#ffd166';
