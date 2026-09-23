@@ -5,8 +5,9 @@ from datetime import datetime, timezone
 
 import httpx
 
-BUILD = "xrp-news-v4-circuit-breaker-20260922"
+BUILD = "xrp-news-v5-disable-gdelt-20260923"
 GDELT_URL = "https://api.gdeltproject.org/api/v2/doc/doc"
+GDELT_ENABLED = False  # upstream repeatedly returns HTTP 429; keep news neutral instead of erroring
 CACHE_SECONDS = 21600
 FAILURE_BACKOFF_SECONDS = 21600
 MAX_BACKOFF_SECONDS = 21600
@@ -168,6 +169,29 @@ async def _fetch():
 
 async def get_xrp_news(force=False):
     global _failure_count, _retry_not_before
+    if not GDELT_ENABLED:
+        now_iso = datetime.now(timezone.utc).isoformat()
+        data = dict(_cache["data"])
+        data.update({
+            "build": BUILD,
+            "status": "disabled",
+            "bullish": False,
+            "bearish": False,
+            "score": 0,
+            "positive_count": 0,
+            "negative_count": 0,
+            "sources": 0,
+            "headlines": [],
+            "checked_at": now_iso,
+            "next_retry_at": None,
+            "failure_count": 0,
+            "error": None,
+            "upstream_error": None,
+            "note": "GDELT disabled after repeated HTTP 429; news filter is neutral and does not block trading.",
+        })
+        _cache["data"] = data
+        _cache["ts"] = time.monotonic()
+        return data
     now = time.monotonic()
     if not force and now < _retry_not_before:
         return _cache["data"]
