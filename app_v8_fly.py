@@ -226,7 +226,7 @@ async function refreshTV(){
        <div style="font-size:clamp(30px,8vw,48px);font-weight:800;line-height:1.2;color:${color};margin:6px 0">${signedNet} <span style="font-size:18px">USDC</span></div>
        <div style="font-size:13px;opacity:.8">Po poplatcích a simulovaném skluzu při uzavření</div>
        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:12px;margin-top:18px">
-       <div>Vstup<br><b>${f(p.entry,6)}</b></div><div>Stop-loss<br><b>${f(p.stop,6)}</b></div><div>Cíl zisku<br><b>${f(p.tp,6)}</b></div></div>
+       <div>Vstup<br><b>${f(p.entry,6)}</b></div><div>Aktuální cena<br><b style="font-size:22px">${f(w.current_price??a.price,6)}</b></div><div>Stop-loss<br><b>${f(p.stop,6)}</b></div><div>Cíl zisku<br><b>${f(p.tp,6)}</b></div></div>
        <div style="margin-top:12px">${p.profit_protected?'🛡 Ochrana zisku aktivní':'Stop-loss aktivní'} • Otevřeno ${closedTime(p.opened_at)}</div>`
     : `<div style="font-size:22px;font-weight:800">${stale?'POSLEDNÍ ZNÁMÝ STAV: BEZ POZICE':'BEZ POZICE — ČEKÁ NA OBCHOD'}</div><div style="margin-top:12px">Žádný otevřený obchod • PAPER</div>`;
   positionBox.innerHTML+=`<div style="margin-top:12px;font-size:13px;color:${stale?'#ffd166':'#a7b6c6'}">${stale?'⚠ Data nejsou aktuální. ':''}Poslední výpočet: ${closedTime(w.last_scan)}</div>`;
