@@ -149,7 +149,7 @@ async function refreshWhale(){
    ['Win rate',f(wr,1)+' %'],['Realizované PnL',realizedText],
    ['Nerealizované PnL',unrealText],['Status',w.status||'—'],
    ['Obchodní stav',p?'OBCHOD OTEVŘEN':'⏳ ČEKÁM NA OBCHOD']
-  ].map(x=>`<div class="coin"><div class="muted">${x[0]}</div><b>${x[1]}</b></div>`).join('');
+  ].map(x=>x[0]==='Obchody' ? `<div class="coin" onclick="const e=document.getElementById('tvTrades');e.style.display=e.style.display==='none'?'block':'none'" style="cursor:pointer"><div class="muted">Obchody ▼</div><b>${x[1]}</b><div class="muted" style="font-size:12px;margin-top:5px">Klepni pro historii</div></div>` : `<div class="coin"><div class="muted">${x[0]}</div><b>${x[1]}</b></div>`).join('');
   document.getElementById('whalePosition').innerHTML=ps.length
    ? ps.map((p,i)=>`<div style="${i?'margin-top:10px;padding-top:10px;border-top:1px solid #29343e':''}"><b>#${i+1} BTCUSDT ${p.side}</b> • entry ${f(p.entry,2)} • SL ${f(p.stop,2)} • TP ${f(p.tp,2)} • risk ${f(p.risk_dollars,2)} USD</div>`).join('')+`<div style="margin-top:8px">Celkové uPnL <b class="${unreal>=0?'green':'red'}">${unreal>=0?'+':''}${f(unreal,2)} USD</b></div>`
    : (p
@@ -244,7 +244,8 @@ async function refreshTV(){
     ? `<br><b>XRPUSDC ${p.side}</b> • vstup ${f(p.entry,6)} • SL ${f(p.stop,6)} • TP ${f(p.tp,6)}<br>Čistý otevřený P/L ${f(Number(w.equity)-Number(w.balance),2)} USDC • ${p.profit_protected?'OCHRANA ZISKU AKTIVNÍ':'Základní stop-loss'}`
     : `<br>${(a.blockers||[]).join(' • ') || 'Signál připraven / kontroluji rizikové limity'}${w.cooldown_until?' • Pauza do '+closedTime(w.cooldown_until):''}`;
   document.getElementById('tvSignal').innerHTML += tvDetails;
-  document.getElementById('tvTrades').innerHTML=ts.slice().reverse().slice(0,6).map(t=>`<div class="trade"><span><b>${t.side}</b></span><span>${f(t.entry,6)} → ${f(t.exit,6)}</span><span>${t.reason||'—'}</span><span class="${Number(t.net_pnl)>=0?'green':'red'}">${Number(t.net_pnl)>=0?'+':''}${f(t.net_pnl,2)} USDC</span></div>`).join('')||'<div class="muted">Zatím žádné uzavřené obchody.</div>';
+  document.getElementById('tvTrades').style.display='none';
+   document.getElementById('tvTrades').innerHTML=ts.slice().reverse().slice(0,20).map(t=>`<div class="trade"><span><b>${t.side}</b></span><span>${f(t.entry,6)} → ${f(t.exit,6)}</span><span>${t.reason||'—'}</span><span class="${Number(t.net_pnl)>=0?'green':'red'}">${Number(t.net_pnl)>=0?'+':''}${f(t.net_pnl,2)} USDC</span></div>`).join('')||'<div class="muted">Zatím žádné uzavřené obchody.</div>';
  }catch(e){
   document.getElementById('tvPosition').innerHTML='<b style="font-size:22px;color:#ffd166">⚠ STAV POZICE NELZE OVĚŘIT</b><div style="margin-top:10px">Spojení se nezdařilo. Čekám na nová data.</div>';
   document.getElementById('tvPosition').style.borderColor='#ffd166';
