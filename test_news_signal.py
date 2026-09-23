@@ -27,7 +27,7 @@ class NewsTests(unittest.IsolatedAsyncioTestCase):
     async def test_old_future_missing_dates_and_unrelated_titles_rejected(self):
         for delta in [-121, 10]:
             self.assertEqual(news._parse_feed(feed(date=datetime.now(timezone.utc)+timedelta(minutes=delta)), 'coindesk.com'), [])
-        self.assertEqual(news._parse_feed(feed('Bitcoin ETF approved'), 'coindesk.com'), [])
+        self.assertEqual(news._parse_feed(feed('Cardano ETF approved'), 'coindesk.com'), [])
         self.assertEqual(news._parse_feed(feed().replace(b'pubDate', b'unknown'), 'coindesk.com'), [])
 
     async def test_predictions_negation_and_word_boundaries(self):
@@ -97,6 +97,60 @@ class NewsTests(unittest.IsolatedAsyncioTestCase):
         snapshot = news.cached_state()
         snapshot['headlines'].clear()
         self.assertTrue(news.cached_state()['headlines'])
+
+class MultiAssetTests(unittest.IsolatedAsyncioTestCase):
+    def setUp(self):
+        news._cache = {"ts": time.monotonic(), "data": news._neutral(), "items": []}
+        news._provider_state.clear()
+        news._refresh_task = None
+
+    async def test_aliases_and_isolation(self):
+        for name, symbol in [("Bitcoin", "BTCUSDT"), ("Ethereum", "ETHUSDC"),
+                             ("Solana", "SOLUSDC"), ("Ripple", "XRPUSDC")]:
+            news._cache["items"] = news._parse_feed(feed(name + " ETF approved"), "coindesk.com")
+            own = await news.get_news(symbol)
+            self.assertTrue(own["bullish"])
+            for asset in news.ASSETS:
+                self.assertEqual(news.cached_state(asset)["bullish"], asset == own["asset"])
+        for symbol in ["DOGE", "BTCFAKE", ""]:
+            with self.assertRaises(ValueError):
+                await news.get_news(symbol)
+
+    async def test_mixed_headline_cannot_transfer_sentiment(self):
+        news._cache["items"] = news._parse_feed(feed("Bitcoin ETF approved while Solana hacked"), "coindesk.com")
+        for asset in ["BTC", "SOL"]:
+            d = news.cached_state(asset)
+            self.assertTrue(d["headlines"])
+            self.assertEqual(d["score"], 0)
+            self.assertFalse(d["bullish"] or d["bearish"])
+
+    async def test_btc_filter_and_neutral_failure(self):
+        import app_blue_whale_mirror as whale
+        news._cache["items"] = news._parse_feed(feed("Bitcoin ETF approved"), "coindesk.com")
+        with patch.object(whale, "WHALE_TECH_CONFIRM", False):
+            ok, details = await whale.technical_confirmation(None, "SHORT")
+            self.assertFalse(ok)
+            self.assertEqual(details["reason"], "BTC_NEWS_CONFLICT")
+            self.assertTrue((await whale.technical_confirmation(None, "LONG"))[0])
+            news._cache["items"] = []
+            self.assertTrue((await whale.technical_confirmation(None, "SHORT"))[0])
+        news._cache["items"] = news._parse_feed(feed("Bitcoin hacked"), "coindesk.com")
+        self.assertTrue(news.blocks_entry("BTCUSDT", "LONG"))
+        self.assertFalse(news.blocks_entry("ETHUSDC", "LONG"))
+
+    async def test_all_assets_share_single_refresh(self):
+        release = asyncio.Event()
+        async def slow():
+            await release.wait()
+        news._cache["ts"] = 0
+        with patch.object(news, "_refresh", side_effect=slow) as mocked:
+            await asyncio.gather(*(news.get_news(a) for a in news.ASSETS))
+            await asyncio.sleep(0)
+            self.assertEqual(mocked.call_count, 1)
+            self.assertEqual(set(news.cached_all()["assets"]), set(news.ASSETS))
+            release.set()
+            await news._refresh_task
+
 
 if __name__ == '__main__':
     unittest.main()
