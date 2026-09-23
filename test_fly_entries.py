@@ -39,7 +39,7 @@ class EntryTests(unittest.TestCase):
         with patch.object(base, 'last_entry_candle', {'XRPUSDC':123}):
             self.assertIsNone(fly.choose_best([self.row]))
 
-    def strategy(self, side='LONG', volume=1.2, reclaim=True, atr=.6, bearish=False):
+    def strategy(self, side='LONG', volume=1.2, reclaim=True, atr=.6, bearish=False, symbol='XRPUSDC'):
         # Prior 20-candle high/low remains unbroken, so only a pullback can qualify.
         rows = [[i,100,103,99,100,100] for i in range(60)]
         rows[-2] = [58,100,100.1 if reclaim else 100.7,99.8,100,100]
@@ -63,8 +63,8 @@ class EntryTests(unittest.TestCase):
              patch.object(fly,'z_momentum',return_value=1 if side=='LONG' else -1), \
              patch.object(fly,'book',new=AsyncMock(return_value={'imbalance':.57 if side=='LONG' else .43,'spread_pct':.0001,'best_bid':100,'best_ask':100.01})), \
              patch.object(fly,'leader_context',new=AsyncMock(return_value={})), \
-             patch.object(fly.news_signal,'get_xrp_news',new=AsyncMock(return_value={'bearish':bearish})):
-            return asyncio.run(fly.strategy('XRPUSDC'))
+             patch.object(fly.news_signal,'get_news',new=AsyncMock(return_value={'bearish':bearish})):
+            return asyncio.run(fly.strategy(symbol))
 
     def test_long_and_short_pullback_entries(self):
         for side in ('LONG','SHORT'):
@@ -80,6 +80,13 @@ class EntryTests(unittest.TestCase):
         for kwargs in [dict(reclaim=False),dict(volume=.6),dict(bearish=True),dict(atr=.2)]:
             with self.subTest(kwargs=kwargs):
                 self.assertEqual(self.strategy(**kwargs)['signal'],'WAIT')
+
+    def test_altcoin_news_reaches_strategy(self):
+        for symbol in ('ETHUSDC', 'SOLUSDC'):
+            a = self.strategy(symbol=symbol, bearish=True)
+            self.assertTrue(a['news']['bearish'])
+            self.assertEqual(a['signal'], 'WAIT')
+            self.assertEqual(a['no_trade_reason'], 'NEGATIVE_NEWS_BLOCK')
 
 if __name__=='__main__':
     unittest.main()
