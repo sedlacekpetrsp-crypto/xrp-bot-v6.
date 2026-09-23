@@ -1,4 +1,4 @@
-"""XRP news from independent RSS feeds; failures never block the trading loop."""
+"""Per-asset crypto news from independent RSS feeds; failures never block the trading loop."""
 import asyncio
 import copy
 import re
@@ -10,12 +10,32 @@ from urllib.parse import urlsplit
 
 import httpx
 
-BUILD = "xrp-news-v6-rss-20260923"
+BUILD = "crypto-news-v7-multiasset-20260923"
 FEEDS = {
     "coindesk.com": "https://www.coindesk.com/arc/outboundfeeds/rss/",
     "cointelegraph.com": "https://cointelegraph.com/rss",
     "decrypt.co": "https://decrypt.co/feed",
 }
+ASSETS = {
+    "XRP": r"\b(XRP|Ripple|XRPL)\b",
+    "BTC": r"\b(BTC|Bitcoin)\b",
+    "ETH": r"\b(ETH|Ethereum|Ether)\b",
+    "SOL": r"\b(SOL|Solana)\b",
+}
+
+
+def asset_for_symbol(symbol):
+    value = str(symbol).upper().strip()
+    for asset in ASSETS:
+        if value in (asset, asset + "USDC", asset + "USDT", asset + "USD"):
+            return asset
+    raise ValueError("Unsupported news asset")
+
+
+def _assets_in_title(title):
+    return [asset for asset, pattern in ASSETS.items() if re.search(pattern, title, re.I)]
+
+
 CACHE_SECONDS = 300
 MAX_AGE_SECONDS = 7200
 FAILURE_BACKOFF_SECONDS = 900
@@ -91,7 +111,8 @@ def _parse_feed(body, source):
     now = datetime.now(timezone.utc)
     for row in root.findall("./channel/item")[:100]:
         title = re.sub(r"<[^>]*>", "", row.findtext("title") or "").strip()
-        if not re.search(r"\b(XRP|Ripple|XRPL)\b", title, re.I):
+        assets = _assets_in_title(title)
+        if not assets:
             continue
         date = _parse_seen(row.findtext("pubDate"))
         if date is None or not 0 <= (now - date).total_seconds() <= MAX_AGE_SECONDS:
@@ -102,15 +123,22 @@ def _parse_feed(body, source):
         if parsed.scheme != "https" or not (host == source or host.endswith("." + source)):
             continue
         score, hits = _headline_score(title)
+        # Mixed-asset headlines may describe opposing events. Display them,
+        # but never apply one asset's sentiment to every mentioned currency.
+        if len(assets) != 1:
+            score, hits = 0, []
         items.append(dict(title=title, source=source, url=url, seen_at=date.isoformat(),
-                          score=score, hits=hits))
+                          score=score, hits=hits, assets=assets))
     return items
 
 
-def _summarize(items):
+def _summarize(items, asset="XRP"):
+    asset = asset_for_symbol(asset)
     now = datetime.now(timezone.utc)
     fresh, seen = [], set()
     for item in items:
+        if asset not in item.get("assets", _assets_in_title(item.get("title", ""))):
+            continue
         date = _parse_seen(item.get("seen_at"))
         if date is None or not 0 <= (now - date).total_seconds() <= MAX_AGE_SECONDS:
             continue
@@ -196,7 +224,7 @@ async def _refresh():
                     next_retry_at=min((p["next_retry_at"] for p in providers.values()
                                        if p.get("next_retry_at")), default=None),
                     upstream_error=None if successful else "All RSS sources unavailable",
-                    note="RSS XRP/Ripple headlines; price confirmation remains required.")
+                    note="RSS BTC/ETH/SOL/XRP headlines, scored separately; price confirmation remains required.")
         _cache["data"] = data
         print(f"NEWS_FEED status={data['status']} active_sources={len(successful)} score={data['score']}", flush=True)
     except Exception as exc:
@@ -206,18 +234,37 @@ async def _refresh():
         _cache["ts"] = time.monotonic()
 
 
-async def get_xrp_news(force=False):
+async def get_news(symbol, force=False):
+    asset = asset_for_symbol(symbol)
     global _refresh_task
     if force or not _cache["ts"] or time.monotonic() - _cache["ts"] >= CACHE_SECONDS:
         if _refresh_task is None or _refresh_task.done():
             _refresh_task = asyncio.create_task(_refresh())
     # Network work runs separately: no timeout can hold up stop-loss evaluation.
-    return cached_state()
+    return cached_state(asset)
 
 
-def cached_state():
+async def get_xrp_news(force=False):
+    return await get_news("XRP", force=force)
+
+
+def cached_state(symbol="XRP"):
+    asset = asset_for_symbol(symbol)
     data = copy.deepcopy(_cache["data"])
-    data.update(_summarize(_cache["items"]))
+    data.update(_summarize(_cache["items"], asset), asset=asset)
     if _cache["ts"] and time.monotonic() - _cache["ts"] > CACHE_SECONDS + 30:
-        data.update(_summarize([]), status="stale")
+        data.update(_summarize([], asset), status="stale")
     return data
+
+
+def cached_all():
+    data = cached_state("XRP")  # Preserve existing top-level XRP consumers.
+    data["assets"] = {asset: cached_state(asset) for asset in ASSETS}
+    data["supported_assets"] = list(ASSETS)
+    return data
+
+
+def blocks_entry(symbol, side):
+    data = cached_state(symbol)
+    return bool((side == "LONG" and data["bearish"]) or
+                (side == "SHORT" and data["bullish"]))
