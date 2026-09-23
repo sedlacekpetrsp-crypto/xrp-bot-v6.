@@ -346,7 +346,7 @@ async def combined_health():
             "open_position": whale.state.get("open_position"),
             "open_positions": whale.state.get("open_positions", []),
         },
-        "news": news_signal.cached_state(),
+        "news": news_signal.cached_all(),
         "fast": {
             "healthy": fast_ok,
             "age_seconds": fast_age,
@@ -390,8 +390,15 @@ async def combined_health():
 
 
 @app.get("/news/status")
-async def news_status():
-    data = await news_signal.get_xrp_news()
+async def news_status(symbol: str = "ALL"):
+    try:
+        if symbol.upper() == "ALL":
+            await news_signal.get_news("XRP")
+            data = news_signal.cached_all()
+        else:
+            data = await news_signal.get_news(symbol)
+    except ValueError:
+        return JSONResponse({"error": "Supported assets: XRP, BTC, ETH, SOL"}, status_code=400)
     return JSONResponse(data, headers={"Cache-Control":"no-store"})
 
 
