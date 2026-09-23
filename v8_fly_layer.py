@@ -213,10 +213,9 @@ async def leader_context():
 
 async def strategy(symbol):
     if symbol == 'XRPUSDC':
-        k1,k5,bk,news,leader=await asyncio.gather(m.get_klines(symbol,'1m'),m.get_klines(symbol,'5m'),book(symbol),news_signal.get_xrp_news(),leader_context())
+        k1,k5,bk,news,leader=await asyncio.gather(m.get_klines(symbol,'1m'),m.get_klines(symbol,'5m'),book(symbol),news_signal.get_news(symbol),leader_context())
     else:
-        k1,k5,bk=await asyncio.gather(m.get_klines(symbol,'1m'),m.get_klines(symbol,'5m'),book(symbol))
-        news={'bullish':False,'bearish':False,'score':0,'headlines':[],'status':'n/a'}
+        k1,k5,bk,news=await asyncio.gather(m.get_klines(symbol,'1m'),m.get_klines(symbol,'5m'),book(symbol),news_signal.get_news(symbol))
         leader={'direction':None,'strength':0.0,'btc_return':0.0,'eth_return':0.0}
     a1,a5=k1[:-1],k5[:-1]
     h=[float(x[2]) for x in a1]; l=[float(x[3]) for x in a1]; c=[float(x[4]) for x in a1]; v=[float(x[5]) for x in a1]
@@ -266,9 +265,9 @@ async def strategy(symbol):
     elif raw=='WAIT' and pullback_confirm_short:
         raw,setup,score='SHORT','TREND_PULLBACK',ss
 
-    # NEWS_LONG: positive XRP/Ripple news is allowed to create an entry only
+    # NEWS_LONG: positive news for this specific asset is allowed to create an entry only
     # when price/volume/order-book confirm that the market is reacting.
-    if symbol=='XRPUSDC' and raw=='WAIT' and news.get('bullish') and not news.get('bearish'):
+    if raw=='WAIT' and news.get('bullish') and not news.get('bearish'):
         news_confirm = (
             cl > e9 > e21
             and cl >= bh * 0.999
