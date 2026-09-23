@@ -3,6 +3,7 @@ Blue Whale Public Signal Mirror — PAPER ONLY.
 Public Telegram captions + public Binance market data. No live orders.
 """
 from __future__ import annotations
+import news_signal
 import asyncio, html, os, re
 import psycopg
 from psycopg.types.json import Jsonb
@@ -204,6 +205,9 @@ def _rsi(values, period=14):
 
 async def technical_confirmation(client, side):
     """Confirm public Whale direction with closed-candle trend/momentum/volume."""
+    news = await news_signal.get_news(SYMBOL)
+    if news_signal.blocks_entry(SYMBOL, side):
+        return False, {"score": 0, "reason": "BTC_NEWS_CONFLICT", "news": news}
     if not WHALE_TECH_CONFIRM:
         return True, {"score":99,"reason":"disabled"}
     score=0; details={}
@@ -238,7 +242,7 @@ async def technical_confirmation(client, side):
     h1=details.get("1h",{})
     hard_veto=(side=="SHORT" and h1.get("close",0)>h1.get("ema20",0)>h1.get("ema50",0)) or (side=="LONG" and h1.get("close",0)<h1.get("ema20",0)<h1.get("ema50",0))
     ok=(score>=WHALE_CONFIRM_MIN_SCORE and not hard_veto)
-    return ok, {"score":score,"min_score":WHALE_CONFIRM_MIN_SCORE,"hard_veto":hard_veto,"details":details}
+    return ok, {"score":score,"min_score":WHALE_CONFIRM_MIN_SCORE,"hard_veto":hard_veto,"details":details,"news":news}
 
 async def latest_signal(client):
     r=await client.get(TELEGRAM_URL,headers={"User-Agent":"Mozilla/5.0 BlueWhalePaperMirror/1.0"},timeout=20)
@@ -368,6 +372,7 @@ async def bot_loop():
                         close_paper(p,price,"TIME",price)
 
                 mark_to_market(price)
+                state["news"] = await news_signal.get_news(SYMBOL)
 
                 if len(state.get("open_positions") or [])<MAX_OPEN_POSITIONS:
                     s=await latest_signal(client)
