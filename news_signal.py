@@ -1,18 +1,26 @@
+"""XRP news from independent RSS feeds; failures never block the trading loop."""
 import asyncio
+import copy
 import re
 import time
+import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
+from urllib.parse import urlsplit
 
 import httpx
 
-BUILD = "xrp-news-v5-disable-gdelt-20260923"
-GDELT_URL = "https://api.gdeltproject.org/api/v2/doc/doc"
-GDELT_ENABLED = False  # upstream repeatedly returns HTTP 429; keep news neutral instead of erroring
-CACHE_SECONDS = 21600
-FAILURE_BACKOFF_SECONDS = 21600
+BUILD = "xrp-news-v6-rss-20260923"
+FEEDS = {
+    "coindesk.com": "https://www.coindesk.com/arc/outboundfeeds/rss/",
+    "cointelegraph.com": "https://cointelegraph.com/rss",
+    "decrypt.co": "https://decrypt.co/feed",
+}
+CACHE_SECONDS = 300
+MAX_AGE_SECONDS = 7200
+FAILURE_BACKOFF_SECONDS = 900
 MAX_BACKOFF_SECONDS = 21600
-LOOKBACK = "2h"
-MAX_RECORDS = 30
+MAX_FEED_BYTES = 2000000
 
 POSITIVE = {
     "etf approved": 5, "approves xrp": 5, "approval": 2, "approved": 3,
@@ -33,224 +41,183 @@ NEGATIVE = {
     "scam": -4, "liquidation": -2, "selloff": -3,
 }
 
-_cache = {
-    "ts": 0.0,
-    "data": {
-        "build": BUILD,
-        "status": "starting",
-        "bullish": False,
-        "bearish": False,
-        "score": 0,
-        "positive_count": 0,
-        "negative_count": 0,
-        "sources": 0,
-        "headlines": [],
-        "checked_at": None,
-        "last_success_at": None,
-        "next_retry_at": None,
-        "failure_count": 0,
-        "error": None,
-    },
-}
-_lock = asyncio.Lock()
-_failure_count = 0
-_retry_not_before = 0.0
+
+def _neutral():
+    return dict(build=BUILD, status="starting", bullish=False, bearish=False,
+                score=0, positive_count=0, negative_count=0, sources=0,
+                headlines=[], checked_at=None, last_success_at=None,
+                next_retry_at=None, failure_count=0, error=None,
+                upstream_error=None, providers={})
+
+
+_cache = {"ts": 0.0, "data": _neutral(), "items": []}
+_provider_state = {}
+_refresh_task = None
 
 
 def _headline_score(title):
-    t = re.sub(r"\s+", " ", (title or "").lower()).strip()
-    score = 0
-    hits = []
-    for phrase, value in POSITIVE.items():
-        if phrase in t:
-            score += value
-            hits.append(phrase)
-    for phrase, value in NEGATIVE.items():
-        if phrase in t:
-            score += value
-            hits.append(phrase)
-    return max(-6, min(6, score)), hits
+    title = re.sub(r"\s+", " ", title.lower()).strip()
+    # Predictions, questions and negated claims are not confirmed events.
+    if re.search(r"\b(could|might|may|rumou?r|predict\w*|forecast\w*|if|not|denies|denied)\b|\?", title):
+        return 0, []
+    matches = []
+    for phrase, value in sorted({**POSITIVE, **NEGATIVE}.items(), key=lambda p: -len(p[0])):
+        for match in re.finditer(r"(?<!\w)" + re.escape(phrase) + r"(?!\w)", title):
+            if not any(match.start() < b and match.end() > a for a, b, _, _ in matches):
+                matches.append((match.start(), match.end(), phrase, value))
+    return max(-6, min(6, sum(m[3] for m in matches))), [m[2] for m in matches]
 
 
 def _parse_seen(value):
     if not value:
         return None
-    raw = str(value).strip()
-    for fmt in ("%Y%m%dT%H%M%SZ", "%Y-%m-%dT%H:%M:%SZ", "%Y-%m-%d %H:%M:%S"):
-        try:
-            return datetime.strptime(raw, fmt).replace(tzinfo=timezone.utc)
-        except ValueError:
-            pass
     try:
-        d = datetime.fromisoformat(raw.replace("Z", "+00:00"))
-        return d if d.tzinfo else d.replace(tzinfo=timezone.utc)
-    except Exception:
-        return None
+        date = parsedate_to_datetime(value)
+    except (ValueError, TypeError, OverflowError):
+        try:
+            date = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        except (ValueError, TypeError):
+            return None
+    return date.astimezone(timezone.utc) if date.tzinfo else None
 
 
-async def _fetch():
-    params = {
-        "query": '(XRP OR Ripple) sourcelang:english',
-        "mode": "artlist",
-        "format": "json",
-        "maxrecords": str(MAX_RECORDS),
-        "timespan": LOOKBACK,
-        "sort": "datedesc",
-    }
-    headers = {"User-Agent": "xrp-paper-bot-news-monitor/1.0"}
-    timeout = httpx.Timeout(20.0, connect=20.0)
-    async with httpx.AsyncClient(timeout=timeout, follow_redirects=True, headers=headers) as client:
-        r = await client.get(GDELT_URL, params=params)
-        r.raise_for_status()
-        payload = r.json()
-    rows = payload.get("articles") or payload.get("results") or []
-    now = datetime.now(timezone.utc)
+def _parse_feed(body, source):
+    if len(body) > MAX_FEED_BYTES or b"<!DOCTYPE" in body.upper() or b"<!ENTITY" in body.upper():
+        raise ValueError("RSS size or entity declaration rejected")
+    root = ET.fromstring(body)
+    if root.tag != "rss":
+        raise ValueError("Expected RSS document")
     items = []
-    seen_titles = set()
-    for row in rows:
-        title = str(row.get("title") or "").strip()
-        if not title:
+    now = datetime.now(timezone.utc)
+    for row in root.findall("./channel/item")[:100]:
+        title = re.sub(r"<[^>]*>", "", row.findtext("title") or "").strip()
+        if not re.search(r"\b(XRP|Ripple|XRPL)\b", title, re.I):
             continue
-        key = re.sub(r"\W+", " ", title.lower()).strip()
-        if key in seen_titles:
+        date = _parse_seen(row.findtext("pubDate"))
+        if date is None or not 0 <= (now - date).total_seconds() <= MAX_AGE_SECONDS:
             continue
-        seen_titles.add(key)
+        url = (row.findtext("link") or "").strip()
+        parsed = urlsplit(url)
+        host = (parsed.hostname or "").lower()
+        if parsed.scheme != "https" or not (host == source or host.endswith("." + source)):
+            continue
         score, hits = _headline_score(title)
-        seen = _parse_seen(row.get("seendate") or row.get("date") or row.get("published"))
-        age_min = None
-        if seen:
-            age_min = max(0.0, (now - seen).total_seconds() / 60.0)
-            if age_min > 130:
-                continue
-        source = str(row.get("domain") or row.get("source") or "").strip()
-        items.append({
-            "title": title,
-            "source": source,
-            "url": row.get("url"),
-            "seen_at": seen.isoformat() if seen else None,
-            "age_min": age_min,
-            "score": score,
-            "hits": hits,
-        })
+        items.append(dict(title=title, source=source, url=url, seen_at=date.isoformat(),
+                          score=score, hits=hits))
+    return items
 
-    scored = [x for x in items if x["score"] != 0]
-    positive = [x for x in scored if x["score"] >= 2]
-    negative = [x for x in scored if x["score"] <= -2]
-    sources = {x["source"] for x in positive if x["source"]}
-    total = sum(x["score"] for x in scored)
-    strongest = max([x["score"] for x in positive], default=0)
 
-    bullish = (
-        not negative
-        and total >= 4
-        and (strongest >= 4 or len(sources) >= 2)
+def _summarize(items):
+    now = datetime.now(timezone.utc)
+    fresh, seen = [], set()
+    for item in items:
+        date = _parse_seen(item.get("seen_at"))
+        if date is None or not 0 <= (now - date).total_seconds() <= MAX_AGE_SECONDS:
+            continue
+        key = re.sub(r"\W+", " ", item["title"].lower()).strip()
+        if key in seen:
+            continue
+        seen.add(key)
+        fresh.append(dict(item, age_min=(now - date).total_seconds() / 60))
+    positive = [x for x in fresh if x["score"] >= 2]
+    negative = [x for x in fresh if x["score"] <= -2]
+    sources = {x["source"] for x in positive}
+    total = sum(x["score"] for x in fresh)
+    return dict(
+        bullish=bool(not negative and total >= 4 and
+                     (max((x["score"] for x in positive), default=0) >= 4 or len(sources) >= 2)),
+        bearish=bool(negative and sum(x["score"] for x in negative) <= -4),
+        score=total, positive_count=len(positive), negative_count=len(negative),
+        sources=len(sources),
+        headlines=sorted(fresh, key=lambda x: (-abs(x["score"]), x["age_min"]))[:6],
     )
-    bearish = bool(negative) and sum(x["score"] for x in negative) <= -4
 
-    ranked = sorted(
-        items,
-        key=lambda x: (abs(x["score"]), -(x["age_min"] if x["age_min"] is not None else 9999)),
-        reverse=True,
-    )[:6]
-    return {
-        "build": BUILD,
-        "status": "running",
-        "bullish": bullish,
-        "bearish": bearish,
-        "score": total,
-        "positive_count": len(positive),
-        "negative_count": len(negative),
-        "sources": len(sources),
-        "headlines": ranked,
-        "checked_at": now.isoformat(),
-        "error": None,
-    }
+
+def _retry_delay(response, failures):
+    delay = min(MAX_BACKOFF_SECONDS, FAILURE_BACKOFF_SECONDS * 2 ** min(failures - 1, 4))
+    if response is not None and response.status_code == 429:
+        raw = response.headers.get("Retry-After", "")
+        try:
+            requested = float(raw)
+        except ValueError:
+            date = _parse_seen(raw)
+            requested = (date - datetime.now(timezone.utc)).total_seconds() if date else 0
+        delay = max(delay, requested)
+    return max(0, delay)
+
+
+async def _fetch_source(client, source, url):
+    state = _provider_state.setdefault(source, {"retry_at": 0, "failures": 0})
+    if time.monotonic() < state["retry_at"]:
+        return []
+    try:
+        async def read():
+            async with client.stream("GET", url) as response:
+                response.raise_for_status()
+                body = bytearray()
+                async for chunk in response.aiter_bytes():
+                    body.extend(chunk)
+                    if len(body) > MAX_FEED_BYTES:
+                        raise ValueError("RSS too large")
+                return _parse_feed(bytes(body), source)
+        items = await asyncio.wait_for(read(), timeout=20)
+        state.update(status="ok", failures=0, retry_at=0, next_retry_at=None,
+                     last_success_at=datetime.now(timezone.utc).isoformat(), error=None,
+                     matching_articles=len(items))
+        return items
+    except Exception as exc:
+        failures = state["failures"] + 1
+        response = exc.response if isinstance(exc, httpx.HTTPStatusError) else None
+        delay = _retry_delay(response, failures)
+        state.update(status="backoff", failures=failures, retry_at=time.monotonic() + delay,
+                     next_retry_at=datetime.fromtimestamp(time.time() + delay, timezone.utc).isoformat(),
+                     error=f"{type(exc).__name__}: {exc}")
+        return []
+
+
+async def _refresh():
+    try:
+        async with httpx.AsyncClient(timeout=15, follow_redirects=True,
+                                     headers={"User-Agent": "xrp-paper-bot-news-monitor/2.0"}) as client:
+            results = await asyncio.gather(*(_fetch_source(client, s, u) for s, u in FEEDS.items()))
+        now = datetime.now(timezone.utc).isoformat()
+        providers = {s: {k: v for k, v in state.items() if k != "retry_at"}
+                     for s, state in _provider_state.items()}
+        successful = [s for s, p in providers.items() if p.get("status") == "ok"]
+        items = [item for group in results for item in group]
+        # Only successful current fetches may contribute trading signals.
+        _cache["items"] = items
+        data = _neutral()
+        data.update(_summarize(items), checked_at=now, providers=providers,
+                    status="running" if successful else "degraded",
+                    partial=len(successful) < len(FEEDS), active_sources=len(successful),
+                    last_success_at=now if successful else _cache["data"].get("last_success_at"),
+                    failure_count=sum(p.get("failures", 0) for p in providers.values()),
+                    next_retry_at=min((p["next_retry_at"] for p in providers.values()
+                                       if p.get("next_retry_at")), default=None),
+                    upstream_error=None if successful else "All RSS sources unavailable",
+                    note="RSS XRP/Ripple headlines; price confirmation remains required.")
+        _cache["data"] = data
+        print(f"NEWS_FEED status={data['status']} active_sources={len(successful)} score={data['score']}", flush=True)
+    except Exception as exc:
+        _cache["items"] = []
+        _cache["data"].update(_summarize([]), status="degraded", upstream_error=type(exc).__name__)
+    finally:
+        _cache["ts"] = time.monotonic()
 
 
 async def get_xrp_news(force=False):
-    global _failure_count, _retry_not_before
-    if not GDELT_ENABLED:
-        now_iso = datetime.now(timezone.utc).isoformat()
-        data = dict(_cache["data"])
-        data.update({
-            "build": BUILD,
-            "status": "disabled",
-            "bullish": False,
-            "bearish": False,
-            "score": 0,
-            "positive_count": 0,
-            "negative_count": 0,
-            "sources": 0,
-            "headlines": [],
-            "checked_at": now_iso,
-            "next_retry_at": None,
-            "failure_count": 0,
-            "error": None,
-            "upstream_error": None,
-            "note": "GDELT disabled after repeated HTTP 429; news filter is neutral and does not block trading.",
-        })
-        _cache["data"] = data
-        _cache["ts"] = time.monotonic()
-        return data
-    now = time.monotonic()
-    if not force and now < _retry_not_before:
-        return _cache["data"]
-    if not force and now - float(_cache["ts"]) < CACHE_SECONDS:
-        return _cache["data"]
-    async with _lock:
-        now = time.monotonic()
-        if not force and now < _retry_not_before:
-            return _cache["data"]
-        if not force and now - float(_cache["ts"]) < CACHE_SECONDS:
-            return _cache["data"]
-        try:
-            data = await _fetch()
-            _failure_count = 0
-            _retry_not_before = 0.0
-            data["last_success_at"] = data.get("checked_at")
-            data["next_retry_at"] = None
-            data["failure_count"] = 0
-            _cache["data"] = data
-            _cache["ts"] = now
-            print(
-                "NEWS_FEED status={} bullish={} bearish={} score={} positive={} negative={} sources={}".format(
-                    data.get("status"), data.get("bullish"), data.get("bearish"),
-                    data.get("score"), data.get("positive_count"),
-                    data.get("negative_count"), data.get("sources")
-                ),
-                flush=True,
-            )
-        except Exception as e:
-            _failure_count += 1
-            delay = min(MAX_BACKOFF_SECONDS, FAILURE_BACKOFF_SECONDS * (2 ** min(_failure_count - 1, 3)))
-            if isinstance(e, httpx.HTTPStatusError) and e.response is not None and e.response.status_code == 429:
-                delay = MAX_BACKOFF_SECONDS
-                raw = e.response.headers.get("Retry-After", "")
-                try:
-                    delay = max(delay, float(raw))
-                except (TypeError, ValueError):
-                    pass
-            _retry_not_before = now + delay
-            previous = dict(_cache["data"])
-            previous["status"] = "degraded"
-            upstream_error = f"{type(e).__name__}: {e}"
-            previous["error"] = None
-            previous["upstream_error"] = upstream_error
-            previous["checked_at"] = datetime.now(timezone.utc).isoformat()
-            previous["next_retry_at"] = datetime.fromtimestamp(time.time() + delay, timezone.utc).isoformat()
-            previous["failure_count"] = _failure_count
-            previous["bullish"] = False
-            previous["bearish"] = False
-            _cache["data"] = previous
-            _cache["ts"] = now
-            print(
-                "NEWS_FEED_DEGRADED seconds={} failure={} upstream_error={}".format(
-                    int(delay), _failure_count, upstream_error
-                ),
-                flush=True,
-            )
-        return _cache["data"]
+    global _refresh_task
+    if force or not _cache["ts"] or time.monotonic() - _cache["ts"] >= CACHE_SECONDS:
+        if _refresh_task is None or _refresh_task.done():
+            _refresh_task = asyncio.create_task(_refresh())
+    # Network work runs separately: no timeout can hold up stop-loss evaluation.
+    return cached_state()
 
 
 def cached_state():
-    return _cache["data"]
+    data = copy.deepcopy(_cache["data"])
+    data.update(_summarize(_cache["items"]))
+    if _cache["ts"] and time.monotonic() - _cache["ts"] > CACHE_SECONDS + 30:
+        data.update(_summarize([]), status="stale")
+    return data
