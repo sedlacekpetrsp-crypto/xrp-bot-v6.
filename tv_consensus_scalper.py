@@ -68,6 +68,7 @@ state = {
     "trades": [],
     "analysis": {},
     "last_scan": None,
+    "current_price": None,
     "last_entry_candle": None,
     "cooldown_until": None,
     "previous_long_score": None,
@@ -546,6 +547,7 @@ async def manage_position(a=None):
     p=state["open_position"]
     if not p: return
     price=await base.get_live_price(SYMBOL,max_age=1.0)
+    state["current_price"]=float(price)
     _,_,_,net=net_pnl_for_exit(p,price)
     p["peak_net"]=max(float(p.get("peak_net") or 0),net)
     state["equity"]=float(state["balance"])+net
@@ -627,6 +629,7 @@ async def cycle():
 
     if a.get("signal") in ("LONG","SHORT"):
         price=await base.get_live_price(SYMBOL,max_age=1.0)
+        state["current_price"]=float(price)
         open_trade(a,price)
 
 
