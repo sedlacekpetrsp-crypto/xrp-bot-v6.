@@ -29,6 +29,13 @@ MAX_OPEN_POSITIONS=int(os.getenv("MAX_OPEN_POSITIONS","2"))
 MAX_TOTAL_RISK_RATE=float(os.getenv("MAX_TOTAL_RISK_RATE","0.006"))
 SAME_SIDE_COOLDOWN_MINUTES=float(os.getenv("SAME_SIDE_COOLDOWN_MINUTES","30"))
 DATABASE_URL=os.getenv("DATABASE_URL")
+WHALE_TECH_CONFIRM=os.getenv("WHALE_TECH_CONFIRM","1")=="1"
+WHALE_CONFIRM_MIN_SCORE=int(os.getenv("WHALE_CONFIRM_MIN_SCORE","4"))
+WHALE_MIN_STOP_RATE=float(os.getenv("WHALE_MIN_STOP_RATE","0.004"))
+WHALE_MAX_STOP_RATE=float(os.getenv("WHALE_MAX_STOP_RATE","0.04"))
+WHALE_BREAKEVEN_R=float(os.getenv("WHALE_BREAKEVEN_R","1.0"))
+WHALE_PROFIT_LOCK_R=float(os.getenv("WHALE_PROFIT_LOCK_R","1.5"))
+KLINES_URL="https://data-api.binance.vision/api/v3/klines"
 
 app=FastAPI(title=APP_NAME)
 state={"balance":START_BALANCE,"equity":START_BALANCE,"open_positions":[],"open_position":None,"trades":[],"seen_signal_ids":[],"last_scan":None,"last_signal":None,"status":"starting","error":None,"persistence":"memory","persistence_error":None}
@@ -179,6 +186,60 @@ async def btc_price(client):
     r=await market_get(client,BINANCE_PRICE_URL,params={"symbol":SYMBOL},timeout=15)
     return float(r.json()["price"])
 
+def _ema(values, period):
+    if not values: return 0.0
+    a=2.0/(period+1.0); out=float(values[0])
+    for v in values[1:]: out=a*float(v)+(1-a)*out
+    return out
+
+def _rsi(values, period=14):
+    if len(values)<period+1:return 50.0
+    gains=[]; losses=[]
+    for a,b in zip(values[-period-1:-1],values[-period:]):
+        d=float(b)-float(a); gains.append(max(d,0.0)); losses.append(max(-d,0.0))
+    ag=sum(gains)/period; al=sum(losses)/period
+    if al<=1e-12:return 100.0
+    rs=ag/al
+    return 100.0-(100.0/(1.0+rs))
+
+async def technical_confirmation(client, side):
+    """Confirm public Whale direction with closed-candle trend/momentum/volume."""
+    if not WHALE_TECH_CONFIRM:
+        return True, {"score":99,"reason":"disabled"}
+    score=0; details={}
+    for interval,limit in (("5m",120),("15m",120),("1h",120)):
+        r=await market_get(client,KLINES_URL,params={"symbol":SYMBOL,"interval":interval,"limit":limit},timeout=15)
+        rows=r.json()
+        # Ignore the live candle; trade only from completed information.
+        closed=rows[:-1] if len(rows)>2 else rows
+        closes=[float(x[4]) for x in closed]
+        vols=[float(x[5]) for x in closed]
+        if len(closes)<55:
+            return False, {"score":0,"reason":"insufficient candles"}
+        e20=_ema(closes[-60:],20); e50=_ema(closes[-90:],50)
+        rsi=_rsi(closes,14)
+        ret3=closes[-1]/closes[-4]-1.0
+        avgvol=sum(vols[-21:-1])/20.0 if len(vols)>=21 else sum(vols[:-1])/max(1,len(vols)-1)
+        vr=(vols[-1]/avgvol) if avgvol>0 else 1.0
+        bull=closes[-1]>e20>e50
+        bear=closes[-1]<e20<e50
+        details[interval]={"close":closes[-1],"ema20":e20,"ema50":e50,"rsi":rsi,"ret3":ret3,"volume_ratio":vr}
+        if side=="LONG":
+            if bull: score+=1
+            if rsi>=52 and rsi<=74: score+=1
+            if ret3>0: score+=1
+        else:
+            if bear: score+=1
+            if rsi<=48 and rsi>=26: score+=1
+            if ret3<0: score+=1
+        # Volume confirmation only once on the execution timeframe.
+        if interval=="5m" and vr>=1.05: score+=1
+    # Hard veto: never fade the 1h structure.
+    h1=details.get("1h",{})
+    hard_veto=(side=="SHORT" and h1.get("close",0)>h1.get("ema20",0)>h1.get("ema50",0)) or (side=="LONG" and h1.get("close",0)<h1.get("ema20",0)<h1.get("ema50",0))
+    ok=(score>=WHALE_CONFIRM_MIN_SCORE and not hard_veto)
+    return ok, {"score":score,"min_score":WHALE_CONFIRM_MIN_SCORE,"hard_veto":hard_veto,"details":details}
+
 async def latest_signal(client):
     r=await client.get(TELEGRAM_URL,headers={"User-Agent":"Mozilla/5.0 BlueWhalePaperMirror/1.0"},timeout=20)
     r.raise_for_status()
@@ -237,7 +298,9 @@ def open_paper(signal,side,market_price):
     entry=market_price*(1+SLIPPAGE_RATE if side=="LONG" else 1-SLIPPAGE_RATE)
     stop=effective_stop(side,signal["stop"])
     stop_rate=(entry-stop)/entry if side=="LONG" else (stop-entry)/entry
-    if stop_rate<=0 or stop_rate>0.10:return False
+    if stop_rate<=0 or stop_rate>WHALE_MAX_STOP_RATE or stop_rate<WHALE_MIN_STOP_RATE:
+        state["last_signal"]={"id":signal["id"],"side":side,"stop_raw":signal["stop"]["raw"],"rejected":"stop distance outside quality band","stop_rate":stop_rate,"seen_at":utcnow().isoformat()}
+        return False
     account_basis=state["balance"]+sum(float(p.get("entry_fee",0.0)) for p in positions)
     risk=account_basis*RISK_PER_TRADE
     open_risk=sum(float(p.get("risk_dollars",0.0)) for p in positions)
@@ -250,7 +313,7 @@ def open_paper(signal,side,market_price):
     tp=entry*(1+move) if side=="LONG" else entry*(1-move)
     entry_fee=entry*qty*FEE_RATE
     state["balance"]-=entry_fee
-    position={"signal_id":signal["id"],"signal_text":signal["text"],"side":side,"entry":entry,"stop":stop,"tp":tp,"qty":qty,"notional":notional,"risk_dollars":risk,"opened_at":utcnow().isoformat(),"entry_fee":entry_fee}
+    position={"signal_id":signal["id"],"signal_text":signal["text"],"side":side,"entry":entry,"stop":stop,"initial_stop":stop,"tp":tp,"qty":qty,"notional":notional,"risk_dollars":risk,"opened_at":utcnow().isoformat(),"entry_fee":entry_fee,"breakeven":False,"profit_lock":False}
     state["open_positions"].append(position)
     _sync_legacy_open_position()
     state["last_signal"]={"id":signal["id"],"side":side,"stop_raw":signal["stop"]["raw"],"accepted_at":utcnow().isoformat()}
@@ -287,6 +350,16 @@ async def bot_loop():
                 state["last_scan"]=utcnow().isoformat(); state["status"]="running"; state["error"]=None
 
                 for p in list(state.get("open_positions") or []):
+                    initial_stop=float(p.get("initial_stop",p["stop"]))
+                    one_r=abs(float(p["entry"])-initial_stop)
+                    favorable=(price-float(p["entry"])) if p["side"]=="LONG" else (float(p["entry"])-price)
+                    if one_r>0 and favorable>=WHALE_BREAKEVEN_R*one_r and not p.get("breakeven"):
+                        p["stop"]=max(float(p["stop"]),float(p["entry"])) if p["side"]=="LONG" else min(float(p["stop"]),float(p["entry"]))
+                        p["breakeven"]=True
+                    if one_r>0 and favorable>=WHALE_PROFIT_LOCK_R*one_r and not p.get("profit_lock"):
+                        lock=float(p["entry"])+(0.5*one_r if p["side"]=="LONG" else -0.5*one_r)
+                        p["stop"]=max(float(p["stop"]),lock) if p["side"]=="LONG" else min(float(p["stop"]),lock)
+                        p["profit_lock"]=True
                     if (price<=p["stop"] if p["side"]=="LONG" else price>=p["stop"]):
                         close_paper(p,p["stop"],"SL",price)
                     elif (price>=p["tp"] if p["side"]=="LONG" else price<=p["tp"]):
@@ -308,8 +381,14 @@ async def bot_loop():
                         else:
                             side=infer_side(s["text"],s["stop"],price)
                             if side:
-                                ok=open_paper(s,side,price)
-                                print("OPEN paper id={} side={} ok={} price={} open_positions={}".format(s["id"],side,ok,price,len(state.get("open_positions") or [])),flush=True)
+                                confirm_ok,confirm=await technical_confirmation(client,side)
+                                if not confirm_ok:
+                                    state["last_signal"]={"id":s["id"],"side":side,"stop_raw":s["stop"]["raw"],"rejected":"technical confirmation failed","confirmation":confirm,"seen_at":utcnow().isoformat()}
+                                    print("REJECT technical confirmation id={} side={} score={}".format(s["id"],side,confirm.get("score")),flush=True)
+                                else:
+                                    s["confirmation"]=confirm
+                                    ok=open_paper(s,side,price)
+                                    print("OPEN paper id={} side={} ok={} price={} score={} open_positions={}".format(s["id"],side,ok,price,confirm.get("score"),len(state.get("open_positions") or [])),flush=True)
                             else:
                                 state["last_signal"]={"id":s["id"],"side":None,"stop_raw":s["stop"]["raw"],"rejected":"direction unclear","age_minutes":age_min,"seen_at":utcnow().isoformat()}
                                 print("REJECT unclear direction id={}".format(s["id"]),flush=True)
