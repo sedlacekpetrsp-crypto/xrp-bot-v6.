@@ -876,7 +876,7 @@ h1{font-size:24px;margin:0 0 8px}h2{font-size:18px}
 <div class="card"><div id="stats" class="grid"></div></div>
 <div class="card"><h2>📡 Trhy</h2><div id="coins" class="grid"></div></div>
 <div class="card"><h2>📌 Otevřená pozice</h2><div id="position" class="muted">—</div></div>
-<div class="card"><h2>🧾 Posledních 50 obchodů</h2><div id="trades"></div></div>
+<div class="card" id="flyTradesCard" style="display:none"><h2>🧾 Posledních 20 obchodů</h2><div id="trades"></div></div>
 <div class="card muted" id="health">Načítám…</div>
 </div><script>
 const f=(n,d=2)=>n==null||!Number.isFinite(Number(n))?"—":Number(n).toFixed(d);
@@ -894,7 +894,12 @@ async function refresh(){
   document.getElementById('stats').innerHTML=[
    ['Balance',f(d.paper_balance,2)+' USDC'],['Equity',f(d.equity,2)+' USDC'],['Obchody',s.count||0],
    ['Win rate',f(s.win_rate,1)+' %'],['PnL',f(s.total_pnl,2)+' USDC'],['Fees',f(s.fees,2)+' USDC']
-  ].map(x=>`<div class="coin"><div class="muted">${x[0]}</div><b>${x[1]}</b></div>`).join('');
+  ].map(x=>x[0]==='Obchody' ? `<div class="coin" id="flyTradesToggle" style="cursor:pointer;border:1px solid #334155"><div class="muted">Obchody <span id="flyTradesArrow">▼</span></div><b>${x[1]}</b><div class="muted" style="font-size:12px;margin-top:5px">Klepni pro historii</div></div>` : `<div class="coin"><div class="muted">${x[0]}</div><b>${x[1]}</b></div>`).join('');
+  const flyToggle=document.getElementById('flyTradesToggle');
+  if(flyToggle) flyToggle.onclick=()=>{
+   const e=document.getElementById('flyTradesCard'),a=document.getElementById('flyTradesArrow');
+   const open=e.style.display!=='block';e.style.display=open?'block':'none';if(a)a.textContent=open?'▲':'▼';
+  };
   document.getElementById('coins').innerHTML=Object.values(d.market||{}).map(x=>{
    const sig=x.signal||'WAIT',cls=sig==='LONG'?'green':sig==='SHORT'?'red':'yellow';
    return `<div class="coin"><b>${x.symbol}</b><div class="row"><span>Cena při analýze</span><span>${f(x.price,5)}</span></div><div class="row"><span>Signál</span><b class="${cls}">${sig}</b></div>
@@ -903,7 +908,7 @@ async function refresh(){
    <div class="muted">${x.reason||''}</div></div>`;
   }).join('');
   const p=d.position; document.getElementById('position').innerHTML=p?`<b>${p.symbol} ${p.side}</b> • entry ${f(p.entry_price,6)} • SL ${f(p.stop_loss,6)} • TP ${f(p.take_profit,6)} • uPnL ${f(d.unrealized_pnl,2)}`:'Žádná otevřená pozice';
-  document.getElementById('trades').innerHTML=(d.trade_history||[]).map(t=>`<div class="trade"><span>${t.symbol}</span><span>${t.side}</span><span>${t.reason}<br><small class="muted">Uzavřeno: ${closedTime(t.closed_at)}</small></span><span class="${Number(t.pnl)>=0?'green':'red'}">${f(t.pnl,2)}</span></div>`).join('')||'<div class="muted">Zatím bez obchodů.</div>';
+  document.getElementById('trades').innerHTML=(d.trade_history||[]).slice(0,20).map(t=>`<div class="trade"><span>${t.symbol}</span><span>${t.side}</span><span>${t.reason}<br><small class="muted">Uzavřeno: ${closedTime(t.closed_at)}</small></span><span class="${Number(t.pnl)>=0?'green':'red'}">${f(t.pnl,2)}</span></div>`).join('')||'<div class="muted">Zatím bez obchodů.</div>';
   document.getElementById('health').textContent=`Cyklus: ${d.last_cycle_at||'—'} • 429: ${d.http_429_count||0} • edge ×${d.min_edge_multiple} • zdroj: ${d.market_data?.provider||'—'} • data: ${d.market_data?.last_success||'—'} • chyba: ${d.market_data?.last_error||d.last_error||'žádná'}`;
  }catch(e){document.getElementById('health').textContent='Dashboard error: '+e}
 }
