@@ -38,8 +38,14 @@ WHALE_BREAKEVEN_R=float(os.getenv("WHALE_BREAKEVEN_R","1.0"))
 WHALE_PROFIT_LOCK_R=float(os.getenv("WHALE_PROFIT_LOCK_R","1.5"))
 KLINES_URL="https://data-api.binance.vision/api/v3/klines"
 
+SIGNAL_POLICY_VERSION="explicit-signals-v2"
+WHALE_ENTRY_TOLERANCE=float(os.getenv("WHALE_ENTRY_TOLERANCE","0.002"))
+WHALE_MIN_NET_RR=float(os.getenv("WHALE_MIN_NET_RR","1.5"))
+
 app=FastAPI(title=APP_NAME)
 state={"balance":START_BALANCE,"equity":START_BALANCE,"open_positions":[],"open_position":None,"trades":[],"seen_signal_ids":[],"last_scan":None,"last_signal":None,"status":"starting","error":None,"persistence":"memory","persistence_error":None}
+
+state.update({"signal_policy":SIGNAL_POLICY_VERSION,"entry_status":"Čekám na kontrolu signálů","signal_checks":[],"last_source_scan":None})
 
 def utcnow(): return datetime.now(timezone.utc)
 
@@ -149,21 +155,19 @@ def clean_text(raw):
     raw=re.sub(r"[ \t\r\f\v]+"," ",raw)
     return raw.strip()
 
+def parse_level(text, label):
+    # Match a complete numeric token, never a prefix of 819xx or 81900.
+    m=re.search(r"\b(?:"+label+r")\s*[:=]?\s*([0-9][0-9,.X]*)(?![\w.])",text.upper())
+    if not m:return None
+    raw=m.group(1)
+    if "X" in raw:return None
+    if not re.fullmatch(r"(?:[0-9]+|[0-9]{1,3}(?:,[0-9]{3})+)(?:\.[0-9]+)?",raw):return None
+    value=float(raw.replace(",",""))
+    return value if 1000 <= value <= 10000000 else None
+
 def parse_stop(text):
-    u=text.upper()
-    m=re.search(r"\bSL\s*[:=]?\s*([0-9]{2,3}(?:,[0-9]{1,3})?(?:X{1,3})?)",u)
-    if not m: return None
-    shown=m.group(1); raw=shown.replace(",","")
-    if "X" not in raw:
-        try:
-            v=float(raw)
-            if v<10000:return None
-            return {"raw":shown,"low":v,"high":v,"masked":False}
-        except ValueError:return None
-    n=raw.count("X"); prefix=raw[:-n]
-    if not prefix.isdigit():return None
-    low=float(int(prefix)*(10**n))
-    return {"raw":shown,"low":low,"high":low+(10**n)-1,"masked":True}
+    value=parse_level(text,r"SL|STOP LOSS|STOP-LOSS")
+    return {"raw":str(value),"low":value,"high":value,"masked":False} if value else None
 
 def explicit_side(text)->Optional[str]:
     u=text.upper()
@@ -173,11 +177,8 @@ def explicit_side(text)->Optional[str]:
     return None
 
 def infer_side(text,stop,price):
-    s=explicit_side(text)
-    if s:return s
-    if stop["high"]<price*0.995:return "LONG"
-    if stop["low"]>price*1.005:return "SHORT"
-    return None
+    # Direction must be in the source; a stop above market is not a sell signal.
+    return explicit_side(text)
 
 def effective_stop(side,stop):
     if side=="LONG":return stop["high"] if stop["masked"] else stop["low"]
@@ -244,7 +245,7 @@ async def technical_confirmation(client, side):
     ok=(score>=WHALE_CONFIRM_MIN_SCORE and not hard_veto)
     return ok, {"score":score,"min_score":WHALE_CONFIRM_MIN_SCORE,"hard_veto":hard_veto,"details":details,"news":news}
 
-async def latest_signal(client):
+async def latest_signals(client):
     r=await client.get(TELEGRAM_URL,headers={"User-Agent":"Mozilla/5.0 BlueWhalePaperMirror/1.0"},timeout=20)
     r.raise_for_status()
     chunks=re.split(r'(?=<div class="tgme_widget_message_wrap)',r.text)
@@ -256,14 +257,77 @@ async def latest_signal(client):
         dtm=re.search(r'<time[^>]+datetime="([^"]+)"',ch)
         text=clean_text(tm.group(1)) if tm else ""
         if "BTC" not in text.upper():continue
-        stop=parse_stop(text)
-        if stop:
-            posted_at=None
-            if dtm:
-                try: posted_at=datetime.fromisoformat(dtm.group(1).replace("Z","+00:00"))
-                except Exception: posted_at=None
-            candidates.append({"id":int(mid.group(1)),"text":text,"stop":stop,"posted_at":posted_at.isoformat() if posted_at else None})
-    return max(candidates,key=lambda x:x["id"]) if candidates else None
+        # Include incomplete posts in diagnostics, but never trade them.
+        if not re.search(r"\b(?:SL|LONG|SHORT|ENTRY)\b",text.upper()):continue
+        posted_at=None
+        if dtm:
+            try: posted_at=datetime.fromisoformat(dtm.group(1).replace("Z","+00:00"))
+            except ValueError: pass
+        candidates.append({"id":int(mid.group(1)),"text":text,"stop":parse_stop(text),
+                           "entry":parse_level(text,r"ENTRY|ENTRY PRICE"),
+                           "tp":parse_level(text,r"TP1|TP 1|TP|TAKE PROFIT"),
+                           "posted_at":posted_at.isoformat() if posted_at else None})
+    state["last_source_scan"]=utcnow().isoformat()
+    return sorted(candidates,key=lambda x:x["id"])
+
+def signal_problem(signal, price):
+    stop=signal.get("stop")
+    side=explicit_side(signal["text"])
+    if not side or not stop or stop.get("masked") or not signal.get("entry") or not signal.get("tp"):
+        return "Neúplný signál: potřebuji směr, přesný vstup, SL a TP", True
+    entry=signal["entry"]; sl=stop["low"]; tp=signal["tp"]
+    if not (sl < entry < tp if side=="LONG" else tp < entry < sl):
+        return "Nesprávné pořadí vstupu, SL a TP", True
+    if (price<=sl or price>=tp) if side=="LONG" else (price>=sl or price<=tp):
+        return "Cena už překročila SL nebo TP signálu", True
+    if abs(price-entry)/entry>WHALE_ENTRY_TOLERANCE:
+        return "Čekám na cenu v blízkosti vstupu signálu", False
+    return None, False
+
+def remember_signal(signal_id):
+    if signal_id not in state["seen_signal_ids"]:
+        state["seen_signal_ids"].append(signal_id)
+        state["seen_signal_ids"]=state["seen_signal_ids"][-200:]
+
+async def scan_entries(client, price):
+    signals=await latest_signals(client)
+    checks=[]
+    for s in signals:
+        if s["id"] in state["seen_signal_ids"]:continue
+        check={"id":s["id"],"checked_at":utcnow().isoformat()}
+        checks.append(check)
+        try:
+            posted=datetime.fromisoformat(s["posted_at"]) if s.get("posted_at") else None
+            age=(utcnow()-posted).total_seconds()/60 if posted else None
+        except (ValueError, TypeError):age=None
+        if age is None or age<0 or age>MAX_SIGNAL_AGE_MINUTES:
+            check["reason"]="Starý signál nebo neplatný čas zprávy"
+            remember_signal(s["id"])
+            continue
+        reason, terminal=signal_problem(s,price)
+        if reason:
+            check["reason"]=reason
+            if terminal:remember_signal(s["id"])
+            continue
+        side=explicit_side(s["text"])
+        if len(state["open_positions"])>=MAX_OPEN_POSITIONS:
+            check["reason"]="Dosažen limit otevřených pozic"
+            continue
+        # Transient filters do not consume the signal; retry until expiry.
+        ok,confirm=await technical_confirmation(client,side)
+        check["confirmation"]=confirm
+        if not ok:
+            check["reason"]="Čekám na potvrzení trendu a filtrů"
+            continue
+        s["confirmation"]=confirm
+        if open_paper(s,side,price):
+            remember_signal(s["id"])
+            check["reason"]="Obchod otevřen"
+        else:
+            check["reason"]=state.get("last_signal",{}).get("rejected","Vstup blokován limitem rizika")
+    state["signal_checks"]=(state.get("signal_checks",[])+checks)[-20:]
+    state["entry_status"]=checks[-1]["reason"] if checks else "Čekám na nový úplný BTC signál z Telegramu"
+
 
 def mark_to_market(price):
     positions=state.get("open_positions") or []
@@ -293,6 +357,10 @@ def _same_side_too_soon(side):
     return False
 
 def open_paper(signal,side,market_price):
+    reason,_=signal_problem(signal,market_price)
+    if reason or side!=explicit_side(signal["text"]):
+        state["last_signal"]={"id":signal["id"],"rejected":reason or "Směr neodpovídá signálu"}
+        return False
     positions=state.get("open_positions") or []
     if len(positions)>=MAX_OPEN_POSITIONS:
         return False
@@ -313,11 +381,14 @@ def open_paper(signal,side,market_price):
         return False
     eff=stop_rate+2*(FEE_RATE+SLIPPAGE_RATE)
     notional=risk/eff; qty=notional/entry
-    move=RR*eff
-    tp=entry*(1+move) if side=="LONG" else entry*(1-move)
+    tp=float(signal["tp"])
+    reward_rate=((tp-entry) if side=="LONG" else (entry-tp))/entry-2*(FEE_RATE+SLIPPAGE_RATE)
+    if reward_rate < WHALE_MIN_NET_RR*eff:
+        state["last_signal"]={"id":signal["id"],"rejected":"Nedostatečný poměr zisku k riziku po poplatcích"}
+        return False
     entry_fee=entry*qty*FEE_RATE
     state["balance"]-=entry_fee
-    position={"signal_id":signal["id"],"signal_text":signal["text"],"side":side,"entry":entry,"stop":stop,"initial_stop":stop,"tp":tp,"qty":qty,"notional":notional,"risk_dollars":risk,"opened_at":utcnow().isoformat(),"entry_fee":entry_fee,"breakeven":False,"profit_lock":False}
+    position={"signal_policy":SIGNAL_POLICY_VERSION,"confirmation":signal.get("confirmation"),"source_entry":signal["entry"],"signal_id":signal["id"],"signal_text":signal["text"],"side":side,"entry":entry,"stop":stop,"initial_stop":stop,"tp":tp,"qty":qty,"notional":notional,"risk_dollars":risk,"opened_at":utcnow().isoformat(),"entry_fee":entry_fee,"breakeven":False,"profit_lock":False}
     state["open_positions"].append(position)
     _sync_legacy_open_position()
     state["last_signal"]={"id":signal["id"],"side":side,"stop_raw":signal["stop"]["raw"],"accepted_at":utcnow().isoformat()}
@@ -351,6 +422,7 @@ async def bot_loop():
         while True:
             try:
                 price=await btc_price(client)
+                state["market_price"]=price
                 state["last_scan"]=utcnow().isoformat(); state["status"]="running"; state["error"]=None
 
                 for p in list(state.get("open_positions") or []):
@@ -374,29 +446,7 @@ async def bot_loop():
                 mark_to_market(price)
                 state["news"] = await news_signal.get_news(SYMBOL)
 
-                if len(state.get("open_positions") or [])<MAX_OPEN_POSITIONS:
-                    s=await latest_signal(client)
-                    if s and s["id"] not in state["seen_signal_ids"]:
-                        state["seen_signal_ids"].append(s["id"]); state["seen_signal_ids"]=state["seen_signal_ids"][-200:]
-                        posted=datetime.fromisoformat(s["posted_at"]) if s.get("posted_at") else None
-                        age_min=((utcnow()-posted).total_seconds()/60.0) if posted else None
-                        if age_min is None or age_min>MAX_SIGNAL_AGE_MINUTES:
-                            state["last_signal"]={"id":s["id"],"side":None,"stop_raw":s["stop"]["raw"],"rejected":"stale public signal","age_minutes":age_min,"seen_at":utcnow().isoformat()}
-                            print("REJECT stale signal id={} age_min={}".format(s["id"],age_min),flush=True)
-                        else:
-                            side=infer_side(s["text"],s["stop"],price)
-                            if side:
-                                confirm_ok,confirm=await technical_confirmation(client,side)
-                                if not confirm_ok:
-                                    state["last_signal"]={"id":s["id"],"side":side,"stop_raw":s["stop"]["raw"],"rejected":"technical confirmation failed","confirmation":confirm,"seen_at":utcnow().isoformat()}
-                                    print("REJECT technical confirmation id={} side={} score={}".format(s["id"],side,confirm.get("score")),flush=True)
-                                else:
-                                    s["confirmation"]=confirm
-                                    ok=open_paper(s,side,price)
-                                    print("OPEN paper id={} side={} ok={} price={} score={} open_positions={}".format(s["id"],side,ok,price,confirm.get("score"),len(state.get("open_positions") or [])),flush=True)
-                            else:
-                                state["last_signal"]={"id":s["id"],"side":None,"stop_raw":s["stop"]["raw"],"rejected":"direction unclear","age_minutes":age_min,"seen_at":utcnow().isoformat()}
-                                print("REJECT unclear direction id={}".format(s["id"]),flush=True)
+                await scan_entries(client,price)
                 save_state()
             except Exception as e:
                 state["status"]="error"; state["error"]=repr(e)
