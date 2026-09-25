@@ -16,7 +16,7 @@ from datetime import datetime, timezone, timedelta
 import psycopg
 from psycopg.types.json import Jsonb
 
-BUILD = "tv-consensus-v3-20260925-trend-costs"
+BUILD = "tv-consensus-v3-20260925-paper-unpaused"
 MODE = "PAPER"
 SYMBOL = "XRPUSDC"
 
@@ -44,6 +44,9 @@ WIN_COOLDOWN_SECONDS = 45
 LOSS_COOLDOWN_SECONDS = 150
 MAX_CONSECUTIVE_LOSSES = 4
 MAX_DAILY_LOSS_PCT = 0.008
+# User requested continuous PAPER evaluation without the daily loss pause.
+# Keep the ordinary stop, position risk and temporary loss-streak cooldown.
+DAILY_LOSS_GUARD_ENABLED = False
 SOFT_HOLD_MINUTES = 12.0
 STALE_HOLD_MINUTES = 45.0
 BREAK_EVEN_TRIGGER_R = 0.6
@@ -76,6 +79,7 @@ state = {
     "price_updated_at": None,
     "exit_error": None,
     "guard_until": None,
+    "daily_loss_guard_enabled": DAILY_LOSS_GUARD_ENABLED,
     "last_entry_candle": None,
     "cooldown_until": None,
     "previous_long_score": None,
@@ -565,8 +569,10 @@ def open_trade(a, market_price):
     loss_one=abs(loss_one)
     if loss_one<=0: return False
 
-    remaining_daily=max(START_BALANCE,float(state["balance"]))*MAX_DAILY_LOSS_PCT+daily_pnl()
-    risk_dollars=min(float(state["balance"])*RISK_PER_TRADE, remaining_daily)
+    risk_dollars=float(state["balance"])*RISK_PER_TRADE
+    if DAILY_LOSS_GUARD_ENABLED:
+        remaining_daily=max(START_BALANCE,float(state["balance"]))*MAX_DAILY_LOSS_PCT+daily_pnl()
+        risk_dollars=min(risk_dollars, remaining_daily)
     qty=min(risk_dollars/loss_one,float(state["balance"])*MAX_NOTIONAL_SHARE/entry)
     if qty<=0: return False
 
@@ -695,7 +701,7 @@ async def cycle():
         state["status"]="cooldown"; return
 
     max_daily_loss=max(START_BALANCE,float(state["balance"]))*MAX_DAILY_LOSS_PCT
-    if daily_pnl()<=-max_daily_loss:
+    if DAILY_LOSS_GUARD_ENABLED and daily_pnl()<=-max_daily_loss:
         state["guard_until"]=(utcnow()+timedelta(days=1)).replace(hour=0,minute=0,second=0,microsecond=0).isoformat()
         state["status"]="daily_loss_guard"; return
     if loss_streak_pause_active():

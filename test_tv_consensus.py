@@ -113,7 +113,8 @@ class RiskTests(unittest.TestCase):
 
     def test_daily_loss_guard_still_blocks_after_pause(self):
         tv.state['trades'] = [dict(net_pnl=-30, closed_at=(self.now-timedelta(minutes=30)).isoformat()) for _ in range(4)]
-        with patch.object(tv, 'analyze_market', new=AsyncMock(return_value={'signal':'LONG'})), \
+        with patch.object(tv, 'DAILY_LOSS_GUARD_ENABLED', True), \
+             patch.object(tv, 'analyze_market', new=AsyncMock(return_value={'signal':'LONG'})), \
              patch.object(base, 'get_live_price', new=AsyncMock()) as price:
             asyncio.run(tv.cycle())
         self.assertEqual(tv.state['status'], 'daily_loss_guard')
@@ -138,10 +139,28 @@ class RiskTests(unittest.TestCase):
 
     def test_wider_stop_reduces_size_and_respects_remaining_daily_budget(self):
         tv.state['trades']=[dict(net_pnl=-75,closed_at=self.now.isoformat())]
-        p=self.open('LONG')
+        with patch.object(tv, 'DAILY_LOSS_GUARD_ENABLED', True):
+            p=self.open('LONG')
         self.assertLessEqual(p['risk_dollars'],5.00001)
         self.assertGreaterEqual(abs(p['entry']-p['stop']), .006-1e-8)
         self.assertGreaterEqual(tv.net_pnl_for_exit(p,p['tp'])[-1],1.5*p['risk_dollars']-1e-8)
+
+    def test_daily_pause_disabled_allows_entry_without_resetting_losses(self):
+        trades=[dict(net_pnl=-30,closed_at=(self.now-timedelta(hours=2)).isoformat()) for _ in range(4)]
+        tv.state['trades']=copy.deepcopy(trades)
+        with patch.object(tv, 'DAILY_LOSS_GUARD_ENABLED', False), \
+             patch.object(tv, 'analyze_market', new=AsyncMock(return_value=self.row('LONG'))), \
+             patch.object(base, 'get_live_price', new=AsyncMock(return_value=1.5)):
+            asyncio.run(tv.cycle())
+        p=tv.state['open_position']
+        self.assertIsNotNone(p)
+        self.assertLessEqual(p['risk_dollars'],15.000001)
+        self.assertLess(p['stop'],p['entry'])
+        self.assertGreater(p['tp'],p['entry'])
+        self.assertEqual(tv.state['trades'],trades)
+        self.assertEqual(tv.daily_pnl(),-120)
+        self.assertIsNone(tv.state['guard_until'])
+        self.assertEqual(tv.state['mode'],'PAPER')
 
     def test_flip_needs_two_distinct_candles_and_opposite_trend(self):
         p=self.open('LONG'); p['opened_at']=(self.now-timedelta(minutes=5)).isoformat()
