@@ -79,7 +79,9 @@ async def dashboard_with_pnl_breakdown():
     html = html.replace('<div class="card"><h2>📡 Trhy</h2>', fly_guard_card + '<div class="card"><h2>📡 Trhy</h2>')
     whale_card = """
 <div class="card">
-  <h2>🐋 BLUE WHALE</h2>
+  <h2>🐋 BLUE WHALE · FIB + VWAP</h2>
+  <div class="muted">PAPER • Fibonacci 0,618–0,786 + návrat k VWAP • BTC / ETH / SOL / XRP</div>
+  <div id="whaleSignals" class="coin muted" style="margin-top:10px"></div>
   <div id="whaleStats" class="grid"></div>
   <div id="whalePosition" class="coin muted" style="margin-top:10px">Načítám…</div>
   <div id="whaleTrades" style="display:none;margin-top:10px"></div>
@@ -141,22 +143,24 @@ async function refreshWhale(){
   const wr=ts.length?100*wins/ts.length:0;
   const ps=w.open_positions||[];
   const p=ps[0]||w.open_position||null;
-  const unreal=Number(w.equity||0)-Number(w.balance||0);
-  const unrealText=`<span class="${unreal>=0?'green':'red'}">${unreal>=0?'+':''}${f(unreal,2)} USD</span>`;
+  const unreal=w.equity==null?NaN:Number(w.equity)-Number(w.balance);
+  const unrealText=`<span class="${unreal>=0?'green':'red'}">${unreal>=0?'+':''}${Number.isFinite(unreal)?f(unreal,2):'—'} USD</span>`;
   const realizedText=`<span class="${pnl>=0?'green':'red'}">${pnl>=0?'+':''}${f(pnl,2)} USD</span>`;
   document.getElementById('whaleStats').innerHTML=[
-   ['Balance',f(w.balance,2)+' USD'],['Equity',f(w.equity,2)+' USD'],
+   ['Balance',f(w.balance,2)+' USD'],['Equity',w.equity==null?'Data nejsou aktuální':f(w.equity,2)+' USD'],
    ['Uzavřené obchody',ts.length],['Otevřené obchody',ps.length|| (p?1:0)],
    ['Win rate',f(wr,1)+' %'],['Realizované PnL',realizedText],
    ['Nerealizované PnL',unrealText],['Status',w.status||'—'],
    ['Obchodní stav',p?'OBCHOD OTEVŘEN':'⏳ ČEKÁM NA OBCHOD']
   ].map(x=>x[0]==='Uzavřené obchody' ? `<div class="coin" onclick="const e=document.getElementById('whaleTrades');const o=e.style.display!=='block';e.style.display=o?'block':'none';this.querySelector('.whale-arrow').textContent=o?'▲':'▼'" style="cursor:pointer"><div class="muted">Uzavřené obchody <span class="whale-arrow">▼</span></div><b>${x[1]}</b><div class="muted" style="font-size:12px;margin-top:5px">Klepni pro historii</div></div>` : `<div class="coin"><div class="muted">${x[0]}</div><b>${x[1]}</b></div>`).join('');
   document.getElementById('whalePosition').innerHTML=ps.length
-   ? ps.map((p,i)=>`<div style="${i?'margin-top:10px;padding-top:10px;border-top:1px solid #29343e':''}"><b>#${i+1} BTCUSDT ${p.side}</b> • entry ${f(p.entry,2)} • SL ${f(p.stop,2)} • TP ${f(p.tp,2)} • risk ${f(p.risk_dollars,2)} USD</div>`).join('')+`<div style="margin-top:8px">Celkové uPnL <b class="${unreal>=0?'green':'red'}">${unreal>=0?'+':''}${f(unreal,2)} USD</b></div>`
+   ? ps.map((p,i)=>`<div style="${i?'margin-top:10px;padding-top:10px;border-top:1px solid #29343e':''}"><b>#${i+1} ${p.symbol||'BTCUSDT'} ${p.side} · ${p.strategy||'Původní signál'}</b> • entry ${f(p.entry,6)} • SL ${f(p.stop,6)} • TP ${f(p.tp,6)} • risk ${f(p.risk_dollars,2)} USD</div>`).join('')+`<div style="margin-top:8px">Celkové uPnL <b class="${unreal>=0?'green':'red'}">${unreal>=0?'+':''}${f(unreal,2)} USD</b></div>`
    : (p
-      ? `<b>BTCUSDT ${p.side}</b> • entry ${f(p.entry,2)} • SL ${f(p.stop,2)} • TP ${f(p.tp,2)} • risk ${f(p.risk_dollars,2)} USD • uPnL ${unreal>=0?'+':''}${f(unreal,2)} USD`
+      ? `<b>${p.symbol||'BTCUSDT'} ${p.side} · ${p.strategy||'Původní signál'}</b> • entry ${f(p.entry,6)} • SL ${f(p.stop,6)} • TP ${f(p.tp,6)} • risk ${f(p.risk_dollars,2)} USD • uPnL ${unreal>=0?'+':''}${f(unreal,2)} USD`
       : '<b class="yellow">⏳ ČEKÁM NA OBCHOD</b><div style="margin-top:6px">Žádná otevřená Whale pozice.</div>');
-  document.getElementById('whaleTrades').innerHTML=ts.slice().reverse().slice(0,20).map(t=>`<div class="trade"><span><b>${t.symbol||'BTCUSDT'}</b> ${t.side}</span><span>${f(t.entry,2)} → ${f(t.exit,2)}</span><span>${t.reason||'—'}</span><span class="${Number(t.net_pnl)>=0?'green':'red'}">${Number(t.net_pnl)>=0?'+':''}${f(t.net_pnl,2)} USD</span></div>`).join('')||'<div class="coin muted">Zatím žádné uzavřené obchody.</div>';
+  document.getElementById('whaleTrades').innerHTML=ts.slice().reverse().slice(0,20).map(t=>`<div class="trade"><span><b>${t.symbol||'BTCUSDT'}</b> ${t.side}</span><span>${f(t.entry,6)} → ${f(t.exit,6)}</span><span>${t.reason||'—'} · ${t.strategy||'Původní signál'} · ${t.closed_at?new Date(t.closed_at).toLocaleString('cs-CZ'):''}</span><span class="${Number(t.net_pnl)>=0?'green':'red'}">${Number(t.net_pnl)>=0?'+':''}${f(t.net_pnl,2)} USD</span></div>`).join('')||'<div class="coin muted">Zatím žádné uzavřené obchody.</div>';
+  const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  document.getElementById('whaleSignals').innerHTML=(w.signal_checks||[]).map(a=>`<div style="margin:8px 0"><b>${esc(a.symbol)} ${esc(a.strategy)}</b><br>${esc(a.reason)}${a.fib_618!=null?`<br>0,618: ${f(a.fib_618,6)} · 0,786: ${f(a.fib_786,6)}`:''}${a.vwap!=null?`<br>VWAP: ${f(a.vwap,6)}`:''}</div>`).join('')||'Načítám podmínky vstupu…';
   document.getElementById('whaleHealth').textContent=
    `BTC: ${w.market_price ? f(w.market_price,2)+" USD" : "—"} • ${w.entry_status||"Čekám na kontrolu signálů"} • Scan: ${w.last_scan||'—'} • ukládání: ${w.persistence||'memory'} • chyba: ${w.error||w.persistence_error||'žádná'}`;
  }catch(e){
@@ -405,3 +409,4 @@ async def news_status(symbol: str = "ALL"):
 @app.get("/fast/status")
 async def fast_status():
     return JSONResponse(fast.state, headers={"Cache-Control":"no-store"})
+
