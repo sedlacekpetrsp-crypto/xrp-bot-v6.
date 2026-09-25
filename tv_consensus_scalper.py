@@ -7,6 +7,8 @@ oscillator/momentum consensus, ADX strength, and score acceleration.
 from __future__ import annotations
 
 import asyncio
+import math
+from contextlib import suppress
 import os
 import time
 from datetime import datetime, timezone, timedelta
@@ -14,7 +16,7 @@ from datetime import datetime, timezone, timedelta
 import psycopg
 from psycopg.types.json import Jsonb
 
-BUILD = "tv-consensus-v2-20260922-risk-exits"
+BUILD = "tv-consensus-v3-20260925-trend-costs"
 MODE = "PAPER"
 SYMBOL = "XRPUSDC"
 
@@ -22,6 +24,7 @@ START_BALANCE = float(os.getenv("TV_START_BALANCE", "10000"))
 RISK_PER_TRADE = float(os.getenv("TV_RISK_PER_TRADE", "0.0015"))
 MAX_NOTIONAL_SHARE = float(os.getenv("TV_MAX_NOTIONAL_SHARE", "0.25"))
 SCAN_SECONDS = 15
+EXIT_SCAN_SECONDS = 2
 STATE_HEARTBEAT_SECONDS = 60.0
 
 ENTRY_SCORE_ALIGNED = 68.0
@@ -33,8 +36,8 @@ MIN_VOLUME_RATIO = 0.85
 
 MIN_STOP_RATE = 0.0035
 MAX_STOP_RATE = 0.0075
-ATR_STOP_MULT = 0.95
-NET_RR = 1.25
+ATR_STOP_MULT = 1.5
+NET_RR = 1.5
 MIN_TARGET_NET_RATE = 0.0028
 
 WIN_COOLDOWN_SECONDS = 45
@@ -43,7 +46,8 @@ MAX_CONSECUTIVE_LOSSES = 4
 MAX_DAILY_LOSS_PCT = 0.008
 SOFT_HOLD_MINUTES = 12.0
 STALE_HOLD_MINUTES = 45.0
-BREAK_EVEN_TRIGGER_R = 0.75
+BREAK_EVEN_TRIGGER_R = 0.6
+MIN_LOCKED_NET_R = 0.2
 TRAIL_TRIGGER_R = 1.0
 TRAIL_GIVEBACK_R = 0.50
 FLIP_EXIT_MIN_AGE = 1.0
@@ -69,6 +73,9 @@ state = {
     "analysis": {},
     "last_scan": None,
     "current_price": None,
+    "price_updated_at": None,
+    "exit_error": None,
+    "guard_until": None,
     "last_entry_candle": None,
     "cooldown_until": None,
     "previous_long_score": None,
@@ -347,6 +354,53 @@ def trend_15m(closes):
     return "NEUTRAL",0.0
 
 
+def entry_setup(side, candles, atr):
+    """Closed-candle pullback recovery or breakout, without chasing an extension."""
+    if not atr or atr <= 0 or len(candles) < 20:
+        return None
+    closes = [float(c[4]) for c in candles]
+    last = candles[-1]
+    close, opened = closes[-1], float(last[1])
+    average = base.ema(closes, 9)
+    previous_average = base.ema(closes[:-1], 9)
+    direction = 1 if side == "LONG" else -1
+    if direction * (close-opened) <= 0 or direction * (close-closes[-2]) <= 0:
+        return None
+    if not 0 <= direction * (close-average) <= 1.5 * atr:
+        return None
+    recovered = direction * (closes[-2]-previous_average) < -0.05 * atr
+    boundary = (max(float(c[2]) for c in candles[-6:-1]) if side == "LONG"
+                else min(float(c[3]) for c in candles[-6:-1]))
+    if recovered:
+        return "TREND_PULLBACK"
+    if direction * (close-boundary) > 0:
+        return "TREND_BREAKOUT"
+    return None
+
+
+def entry_blockers(a, side):
+    blockers = []
+    numeric = ("long_score", "short_score", "adx5", "volume_ratio")
+    if any(a.get(key) is None or not math.isfinite(float(a[key])) for key in numeric):
+        return ["Neplatná nebo chybějící data indikátorů"]
+    if a.get("trend_15m") != side:
+        blockers.append("Vstup vyžaduje shodný 15m trend; protitrend a NEUTRAL blokovány")
+    own, other = ("long_score", "short_score") if side == "LONG" else ("short_score", "long_score")
+    if a[own] < ENTRY_SCORE_ALIGNED:
+        blockers.append("Nedostatečné skóre")
+    if a[own] - a[other] < MIN_SCORE_EDGE:
+        blockers.append("Malý rozdíl LONG/SHORT")
+    if not a.get("fast_long" if side == "LONG" else "fast_short"):
+        blockers.append("Chybí potvrzení momenta")
+    if a.get("adx5") is None or a["adx5"] < MIN_ADX:
+        blockers.append("Slabý nebo nedostupný ADX")
+    if a.get("volume_ratio", 0) < MIN_VOLUME_RATIO:
+        blockers.append("Nízký objem")
+    if not a.get("setup_long" if side == "LONG" else "setup_short"):
+        blockers.append("Čekám na návrat do trendu nebo potvrzený průraz bez přetažení")
+    return blockers
+
+
 async def analyze_market():
     k1,k5,k15=await asyncio.gather(
         base.get_klines(SYMBOL,"1m",250),
@@ -354,6 +408,10 @@ async def analyze_market():
         base.get_klines(SYMBOL,"15m",250),
     )
     a1,a5,a15=k1[:-1],k5[:-1],k15[:-1]
+    now_ms = utcnow().timestamp() * 1000
+    for candles, interval in ((a1, 60000), (a5, 300000), (a15, 900000)):
+        if len(candles) < 200 or not 0 <= now_ms-(int(candles[-1][0])+interval) <= interval+30000:
+            raise ValueError("Neaktuální nebo neúplné svíčky; vstupy zastaveny")
     h1=[float(x[2]) for x in a1]; l1=[float(x[3]) for x in a1]; c1=[float(x[4]) for x in a1]; v1=[float(x[5]) for x in a1]
     h5=[float(x[2]) for x in a5]; l5=[float(x[3]) for x in a5]; c5=[float(x[4]) for x in a5]
     c15=[float(x[4]) for x in a15]
@@ -384,21 +442,13 @@ async def analyze_market():
     vr=volume_ratio(v1)
     atr=base.atr_wilder(h1,l1,c1)
     candle=int(a1[-1][0])
-    aligned_long=t15 in ("LONG","NEUTRAL")
-    aligned_short=t15 in ("SHORT","NEUTRAL")
-    long_thr=ENTRY_SCORE_ALIGNED if aligned_long else ENTRY_SCORE_COUNTER
-    short_thr=ENTRY_SCORE_ALIGNED if aligned_short else ENTRY_SCORE_COUNTER
-
-    long_ok=(
-        long_score>=long_thr and long_score-short_score>=MIN_SCORE_EDGE and
-        (accel_l>=MIN_SCORE_ACCEL or fast_long or long_score>=76) and
-        (adx is None or adx>=MIN_ADX) and vr>=MIN_VOLUME_RATIO
-    )
-    short_ok=(
-        short_score>=short_thr and short_score-long_score>=MIN_SCORE_EDGE and
-        (accel_s>=MIN_SCORE_ACCEL or fast_short or short_score>=76) and
-        (adx is None or adx>=MIN_ADX) and vr>=MIN_VOLUME_RATIO
-    )
+    long_thr=short_thr=ENTRY_SCORE_ALIGNED
+    gates = dict(trend_15m=t15, long_score=long_score, short_score=short_score,
+                 fast_long=fast_long, fast_short=fast_short, adx5=adx, volume_ratio=vr,
+                 setup_long=entry_setup("LONG", a1, atr),
+                 setup_short=entry_setup("SHORT", a1, atr))
+    long_blocks, short_blocks = entry_blockers(gates, "LONG"), entry_blockers(gates, "SHORT")
+    long_ok, short_ok = not long_blocks, not short_blocks
 
     signal="LONG" if long_ok and not short_ok else "SHORT" if short_ok and not long_ok else "WAIT"
     countertrend=(signal=="LONG" and t15=="SHORT") or (signal=="SHORT" and t15=="LONG")
@@ -407,7 +457,11 @@ async def analyze_market():
     accel=accel_l if signal=="LONG" else accel_s if signal=="SHORT" else max(accel_l,accel_s)
 
     row={
+        **gates,
         "symbol":SYMBOL,"price":float(k1[-1][4]),"candle_time":candle,
+        "closed_price":c1[-1], "atr5":base.atr_wilder(h5,l5,c5),
+        "swing_low":min(l1[-5:]), "swing_high":max(h1[-5:]),
+        "setup":gates.get("setup_long" if signal=="LONG" else "setup_short"),
         "signal":signal,"long_score":round(long_score,2),"short_score":round(short_score,2),
         "score":round(score,2),"opposing_score":round(opposing,2),"score_accel":round(accel,2),
         "long_accel":round(accel_l,2),"short_accel":round(accel_s,2),
@@ -419,24 +473,7 @@ async def analyze_market():
         "threshold_long":long_thr,"threshold_short":short_thr,
         "reason":f"TV-like consensus L/S={long_score:.1f}/{short_score:.1f} accel={accel_l:.1f}/{accel_s:.1f} 15m={t15} MA={ma_buy}/{ma_sell} ADX={adx if adx is not None else 0:.1f} vol={vr:.2f}x"
     }
-    # Show the actual blocking gates instead of an unexplained WAIT.
-    blockers = []
-    preferred_long = long_score >= short_score
-    preferred_score = long_score if preferred_long else short_score
-    threshold = long_thr if preferred_long else short_thr
-    fast = fast_long if preferred_long else fast_short
-    acceleration = accel_l if preferred_long else accel_s
-    if preferred_score < threshold:
-        blockers.append(f"Skóre {preferred_score:.1f} < {threshold:.0f}")
-    if abs(long_score-short_score) < MIN_SCORE_EDGE:
-        blockers.append("Malý rozdíl LONG/SHORT")
-    if not (acceleration >= MIN_SCORE_ACCEL or fast or preferred_score >= 76):
-        blockers.append("Chybí potvrzení momenta")
-    if adx is not None and adx < MIN_ADX:
-        blockers.append(f"ADX {adx:.1f} < {MIN_ADX:.0f}")
-    if vr < MIN_VOLUME_RATIO:
-        blockers.append(f"Objem {vr:.2f} < {MIN_VOLUME_RATIO:.2f}x")
-    row["blockers"] = blockers
+    row["blockers"] = [] if signal != "WAIT" else (long_blocks if t15=="LONG" or (t15=="NEUTRAL" and long_score>=short_score) else short_blocks)
     state["previous_long_score"]=long_score
     state["previous_short_score"]=short_score
     state["analysis"]=row
@@ -493,25 +530,52 @@ def open_trade(a, market_price):
         return False
 
     side=a["signal"]
+    def reject(message):
+        a.setdefault("blockers", []).append(message)
+        state["status"] = "entry_blocked"
+        return False
+    if a.get("trend_15m") != side or a.get("countertrend"):
+        return reject("Vstup proti trendu nebo v NEUTRAL je zakázán")
+    if not math.isfinite(market_price) or market_price <= 0:
+        return reject("Neplatná cena")
+    if entry_blockers(a, side):
+        return reject("Vstup nesplňuje potvrzení trendu, momenta a setupu")
+    if not 0 <= utcnow().timestamp()*1000-(int(a["candle_time"])+60000) <= 90000:
+        return reject("Signál již není aktuální")
     entry=market_price*(1+base.SLIPPAGE_RATE if side=="LONG" else 1-base.SLIPPAGE_RATE)
     atr=float(a.get("atr1") or 0)
-    atr_rate=atr/market_price if atr>0 and market_price>0 else MIN_STOP_RATE
-    stop_rate=min(MAX_STOP_RATE,max(MIN_STOP_RATE,atr_rate*ATR_STOP_MULT))
+    atr5=float(a.get("atr5") or 0)
+    if not all(math.isfinite(v) and v > 0 for v in (atr, atr5)):
+        return reject("Chybí volatilita pro bezpečný stop")
+    if any(not math.isfinite(float(a.get(key) or 0)) or float(a.get(key) or 0)<=0
+           for key in ("closed_price", "swing_low", "swing_high")):
+        return reject("Neplatná cenová struktura")
+    direction=1 if side=="LONG" else -1
+    move=direction*(market_price-float(a["closed_price"]))
+    if move > 0.75*atr or move < -0.5*atr:
+        return reject("Cena už opustila potvrzený vstup")
+    swing=float(a["swing_low"] if side=="LONG" else a["swing_high"])
+    structural=direction*(entry-swing)+0.25*atr
+    stop_rate=max(MIN_STOP_RATE, atr*ATR_STOP_MULT/entry, atr5/entry, structural/entry)
+    if stop_rate > MAX_STOP_RATE:
+        return reject("Potřebný stop je příliš vzdálený; nezužuji ho do běžného výkyvu")
     stop=entry*(1-stop_rate) if side=="LONG" else entry*(1+stop_rate)
 
     _,_,_,loss_one=net_pnl_for_exit({"entry":entry,"qty":1.0,"side":side},stop)
     loss_one=abs(loss_one)
     if loss_one<=0: return False
 
-    size_mult=0.50 if a.get("countertrend") else 1.0
-    risk_dollars=float(state["balance"])*RISK_PER_TRADE*size_mult
-    qty=min(risk_dollars/loss_one,float(state["balance"])*MAX_NOTIONAL_SHARE*size_mult/entry)
+    remaining_daily=max(START_BALANCE,float(state["balance"]))*MAX_DAILY_LOSS_PCT+daily_pnl()
+    risk_dollars=min(float(state["balance"])*RISK_PER_TRADE, remaining_daily)
+    qty=min(risk_dollars/loss_one,float(state["balance"])*MAX_NOTIONAL_SHARE/entry)
     if qty<=0: return False
 
-    target_net_per_unit=max(loss_one*NET_RR,entry*MIN_TARGET_NET_RATE)
+    target_net_per_unit=max(loss_one*NET_RR,entry*MIN_TARGET_NET_RATE,
+                            entry*2*(base.FEE_RATE+base.SLIPPAGE_RATE)*3)
     tp=base.target_market_for_net_profit(side,entry,target_net_per_unit)
     p={
         "symbol":SYMBOL,"side":side,"entry":entry,"stop":stop,"tp":tp,"qty":qty,
+        "strategy_build":BUILD, "setup":a.get("setup"), "initial_stop":stop,
         "notional":qty*entry,"risk_dollars":qty*loss_one,
         "entry_score":float(a["score"]),"opposing_score":float(a["opposing_score"]),
         "score_accel":float(a["score_accel"]),"trend_15m":a.get("trend_15m"),
@@ -547,7 +611,13 @@ async def manage_position(a=None):
     p=state["open_position"]
     if not p: return
     price=await base.get_live_price(SYMBOL,max_age=1.0)
+    # Another price check can close this position while this request awaits.
+    if state["open_position"] is not p:
+        return
+    if not math.isfinite(price) or price <= 0:
+        raise ValueError("Neplatná výstupní cena")
     state["current_price"]=float(price)
+    state["price_updated_at"]=utcnow().isoformat()
     _,_,_,net=net_pnl_for_exit(p,price)
     p["peak_net"]=max(float(p.get("peak_net") or 0),net)
     state["equity"]=float(state["balance"])+net
@@ -565,9 +635,9 @@ async def manage_position(a=None):
     peak = float(p["peak_net"])
     previous_stop = float(p["stop"])
     if risk > 0 and peak >= BREAK_EVEN_TRIGGER_R * risk:
-        locked_net = 0.0
+        locked_net = MIN_LOCKED_NET_R * risk
         if peak >= TRAIL_TRIGGER_R * risk:
-            locked_net = max(0.0, peak - TRAIL_GIVEBACK_R * risk)
+            locked_net = max(locked_net, peak - TRAIL_GIVEBACK_R * risk)
         candidate = base.target_market_for_net_profit(p["side"], float(p["entry"]), locked_net / float(p["qty"]))
         if p["side"] == "LONG":
             p["stop"] = max(float(p["stop"]), candidate)
@@ -588,16 +658,15 @@ async def manage_position(a=None):
 
     age=(utcnow()-datetime.fromisoformat(p["opened_at"])).total_seconds()/60.0
     long_score=float(a.get("long_score") or 0); short_score=float(a.get("short_score") or 0)
-    if age>=FLIP_EXIT_MIN_AGE:
-        if p["side"]=="LONG" and short_score-long_score>=8:
-            close_trade(price,"TV CONSENSUS FLIP"); return
-        if p["side"]=="SHORT" and long_score-short_score>=8:
-            close_trade(price,"TV CONSENSUS FLIP"); return
-
-    continuation=(long_score>=60 and long_score>short_score) if p["side"]=="LONG" else (short_score>=60 and short_score>long_score)
-    if age>=SOFT_HOLD_MINUTES and not continuation:
-        close_trade(price,"TV NO CONTINUATION"); return
-    if age>=STALE_HOLD_MINUTES and net<=0:
+    opposite="SHORT" if p["side"]=="LONG" else "LONG"
+    opposing_edge=(short_score-long_score) if p["side"]=="LONG" else (long_score-short_score)
+    if a.get("candle_time") != p.get("last_flip_candle"):
+        p["last_flip_candle"]=a.get("candle_time")
+        p["flip_confirmations"]=(int(p.get("flip_confirmations",0))+1
+                                 if a.get("trend_15m")==opposite and opposing_edge>=20 else 0)
+    if age>=FLIP_EXIT_MIN_AGE and p.get("flip_confirmations",0)>=2:
+        close_trade(price,"TV CONFIRMED TREND FLIP"); return
+    if age>=STALE_HOLD_MINUTES and net<=0 and a.get("trend_15m")!=p["side"]:
         close_trade(price,"TV STALE TRADE"); return
 
     heartbeat_state()
@@ -611,6 +680,10 @@ async def cycle():
     a=await analyze_market()
     state["last_scan"]=utcnow().isoformat()
     state["status"]="running"; state["error"]=None
+    if not state["open_position"]:
+        state["current_price"]=a.get("price")
+        state["price_updated_at"]=state["last_scan"]
+    state["guard_until"]=None
 
     if had_position:
         if state["open_position"]:
@@ -623,6 +696,7 @@ async def cycle():
 
     max_daily_loss=max(START_BALANCE,float(state["balance"]))*MAX_DAILY_LOSS_PCT
     if daily_pnl()<=-max_daily_loss:
+        state["guard_until"]=(utcnow()+timedelta(days=1)).replace(hour=0,minute=0,second=0,microsecond=0).isoformat()
         state["status"]="daily_loss_guard"; return
     if loss_streak_pause_active():
         state["status"]="loss_streak_guard"; return
@@ -633,7 +707,19 @@ async def cycle():
         open_trade(a,price)
 
 
-async def bot_loop():
+async def price_guard_loop():
+    """Check exits independently of slow candle requests; never invent stop fills."""
+    while True:
+        try:
+            if state["open_position"]:
+                await asyncio.wait_for(manage_position(), timeout=5)
+            state["exit_error"]=None
+        except Exception as e:
+            state["exit_error"]=f"{type(e).__name__}: {e}"
+        await asyncio.sleep(EXIT_SCAN_SECONDS)
+
+
+async def signal_loop():
     await asyncio.sleep(11)
     while True:
         try:
@@ -645,6 +731,16 @@ async def bot_loop():
         finally:
             heartbeat_state()
         await asyncio.sleep(SCAN_SECONDS)
+
+
+async def bot_loop():
+    guard=asyncio.create_task(price_guard_loop())
+    try:
+        await signal_loop()
+    finally:
+        guard.cancel()
+        with suppress(asyncio.CancelledError):
+            await guard
 
 
 def install(base_module):

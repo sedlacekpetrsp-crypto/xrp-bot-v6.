@@ -213,7 +213,7 @@ async function refreshTV(){
   const w=await r.json(),a=w.analysis||{},ts=w.trades||[];
   const p=w.open_position;
   const updated=Date.parse(w.last_scan||'');
-  const stale=!Number.isFinite(updated)||Date.now()-updated>60000||Boolean(w.error);
+  const stale=!Number.isFinite(updated)||Date.now()-updated>60000||Boolean(w.error)||Boolean(w.exit_error);
   const net=Number(w.equity)-Number(w.balance);
   const validNet=w.equity!=null&&w.balance!=null&&Number.isFinite(net);
   const color=stale?'#ffd166':p?(net>=0?'#5ce68b':'#ff6b6b'):'#a7b6c6';
@@ -254,10 +254,10 @@ async function refreshTV(){
   document.getElementById('tvSignal').innerHTML=`<b class="${cls}">${sig}</b> • L/S ${f(a.long_score,1)} / ${f(a.short_score,1)} • accel ${f(a.long_accel,1)} / ${f(a.short_accel,1)} • 15m ${a.trend_15m||'—'}<br><span class="muted">MA buy/sell ${a.ma_buy??'—'}/${a.ma_sell??'—'} • ADX ${f(a.adx5,1)} • volume ${f(a.volume_ratio,2)}x • ${p?'OBCHOD OTEVŘEN':'ČEKÁM NA SETUP'}</span>`;
   const tvDetails = p
     ? `<br><b>XRPUSDC ${p.side}</b> • vstup ${f(p.entry,6)} • SL ${f(p.stop,6)} • TP ${f(p.tp,6)}<br>Čistý otevřený P/L ${f(Number(w.equity)-Number(w.balance),2)} USDC • ${p.profit_protected?'OCHRANA ZISKU AKTIVNÍ':'Základní stop-loss'}`
-    : `<br>${(a.blockers||[]).join(' • ') || 'Signál připraven / kontroluji rizikové limity'}${w.cooldown_until?' • Pauza do '+closedTime(w.cooldown_until):''}`;
+    : `<br>${w.status==='daily_loss_guard'?'Denní limit ztráty — nové vstupy pozastaveny do '+closedTime(w.guard_until):((a.blockers||[]).join(' • ') || 'Signál připraven / kontroluji rizikové limity')}${w.cooldown_until&&Date.parse(w.cooldown_until)>Date.now()?' • Pauza do '+closedTime(w.cooldown_until):''}<br>Cena ${f(w.current_price??a.price,6)} • ${w.build||''}`;
   document.getElementById('tvSignal').innerHTML += tvDetails;
   if(!document.getElementById('tvTrades').dataset.init){document.getElementById('tvTrades').style.display='none';document.getElementById('tvTrades').dataset.init='1';}
-  document.getElementById('tvTrades').innerHTML=ts.slice().reverse().slice(0,20).map(t=>`<div class="trade"><span><b>${t.side}</b></span><span>${f(t.entry,6)} → ${f(t.exit,6)}</span><span>${t.reason||'—'}</span><span class="${Number(t.net_pnl)>=0?'green':'red'}">${Number(t.net_pnl)>=0?'+':''}${f(t.net_pnl,2)} USDC</span></div>`).join('')||'<div class="muted">Zatím žádné uzavřené obchody.</div>';
+  document.getElementById('tvTrades').innerHTML=ts.slice().reverse().slice(0,20).map(t=>`<div class="trade"><span><b>${t.side}</b><br>${closedTime(t.closed_at)}</span><span>${f(t.entry,6)} → ${f(t.exit,6)}</span><span>${t.reason||'—'}<br>${t.strategy_build?'V3':'V2'}</span><span class="${Number(t.net_pnl)>=0?'green':'red'}">${Number(t.net_pnl)>=0?'+':''}${f(t.net_pnl,2)} USDC</span></div>`).join('')||'<div class="muted">Zatím žádné uzavřené obchody.</div>';
  }catch(e){
   document.getElementById('tvPosition').innerHTML='<b style="font-size:22px;color:#ffd166">⚠ STAV POZICE NELZE OVĚŘIT</b><div style="margin-top:10px">Spojení se nezdařilo. Čekám na nová data.</div>';
   document.getElementById('tvPosition').style.borderColor='#ffd166';
