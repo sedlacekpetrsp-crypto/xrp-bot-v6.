@@ -40,14 +40,16 @@ WHALE_BREAKEVEN_R=float(os.getenv("WHALE_BREAKEVEN_R","1.0"))
 WHALE_PROFIT_LOCK_R=float(os.getenv("WHALE_PROFIT_LOCK_R","1.5"))
 KLINES_URL="https://data-api.binance.vision/api/v3/klines"
 
-SIGNAL_POLICY_VERSION="fib-618-786-vwap-v1"
+SIGNAL_POLICY_VERSION="fib-618-786-vwap-v2-trend-pullback"
 WHALE_ENTRY_TOLERANCE=float(os.getenv("WHALE_ENTRY_TOLERANCE","0.002"))
 WHALE_MIN_NET_RR=float(os.getenv("WHALE_MIN_NET_RR","1.5"))
+WHALE_TREND_EFFICIENCY=float(os.getenv("WHALE_TREND_EFFICIENCY","0.45"))
+WHALE_TREND_VWAP_BARS=int(os.getenv("WHALE_TREND_VWAP_BARS","15"))
 
 app=FastAPI(title=APP_NAME)
 state={"balance":START_BALANCE,"equity":START_BALANCE,"open_positions":[],"open_position":None,"trades":[],"seen_signal_ids":[],"last_scan":None,"last_signal":None,"status":"starting","error":None,"persistence":"memory","persistence_error":None}
 
-state.update({"mode":"PAPER","build":SIGNAL_POLICY_VERSION,"signal_policy":SIGNAL_POLICY_VERSION,"strategies":["FIB_618_786","VWAP_REVERSION"],"entry_status":"Čekám na kontrolu signálů","signal_checks":[],"last_source_scan":None})
+state.update({"mode":"PAPER","build":SIGNAL_POLICY_VERSION,"signal_policy":SIGNAL_POLICY_VERSION,"strategies":["FIB_618_786","VWAP_REVERSION","VWAP_TREND_PULLBACK"],"entry_status":"Čekám na kontrolu signálů","signal_checks":[],"last_source_scan":None})
 
 def utcnow(): return datetime.now(timezone.utc)
 
@@ -439,7 +441,8 @@ def fib_candidate(rows):
     return dict(side=side,entry=c,stop=stop,tp=target,key=key,strategy="FIB_618_786",confirmation=diag),diag
 
 def vwap_candidate(rows):
-    # Rolling 60-minute volume weighted typical price, frozen before the signal bar.
+    # Slow 60-minute VWAP for mean reversion. In a strongly one-sided market
+    # switch to a faster same-direction VWAP pullback instead of fading trend.
     sample=rows[-61:-1]
     vol=sum(float(r[5]) for r in sample)
     diag={"strategy":"VWAP_REVERSION","reason":"Čekám na návrat z odchylky k VWAP"}
@@ -447,13 +450,56 @@ def vwap_candidate(rows):
     mean=sum((float(r[2])+float(r[3])+float(r[4]))/3*float(r[5]) for r in sample)/vol
     variance=sum((((float(r[2])+float(r[3])+float(r[4]))/3-mean)**2)*float(r[5]) for r in sample)/vol
     sigma=math.sqrt(variance); atr=atr_value(rows)
-    diag.update(vwap=mean,band_low=mean-1.8*sigma,band_high=mean+1.8*sigma)
+    diag.update(vwap=mean,slow_vwap=mean,band_low=mean-1.8*sigma,band_high=mean+1.8*sigma)
+    if sigma<=0 or atr<=0:return None,diag
+
     closes=[float(r[4]) for r in rows[-21:]]
     path=sum(abs(b-a) for a,b in zip(closes,closes[1:]))
     efficiency=abs(closes[-1]-closes[0])/path if path else 0
     diag["trend_efficiency"]=efficiency
-    if efficiency>.45:return None,{**diag,"reason":"Silný jednostranný trend; VWAP vstup pozastaven"}
-    if sigma<=0 or atr<=0:return None,diag
+
+    if efficiency>WHALE_TREND_EFFICIENCY:
+        side="LONG" if closes[-1]>closes[0] else "SHORT"
+        n=max(5,min(WHALE_TREND_VWAP_BARS,len(rows)-2))
+        trend_sample=rows[-(n+1):-1]
+        tvol=sum(float(r[5]) for r in trend_sample)
+        if tvol<=0:
+            return None,{**diag,"strategy":"VWAP_TREND_PULLBACK","reason":"Chybí objem pro trendový VWAP"}
+        trend_vwap=sum((float(r[2])+float(r[3])+float(r[4]))/3*float(r[5]) for r in trend_sample)/tvol
+        touch_tolerance=max(.35*atr,trend_vwap*.00015)
+        recent=rows[-3:]
+        touched=(min(float(r[3]) for r in recent)<=trend_vwap+touch_tolerance and
+                 max(float(r[2]) for r in recent)>=trend_vwap-touch_tolerance)
+        prev,last=rows[-2:]
+        a,b=float(prev[4]),float(last[4]); o=float(last[1])
+
+        diag.update(strategy="VWAP_TREND_PULLBACK",trend_side=side,trend_vwap=trend_vwap,
+                    vwap=trend_vwap,touch_tolerance=touch_tolerance)
+        if side=="LONG":
+            confirmed=(touched and b>o and b>a and b>trend_vwap and
+                       b-trend_vwap<=1.25*atr)
+            stop=min(float(r[3]) for r in rows[-5:])-.35*atr
+            risk=max(b-stop,0.0)
+        else:
+            confirmed=(touched and b<o and b<a and b<trend_vwap and
+                       trend_vwap-b<=1.25*atr)
+            stop=max(float(r[2]) for r in rows[-5:])+.35*atr
+            risk=max(stop-b,0.0)
+
+        if not confirmed:
+            direction="LONG" if side=="LONG" else "SHORT"
+            return None,{**diag,"reason":f"Silný trend {direction}; čekám na pullback k trendovému VWAP a potvrzení"}
+
+        stop_rate=risk/b if b>0 else 0.0
+        round_trip=2*(FEE_RATE+SLIPPAGE_RATE)
+        minimum_target_rate=WHALE_MIN_NET_RR*(stop_rate+round_trip)+round_trip
+        target_distance=max(2.0*risk,b*minimum_target_rate*1.05,1.5*atr)
+        target=b+target_distance if side=="LONG" else b-target_distance
+        diag["reason"]="Trendový VWAP pullback potvrzen"
+        key=f"vwap-trend:{last[0]}:{side}"
+        return dict(side=side,entry=b,stop=stop,tp=target,key=key,
+                    strategy="VWAP_TREND_PULLBACK",confirmation=diag),diag
+
     prev,last=rows[-2:]; a,b=float(prev[4]),float(last[4])
     side=None
     if a<mean-1.8*sigma<=b<mean and b>float(last[1]):side="LONG"

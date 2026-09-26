@@ -50,9 +50,29 @@ class WhaleTests(unittest.TestCase):
             self.assertIsNotNone(sig,d)
             self.assertEqual(sig['side'],'SHORT' if short else 'LONG')
             self.assertEqual(sig['tp'],d['vwap'])
-    def test_vwap_trend_veto(self):
+    def test_vwap_strong_trend_waits_for_pullback_instead_of_veto(self):
         rs=[row(i,100+i*.1) for i in range(70)]
-        self.assertIsNone(w.vwap_candidate(rs)[0])
+        sig,d=w.vwap_candidate(rs)
+        self.assertIsNone(sig)
+        self.assertEqual(d['strategy'],'VWAP_TREND_PULLBACK')
+        self.assertEqual(d['trend_side'],'LONG')
+        self.assertIn('pullback',d['reason'])
+
+    def test_vwap_strong_trend_pullback_long_and_short(self):
+        prices=[100+i*.1 for i in range(68)]+[105.9,106.25]
+        rs=[row(i,c) for i,c in enumerate(prices)]
+        rs[-1]=row(69,106.25,106.05)
+        for short in (False,True):
+            r=rs if not short else [[x[0],212-x[1],212-x[3],212-x[2],212-x[4],x[5],x[6]] for x in rs]
+            sig,d=w.vwap_candidate(r)
+            self.assertIsNotNone(sig,d)
+            self.assertEqual(sig['strategy'],'VWAP_TREND_PULLBACK')
+            self.assertEqual(sig['side'],'SHORT' if short else 'LONG')
+            self.assertEqual(d['trend_side'],sig['side'])
+            if sig['side']=='LONG':
+                self.assertGreater(sig['tp'],sig['entry'])
+            else:
+                self.assertLess(sig['tp'],sig['entry'])
     def test_live_and_stale_candles(self):
         rs=[row(i,100) for i in range(70)]
         self.assertEqual(len(w.closed_candles(rs,rs[-1][0]+1000,5)),69)
