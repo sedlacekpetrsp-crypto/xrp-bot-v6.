@@ -77,9 +77,9 @@ async def dashboard_with_pnl_breakdown():
   <div id="flyGuardText" class="red" style="font-weight:700">BLOKOVÁNO – DAILY LOSS LIMIT</div>
 </div>
 """
-    html = html.replace('<div class="card"><h2>📡 Trhy</h2>', fly_guard_card + '<div class="card"><h2>📡 Trhy</h2>')
+    html = html.replace('<div class="card"><h2>📡 Trhy</h2>', fly_guard_card + '<div class="card" style="border:2px solid #5ce68b;background:rgba(92,230,139,.035)"><h2>✈️ FLY · TRHY</h2>')
     whale_card = """
-<div class="card">
+<div class="card" style="border:2px solid #7dd3fc;background:rgba(125,211,252,.03)">
   <h2>🐋 BLUE WHALE · FIB + VWAP</h2>
   <div class="muted">PAPER • Fibonacci 0,618–0,786 + návrat k VWAP • BTC / ETH / SOL / XRP</div>
   <div id="whaleSignals" class="coin muted" style="margin-top:10px"></div>
@@ -89,9 +89,20 @@ async def dashboard_with_pnl_breakdown():
   <div id="whaleHealth" class="muted" style="margin-top:10px">Načítám…</div>
 </div>
 """
+    fast_card = """
+<div class="card" style="border:2px solid #ffd166;background:rgba(255,209,102,.025)">
+  <h2 style="color:#ffd166">⚡ FAST EDGE SCALPER</h2>
+  <div class="muted" style="margin-bottom:10px">XRP / ETH / SOL • rychlý momentum scalp • PAPER</div>
+  <div id="fastStats" class="grid"></div>
+  <div id="fastPosition" class="coin muted" style="margin-top:10px">Načítám…</div>
+  <div id="fastAnalysis" style="margin-top:10px"></div>
+  <div id="fastTrades" style="display:none;margin-top:10px"></div>
+  <div id="fastHealth" class="muted" style="margin-top:10px">Načítám…</div>
+</div>
+"""
     leadlag_card = """
-<div class="card">
-  <h2>🔗 XRP LEAD-LAG SCALPER</h2>
+<div class="card" style="border:2px solid #4fc3f7;background:rgba(79,195,247,.03)">
+  <h2 style="color:#4fc3f7">🔗 XRP LEAD-LAG SCALPER</h2>
   <div class="muted" style="margin-bottom:10px">BTC + ETH lead • XRP lag • order book potvrzení • PAPER</div>
   <div id="leadlagStats" class="grid"></div>
   <div id="leadlagPosition" class="coin muted" style="margin-top:10px">Načítám…</div>
@@ -102,8 +113,8 @@ async def dashboard_with_pnl_breakdown():
 </div>
 """
     tv_card = """
-<div class="card">
-  <h2>📊 TV CONSENSUS XRP</h2>
+<div class="card" style="border:2px solid #4fc3f7;background:rgba(79,195,247,.03)">
+  <h2 style="color:#4fc3f7">📊 TV CONSENSUS XRP</h2>
   <div class="muted" style="margin-bottom:10px">MA + MACD/Momentum + RSI/Stoch/CCI + ADX • 15m trend • PAPER</div>
   <div id="tvPosition" role="status" aria-live="polite" style="padding:18px;border:2px solid #566475;border-radius:14px;margin-bottom:14px">Načítám stav pozice…</div>
   <div id="tvStats" class="grid"></div>
@@ -111,7 +122,7 @@ async def dashboard_with_pnl_breakdown():
   <div id="tvTrades" style="margin-top:10px"></div>
 </div>
 """
-    html = html.replace('<div class="card muted" id="health">', whale_card + leadlag_card + tv_card + '<div class="card muted" id="health">')
+    html = html.replace('<div class="card muted" id="health">', whale_card + fast_card + leadlag_card + tv_card + '<div class="card muted" id="health">')
     whale_js = """
 async function refreshFlyGuard(){
  try{
@@ -199,6 +210,51 @@ async function refreshWhale(){
  }
 }
 """
+    fast_js = """
+async function refreshFast(){
+ try{
+  const r=await fetch('/fast/status',{cache:'no-store'}),w=await r.json(),ts=w.trades||[];
+  const wins=ts.filter(t=>Number(t.net_pnl)>0).length;
+  const pnl=ts.reduce((a,t)=>a+Number(t.net_pnl||0),0);
+  const wr=ts.length?100*wins/ts.length:0;
+  const p=w.open_position;
+  const unreal=Number(w.equity||0)-Number(w.balance||0);
+  const assetStyle={
+   XRPUSDC:{label:'XRP',accent:'#4fc3f7',bg:'rgba(79,195,247,.08)'},
+   ETHUSDC:{label:'ETH',accent:'#8c9eff',bg:'rgba(140,158,255,.08)'},
+   SOLUSDC:{label:'SOL',accent:'#14f195',bg:'rgba(20,241,149,.07)'}
+  };
+  const pnlText=`<span class="${pnl>=0?'green':'red'}">${pnl>=0?'+':''}${f(pnl,2)} USDC</span>`;
+  document.getElementById('fastStats').innerHTML=[
+   ['Balance',f(w.balance,2)+' USDC'],['Equity',f(w.equity,2)+' USDC'],
+   ['Obchody',ts.length],['Win rate',f(wr,1)+' %'],['Realizované PnL',pnlText],
+   ['Status',w.status||'—']
+  ].map(x=>x[0]==='Obchody'
+    ? `<div class="coin" style="cursor:pointer;border:1px solid #6b5b2a" onclick="const e=document.getElementById('fastTrades');e.style.display=e.style.display==='block'?'none':'block'"><div class="muted">Obchody</div><b>${x[1]}</b><div class="muted" style="font-size:12px;margin-top:5px">Klepni pro historii</div></div>`
+    : `<div class="coin"><div class="muted">${x[0]}</div><b>${x[1]}</b></div>`).join('');
+  document.getElementById('fastPosition').innerHTML=p
+   ? `<b style="color:${(assetStyle[p.symbol]||{}).accent||'#eef4f8'}">${(assetStyle[p.symbol]||{}).label||p.symbol}</b> <b>${p.side}</b> • entry ${f(p.entry,6)} • SL ${f(p.stop,6)} • TP ${f(p.tp,6)} • uPnL <b class="${unreal>=0?'green':'red'}">${unreal>=0?'+':''}${f(unreal,2)} USDC</b>`
+   : '<b class="yellow">⏳ ČEKÁM NA OBCHOD</b>';
+  document.getElementById('fastAnalysis').innerHTML=(w.analysis||[]).map(a=>{
+   const st=assetStyle[a.symbol]||{label:a.symbol,accent:'#a7b6c6',bg:'rgba(167,182,198,.06)'};
+   const sig=a.fast_signal||'WAIT';
+   const stateColor=sig==='LONG'?'#5ce68b':sig==='SHORT'?'#ff6b6b':'#ffd166';
+   return `<div style="margin:9px 0;padding:12px 14px;border:2px solid ${st.accent};border-radius:14px;background:${st.bg}">
+    <div style="font-size:21px;font-weight:900;color:${st.accent}">${st.label}</div>
+    <div style="margin-top:5px">Signál <b style="color:${stateColor}">${sig}</b> • score ${a.fast_score??'—'} • vol ${f(a.volume_ratio,2)}x • z ${f(a.z_momentum,2)} • book ${f(a.book_imbalance,3)}</div>
+    <div class="muted" style="margin-top:4px">${(a.fast_blockers||[]).length?'Blokuje: '+a.fast_blockers.join(' • '):'Podmínky bez blokace'}</div>
+   </div>`;
+  }).join('')||'<div class="coin muted">Načítám analýzu…</div>';
+  document.getElementById('fastTrades').innerHTML=ts.slice().reverse().slice(0,12).map(t=>{
+   const st=assetStyle[t.symbol]||{label:t.symbol,accent:'#a7b6c6'};
+   return `<div class="trade"><span style="color:${st.accent};font-weight:800">${st.label}</span><span>${t.side}</span><span>${t.reason||'—'}</span><span class="${Number(t.net_pnl)>=0?'green':'red'}">${Number(t.net_pnl)>=0?'+':''}${f(t.net_pnl,2)} USDC</span></div>`;
+  }).join('')||'<div class="coin muted">Zatím žádné uzavřené obchody.</div>';
+  document.getElementById('fastHealth').textContent=`Scan: ${w.last_scan||'—'} • ukládání: ${w.persistence||'memory'} • chyba: ${w.error||w.persistence_error||'žádná'}`;
+ }catch(e){
+  document.getElementById('fastHealth').textContent='FAST dashboard error: '+e;
+ }
+}
+"""
     leadlag_js = """
 async function refreshLeadLag(){
  try{
@@ -229,7 +285,12 @@ async function refreshLeadLag(){
    : (a.signal==='WAIT'?'Čekám na nový setup':'Vstupní podmínky splněny');
   const tradeState=p?'🟢 OBCHOD OTEVŘEN':'⏳ ČEKÁM NA OBCHOD';
   document.getElementById('leadlagAnalysis').innerHTML=
-   `<b class="${p?'green':'yellow'}">${tradeState}</b> • poslední scan ${scanText}<br>Signal <b>${a.signal||'WAIT'}</b> • BTC ${f(Number(a.btc_return||0)*100,3)} % • ETH ${f(Number(a.eth_return||0)*100,3)} % • XRP ${f(Number(a.xrp_return||0)*100,3)} % • lag ${f(Number(a.lag_return||0)*100,3)} % • book ${f(a.book_imbalance,3)}<br><span class="muted">${blockerText}</span>`;
+   `<b class="${p?'green':'yellow'}">${tradeState}</b> • poslední scan ${scanText}<br>
+   Signal <b>${a.signal||'WAIT'}</b> •
+   <span style="color:#f7931a;font-weight:800">BTC ${f(Number(a.btc_return||0)*100,3)} %</span> •
+   <span style="color:#8c9eff;font-weight:800">ETH ${f(Number(a.eth_return||0)*100,3)} %</span> •
+   <span style="color:#4fc3f7;font-weight:800">XRP ${f(Number(a.xrp_return||0)*100,3)} %</span> •
+   lag ${f(Number(a.lag_return||0)*100,3)} % • book ${f(a.book_imbalance,3)}<br><span class="muted">${blockerText}</span>`;
   document.getElementById('leadlagTrades').innerHTML=ts.slice().reverse().slice(0,8).map(t=>
     `<div class="trade"><span><b>${t.symbol||'XRPUSDC'}</b> ${t.side}</span><span>${f(t.entry,6)} → ${f(t.exit,6)}</span><span>${t.reason||'—'}</span><span class="${Number(t.net_pnl)>=0?'green':'red'}">${Number(t.net_pnl)>=0?'+':''}${f(t.net_pnl,2)} USDC</span><span>${t.closed_at?new Date(t.closed_at).toLocaleString('cs-CZ'):'—'}</span></div>`
   ).join('') || '<div class="coin muted">Zatím žádné uzavřené obchody.</div>';
@@ -300,7 +361,7 @@ async function refreshTV(){
  }
 }
 """
-    html = html.replace("refresh();setInterval(refresh,10000);", whale_js + leadlag_js + tv_js + "refresh();refreshFlyGuard();refreshWhale();refreshLeadLag();refreshTV();setInterval(refresh,3000);setInterval(refreshFlyGuard,5000);setInterval(refreshWhale,5000);setInterval(refreshLeadLag,5000);setInterval(refreshTV,5000);")
+    html = html.replace("refresh();setInterval(refresh,10000);", whale_js + fast_js + leadlag_js + tv_js + "refresh();refreshFlyGuard();refreshWhale();refreshFast();refreshLeadLag();refreshTV();setInterval(refresh,3000);setInterval(refreshFlyGuard,5000);setInterval(refreshWhale,5000);setInterval(refreshFast,5000);setInterval(refreshLeadLag,5000);setInterval(refreshTV,5000);")
     return HTMLResponse(html, headers={"Cache-Control": "no-store"})
 
 
