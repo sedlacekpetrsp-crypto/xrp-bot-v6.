@@ -1,5 +1,5 @@
 from fastapi.responses import HTMLResponse, JSONResponse
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import app_v8 as base
 import app_blue_whale_mirror as whale
 import lead_lag_scalper as leadlag
@@ -298,6 +298,55 @@ async def whale_status():
 async def leadlag_status():
     return JSONResponse(leadlag.state, headers={"Cache-Control":"no-store"})
 
+
+def _fly_trade_metrics(rows):
+    rows=list(rows or [])
+    wins=[t for t in rows if float(t.get("pnl") or 0)>0]
+    losses=[t for t in rows if float(t.get("pnl") or 0)<0]
+    pnl=sum(float(t.get("pnl") or 0) for t in rows)
+    fees=sum(float(t.get("fees") or 0) for t in rows)
+    avg_win=(sum(float(t.get("pnl") or 0) for t in wins)/len(wins)) if wins else 0.0
+    avg_loss=(sum(float(t.get("pnl") or 0) for t in losses)/len(losses)) if losses else 0.0
+    equity=peak=max_dd=0.0
+    for t in reversed(rows):
+        equity+=float(t.get("pnl") or 0)
+        peak=max(peak,equity)
+        max_dd=max(max_dd,peak-equity)
+    return {
+        "count":len(rows),"wins":len(wins),"losses":len(losses),
+        "win_rate":(100.0*len(wins)/len(rows)) if rows else 0.0,
+        "net_pnl":pnl,"fees":fees,"avg_win":avg_win,"avg_loss":avg_loss,
+        "max_drawdown":max_dd,
+    }
+
+
+@app.get("/fly/status")
+async def fly_status():
+    rows=list(getattr(base,"trade_history",[]) or [])
+    cutoff=datetime.now(timezone.utc)-timedelta(hours=24)
+    recent=[]
+    for t in rows:
+        try:
+            raw=t.get("closed_at")
+            if raw and datetime.fromisoformat(str(raw).replace("Z","+00:00"))>=cutoff:
+                recent.append(t)
+        except Exception:
+            pass
+    return JSONResponse({
+        "build":getattr(base,"FLY_LAYER_BUILD",None),
+        "mode":"PAPER",
+        "status":"running" if getattr(base,"last_cycle_at",None) and not getattr(base,"last_error",None) else "error",
+        "last_cycle_at":getattr(base,"last_cycle_at",None),
+        "error":getattr(base,"last_error",None),
+        "persistence":"postgres" if getattr(base,"DATABASE_URL",None) else "memory",
+        "balance":getattr(base,"PAPER_BALANCE",None),
+        "open_position":getattr(base,"paper_position",None),
+        "all_time":_fly_trade_metrics(rows),
+        "last_24h":_fly_trade_metrics(recent),
+        "last_trade_at":rows[0].get("closed_at") if rows else None,
+    },headers={"Cache-Control":"no-store"})
+
+
 @app.get("/tv/status")
 async def tv_status():
     return JSONResponse(tv.state, headers={"Cache-Control":"no-store"})
@@ -337,6 +386,8 @@ async def combined_health():
             "recovery": base.recovery_status() if hasattr(base, "recovery_status") else {},
             "balance": getattr(base, "PAPER_BALANCE", None),
             "open_position": getattr(base, "paper_position", None),
+            "stats": base.stats() if hasattr(base, "stats") else {},
+            "last_trade_at": (base.trade_history[0].get("closed_at") if getattr(base, "trade_history", None) else None),
         },
         "whale": {
             "healthy": whale_ok,

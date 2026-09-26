@@ -17,7 +17,7 @@ from datetime import datetime, timezone, timedelta
 import psycopg
 from psycopg.types.json import Jsonb
 
-BUILD = "fast-edge-v4-health-20260921"
+BUILD = "fast-edge-v5-payoff-quality-20260926"
 MODE = "PAPER"
 
 SYMBOLS = ("XRPUSDC", "ETHUSDC", "SOLUSDC")
@@ -35,27 +35,27 @@ LOSS_STREAK_COOLDOWN_MINUTES = 20
 MAX_CONSECUTIVE_LOSSES = 4
 MAX_DAILY_LOSS_PCT = 0.008
 
-MIN_LONG_SHORT_SCORE = 6
-MIN_VOLUME_RATIO = 1.15
-MIN_ADX = 16.0
-MIN_Z = 0.55
-TRANSITION_Z = 0.90
-BOOK_LONG_MIN = 0.53
-BOOK_SHORT_MAX = 0.47
+MIN_LONG_SHORT_SCORE = 7
+MIN_VOLUME_RATIO = 1.20
+MIN_ADX = 17.0
+MIN_Z = 0.65
+TRANSITION_Z = 1.00
+BOOK_LONG_MIN = 0.54
+BOOK_SHORT_MAX = 0.46
 MAX_SPREAD_PCT = 0.0006
-MIN_EDGE_MULTIPLE = 2.50
+MIN_EDGE_MULTIPLE = 3.00
 
 MIN_STOP_RATE = 0.0025
 MAX_STOP_RATE = 0.0050
 ATR_STOP_MULT = 0.85
-MIN_NET_TARGET_RATE = 0.0018
-NET_RISK_REWARD = 1.10
+MIN_NET_TARGET_RATE = 0.0022
+NET_RISK_REWARD = 1.50
 
-EARLY_PROFIT_USDC = 4.0
-PROFIT_LOCK_START_USDC = 6.0
-PROFIT_GIVEBACK_USDC = 2.0
+EARLY_PROFIT_R = 0.80
+PROFIT_LOCK_START_R = 1.00
+PROFIT_GIVEBACK_R = 0.35
 EARLY_EXIT_MIN_AGE = 0.75
-BREAKEVEN_TRIGGER_R = 0.60
+BREAKEVEN_TRIGGER_R = 0.70
 
 DB_STATE_TABLE = "fast_scalp_state"
 DB_TRADE_TABLE = "fast_scalp_trades"
@@ -471,8 +471,8 @@ async def manage_position(rows):
         p["breakeven_moved"] = True
         save_state()
 
-    if float(p.get("peak_net") or 0) >= PROFIT_LOCK_START_USDC:
-        if float(p["peak_net"]) - net >= PROFIT_GIVEBACK_USDC:
+    if float(p.get("peak_net") or 0) >= risk * PROFIT_LOCK_START_R:
+        if float(p["peak_net"]) - net >= risk * PROFIT_GIVEBACK_R:
             close_trade(price, "FAST PROFIT LOCK")
             return
 
@@ -489,8 +489,8 @@ async def manage_position(rows):
             continuation = z <= -0.35 and imb <= 0.50 and vr >= 0.90
             danger = z >= 0.35 or imb >= 0.53
 
-        if age >= EARLY_EXIT_MIN_AGE and net >= EARLY_PROFIT_USDC and not continuation:
-            close_trade(price, "FAST +4 NET / NO CONTINUATION")
+        if age >= EARLY_EXIT_MIN_AGE and net >= risk * EARLY_PROFIT_R and not continuation:
+            close_trade(price, "FAST +0.8R / NO CONTINUATION")
             return
         if age >= EARLY_EXIT_MIN_AGE and net < 0 and danger:
             close_trade(price, "FAST MOMENTUM FLIP")

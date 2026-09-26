@@ -16,7 +16,7 @@ from datetime import datetime, timezone, timedelta
 import psycopg
 from psycopg.types.json import Jsonb
 
-BUILD = "tv-consensus-v3-20260925-paper-unpaused"
+BUILD = "tv-consensus-v4-20260926-mtf-quality"
 MODE = "PAPER"
 SYMBOL = "XRPUSDC"
 
@@ -27,12 +27,12 @@ SCAN_SECONDS = 15
 EXIT_SCAN_SECONDS = 2
 STATE_HEARTBEAT_SECONDS = 60.0
 
-ENTRY_SCORE_ALIGNED = 68.0
-ENTRY_SCORE_COUNTER = 72.0
-MIN_SCORE_EDGE = 10.0
+ENTRY_SCORE_ALIGNED = 75.0
+ENTRY_SCORE_COUNTER = 80.0
+MIN_SCORE_EDGE = 14.0
 MIN_SCORE_ACCEL = 2.0
-MIN_ADX = 16.0
-MIN_VOLUME_RATIO = 0.85
+MIN_ADX = 19.0
+MIN_VOLUME_RATIO = 1.00
 
 MIN_STOP_RATE = 0.0035
 MAX_STOP_RATE = 0.0075
@@ -370,7 +370,7 @@ def entry_setup(side, candles, atr):
     direction = 1 if side == "LONG" else -1
     if direction * (close-opened) <= 0 or direction * (close-closes[-2]) <= 0:
         return None
-    if not 0 <= direction * (close-average) <= 1.5 * atr:
+    if not 0 <= direction * (close-average) <= 1.0 * atr:
         return None
     recovered = direction * (closes[-2]-previous_average) < -0.05 * atr
     boundary = (max(float(c[2]) for c in candles[-6:-1]) if side == "LONG"
@@ -389,6 +389,8 @@ def entry_blockers(a, side):
         return ["Neplatná nebo chybějící data indikátorů"]
     if a.get("trend_15m") != side:
         blockers.append("Vstup vyžaduje shodný 15m trend; protitrend a NEUTRAL blokovány")
+    if a.get("trend_5m") != side:
+        blockers.append("Vstup vyžaduje potvrzení stejného trendu i na 5m")
     own, other = ("long_score", "short_score") if side == "LONG" else ("short_score", "long_score")
     if a[own] < ENTRY_SCORE_ALIGNED:
         blockers.append("Nedostatečné skóre")
@@ -419,6 +421,10 @@ async def analyze_market():
     h1=[float(x[2]) for x in a1]; l1=[float(x[3]) for x in a1]; c1=[float(x[4]) for x in a1]; v1=[float(x[5]) for x in a1]
     h5=[float(x[2]) for x in a5]; l5=[float(x[3]) for x in a5]; c5=[float(x[4]) for x in a5]
     c15=[float(x[4]) for x in a15]
+    e20_5=base.ema(c5,20); e50_5=base.ema(c5,50)
+    t5=("LONG" if e20_5 is not None and e50_5 is not None and c5[-1]>e20_5>e50_5
+        else "SHORT" if e20_5 is not None and e50_5 is not None and c5[-1]<e20_5<e50_5
+        else "NEUTRAL")
 
     ma_l,ma_s,ma_buy,ma_sell,ma_detail=ma_consensus(c5)
     os_l,os_s,os_detail=oscillator_scores(h5,l5,c5)
@@ -447,7 +453,7 @@ async def analyze_market():
     atr=base.atr_wilder(h1,l1,c1)
     candle=int(a1[-1][0])
     long_thr=short_thr=ENTRY_SCORE_ALIGNED
-    gates = dict(trend_15m=t15, long_score=long_score, short_score=short_score,
+    gates = dict(trend_15m=t15, trend_5m=t5, long_score=long_score, short_score=short_score,
                  fast_long=fast_long, fast_short=fast_short, adx5=adx, volume_ratio=vr,
                  setup_long=entry_setup("LONG", a1, atr),
                  setup_short=entry_setup("SHORT", a1, atr))
