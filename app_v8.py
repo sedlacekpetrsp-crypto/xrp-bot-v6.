@@ -900,9 +900,22 @@ async function refresh(){
    const e=document.getElementById('flyTradesCard'),a=document.getElementById('flyTradesArrow');
    const open=e.style.display!=='block';e.style.display=open?'block':'none';if(a)a.textContent=open?'▲':'▼';
   };
+  const flyAssetStyle={
+   BTCUSDC:{label:'BTC',accent:'#f7931a',bg:'rgba(247,147,26,.08)'},
+   BTCUSDT:{label:'BTC',accent:'#f7931a',bg:'rgba(247,147,26,.08)'},
+   ETHUSDC:{label:'ETH',accent:'#8c9eff',bg:'rgba(140,158,255,.08)'},
+   ETHUSDT:{label:'ETH',accent:'#8c9eff',bg:'rgba(140,158,255,.08)'},
+   SOLUSDC:{label:'SOL',accent:'#14f195',bg:'rgba(20,241,149,.07)'},
+   SOLUSDT:{label:'SOL',accent:'#14f195',bg:'rgba(20,241,149,.07)'},
+   XRPUSDC:{label:'XRP',accent:'#4fc3f7',bg:'rgba(79,195,247,.08)'},
+   XRPUSDT:{label:'XRP',accent:'#4fc3f7',bg:'rgba(79,195,247,.08)'}
+  };
   document.getElementById('coins').innerHTML=Object.values(d.market||{}).map(x=>{
    const sig=x.signal||'WAIT',cls=sig==='LONG'?'green':sig==='SHORT'?'red':'yellow';
-   return `<div class="coin"><b>${x.symbol}</b><div class="row"><span>Cena při analýze</span><span>${f(x.price,5)}</span></div><div class="row"><span>Signál</span><b class="${cls}">${sig}</b></div>
+   const st=flyAssetStyle[x.symbol]||{label:x.symbol,accent:'#a7b6c6',bg:'rgba(167,182,198,.06)'};
+   return `<div class="coin" style="border:2px solid ${st.accent};background:${st.bg}">
+   <div style="font-size:21px;font-weight:900;color:${st.accent}">${st.label}</div>
+   <div class="row"><span>Cena při analýze</span><span>${f(x.price,5)}</span></div><div class="row"><span>Signál</span><b class="${cls}">${sig}</b></div>
    <div class="row"><span>Raw</span><span>${x.raw_signal||'WAIT'}</span></div><div class="row"><span>Setup</span><span>${x.setup||'—'}</span></div>
    <div class="row"><span>Score L/S</span><span>${x.long_score??'—'} / ${x.short_score??'—'}</span></div>
    <div class="muted">${x.reason||''}</div></div>`;
