@@ -161,9 +161,39 @@ async function refreshWhale(){
       : '<b class="yellow">⏳ ČEKÁM NA OBCHOD</b><div style="margin-top:6px">Žádná otevřená Whale pozice.</div>');
   document.getElementById('whaleTrades').innerHTML=ts.slice().reverse().slice(0,20).map(t=>`<div class="trade"><span><b>${t.symbol||'BTCUSDT'}</b> ${t.side}</span><span>${f(t.entry,6)} → ${f(t.exit,6)}</span><span>${t.reason||'—'} · ${t.strategy||'Původní signál'} · ${t.closed_at?new Date(t.closed_at).toLocaleString('cs-CZ'):''}</span><span class="${Number(t.net_pnl)>=0?'green':'red'}">${Number(t.net_pnl)>=0?'+':''}${f(t.net_pnl,2)} USD</span></div>`).join('')||'<div class="coin muted">Zatím žádné uzavřené obchody.</div>';
   const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  document.getElementById('whaleSignals').innerHTML=(w.signal_checks||[]).map(a=>`<div style="margin:8px 0"><b>${esc(a.symbol)} ${esc(a.strategy)}</b><br>${esc(a.reason)}${a.fib_618!=null?`<br>0,618: ${f(a.fib_618,6)} · 0,786: ${f(a.fib_786,6)}`:''}${a.vwap!=null?`<br>VWAP: ${f(a.vwap,6)}`:''}</div>`).join('')||'Načítám podmínky vstupu…';
-  document.getElementById('whaleHealth').textContent=
-   `BTC: ${w.market_price ? f(w.market_price,2)+" USD" : "—"} • ${w.entry_status||"Čekám na kontrolu signálů"} • Scan: ${w.last_scan||'—'} • ukládání: ${w.persistence||'memory'} • chyba: ${w.error||w.persistence_error||'žádná'}`;
+  const symbolStyle={
+   BTCUSDT:{label:'BTC',accent:'#f7931a',bg:'rgba(247,147,26,.08)'},
+   ETHUSDT:{label:'ETH',accent:'#8c9eff',bg:'rgba(140,158,255,.08)'},
+   SOLUSDT:{label:'SOL',accent:'#14f195',bg:'rgba(20,241,149,.07)'},
+   XRPUSDT:{label:'XRP',accent:'#4fc3f7',bg:'rgba(79,195,247,.08)'}
+  };
+  const checks=w.signal_checks||[];
+  const grouped={};
+  checks.forEach(a=>(grouped[a.symbol]||(grouped[a.symbol]=[])).push(a));
+  const order=['BTCUSDT','ETHUSDT','SOLUSDT','XRPUSDT'];
+  document.getElementById('whaleSignals').innerHTML=order.map(sym=>{
+   const rows=grouped[sym]||[];
+   if(!rows.length)return '';
+   const s=symbolStyle[sym]||{label:sym,accent:'#a7b6c6',bg:'rgba(167,182,198,.06)'};
+   const body=rows.map(a=>{
+    const reason=String(a.reason||'');
+    const ready=/Obchod otevřen|potvrzen/i.test(reason);
+    const waiting=/Čekám|Swing je příliš malý|příliš malý/i.test(reason);
+    const stateColor=ready?'#5ce68b':waiting?'#ffd166':'#ff8a80';
+    return `<div style="padding:9px 0;border-top:1px solid rgba(255,255,255,.07)">
+      <div style="font-weight:800">${esc(a.strategy)}</div>
+      <div style="margin-top:3px;color:${stateColor};font-weight:700">${esc(reason)}</div>
+      ${a.fib_618!=null?`<div class="muted" style="margin-top:4px">0,618: ${f(a.fib_618,6)} · 0,786: ${f(a.fib_786,6)}</div>`:''}
+      ${a.vwap!=null?`<div class="muted" style="margin-top:4px">VWAP: ${f(a.vwap,6)}</div>`:''}
+     </div>`;
+   }).join('');
+   return `<div style="margin:10px 0;padding:12px 14px;border:2px solid ${s.accent};border-radius:14px;background:${s.bg}">
+     <div style="font-size:22px;font-weight:900;color:${s.accent};letter-spacing:.3px">${s.label}</div>
+     ${body}
+    </div>`;
+  }).join('')||'Načítám podmínky vstupu…';
+  document.getElementById('whaleHealth').innerHTML=
+   `<b>BTC cena:</b> ${w.market_price ? f(w.market_price,2)+" USD" : "—"} • <b>Scan:</b> ${w.last_scan||'—'}<br><b>Ukládání:</b> ${w.persistence||'memory'} • <b>Chyba:</b> ${esc(w.error||w.persistence_error||'žádná')}`;
  }catch(e){
   document.getElementById('whaleHealth').textContent='Whale dashboard error: '+e;
  }
