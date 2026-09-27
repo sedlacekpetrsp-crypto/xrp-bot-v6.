@@ -152,9 +152,9 @@ async def dashboard_with_pnl_breakdown():
   <h2 style="color:#ffd166">⚡ FAST EDGE SCALPER</h2>
   <div class="muted" style="margin-bottom:10px">XRP / ETH / SOL • rychlý momentum scalp • PAPER</div>
   <div id="fastStats" class="grid"></div>
+  <div id="fastTrades" style="display:none;margin-top:10px"></div>
   <div id="fastPosition" class="coin muted" style="margin-top:10px">Načítám…</div>
   <div id="fastAnalysis" style="margin-top:10px"></div>
-  <div id="fastTrades" style="display:none;margin-top:10px"></div>
   <div id="fastHealth" class="muted" style="margin-top:10px">Načítám…</div>
 </div>
 """
@@ -288,8 +288,21 @@ async function refreshFast(){
    ['Obchody',ts.length],['Win rate',f(wr,1)+' %'],['Realizované PnL',pnlText],
    ['Status',w.status||'—']
   ].map(x=>x[0]==='Obchody'
-    ? `<div class="coin" style="cursor:pointer;border:1px solid #6b5b2a" onclick="const e=document.getElementById('fastTrades');e.style.display=e.style.display==='block'?'none':'block'"><div class="muted">Obchody</div><b>${x[1]}</b><div class="muted" style="font-size:12px;margin-top:5px">Klepni pro historii</div></div>`
+    ? `<div class="coin" id="fastTradesToggle" role="button" tabindex="0" style="cursor:pointer;border:1px solid #6b5b2a;touch-action:manipulation;user-select:none"><div class="muted">Obchody <span id="fastTradesArrow">▼</span></div><b>${x[1]}</b><div class="muted" style="font-size:12px;margin-top:5px">Klepni pro historii</div></div>`
     : `<div class="coin"><div class="muted">${x[0]}</div><b>${x[1]}</b></div>`).join('');
+  const fastToggle=document.getElementById('fastTradesToggle');
+  if(fastToggle){
+   const toggleFastTrades=()=>{
+    const e=document.getElementById('fastTrades'),arrow=document.getElementById('fastTradesArrow');
+    if(!e)return;
+    const open=e.style.display!=='block';
+    e.style.display=open?'block':'none';
+    if(arrow)arrow.textContent=open?'▲':'▼';
+    if(open)setTimeout(()=>e.scrollIntoView({behavior:'smooth',block:'nearest'}),0);
+   };
+   fastToggle.onclick=toggleFastTrades;
+   fastToggle.onkeydown=(ev)=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();toggleFastTrades();}};
+  }
   document.getElementById('fastPosition').innerHTML=p
    ? `<b style="color:${(assetStyle[p.symbol]||{}).accent||'#eef4f8'}">${(assetStyle[p.symbol]||{}).label||p.symbol}</b> <b>${p.side}</b> • entry ${f(p.entry,6)} • SL ${f(p.stop,6)} • TP ${f(p.tp,6)} • uPnL <b class="${unreal>=0?'green':'red'}">${unreal>=0?'+':''}${f(unreal,2)} USDC</b>`
    : '<b class="yellow">⏳ ČEKÁM NA OBCHOD</b>';
