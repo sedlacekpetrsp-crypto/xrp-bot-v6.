@@ -17,45 +17,44 @@ from datetime import datetime, timezone, timedelta
 import psycopg
 from psycopg.types.json import Jsonb
 
-BUILD = "fast-edge-v5-payoff-quality-20260926"
+BUILD = "fast-edge-v6-microreversion-20260927"
 MODE = "PAPER"
 
 SYMBOLS = ("XRPUSDC", "ETHUSDC", "SOLUSDC")
 START_BALANCE = float(os.getenv("FAST_START_BALANCE", "10000"))
-RISK_PER_TRADE = float(os.getenv("FAST_RISK_PER_TRADE", "0.0015"))
-MAX_NOTIONAL_SHARE = float(os.getenv("FAST_MAX_NOTIONAL_SHARE", "0.30"))
+RISK_PER_TRADE = min(0.0010, float(os.getenv("FAST_RISK_PER_TRADE", "0.0010")))
+MAX_NOTIONAL_SHARE = min(0.20, float(os.getenv("FAST_MAX_NOTIONAL_SHARE", "0.20")))
 
 SCAN_SECONDS = 12
 STATE_HEARTBEAT_SECONDS = 60.0
-SOFT_HOLD_MINUTES = 5.0
+SOFT_HOLD_MINUTES = 3.0
 EMERGENCY_HOLD_MINUTES = 120.0
 WIN_COOLDOWN_SECONDS = 30
 LOSS_COOLDOWN_SECONDS = 120
 LOSS_STREAK_COOLDOWN_MINUTES = 20
 MAX_CONSECUTIVE_LOSSES = 4
-MAX_DAILY_LOSS_PCT = 0.008
+MAX_DAILY_LOSS_PCT = 0.005
 
-MIN_LONG_SHORT_SCORE = 7
-MIN_VOLUME_RATIO = 1.20
-MIN_ADX = 17.0
-MIN_Z = 0.65
-TRANSITION_Z = 1.00
+MIN_VOLUME_RATIO = 0.70
+MAX_ADX = 30.0
+MIN_Z = 1.30
+TRANSITION_Z = 1.45
 BOOK_LONG_MIN = 0.54
 BOOK_SHORT_MAX = 0.46
 MAX_SPREAD_PCT = 0.0006
-MIN_EDGE_MULTIPLE = 3.00
+MIN_EDGE_MULTIPLE = 1.35
 
-MIN_STOP_RATE = 0.0025
-MAX_STOP_RATE = 0.0050
-ATR_STOP_MULT = 0.85
-MIN_NET_TARGET_RATE = 0.0022
-NET_RISK_REWARD = 1.50
+MIN_STOP_RATE = 0.0030
+MAX_STOP_RATE = 0.0055
+ATR_STOP_MULT = 0.95
+MIN_NET_TARGET_RATE = 0.0026
+NET_RISK_REWARD = 1.35
 
-EARLY_PROFIT_R = 0.80
-PROFIT_LOCK_START_R = 1.00
-PROFIT_GIVEBACK_R = 0.35
-EARLY_EXIT_MIN_AGE = 0.75
-BREAKEVEN_TRIGGER_R = 0.70
+EARLY_PROFIT_R = 0.65
+PROFIT_LOCK_START_R = 0.85
+PROFIT_GIVEBACK_R = 0.25
+EARLY_EXIT_MIN_AGE = 0.50
+BREAKEVEN_TRIGGER_R = 0.55
 
 DB_STATE_TABLE = "fast_scalp_state"
 DB_TRADE_TABLE = "fast_scalp_trades"
@@ -245,6 +244,11 @@ def cooldown_active():
 
 
 def _fast_signal(row):
+    """Microstructure mean-reversion scalp.
+
+    FAST no longer chases the same trend continuation used by FLY/TV/Whale.
+    It trades only RANGE/TRANSITION extremes after order-book absorption.
+    """
     if not row or row.get("symbol") not in SYMBOLS:
         return dict(row or {}, fast_signal="WAIT", fast_score=0, fast_blockers=["NO_DATA"])
 
@@ -252,56 +256,61 @@ def _fast_signal(row):
     vr = float(row.get("volume_ratio") or 0)
     adx = float(row.get("adx5") or 0)
     z = float(row.get("z_momentum") or 0)
+    rsi = float(row.get("rsi") or 50)
     imb = float(row.get("book_imbalance") or 0.5)
     spread = float(row.get("real_spread_pct") or row.get("book_spread") or 1)
     edge = float(row.get("expected_move_pct") or 0)
-    ls = int(row.get("long_score") or 0)
-    ss = int(row.get("short_score") or 0)
+    atr = float(row.get("atr") or 0)
+    price = float(row.get("price") or 0)
     news = row.get("news") or {}
 
-    cost_ok = edge >= float(base.ROUND_TRIP_COST) * MIN_EDGE_MULTIPLE
+    # Use several minutes of ATR as the realistic reversion travel budget.
+    atr_rate = atr / price if atr > 0 and price > 0 else 0.0
+    reversion_edge = max(edge, atr_rate * 4.5)
+    threshold_z = TRANSITION_Z if regime == "TRANSITION" else MIN_Z
     common = [
+        ("REGIME", regime in ("RANGE", "TRANSITION")),
         ("VOLUME", vr >= MIN_VOLUME_RATIO),
-        ("ADX", adx >= MIN_ADX),
+        ("ADX_TOO_HIGH", adx <= MAX_ADX),
         ("SPREAD", spread <= MAX_SPREAD_PCT),
-        ("EDGE", cost_ok),
+        ("EDGE", reversion_edge >= float(base.ROUND_TRIP_COST) * MIN_EDGE_MULTIPLE),
     ]
-
     long_checks = common + [
-        ("REGIME", regime in ("TREND_LONG", "TRANSITION")),
-        ("SCORE", ls >= MIN_LONG_SHORT_SCORE),
-        ("MOMENTUM", z >= (TRANSITION_Z if regime == "TRANSITION" else MIN_Z)),
-        ("BOOK", imb >= BOOK_LONG_MIN),
+        ("OVERSOLD_Z", z <= -threshold_z),
+        ("RSI", rsi <= 43),
+        ("BOOK_ABSORPTION", imb >= BOOK_LONG_MIN),
         ("NEWS", not bool(news.get("bearish"))),
     ]
     short_checks = common + [
-        ("REGIME", regime in ("TREND_SHORT", "TRANSITION")),
-        ("SCORE", ss >= MIN_LONG_SHORT_SCORE),
-        ("MOMENTUM", z <= -(TRANSITION_Z if regime == "TRANSITION" else MIN_Z)),
-        ("BOOK", imb <= BOOK_SHORT_MAX),
+        ("OVERBOUGHT_Z", z >= threshold_z),
+        ("RSI", rsi >= 57),
+        ("BOOK_ABSORPTION", imb <= BOOK_SHORT_MAX),
         ("NEWS", not bool(news.get("bullish"))),
     ]
 
     long_ok = all(ok for _, ok in long_checks)
     short_ok = all(ok for _, ok in short_checks)
+    side = "LONG" if long_ok and not short_ok else "SHORT" if short_ok and not long_ok else "WAIT"
 
-    side = "LONG" if long_ok else "SHORT" if short_ok else "WAIT"
-    score = 0
     if side == "LONG":
-        score = ls + (1 if vr >= 1.5 else 0) + (1 if z >= 1.0 else 0) + (1 if imb >= 0.56 else 0)
+        score = 6 + int(z <= -1.8) + int(rsi <= 38) + int(imb >= 0.58)
         blockers = []
     elif side == "SHORT":
-        score = ss + (1 if vr >= 1.5 else 0) + (1 if z <= -1.0 else 0) + (1 if imb <= 0.44 else 0)
+        score = 6 + int(z >= 1.8) + int(rsi >= 62) + int(imb <= 0.42)
         blockers = []
     else:
-        chosen = long_checks if z >= 0 else short_checks
+        chosen = long_checks if z < 0 else short_checks
         blockers = [name for name, ok in chosen if not ok]
+        score = 0
 
     out = dict(row)
     out["fast_signal"] = side
     out["fast_score"] = score
     out["fast_blockers"] = blockers
+    out["fast_strategy"] = "MICRO_REVERSION"
+    out["reversion_edge_pct"] = reversion_edge
     return out
+
 
 
 async def analyze():
@@ -351,6 +360,14 @@ def open_trade(a, market_price):
     side = a.get("fast_signal")
     if side not in ("LONG", "SHORT"):
         return False
+    guard=globals().get("portfolio_entry_allowed")
+    if callable(guard):
+        allowed,why=guard("FAST",a.get("symbol"),side)
+        if not allowed:
+            a.setdefault("fast_blockers",[]).append("PORTFOLIO_CONFLICT")
+            state["status"]="portfolio_guard"
+            state["error"]=None
+            return False
 
     entry = market_price * (1 + base.SLIPPAGE_RATE if side == "LONG" else 1 - base.SLIPPAGE_RATE)
     atr = float(a.get("atr") or 0)
@@ -383,6 +400,7 @@ def open_trade(a, market_price):
         "qty": qty,
         "notional": qty * entry,
         "risk_dollars": qty * loss_one,
+        "strategy": "MICRO_REVERSION",
         "score": int(a.get("fast_score") or 0),
         "volume_ratio": float(a.get("volume_ratio") or 0),
         "z_momentum": float(a.get("z_momentum") or 0),
@@ -449,23 +467,23 @@ async def manage_position(rows):
 
     if p["side"] == "LONG":
         if price <= float(p["stop"]):
-            close_trade(price, "FAST STOP")
+            close_trade(price, "FAST REVERSION STOP")
             return
         if price >= float(p["tp"]):
-            close_trade(price, "FAST TAKE PROFIT")
+            close_trade(price, "FAST REVERSION TARGET")
             return
     else:
         if price >= float(p["stop"]):
-            close_trade(price, "FAST STOP")
+            close_trade(price, "FAST REVERSION STOP")
             return
         if price <= float(p["tp"]):
-            close_trade(price, "FAST TAKE PROFIT")
+            close_trade(price, "FAST REVERSION TARGET")
             return
 
     age = (utcnow() - datetime.fromisoformat(p["opened_at"])).total_seconds() / 60.0
     row = next((x for x in rows if x.get("symbol") == p["symbol"]), None)
-
     risk = max(float(p.get("risk_dollars") or 0), 1e-12)
+
     if not p.get("breakeven_moved") and float(p.get("peak_net") or 0) >= risk * BREAKEVEN_TRIGGER_R:
         p["stop"] = base.target_market_for_net_profit(p["side"], float(p["entry"]), 0.0)
         p["breakeven_moved"] = True
@@ -473,31 +491,23 @@ async def manage_position(rows):
 
     if float(p.get("peak_net") or 0) >= risk * PROFIT_LOCK_START_R:
         if float(p["peak_net"]) - net >= risk * PROFIT_GIVEBACK_R:
-            close_trade(price, "FAST PROFIT LOCK")
+            close_trade(price, "FAST REVERSION PROFIT LOCK")
             return
 
-    continuation = False
-    danger = False
     if row:
         z = float(row.get("z_momentum") or 0)
         imb = float(row.get("book_imbalance") or 0.5)
-        vr = float(row.get("volume_ratio") or 0)
-        if p["side"] == "LONG":
-            continuation = z >= 0.35 and imb >= 0.50 and vr >= 0.90
-            danger = z <= -0.35 or imb <= 0.47
-        else:
-            continuation = z <= -0.35 and imb <= 0.50 and vr >= 0.90
-            danger = z >= 0.35 or imb >= 0.53
-
-        if age >= EARLY_EXIT_MIN_AGE and net >= risk * EARLY_PROFIT_R and not continuation:
-            close_trade(price, "FAST +0.8R / NO CONTINUATION")
+        mean_reverted = (z >= -0.10) if p["side"] == "LONG" else (z <= 0.10)
+        failed = (z <= -2.20 or imb <= 0.46) if p["side"] == "LONG" else (z >= 2.20 or imb >= 0.54)
+        if age >= EARLY_EXIT_MIN_AGE and net > 0 and mean_reverted:
+            close_trade(price, "FAST MEAN REVERTED")
             return
-        if age >= EARLY_EXIT_MIN_AGE and net < 0 and danger:
-            close_trade(price, "FAST MOMENTUM FLIP")
+        if age >= EARLY_EXIT_MIN_AGE and net < 0 and failed:
+            close_trade(price, "FAST REVERSION FAILED")
             return
 
-    if age >= SOFT_HOLD_MINUTES and (row is None or not continuation):
-        close_trade(price, "FAST ADAPTIVE EXIT / NO CONTINUATION")
+    if age >= SOFT_HOLD_MINUTES:
+        close_trade(price, "FAST REVERSION TIME EXIT")
         return
 
     if age >= EMERGENCY_HOLD_MINUTES:
