@@ -16,32 +16,32 @@ from datetime import datetime, timezone, timedelta
 import psycopg
 from psycopg.types.json import Jsonb
 
-BUILD = "tv-consensus-v4-20260926-mtf-quality"
+BUILD = "tv-consensus-v5-20260927-consensus-impulse"
 MODE = "PAPER"
 SYMBOL = "XRPUSDC"
 
 START_BALANCE = float(os.getenv("TV_START_BALANCE", "10000"))
-RISK_PER_TRADE = float(os.getenv("TV_RISK_PER_TRADE", "0.0015"))
-MAX_NOTIONAL_SHARE = float(os.getenv("TV_MAX_NOTIONAL_SHARE", "0.25"))
+RISK_PER_TRADE = min(0.0010, float(os.getenv("TV_RISK_PER_TRADE", "0.0010")))
+MAX_NOTIONAL_SHARE = min(0.20, float(os.getenv("TV_MAX_NOTIONAL_SHARE", "0.20")))
 SCAN_SECONDS = 15
 EXIT_SCAN_SECONDS = 2
 STATE_HEARTBEAT_SECONDS = 60.0
 
-ENTRY_SCORE_ALIGNED = 75.0
-ENTRY_SCORE_COUNTER = 80.0
-MIN_SCORE_EDGE = 14.0
-MIN_SCORE_ACCEL = 2.0
-MIN_ADX = 19.0
-MIN_VOLUME_RATIO = 1.00
+ENTRY_SCORE_ALIGNED = 82.0
+ENTRY_SCORE_COUNTER = 100.0
+MIN_SCORE_EDGE = 35.0
+MIN_SCORE_ACCEL = 5.0
+MIN_ADX = 20.0
+MIN_VOLUME_RATIO = 0.90
 
 MIN_STOP_RATE = 0.0035
 MAX_STOP_RATE = 0.0075
 ATR_STOP_MULT = 1.5
-NET_RR = 1.5
+NET_RR = 1.70
 MIN_TARGET_NET_RATE = 0.0028
 
 WIN_COOLDOWN_SECONDS = 45
-LOSS_COOLDOWN_SECONDS = 150
+LOSS_COOLDOWN_SECONDS = 300
 MAX_CONSECUTIVE_LOSSES = 4
 MAX_DAILY_LOSS_PCT = 0.008
 # User requested continuous PAPER evaluation without the daily loss pause.
@@ -402,8 +402,10 @@ def entry_blockers(a, side):
         blockers.append("Slabý nebo nedostupný ADX")
     if a.get("volume_ratio", 0) < MIN_VOLUME_RATIO:
         blockers.append("Nízký objem")
-    if not a.get("setup_long" if side == "LONG" else "setup_short"):
-        blockers.append("Čekám na návrat do trendu nebo potvrzený průraz bez přetažení")
+    if not a.get("fresh_long" if side == "LONG" else "fresh_short"):
+        blockers.append("Consensus není čerstvý impuls; neopakuji vstup do starého trendu")
+    if a.get("setup_long" if side == "LONG" else "setup_short") != "CONSENSUS_IMPULSE":
+        blockers.append("Čekám na nový consensus impuls")
     return blockers
 
 
@@ -453,10 +455,17 @@ async def analyze_market():
     atr=base.atr_wilder(h1,l1,c1)
     candle=int(a1[-1][0])
     long_thr=short_thr=ENTRY_SCORE_ALIGNED
+    fresh_long=bool(prev_l is not None and long_score>=ENTRY_SCORE_ALIGNED and
+                    (accel_l>=MIN_SCORE_ACCEL or float(prev_l)<ENTRY_SCORE_ALIGNED-8))
+    fresh_short=bool(prev_s is not None and short_score>=ENTRY_SCORE_ALIGNED and
+                     (accel_s>=MIN_SCORE_ACCEL or float(prev_s)<ENTRY_SCORE_ALIGNED-8))
+    # TV now trades a fresh multi-indicator state change, not another trend pullback.
+    setup_long="CONSENSUS_IMPULSE" if fresh_long else None
+    setup_short="CONSENSUS_IMPULSE" if fresh_short else None
     gates = dict(trend_15m=t15, trend_5m=t5, long_score=long_score, short_score=short_score,
                  fast_long=fast_long, fast_short=fast_short, adx5=adx, volume_ratio=vr,
-                 setup_long=entry_setup("LONG", a1, atr),
-                 setup_short=entry_setup("SHORT", a1, atr))
+                 fresh_long=fresh_long, fresh_short=fresh_short,
+                 setup_long=setup_long, setup_short=setup_short)
     long_blocks, short_blocks = entry_blockers(gates, "LONG"), entry_blockers(gates, "SHORT")
     long_ok, short_ok = not long_blocks, not short_blocks
 
@@ -536,6 +545,13 @@ def loss_streak_pause_active():
 def open_trade(a, market_price):
     if state["open_position"] or a.get("signal") not in ("LONG","SHORT"):
         return False
+    guard=globals().get("portfolio_entry_allowed")
+    if callable(guard):
+        allowed,why=guard("TV",SYMBOL,a.get("signal"))
+        if not allowed:
+            a.setdefault("blockers",[]).append("PORTFOLIO_CONFLICT: "+str(why))
+            state["status"]="portfolio_guard"
+            return False
     if state.get("last_entry_candle")==a.get("candle_time"):
         return False
 
