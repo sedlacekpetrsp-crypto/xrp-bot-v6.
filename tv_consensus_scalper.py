@@ -592,6 +592,10 @@ def open_trade(a, market_price):
     if loss_one<=0: return False
 
     risk_dollars=float(state["balance"])*RISK_PER_TRADE
+    risk_meta=None
+    allowance=globals().get("portfolio_risk_allowance")
+    if callable(allowance):
+        risk_dollars,risk_meta=allowance("TV",SYMBOL,side,risk_dollars)
     if DAILY_LOSS_GUARD_ENABLED:
         remaining_daily=max(START_BALANCE,float(state["balance"]))*MAX_DAILY_LOSS_PCT+daily_pnl()
         risk_dollars=min(risk_dollars, remaining_daily)
@@ -605,6 +609,7 @@ def open_trade(a, market_price):
         "symbol":SYMBOL,"side":side,"entry":entry,"stop":stop,"tp":tp,"qty":qty,
         "strategy_build":BUILD, "setup":a.get("setup"), "initial_stop":stop,
         "notional":qty*entry,"risk_dollars":qty*loss_one,
+        "portfolio_risk":risk_meta,
         "entry_score":float(a["score"]),"opposing_score":float(a["opposing_score"]),
         "score_accel":float(a["score_accel"]),"trend_15m":a.get("trend_15m"),
         "countertrend":bool(a.get("countertrend")),"opened_at":utcnow().isoformat(),
