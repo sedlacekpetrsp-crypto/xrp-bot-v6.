@@ -20,7 +20,7 @@ from datetime import datetime, timezone, timedelta
 import psycopg
 from psycopg.types.json import Jsonb
 
-BUILD = "lead-lag-v2-bookflip-confirm-20260921"
+BUILD = "lead-lag-v3-cost-aware-5m-20260927"
 MODE = "PAPER"
 
 TRADE_SYMBOL = "XRPUSDC"
@@ -28,7 +28,7 @@ BTC_SYMBOL = "BTCUSDT"
 ETH_SYMBOL = "ETHUSDT"
 
 START_BALANCE = float(os.getenv("LEADLAG_START_BALANCE", "10000"))
-RISK_PER_TRADE = float(os.getenv("LEADLAG_RISK_PER_TRADE", "0.002"))
+RISK_PER_TRADE = min(0.0015, float(os.getenv("LEADLAG_RISK_PER_TRADE", "0.0015")))
 MAX_NOTIONAL_SHARE = float(os.getenv("LEADLAG_MAX_NOTIONAL_SHARE", "0.35"))
 
 SCAN_SECONDS = int(os.getenv("LEADLAG_SCAN_SECONDS", "12"))
@@ -40,26 +40,29 @@ LOSS_STREAK_COOLDOWN_MINUTES = 30
 MAX_CONSECUTIVE_LOSSES = 4
 MAX_DAILY_LOSS_PCT = 0.012
 
-MOMENTUM_MIN_Z = 0.80
-LEADER_COMPONENT_MIN_Z = 0.25
-LAG_GAP_MIN_Z = 0.35
-LEADER_RETURN_MIN = 0.0017
-LAG_RETURN_MIN = 0.0012
-MIN_EXPECTED_MOVE = LAG_RETURN_MIN * 0.80  # consistent with expected_move = 80% of lag
-EXIT_LAG_RETURN = 0.00045
-LEADER_FADE_RETURN = 0.00045
+MOMENTUM_MIN_Z = 0.65
+LEADER_COMPONENT_MIN_Z = 0.20
+LAG_GAP_MIN_Z = 0.45
+LEADER_RETURN_MIN = 0.0015
+LAG_RETURN_MIN = 0.0025
+MIN_EXPECTED_MOVE = 0.0023
+EXIT_LAG_RETURN = 0.00070
+LEADER_FADE_RETURN = 0.00060
 
-BOOK_LONG_MIN = 0.52
-BOOK_SHORT_MAX = 0.48
+BOOK_LONG_MIN = 0.54
+BOOK_SHORT_MAX = 0.46
 BOOK_FLIP_LONG = 0.48
 BOOK_FLIP_SHORT = 0.52
 MAX_SPREAD_PCT = 0.0008
 
-MIN_STOP_RATE = 0.0035
-MAX_STOP_RATE = 0.0075
-MIN_TARGET_RATE = 0.0040
-MAX_TARGET_RATE = 0.0100
+MIN_STOP_RATE = 0.0030
+MAX_STOP_RATE = 0.0060
+MIN_TARGET_RATE = 0.0050
+MAX_TARGET_RATE = 0.0120
 ATR_STOP_MULT = 1.05
+BREAKEVEN_TRIGGER_R = 0.70
+PROFIT_LOCK_TRIGGER_R = 1.00
+PROFIT_GIVEBACK_R = 0.35
 
 DB_STATE_TABLE = "leadlag_state"
 DB_TRADE_TABLE = "leadlag_trades"
@@ -317,12 +320,13 @@ async def analyze():
     eth = [float(x[4]) for x in eth_k[:-1]]
     xrp = [float(x[4]) for x in xrp_k[:-1]]
 
-    rb = log_return(btc, 3)
-    re = log_return(eth, 3)
-    rx = log_return(xrp, 3)
-    zb = z_momentum(btc, 3)
-    ze = z_momentum(eth, 3)
-    zx = z_momentum(xrp, 3)
+    # Five-minute leader/lag window is large enough to justify round-trip costs.
+    rb = log_return(btc, 5)
+    re = log_return(eth, 5)
+    rx = log_return(xrp, 5)
+    zb = z_momentum(btc, 5)
+    ze = z_momentum(eth, 5)
+    zx = z_momentum(xrp, 5)
 
     leader_return = 0.55 * rb + 0.45 * re
     leader_z = 0.55 * zb + 0.45 * ze
@@ -331,6 +335,7 @@ async def analyze():
     imbalance = float(book["imbalance"])
     spread = float(book["spread_pct"])
     expected_move = min(abs(lag_return) * 0.80, MAX_TARGET_RATE)
+    cost_floor = max(MIN_EXPECTED_MOVE, float(base.ROUND_TRIP_COST) * 1.25)
 
     side = "WAIT"
     reason = "NO_SETUP"
@@ -345,7 +350,7 @@ async def analyze():
         and zx > -0.35
         and imbalance >= BOOK_LONG_MIN
         and spread <= MAX_SPREAD_PCT
-        and expected_move >= MIN_EXPECTED_MOVE
+        and expected_move >= cost_floor
     )
     short_ok = (
         rb < 0 and re < 0
@@ -357,7 +362,7 @@ async def analyze():
         and zx < 0.35
         and imbalance <= BOOK_SHORT_MAX
         and spread <= MAX_SPREAD_PCT
-        and expected_move >= MIN_EXPECTED_MOVE
+        and expected_move >= cost_floor
     )
 
     blockers = []
@@ -380,7 +385,7 @@ async def analyze():
                 ("XRP momentum je příliš záporné", zx > -0.35),
                 (f"Order book < {BOOK_LONG_MIN:.2f}", imbalance >= BOOK_LONG_MIN),
                 (f"Spread > {MAX_SPREAD_PCT*100:.3f} %", spread <= MAX_SPREAD_PCT),
-                (f"Očekávaný pohyb < {MIN_EXPECTED_MOVE*100:.2f} %", expected_move >= MIN_EXPECTED_MOVE),
+                (f"Očekávaný pohyb < {cost_floor*100:.2f} %", expected_move >= cost_floor),
             ]
         else:
             reason = "WAIT_SHORT_FILTERS"
@@ -396,7 +401,7 @@ async def analyze():
                 ("XRP momentum je příliš kladné", zx < 0.35),
                 (f"Order book > {BOOK_SHORT_MAX:.2f}", imbalance <= BOOK_SHORT_MAX),
                 (f"Spread > {MAX_SPREAD_PCT*100:.3f} %", spread <= MAX_SPREAD_PCT),
-                (f"Očekávaný pohyb < {MIN_EXPECTED_MOVE*100:.2f} %", expected_move >= MIN_EXPECTED_MOVE),
+                (f"Očekávaný pohyb < {cost_floor*100:.2f} %", expected_move >= cost_floor),
             ]
         blockers = [label for label, ok in checks if not ok]
 
@@ -441,6 +446,13 @@ def open_trade(a, market_price):
     side = a["signal"]
     if side not in ("LONG", "SHORT"):
         return False
+    guard=globals().get("portfolio_entry_allowed")
+    if callable(guard):
+        allowed,why=guard("LEADLAG",TRADE_SYMBOL,side)
+        if not allowed:
+            state["last_signal"]={"side":side,"reason":"PORTFOLIO_CONFLICT","detail":why,"seen_at":utcnow().isoformat()}
+            state["status"]="portfolio_guard"
+            return False
 
     entry = market_price * (1 + base.SLIPPAGE_RATE if side == "LONG" else 1 - base.SLIPPAGE_RATE)
     stop_rate = min(MAX_STOP_RATE, max(MIN_STOP_RATE, float(a["atr_rate"]) * ATR_STOP_MULT))
@@ -480,6 +492,8 @@ def open_trade(a, market_price):
         "gap_z": a["gap_z"],
         "book_imbalance": a["book_imbalance"],
         "book_flip_count": 0,
+        "peak_net": 0.0,
+        "breakeven_moved": False,
         "opened_at": utcnow().isoformat(),
         "candle_time": a["candle_time"],
     }
@@ -566,7 +580,17 @@ async def manage_position(a=None):
         return
     price = await base.get_live_price(TRADE_SYMBOL, max_age=1.0)
     _, _, _, net = net_pnl_for_exit(p, price)
+    p["peak_net"] = max(float(p.get("peak_net") or 0), net)
     state["equity"] = float(state["balance"]) + net
+
+    risk=max(float(p.get("risk_dollars") or 0),1e-12)
+    if not p.get("breakeven_moved") and p["peak_net"] >= risk*BREAKEVEN_TRIGGER_R:
+        p["stop"]=base.target_market_for_net_profit(p["side"],float(p["entry"]),0.0)
+        p["breakeven_moved"]=True
+        save_state()
+    if p["peak_net"] >= risk*PROFIT_LOCK_TRIGGER_R and p["peak_net"]-net >= risk*PROFIT_GIVEBACK_R:
+        close_trade(price,"PROFIT LOCK")
+        return
 
     if p["side"] == "LONG":
         if price <= float(p["stop"]):
