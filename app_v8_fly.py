@@ -18,30 +18,55 @@ def _asset_key(symbol):
             return s[:-len(q)]
     return s
 
-def portfolio_entry_allowed(bot_name, symbol, side):
-    """Avoid stacking the same asset in the same direction across independent PAPER bots."""
-    asset=_asset_key(symbol)
-    positions=[
-        ("FLY",getattr(base,"paper_position",None)),
-        ("FAST",fast.state.get("open_position")),
-        ("LEADLAG",leadlag.state.get("open_position")),
-        ("TV",tv.state.get("open_position")),
+PORTFOLIO_RISK_SHARES={
+    "FLY":0.0014,
+    "FAST":0.0008,
+    "LEADLAG":0.0010,
+    "TV":0.0008,
+    "WHALE":0.0010,
+}
+
+def _portfolio_reference_balance():
+    values=[
+        float(getattr(base,"PAPER_BALANCE",0) or 0),
+        float(fast.state.get("balance") or 0),
+        float(leadlag.state.get("balance") or 0),
+        float(tv.state.get("balance") or 0),
+        float(whale.state.get("balance") or 0),
     ]
-    for p in whale.state.get("open_positions",[]) or []:
-        positions.append(("WHALE",p))
-    for name,p in positions:
-        if name==bot_name or not p:
-            continue
-        if _asset_key(p.get("symbol"))==asset and p.get("side")==side:
-            return False,f"{name} už drží {asset} {side}"
-    return True,None
+    values=[x for x in values if x>0]
+    return min(values) if values else 10000.0
+
+def portfolio_entry_allowed(bot_name, symbol, side):
+    """Parallel positions are allowed; diversification comes from independent SL/TP logic."""
+    return True,"parallel positions allowed"
+
+def portfolio_risk_allowance(bot_name, symbol, side, desired_risk):
+    """Cap each bot's risk slice so all five can trade the same asset without risk stacking."""
+    ref=_portfolio_reference_balance()
+    share=float(PORTFOLIO_RISK_SHARES.get(bot_name,0.0008))
+    cap=max(1.0,ref*share)
+    allowed=min(max(0.0,float(desired_risk or 0)),cap)
+    return allowed,{
+        "asset":_asset_key(symbol),
+        "side":side,
+        "bot":bot_name,
+        "reference_balance":ref,
+        "risk_share":share,
+        "risk_cap_usdc":cap,
+    }
 
 # Inject the coordinator without coupling the strategy modules to each other.
 base.portfolio_entry_allowed=portfolio_entry_allowed
+base.portfolio_risk_allowance=portfolio_risk_allowance
 fast.portfolio_entry_allowed=portfolio_entry_allowed
+fast.portfolio_risk_allowance=portfolio_risk_allowance
 leadlag.portfolio_entry_allowed=portfolio_entry_allowed
+leadlag.portfolio_risk_allowance=portfolio_risk_allowance
 tv.portfolio_entry_allowed=portfolio_entry_allowed
+tv.portfolio_risk_allowance=portfolio_risk_allowance
 whale.portfolio_entry_allowed=portfolio_entry_allowed
+whale.portfolio_risk_allowance=portfolio_risk_allowance
 
 app = base.app
 _original_analyze = base.analyze
