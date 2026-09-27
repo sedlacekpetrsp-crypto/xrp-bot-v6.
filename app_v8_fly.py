@@ -10,6 +10,39 @@ import tv_consensus_scalper as tv
 from v8_fly_layer import install
 
 install(base)
+
+def _asset_key(symbol):
+    s=str(symbol or "").upper()
+    for q in ("USDC","USDT","USD"):
+        if s.endswith(q):
+            return s[:-len(q)]
+    return s
+
+def portfolio_entry_allowed(bot_name, symbol, side):
+    """Avoid stacking the same asset in the same direction across independent PAPER bots."""
+    asset=_asset_key(symbol)
+    positions=[
+        ("FLY",getattr(base,"paper_position",None)),
+        ("FAST",fast.state.get("open_position")),
+        ("LEADLAG",leadlag.state.get("open_position")),
+        ("TV",tv.state.get("open_position")),
+    ]
+    for p in whale.state.get("open_positions",[]) or []:
+        positions.append(("WHALE",p))
+    for name,p in positions:
+        if name==bot_name or not p:
+            continue
+        if _asset_key(p.get("symbol"))==asset and p.get("side")==side:
+            return False,f"{name} už drží {asset} {side}"
+    return True,None
+
+# Inject the coordinator without coupling the strategy modules to each other.
+base.portfolio_entry_allowed=portfolio_entry_allowed
+fast.portfolio_entry_allowed=portfolio_entry_allowed
+leadlag.portfolio_entry_allowed=portfolio_entry_allowed
+tv.portfolio_entry_allowed=portfolio_entry_allowed
+whale.portfolio_entry_allowed=portfolio_entry_allowed
+
 app = base.app
 _original_analyze = base.analyze
 _original_dashboard = base.dashboard
