@@ -470,6 +470,10 @@ def open_trade(a, market_price):
         return False
 
     risk_dollars = float(state["balance"]) * RISK_PER_TRADE
+    risk_meta=None
+    allowance=globals().get("portfolio_risk_allowance")
+    if callable(allowance):
+        risk_dollars,risk_meta=allowance("LEADLAG",TRADE_SYMBOL,side,risk_dollars)
     qty_by_risk = risk_dollars / loss_one
     qty_by_cap = float(state["balance"]) * MAX_NOTIONAL_SHARE / entry
     qty = min(qty_by_risk, qty_by_cap)
@@ -483,7 +487,8 @@ def open_trade(a, market_price):
         "tp": tp,
         "qty": qty,
         "notional": qty * entry,
-        "risk_dollars": risk_dollars,
+        "risk_dollars": qty * loss_one,
+        "portfolio_risk": risk_meta,
         "stop_rate": stop_rate,
         "target_rate": target_rate,
         "leader_return": a["leader_return"],
