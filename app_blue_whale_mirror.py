@@ -19,7 +19,7 @@ SYMBOL="BTCUSDT"
 TELEGRAM_URL="https://t.me/s/BlueWhaleCryptoTrading"
 BINANCE_PRICE_URL="https://data-api.binance.vision/api/v3/ticker/price"
 START_BALANCE=float(os.getenv("START_BALANCE","10000"))
-RISK_PER_TRADE=min(0.002, float(os.getenv("WHALE_RISK_PER_TRADE","0.002")))
+RISK_PER_TRADE=min(0.0012, float(os.getenv("WHALE_RISK_PER_TRADE","0.0012")))
 RR=float(os.getenv("RR","2.0"))
 FEE_RATE=float(os.getenv("FEE_RATE","0.00095"))
 SLIPPAGE_RATE=float(os.getenv("SLIPPAGE_RATE","0.0002"))
@@ -29,21 +29,21 @@ ENTRY_SCAN_SECONDS=60
 SYMBOLS=("BTCUSDT","ETHUSDT","SOLUSDT","XRPUSDT")
 MAX_SIGNAL_AGE_MINUTES=float(os.getenv("MAX_SIGNAL_AGE_MINUTES","15"))
 MAX_OPEN_POSITIONS=2
-MAX_TOTAL_RISK_RATE=0.004
+MAX_TOTAL_RISK_RATE=0.0024
 SAME_SIDE_COOLDOWN_MINUTES=float(os.getenv("SAME_SIDE_COOLDOWN_MINUTES","30"))
 DATABASE_URL=os.getenv("DATABASE_URL")
 WHALE_TECH_CONFIRM=os.getenv("WHALE_TECH_CONFIRM","1")=="1"
 WHALE_CONFIRM_MIN_SCORE=int(os.getenv("WHALE_CONFIRM_MIN_SCORE","4"))
-WHALE_MIN_STOP_RATE=0.001
+WHALE_MIN_STOP_RATE=0.002
 WHALE_MAX_STOP_RATE=float(os.getenv("WHALE_MAX_STOP_RATE","0.04"))
 WHALE_BREAKEVEN_R=float(os.getenv("WHALE_BREAKEVEN_R","1.0"))
 WHALE_PROFIT_LOCK_R=float(os.getenv("WHALE_PROFIT_LOCK_R","1.5"))
 KLINES_URL="https://data-api.binance.vision/api/v3/klines"
 
-SIGNAL_POLICY_VERSION="fib-618-786-vwap-v2-trend-pullback"
+SIGNAL_POLICY_VERSION="fib-618-786-vwap-v3-trend-reclaim"
 WHALE_ENTRY_TOLERANCE=float(os.getenv("WHALE_ENTRY_TOLERANCE","0.002"))
 WHALE_MIN_NET_RR=float(os.getenv("WHALE_MIN_NET_RR","1.5"))
-WHALE_TREND_EFFICIENCY=float(os.getenv("WHALE_TREND_EFFICIENCY","0.45"))
+WHALE_TREND_EFFICIENCY=float(os.getenv("WHALE_TREND_EFFICIENCY","0.60"))
 WHALE_TREND_VWAP_BARS=int(os.getenv("WHALE_TREND_VWAP_BARS","15"))
 
 app=FastAPI(title=APP_NAME)
@@ -321,6 +321,12 @@ def _same_side_too_soon(side):
     return False
 
 def open_paper(signal,side,market_price):
+    guard=globals().get("portfolio_entry_allowed")
+    if callable(guard):
+        allowed,why=guard("WHALE",signal.get("symbol",SYMBOL),side)
+        if not allowed:
+            state["last_signal"]={"id":signal.get("id"),"side":side,"rejected":"PORTFOLIO_CONFLICT: "+str(why),"seen_at":utcnow().isoformat()}
+            return False
     reason,_=signal_problem(signal,market_price)
     if reason or side!=explicit_side(signal["text"]):
         state["last_signal"]={"id":signal["id"],"rejected":reason or "Směr neodpovídá signálu"}
@@ -440,9 +446,8 @@ def fib_candidate(rows):
     key=f"fib:{rows[start[0]][0]}:{rows[end[0]][0]}:{side}"
     return dict(side=side,entry=c,stop=stop,tp=target,key=key,strategy="FIB_618_786",confirmation=diag),diag
 
-def vwap_candidate(rows):
-    # Slow 60-minute VWAP for mean reversion. In a strongly one-sided market
-    # switch to a faster same-direction VWAP pullback instead of fading trend.
+def vwap_candidate(rows, trend_rows=None):
+    # 60m VWAP mean reversion. Strong trends use a stricter, 5m-confirmed VWAP reclaim.
     sample=rows[-61:-1]
     vol=sum(float(r[5]) for r in sample)
     diag={"strategy":"VWAP_REVERSION","reason":"Čekám na návrat z odchylky k VWAP"}
@@ -460,45 +465,58 @@ def vwap_candidate(rows):
 
     if efficiency>WHALE_TREND_EFFICIENCY:
         side="LONG" if closes[-1]>closes[0] else "SHORT"
+        trows=trend_rows or []
+        tc=[float(r[4]) for r in trows] if trows else []
+        if len(tc)<55:
+            return None,{**diag,"strategy":"VWAP_TREND_RECLAIM","reason":"Silný trend; čekám na 5m potvrzení"}
+        e20=_ema(tc[-80:],20); e50=_ema(tc[-100:],50)
+        trend5=("LONG" if tc[-1]>e20>e50 else "SHORT" if tc[-1]<e20<e50 else "NEUTRAL")
+        diag["trend_5m"]=trend5
+        if trend5!=side:
+            return None,{**diag,"strategy":"VWAP_TREND_RECLAIM","trend_side":side,
+                         "reason":"Silný trend, ale 5m struktura nepotvrzuje stejný směr"}
+
         n=max(5,min(WHALE_TREND_VWAP_BARS,len(rows)-2))
         trend_sample=rows[-(n+1):-1]
         tvol=sum(float(r[5]) for r in trend_sample)
         if tvol<=0:
-            return None,{**diag,"strategy":"VWAP_TREND_PULLBACK","reason":"Chybí objem pro trendový VWAP"}
+            return None,{**diag,"strategy":"VWAP_TREND_RECLAIM","reason":"Chybí objem pro trendový VWAP"}
         trend_vwap=sum((float(r[2])+float(r[3])+float(r[4]))/3*float(r[5]) for r in trend_sample)/tvol
         touch_tolerance=max(.35*atr,trend_vwap*.00015)
-        recent=rows[-3:]
+        recent=rows[-4:]
         touched=(min(float(r[3]) for r in recent)<=trend_vwap+touch_tolerance and
                  max(float(r[2]) for r in recent)>=trend_vwap-touch_tolerance)
         prev,last=rows[-2:]
         a,b=float(prev[4]),float(last[4]); o=float(last[1])
+        vols=[float(r[5]) for r in rows]
+        avgvol=sum(vols[-21:-1])/20 if len(vols)>=21 and sum(vols[-21:-1])>0 else 0
+        vr=vols[-1]/avgvol if avgvol>0 else 0
+        diag.update(strategy="VWAP_TREND_RECLAIM",trend_side=side,trend_vwap=trend_vwap,
+                    vwap=trend_vwap,touch_tolerance=touch_tolerance,volume_ratio=vr)
 
-        diag.update(strategy="VWAP_TREND_PULLBACK",trend_side=side,trend_vwap=trend_vwap,
-                    vwap=trend_vwap,touch_tolerance=touch_tolerance)
         if side=="LONG":
-            confirmed=(touched and b>o and b>a and b>trend_vwap and
-                       b-trend_vwap<=1.25*atr)
-            stop=min(float(r[3]) for r in rows[-5:])-.35*atr
+            confirmed=(touched and b>o and b>float(prev[2]) and b>trend_vwap
+                       and b-trend_vwap<=1.10*atr and vr>=1.10)
+            stop=min(float(r[3]) for r in rows[-6:])-.35*atr
             risk=max(b-stop,0.0)
         else:
-            confirmed=(touched and b<o and b<a and b<trend_vwap and
-                       trend_vwap-b<=1.25*atr)
-            stop=max(float(r[2]) for r in rows[-5:])+.35*atr
+            confirmed=(touched and b<o and b<float(prev[3]) and b<trend_vwap
+                       and trend_vwap-b<=1.10*atr and vr>=1.10)
+            stop=max(float(r[2]) for r in rows[-6:])+.35*atr
             risk=max(stop-b,0.0)
 
         if not confirmed:
-            direction="LONG" if side=="LONG" else "SHORT"
-            return None,{**diag,"reason":f"Silný trend {direction}; čekám na pullback k trendovému VWAP a potvrzení"}
+            return None,{**diag,"reason":f"Silný trend {side}; čekám na 5m shodu, VWAP dotyk a potvrzený reclaim"}
 
         stop_rate=risk/b if b>0 else 0.0
         round_trip=2*(FEE_RATE+SLIPPAGE_RATE)
         minimum_target_rate=WHALE_MIN_NET_RR*(stop_rate+round_trip)+round_trip
         target_distance=max(2.0*risk,b*minimum_target_rate*1.05,1.5*atr)
         target=b+target_distance if side=="LONG" else b-target_distance
-        diag["reason"]="Trendový VWAP pullback potvrzen"
-        key=f"vwap-trend:{last[0]}:{side}"
+        diag["reason"]="Trendový VWAP reclaim potvrzen"
+        key=f"vwap-reclaim:{last[0]}:{side}"
         return dict(side=side,entry=b,stop=stop,tp=target,key=key,
-                    strategy="VWAP_TREND_PULLBACK",confirmation=diag),diag
+                    strategy="VWAP_TREND_RECLAIM",confirmation=diag),diag
 
     prev,last=rows[-2:]; a,b=float(prev[4]),float(last[4])
     side=None
@@ -518,10 +536,12 @@ async def scan_entries(client, price=None):
                 r=await market_get(client,KLINES_URL,params={"symbol":symbol,"interval":interval,"limit":120},timeout=15)
                 frames[interval]=closed_candles(r.json(),now_ms,minutes)
             candidates=[]
-            for fn,interval in ((fib_candidate,"5m"),(vwap_candidate,"1m")):
-                candidate,diag=fn(frames[interval]); diag["symbol"]=symbol
-                diagnostics.append(diag)
-                if candidate:candidates.append((candidate,diag))
+            candidate,diag=fib_candidate(frames["5m"]); diag["symbol"]=symbol
+            diagnostics.append(diag)
+            if candidate:candidates.append((candidate,diag))
+            candidate,diag=vwap_candidate(frames["1m"],frames["5m"]); diag["symbol"]=symbol
+            diagnostics.append(diag)
+            if candidate:candidates.append((candidate,diag))
             # Fresh execution mark after candle requests; do not chase a closed-bar signal.
             r=await market_get(client,BINANCE_PRICE_URL,params={"symbol":symbol},timeout=15)
             px=float(r.json()["price"])
