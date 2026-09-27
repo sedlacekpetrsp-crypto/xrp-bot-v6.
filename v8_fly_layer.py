@@ -365,7 +365,13 @@ def open_trade(a,price):
     if a.get('setup')=='RECOVERY_TREND' or a.get('entry_kind')=='RECOVERY_A_PLUS':
         quality='RECOVERY_A+'
         risk_rate=RECOVERY_RISK_RATE
-    risk=m.PAPER_BALANCE*risk_rate; tp=m.target_market_for_net_profit(side,entry,nloss*m.NET_RISK_REWARD); qty=min(risk/nloss,m.PAPER_BALANCE*m.MAX_NOTIONAL_SHARE/entry)
+    risk=m.PAPER_BALANCE*risk_rate
+    risk_meta=None
+    allowance=getattr(m,'portfolio_risk_allowance',None)
+    if callable(allowance):
+        risk,risk_meta=allowance('FLY',a.get('symbol'),side,risk)
+    tp=m.target_market_for_net_profit(side,entry,nloss*m.NET_RISK_REWARD)
+    qty=min(risk/nloss,m.PAPER_BALANCE*m.MAX_NOTIONAL_SHARE/entry)
     actual_risk=qty*nloss
     features={
         'regime':a.get('regime'),'score':a.get('score'),'volume_ratio':a.get('volume_ratio'),
@@ -375,7 +381,8 @@ def open_trade(a,price):
         'leader_direction':(a.get('leader') or {}).get('direction'),'leader_strength':(a.get('leader') or {}).get('strength'),
         'btc_return':(a.get('leader') or {}).get('btc_return'),'eth_return':(a.get('leader') or {}).get('eth_return'),
         'no_trade_reason':a.get('no_trade_reason'),'setup_health':a.get('setup_health'),
-        'recovery_mode':a.get('setup')=='RECOVERY_TREND'
+        'recovery_mode':a.get('setup')=='RECOVERY_TREND',
+        'portfolio_risk':risk_meta
     }
     m.paper_position={'symbol':a['symbol'],'side':side,'setup':a.get('setup') or 'BREAKOUT','regime':a['regime'],'score':a.get('score',0),'entry_price':entry,'qty':qty,'stop_loss':sl,'take_profit':tp,'risk_distance':dist,'initial_risk_usdc':actual_risk,'risk_rate':risk_rate,'quality_tier':quality,'ensemble_score':ensemble,'entry_features':features,'net_rr':m.NET_RISK_REWARD,'mae_r':0.0,'mfe_r':0.0,'breakeven_moved':False,'profit_mode':False,'z_entry':float(a.get('z_momentum') or 0),'entry_trigger':float(a.get('entry_trigger') or a.get('armed_trigger') or price),'entry_spread_pct':float(a.get('real_spread_pct') or 0),'entry_kind':a.get('entry_kind','CLOSED_CANDLE'),'last_danger_score':0,'opened_at':m.utcnow().isoformat()}
     m.last_entry_candle[a['symbol']]=a['candle_time']; m.save_state(); m.log_signal(a,'ENTER',f"{quality} risk={risk_rate*100:.2f}% {m.paper_position['entry_kind']} z={m.paper_position['z_entry']:.2f}")
