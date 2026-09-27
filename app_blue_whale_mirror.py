@@ -349,6 +349,10 @@ def open_paper(signal,side,market_price):
         return False
     account_basis=state["balance"]+sum(float(p.get("entry_fee",0.0)) for p in positions)
     risk=account_basis*RISK_PER_TRADE
+    risk_meta=None
+    allowance=globals().get("portfolio_risk_allowance")
+    if callable(allowance):
+        risk,risk_meta=allowance("WHALE",signal.get("symbol",SYMBOL),side,risk)
     open_risk=sum(float(p.get("risk_dollars",0.0)) for p in positions)
     if open_risk+risk > account_basis*MAX_TOTAL_RISK_RATE+1e-9:
         state["last_signal"]={"id":signal["id"],"side":side,"stop_raw":signal["stop"]["raw"],"rejected":"max total risk","seen_at":utcnow().isoformat()}
@@ -365,7 +369,7 @@ def open_paper(signal,side,market_price):
         return False
     entry_fee=entry*qty*FEE_RATE
     state["balance"]-=entry_fee
-    position={"symbol":signal.get("symbol",SYMBOL),"strategy":signal.get("strategy","LEGACY_TELEGRAM"),"signal_policy":SIGNAL_POLICY_VERSION,"confirmation":signal.get("confirmation"),"source_entry":signal["entry"],"signal_id":signal["id"],"signal_text":signal["text"],"side":side,"entry":entry,"stop":stop,"initial_stop":stop,"tp":tp,"qty":qty,"notional":notional,"risk_dollars":risk,"opened_at":utcnow().isoformat(),"entry_fee":entry_fee,"breakeven":False,"profit_lock":False}
+    position={"symbol":signal.get("symbol",SYMBOL),"strategy":signal.get("strategy","LEGACY_TELEGRAM"),"signal_policy":SIGNAL_POLICY_VERSION,"confirmation":signal.get("confirmation"),"source_entry":signal["entry"],"signal_id":signal["id"],"signal_text":signal["text"],"side":side,"entry":entry,"stop":stop,"initial_stop":stop,"tp":tp,"qty":qty,"notional":notional,"risk_dollars":risk,"portfolio_risk":risk_meta,"opened_at":utcnow().isoformat(),"entry_fee":entry_fee,"breakeven":False,"profit_lock":False}
     state["open_positions"].append(position)
     _sync_legacy_open_position()
     state["last_signal"]={"symbol":signal.get("symbol",SYMBOL),"strategy":signal.get("strategy"),"id":signal["id"],"side":side,"stop_raw":signal["stop"]["raw"],"accepted_at":utcnow().isoformat()}
