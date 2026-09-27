@@ -381,6 +381,10 @@ def open_trade(a, market_price):
         return False
 
     risk_dollars = float(state["balance"]) * RISK_PER_TRADE
+    risk_meta=None
+    allowance=globals().get("portfolio_risk_allowance")
+    if callable(allowance):
+        risk_dollars,risk_meta=allowance("FAST",a.get("symbol"),side,risk_dollars)
     qty = min(
         risk_dollars / loss_one,
         float(state["balance"]) * MAX_NOTIONAL_SHARE / entry,
@@ -400,6 +404,7 @@ def open_trade(a, market_price):
         "qty": qty,
         "notional": qty * entry,
         "risk_dollars": qty * loss_one,
+        "portfolio_risk": risk_meta,
         "strategy": "MICRO_REVERSION",
         "score": int(a.get("fast_score") or 0),
         "volume_ratio": float(a.get("volume_ratio") or 0),
