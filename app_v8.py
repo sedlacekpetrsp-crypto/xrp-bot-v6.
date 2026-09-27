@@ -63,7 +63,7 @@ SETUP_PARAMS = {
     "TREND_PULLBACK": {"atr_mult": 1.00, "rr": 1.70},
     "BREAKOUT": {"atr_mult": 1.05, "rr": 1.90},
 }
-ENABLED_SETUPS = {"BREAKOUT", "TREND_PULLBACK"}
+ENABLED_SETUPS = {"BREAKOUT", "TREND_PULLBACK", "LIQUIDITY_SWEEP"}
 TRADE_TABLE = "v8fixed_trades"
 STATE_TABLE = "v8fixed_state"
 SIGNAL_TABLE = "v8fixed_signals"
