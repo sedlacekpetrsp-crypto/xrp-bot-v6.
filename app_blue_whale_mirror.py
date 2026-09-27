@@ -40,7 +40,7 @@ WHALE_BREAKEVEN_R=float(os.getenv("WHALE_BREAKEVEN_R","1.0"))
 WHALE_PROFIT_LOCK_R=float(os.getenv("WHALE_PROFIT_LOCK_R","1.5"))
 KLINES_URL="https://data-api.binance.vision/api/v3/klines"
 
-SIGNAL_POLICY_VERSION="fib-618-786-vwap-v3-trend-reclaim"
+SIGNAL_POLICY_VERSION="fib-618-786-vwap-v4-mtf-guard"
 WHALE_ENTRY_TOLERANCE=float(os.getenv("WHALE_ENTRY_TOLERANCE","0.002"))
 WHALE_MIN_NET_RR=float(os.getenv("WHALE_MIN_NET_RR","1.5"))
 WHALE_TREND_EFFICIENCY=float(os.getenv("WHALE_TREND_EFFICIENCY","0.60"))
@@ -208,16 +208,24 @@ def _rsi(values, period=14):
     rs=ag/al
     return 100.0-(100.0/(1.0+rs))
 
-async def technical_confirmation(client, side):
-    """Confirm public Whale direction with closed-candle trend/momentum/volume."""
-    news = await news_signal.get_news(SYMBOL)
-    if news_signal.blocks_entry(SYMBOL, side):
+def _news_asset(symbol):
+    s=str(symbol or "").upper()
+    for q in ("USDT","USDC","USD"):
+        if s.endswith(q):
+            return s[:-len(q)]
+    return s
+
+async def technical_confirmation(client, symbol, side):
+    """Confirm candidate direction with closed-candle 5m/15m/1h trend, momentum and volume."""
+    asset=_news_asset(symbol)
+    news = await news_signal.get_news(asset)
+    if news_signal.blocks_entry(asset, side):
         return False, {"score": 0, "reason": "BTC_NEWS_CONFLICT", "news": news}
     if not WHALE_TECH_CONFIRM:
         return True, {"score":99,"reason":"disabled"}
     score=0; details={}
     for interval,limit in (("5m",120),("15m",120),("1h",120)):
-        r=await market_get(client,KLINES_URL,params={"symbol":SYMBOL,"interval":interval,"limit":limit},timeout=15)
+        r=await market_get(client,KLINES_URL,params={"symbol":symbol,"interval":interval,"limit":limit},timeout=15)
         rows=r.json()
         # Ignore the live candle; trade only from completed information.
         closed=rows[:-1] if len(rows)>2 else rows
@@ -560,9 +568,20 @@ async def scan_entries(client, price=None):
                     diag["reason"]="Nový vstup čeká na funkční ukládání";continue
                 candidate.update(id=sid,text=candidate["side"],symbol=symbol,
                                  stop={"raw":str(candidate["stop"]),"low":candidate["stop"],"high":candidate["stop"],"masked":False})
+                ok,tech=await technical_confirmation(client,symbol,candidate["side"])
+                candidate["technical_confirmation"]=tech
+                if not ok:
+                    h1=(tech.get("details") or {}).get("1h",{})
+                    if tech.get("hard_veto"):
+                        diag["reason"]="BLOKOVÁNO: směr je proti 1h trendu"
+                    else:
+                        diag["reason"]="Čekám na MTF potvrzení směru (score "+str(tech.get("score",0))+"/"+str(tech.get("min_score",WHALE_CONFIRM_MIN_SCORE))+")"
+                    diag["technical_confirmation"]=tech
+                    continue
                 if open_paper(candidate,candidate["side"],px):
                     remember_signal(sid)
-                    diag["reason"]="Obchod otevřen: "+candidate["strategy"]
+                    diag["reason"]="Obchod otevřen: "+candidate["strategy"]+" • MTF potvrzeno"
+                    diag["technical_confirmation"]=tech
                 else:
                     diag["reason"]=(state.get("last_signal") or {}).get("rejected","Limit pozic nebo rizika")
         except Exception as exc:
