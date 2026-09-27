@@ -2,11 +2,11 @@ import asyncio, math, statistics, time
 from datetime import datetime
 import news_signal
 
-BUILD = "v8-fly-layer-20260923-10-active-scalp"
+BUILD = "v8-fly-layer-20260927-11-breakout-specialist"
 Z_ARMED = 0.50
 Z_STRONG = 0.70
 Z_DANGER = 0.55
-ARMED_MAX_DISTANCE_ATR = 0.18
+ARMED_MAX_DISTANCE_ATR = 0.25
 MAX_REAL_SPREAD_PCT = 0.0008
 DANGER_EXIT_SCORE = 2
 DANGER_MAX_MR = 0.45
@@ -20,13 +20,13 @@ PERSIST_HEARTBEAT_SECONDS = 60.0
 NO_TRADE_MIN_ADX = 16.0
 NO_TRADE_MIN_VOL = 0.90
 NO_TRADE_MAX_SPREAD = 0.0007
-ENSEMBLE_MIN_SCORE = 5.0
+ENSEMBLE_MIN_SCORE = 4.5
 SETUP_WINDOW = 20
 SETUP_DISABLE_MIN_TRADES = 12
 SETUP_DISABLE_EXPECTANCY_R = -0.10
 SETUP_DISABLE_WINRATE = 0.30
 
-RECOVERY_RISK_RATE = 0.0015
+RECOVERY_RISK_RATE = 0.0010
 RECOVERY_MIN_ENSEMBLE = 7.5
 RECOVERY_MIN_VOLUME = 1.50
 RECOVERY_MIN_Z = 0.80
@@ -34,8 +34,8 @@ RECOVERY_MIN_BOOK = 0.56
 RECOVERY_MAX_SPREAD = 0.0005
 RECOVERY_MIN_EDGE_MULTIPLE = 4.0
 
-STRONG_RISK_RATE = 0.0035
-APLUS_RISK_RATE = 0.0050
+STRONG_RISK_RATE = 0.0025
+APLUS_RISK_RATE = 0.0035
 
 
 def _ensemble_score(a):
@@ -283,7 +283,8 @@ async def strategy(symbol):
     edge=(av*p['atr_mult']*p['rr'])/cl if av and cl else 0
     signal=raw; reject=None
     if raw in ('LONG','SHORT'):
-        if edge < m.ROUND_TRIP_COST*m.MIN_EDGE_MULTIPLE: signal,reject='WAIT','EDGE_TOO_SMALL'
+        if setup not in m.ENABLED_SETUPS: signal,reject='WAIT','SETUP_ROLE_FILTER'
+        elif edge < m.ROUND_TRIP_COST*m.MIN_EDGE_MULTIPLE: signal,reject='WAIT','EDGE_TOO_SMALL'
         elif not spread_ok: signal,reject='WAIT',f'REAL_SPREAD_{spread*100:.3f}%'
         elif raw=='LONG' and news.get('bearish'): signal,reject='WAIT','NEGATIVE_NEWS_BLOCK'
         elif raw=='LONG' and z<Z_ARMED: signal,reject='WAIT',f'Z_TOO_WEAK_{z:.2f}'
@@ -343,6 +344,12 @@ def armed_candidate(row):
 
 def open_trade(a,price):
     if m.paper_position or not a.get('atr'): return
+    guard=getattr(m,'portfolio_entry_allowed',None)
+    if callable(guard):
+        allowed,why=guard('FLY',a.get('symbol'),a.get('signal'))
+        if not allowed:
+            m.log_signal(a,'REJECT','PORTFOLIO_CONFLICT '+str(why))
+            return
     p=m.SETUP_PARAMS['BREAKOUT']; dist=max(float(a['atr'])*p['atr_mult'],price*m.MIN_STOP_RATE)
     if dist/price>m.MAX_STOP_RATE: return
     side=a['signal']; entry=price*(1+m.SLIPPAGE_RATE if side=='LONG' else 1-m.SLIPPAGE_RATE); sl=entry-dist if side=='LONG' else entry+dist
@@ -462,6 +469,7 @@ async def cycle():
 def install(module):
     global m
     if getattr(module,'_fly_layer_installed',False):return module
-    module.ENABLED_SETUPS = {'BREAKOUT', 'TREND_PULLBACK', 'NEWS_LONG'}
+    module.ENABLED_SETUPS = {'BREAKOUT', 'NEWS_LONG'}
+    module.NET_RISK_REWARD = 1.60
     m=module; module.strategy_analysis=strategy; module.open_trade=open_trade; module.close_trade=close_trade; module.manage_position=manage_position; module.choose_best=choose_best; module.cycle=cycle; module.recovery_status=recovery_status; module.FLY_LAYER_BUILD=BUILD; module.app.title='V8 Adaptive Breakout Scalper — Fly Layer'; module._fly_layer_installed=True
     return module
