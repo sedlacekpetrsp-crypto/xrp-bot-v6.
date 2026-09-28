@@ -136,6 +136,7 @@ async def dashboard_with_pnl_breakdown():
 </div>
 """
     html = html.replace('<div class="card"><h2>📡 Trhy</h2>', fly_guard_card + '<div class="card" style="border:2px solid #5ce68b;background:rgba(92,230,139,.035)"><h2>✈️ FLY · TRHY</h2>')
+    html = html.replace('document.getElementById(\'trades\').innerHTML=(d.trade_history||[]).slice(0,20).map(t=>`<div class="trade"><span>${t.symbol}</span><span>${t.side}</span><span>${t.reason}<br><small class="muted">Uzavřeno: ${closedTime(t.closed_at)}</small></span><span class="${Number(t.pnl)>=0?\'green\':\'red\'}">${f(t.pnl,2)}</span></div>`).join(\'\')||\'<div class="muted">Zatím bez obchodů.</div>\';', "document.getElementById('trades').innerHTML=renderTradeHistory(d.trade_history||[], 'USDC');")
     whale_card = """
 <div class="card" style="border:2px solid #7dd3fc;background:rgba(125,211,252,.03)">
   <h2>🐋 BLUE WHALE · FIB + VWAP</h2>
@@ -182,6 +183,37 @@ async def dashboard_with_pnl_breakdown():
 """
     html = html.replace('<div class="card muted" id="health">', whale_card + fast_card + leadlag_card + tv_card + '<div class="card muted" id="health">')
     whale_js = """
+
+function historyEscape(v){
+ return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function historyDate(v){
+ if(!v)return null;
+ const d=new Date(v);
+ return Number.isFinite(d.getTime())?d:null;
+}
+function historyTime(v){
+ const d=historyDate(v);
+ if(!d)return '—';
+ const date=d.toLocaleDateString('cs-CZ',{timeZone:'Europe/Prague',day:'2-digit',month:'2-digit',year:'numeric'});
+ const time=d.toLocaleTimeString('cs-CZ',{timeZone:'Europe/Prague',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'});
+ return `${date}<br>${time}`;
+}
+function renderTradeHistory(trades,currency){
+ const rows=trades.slice().sort((a,b)=>(historyDate(b.closed_at)?.getTime()??0)-(historyDate(a.closed_at)?.getTime()??0)).slice(0,20);
+ if(!rows.length)return '<div class="muted">Zatím žádné uzavřené obchody.</div>';
+ const colors={BTC:'#f7931a',ETH:'#8c9eff',SOL:'#14f195',XRP:'#4fc3f7'};
+ return '<div class="muted history-note">Posledních 20 obchodů · datum a čas uzavření · český čas</div><div class="trade history-row history-heading"><span>Obchod / uzavřeno</span><span>Vstup → výstup</span><span>Důvod ukončení</span><span>Čistý výsledek</span></div>'+rows.map(t=>{
+  const symbol=String(t.symbol||'—');
+  const asset=symbol.replace(/(USDC|USDT|USD)$/,'');
+  const color=colors[asset]||'#a7b6c6';
+  const value=t.net_pnl??t.pnl;
+  const pnl=value==null?NaN:Number(value);
+  const valid=Number.isFinite(pnl);
+  const detail=t.strategy||t.setup||'';
+  return `<div class="trade history-row"><span><b style="color:${color}">${historyEscape(symbol)}</b><br><b>${historyEscape(t.side||'—')}</b><br><span class="history-time">${historyTime(t.closed_at)}</span></span><span>${f(t.entry??t.entry_price,6)}<br>→<br>${f(t.exit??t.exit_price,6)}</span><span>${historyEscape(t.reason||'—')}${detail?'<br><small class="muted">'+historyEscape(detail)+'</small>':''}</span><span class="${valid?(pnl>=0?'green':'red'):'muted'}">${valid?(pnl>=0?'+':'')+f(pnl,2):'—'} ${historyEscape(currency)}</span></div>`;
+ }).join('');
+}
 async function refreshFlyGuard(){
  try{
   const r=await fetch('/analyze',{cache:'no-store'}),d=await r.json();
@@ -228,7 +260,7 @@ async function refreshWhale(){
    : (p
       ? `<b>${p.symbol||'BTCUSDT'} ${p.side} · ${p.strategy||'Původní signál'}</b> • entry ${f(p.entry,6)} • SL ${f(p.stop,6)} • TP ${f(p.tp,6)} • risk ${f(p.risk_dollars,2)} USD • uPnL ${unreal>=0?'+':''}${f(unreal,2)} USD`
       : '<b class="yellow">⏳ ČEKÁM NA OBCHOD</b><div style="margin-top:6px">Žádná otevřená Whale pozice.</div>');
-  document.getElementById('whaleTrades').innerHTML=ts.slice().reverse().slice(0,20).map(t=>`<div class="trade"><span><b>${t.symbol||'BTCUSDT'}</b> ${t.side}</span><span>${f(t.entry,6)} → ${f(t.exit,6)}</span><span>${t.reason||'—'} · ${t.strategy||'Původní signál'} · ${t.closed_at?new Date(t.closed_at).toLocaleString('cs-CZ'):''}</span><span class="${Number(t.net_pnl)>=0?'green':'red'}">${Number(t.net_pnl)>=0?'+':''}${f(t.net_pnl,2)} USD</span></div>`).join('')||'<div class="coin muted">Zatím žádné uzavřené obchody.</div>';
+  document.getElementById('whaleTrades').innerHTML=renderTradeHistory(ts, 'USD');
   const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const symbolStyle={
    BTCUSDT:{label:'BTC',accent:'#f7931a',bg:'rgba(247,147,26,.08)'},
@@ -316,10 +348,7 @@ async function refreshFast(){
     <div class="muted" style="margin-top:4px">${(a.fast_blockers||[]).length?'Blokuje: '+a.fast_blockers.join(' • '):'Podmínky bez blokace'}</div>
    </div>`;
   }).join('')||'<div class="coin muted">Načítám analýzu…</div>';
-  document.getElementById('fastTrades').innerHTML=ts.slice().reverse().slice(0,12).map(t=>{
-   const st=assetStyle[t.symbol]||{label:t.symbol,accent:'#a7b6c6'};
-   return `<div class="trade"><span style="color:${st.accent};font-weight:800">${st.label}</span><span>${t.side}</span><span>${t.reason||'—'}</span><span class="${Number(t.net_pnl)>=0?'green':'red'}">${Number(t.net_pnl)>=0?'+':''}${f(t.net_pnl,2)} USDC</span></div>`;
-  }).join('')||'<div class="coin muted">Zatím žádné uzavřené obchody.</div>';
+  document.getElementById('fastTrades').innerHTML=renderTradeHistory(ts, 'USDC');
   document.getElementById('fastHealth').textContent=`Scan: ${w.last_scan||'—'} • ukládání: ${w.persistence||'memory'} • chyba: ${w.error||w.persistence_error||'žádná'}`;
  }catch(e){
   document.getElementById('fastHealth').textContent='FAST dashboard error: '+e;
@@ -362,9 +391,7 @@ async function refreshLeadLag(){
    <span style="color:#8c9eff;font-weight:800">ETH ${f(Number(a.eth_return||0)*100,3)} %</span> •
    <span style="color:#4fc3f7;font-weight:800">XRP ${f(Number(a.xrp_return||0)*100,3)} %</span> •
    lag ${f(Number(a.lag_return||0)*100,3)} % • book ${f(a.book_imbalance,3)}<br><span class="muted">${blockerText}</span>`;
-  document.getElementById('leadlagTrades').innerHTML=ts.slice().reverse().slice(0,8).map(t=>
-    `<div class="trade"><span><b>${t.symbol||'XRPUSDC'}</b> ${t.side}</span><span>${f(t.entry,6)} → ${f(t.exit,6)}</span><span>${t.reason||'—'}</span><span class="${Number(t.net_pnl)>=0?'green':'red'}">${Number(t.net_pnl)>=0?'+':''}${f(t.net_pnl,2)} USDC</span><span>${t.closed_at?new Date(t.closed_at).toLocaleString('cs-CZ'):'—'}</span></div>`
-  ).join('') || '<div class="coin muted">Zatím žádné uzavřené obchody.</div>';
+  document.getElementById('leadlagTrades').innerHTML=renderTradeHistory(ts, 'USDC');
   document.getElementById('leadlagHealth').textContent=
    `Scan: ${w.last_scan||'—'} • ukládání: ${w.persistence||'memory'} • chyba: ${w.error||w.persistence_error||'žádná'}`;
  }catch(e){
@@ -424,7 +451,7 @@ async function refreshTV(){
     : `<br>${w.status==='daily_loss_guard'?'Denní limit ztráty — nové vstupy pozastaveny do '+closedTime(w.guard_until):((a.blockers||[]).join(' • ') || 'Signál připraven / kontroluji rizikové limity')}${w.cooldown_until&&Date.parse(w.cooldown_until)>Date.now()?' • Pauza do '+closedTime(w.cooldown_until):''}<br>Cena ${f(w.current_price??a.price,6)} • ${w.build||''}`;
   document.getElementById('tvSignal').innerHTML += tvDetails;
   if(!document.getElementById('tvTrades').dataset.init){document.getElementById('tvTrades').style.display='none';document.getElementById('tvTrades').dataset.init='1';}
-  document.getElementById('tvTrades').innerHTML=ts.slice().reverse().slice(0,20).map(t=>`<div class="trade"><span><b>${t.side}</b><br>${closedTime(t.closed_at)}</span><span>${f(t.entry,6)} → ${f(t.exit,6)}</span><span>${t.reason||'—'}<br>${t.strategy_build?'V3':'V2'}</span><span class="${Number(t.net_pnl)>=0?'green':'red'}">${Number(t.net_pnl)>=0?'+':''}${f(t.net_pnl,2)} USDC</span></div>`).join('')||'<div class="muted">Zatím žádné uzavřené obchody.</div>';
+  document.getElementById('tvTrades').innerHTML=renderTradeHistory(ts, 'USDC');
  }catch(e){
   document.getElementById('tvPosition').innerHTML='<b style="font-size:22px;color:#ffd166">⚠ STAV POZICE NELZE OVĚŘIT</b><div style="margin-top:10px">Spojení se nezdařilo. Čekám na nová data.</div>';
   document.getElementById('tvPosition').style.borderColor='#ffd166';
@@ -433,6 +460,15 @@ async function refreshTV(){
 }
 """
     html = html.replace("refresh();setInterval(refresh,10000);", whale_js + fast_js + leadlag_js + tv_js + "refresh();refreshFlyGuard();refreshWhale();refreshFast();refreshLeadLag();refreshTV();setInterval(refresh,3000);setInterval(refreshFlyGuard,5000);setInterval(refreshWhale,5000);setInterval(refreshFast,5000);setInterval(refreshLeadLag,5000);setInterval(refreshTV,5000);")
+    html = html.replace('</style>', """
+/* Shared trade history: 2026-09-28 */
+.history-note{font-size:12px;margin:8px 0}
+.trade.history-row{grid-template-columns:1.2fr 1fr 1fr 1fr;align-items:start;gap:8px;padding:12px 0}
+.history-row>span{min-width:0;overflow-wrap:anywhere}
+.history-time{font-variant-numeric:tabular-nums}
+.trade.history-heading{font-size:11px;color:#a7b6c6;padding:8px 0}
+@media(max-width:420px){.trade.history-row{font-size:11px;gap:5px}.trade.history-heading{font-size:10px}}
+</style>""")
     return HTMLResponse(html, headers={"Cache-Control": "no-store"})
 
 
