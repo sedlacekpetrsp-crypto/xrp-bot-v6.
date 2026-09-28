@@ -211,7 +211,7 @@ function renderTradeHistory(trades,currency){
   const pnl=value==null?NaN:Number(value);
   const valid=Number.isFinite(pnl);
   const detail=t.strategy||t.setup||'';
-  return `<div class="trade history-row"><span><b style="color:${color}">${historyEscape(symbol)}</b><br><b>${historyEscape(t.side||'—')}</b><br><span class="history-time">${historyTime(t.closed_at)}</span></span><span>${f(t.entry??t.entry_price,6)}<br>→<br>${f(t.exit??t.exit_price,6)}</span><span>${historyEscape(t.reason||'—')}${detail?'<br><small class="muted">'+historyEscape(detail)+'</small>':''}</span><span class="${valid?(pnl>=0?'green':'red'):'muted'}">${valid?(pnl>=0?'+':'')+f(pnl,2):'—'} ${historyEscape(currency)}</span></div>`;
+  return `<div class="trade history-row"><span><b style="color:${color}">${historyEscape(symbol)}</b><br><b class="${t.side==='LONG'?'green':t.side==='SHORT'?'red':'muted'}">${historyEscape(t.side||'—')}</b><br><span class="history-time">${historyTime(t.closed_at)}</span></span><span>${f(t.entry??t.entry_price,6)}<br>→<br>${f(t.exit??t.exit_price,6)}</span><span>${historyEscape(t.reason||'—')}${detail?'<br><small class="muted">'+historyEscape(detail)+'</small>':''}</span><span class="${valid?(pnl>=0?'green':'red'):'muted'}">${valid?(pnl>=0?'+':'')+f(pnl,2):'—'} ${historyEscape(currency)}</span></div>`;
  }).join('');
 }
 async function refreshFlyGuard(){
