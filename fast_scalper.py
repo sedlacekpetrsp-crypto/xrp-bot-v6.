@@ -17,7 +17,7 @@ from datetime import datetime, timezone, timedelta
 import psycopg
 from psycopg.types.json import Jsonb
 
-BUILD = "fast-edge-v6-microreversion-20260927"
+BUILD = "fast-edge-v7-confirmed-reversion-20260928"
 MODE = "PAPER"
 
 SYMBOLS = ("XRPUSDC", "ETHUSDC", "SOLUSDC")
@@ -27,7 +27,7 @@ MAX_NOTIONAL_SHARE = min(0.20, float(os.getenv("FAST_MAX_NOTIONAL_SHARE", "0.20"
 
 SCAN_SECONDS = 12
 STATE_HEARTBEAT_SECONDS = 60.0
-SOFT_HOLD_MINUTES = 3.0
+SOFT_HOLD_MINUTES = 6.0
 EMERGENCY_HOLD_MINUTES = 120.0
 WIN_COOLDOWN_SECONDS = 30
 LOSS_COOLDOWN_SECONDS = 120
@@ -36,7 +36,7 @@ MAX_CONSECUTIVE_LOSSES = 4
 MAX_DAILY_LOSS_PCT = 0.005
 
 MIN_VOLUME_RATIO = 0.70
-MAX_ADX = 30.0
+MAX_ADX = 26.0
 MIN_Z = 1.30
 TRANSITION_Z = 1.45
 BOOK_LONG_MIN = 0.54
@@ -53,7 +53,7 @@ NET_RISK_REWARD = 1.35
 EARLY_PROFIT_R = 0.65
 PROFIT_LOCK_START_R = 0.85
 PROFIT_GIVEBACK_R = 0.25
-EARLY_EXIT_MIN_AGE = 0.50
+EARLY_EXIT_MIN_AGE = 1.25
 BREAKEVEN_TRIGGER_R = 0.55
 
 DB_STATE_TABLE = "fast_scalp_state"
@@ -503,7 +503,7 @@ async def manage_position(rows):
         z = float(row.get("z_momentum") or 0)
         imb = float(row.get("book_imbalance") or 0.5)
         mean_reverted = (z >= -0.10) if p["side"] == "LONG" else (z <= 0.10)
-        failed = (z <= -2.20 or imb <= 0.46) if p["side"] == "LONG" else (z >= 2.20 or imb >= 0.54)
+        failed = (z <= -2.60 and imb <= 0.44) if p["side"] == "LONG" else (z >= 2.60 and imb >= 0.56)
         if age >= EARLY_EXIT_MIN_AGE and net > 0 and mean_reverted:
             close_trade(price, "FAST MEAN REVERTED")
             return
