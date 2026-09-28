@@ -16,7 +16,7 @@ from datetime import datetime, timezone, timedelta
 import psycopg
 from psycopg.types.json import Jsonb
 
-BUILD = "tv-consensus-v5-20260927-consensus-impulse"
+BUILD = "tv-consensus-v6-20260928-longer-hold"
 MODE = "PAPER"
 SYMBOL = "XRPUSDC"
 
@@ -48,12 +48,12 @@ MAX_DAILY_LOSS_PCT = 0.008
 # Keep the ordinary stop, position risk and temporary loss-streak cooldown.
 DAILY_LOSS_GUARD_ENABLED = False
 SOFT_HOLD_MINUTES = 12.0
-STALE_HOLD_MINUTES = 45.0
-BREAK_EVEN_TRIGGER_R = 0.6
-MIN_LOCKED_NET_R = 0.2
-TRAIL_TRIGGER_R = 1.0
-TRAIL_GIVEBACK_R = 0.50
-FLIP_EXIT_MIN_AGE = 1.0
+STALE_HOLD_MINUTES = 75.0
+BREAK_EVEN_TRIGGER_R = 0.90
+MIN_LOCKED_NET_R = 0.10
+TRAIL_TRIGGER_R = 1.40
+TRAIL_GIVEBACK_R = 0.75
+FLIP_EXIT_MIN_AGE = 5.0
 
 DB_STATE_TABLE = "tv_consensus_state"
 DB_TRADE_TABLE = "tv_consensus_trades"
@@ -697,7 +697,7 @@ async def manage_position(a=None):
         p["last_flip_candle"]=a.get("candle_time")
         p["flip_confirmations"]=(int(p.get("flip_confirmations",0))+1
                                  if a.get("trend_15m")==opposite and opposing_edge>=20 else 0)
-    if age>=FLIP_EXIT_MIN_AGE and p.get("flip_confirmations",0)>=2:
+    if age>=FLIP_EXIT_MIN_AGE and p.get("flip_confirmations",0)>=3:
         close_trade(price,"TV CONFIRMED TREND FLIP"); return
     if age>=STALE_HOLD_MINUTES and net<=0 and a.get("trend_15m")!=p["side"]:
         close_trade(price,"TV STALE TRADE"); return
