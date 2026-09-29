@@ -492,7 +492,7 @@ async def start_whale_worker():
     bestof.core.init_db()
     bestof.core.load_state()
     if _bestof_task is None or _bestof_task.done():
-        _bestof_task = __import__("asyncio").create_task(bestof.core.bot_loop())
+        _bestof_task = __import__("asyncio").create_task(bestof.core.trading_loop())
 
 @app.get("/whale/status")
 async def whale_status():
