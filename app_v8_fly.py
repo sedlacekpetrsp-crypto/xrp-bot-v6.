@@ -187,7 +187,18 @@ async def dashboard_with_pnl_breakdown():
   <div id="tvTrades" style="margin-top:10px"></div>
 </div>
 """
-    html = html.replace('<div class="card muted" id="health">', whale_card + fast_card + leadlag_card + tv_card + '<div class="card muted" id="health">')
+    bestof_card = """
+<div class="card" style="border:2px solid #b388ff;background:rgba(179,136,255,.03)">
+  <h2 style="color:#b388ff">🏆 BEST-OF</h2>
+  <div class="muted" style="margin-bottom:10px">Výběr nejlepších setupů • 24/7 • PAPER</div>
+  <div id="bestofStats" class="grid"></div>
+  <div id="bestofPosition" class="coin muted" style="margin-top:10px">Načítám…</div>
+  <div style="margin-top:12px"><b>Poslední obchody</b></div>
+  <div id="bestofTrades" style="margin-top:6px"></div>
+  <div id="bestofHealth" class="muted" style="margin-top:10px">Načítám…</div>
+</div>
+"""
+    html = html.replace('<div class="card muted" id="health">', whale_card + fast_card + leadlag_card + tv_card + bestof_card + '<div class="card muted" id="health">')
     whale_js = """
 
 function historyEscape(v){
@@ -465,7 +476,20 @@ async function refreshTV(){
  }
 }
 """
-    html = html.replace("refresh();setInterval(refresh,10000);", whale_js + fast_js + leadlag_js + tv_js + "refresh();refreshFlyGuard();refreshWhale();refreshFast();refreshLeadLag();refreshTV();setInterval(refresh,3000);setInterval(refreshFlyGuard,5000);setInterval(refreshWhale,5000);setInterval(refreshFast,5000);setInterval(refreshLeadLag,5000);setInterval(refreshTV,5000);")
+    bestof_js = """
+async function refreshBestOf(){
+ try{
+  const r=await fetch('/bestof/status',{cache:'no-store'}),d=await r.json(),ts=d.trades||[];
+  const wins=ts.filter(t=>Number(t.pnl)>0).length,wr=ts.length?100*wins/ts.length:0;
+  document.getElementById('bestofStats').innerHTML='<div><span>Balance</span><b>'+Number(d.balance||0).toFixed(2)+' USDC</b></div><div><span>Obchody</span><b>'+ts.length+'</b></div><div><span>Win rate</span><b>'+wr.toFixed(1)+' %</b></div>';
+  const ps=Array.isArray(d.positions)?d.positions:Object.values(d.positions||{});
+  document.getElementById('bestofPosition').innerHTML=ps.length?ps.map(p=>'<b>'+historyEscape(p.symbol)+' '+historyEscape(p.side)+'</b> • entry '+historyEscape(p.entry_price??p.entry??'—')).join('<br>'):'Žádná otevřená pozice';
+  document.getElementById('bestofTrades').innerHTML=renderTradeHistory(ts,'USDC');
+  document.getElementById('bestofHealth').innerHTML='Build: '+historyEscape(d.build||'—')+' • '+(d.last_error?'<span class="red">Chyba: '+historyEscape(d.last_error)+'</span>':'<span class="green">Běží</span>')+' • '+historyEscape(d.persistence||'—');
+ }catch(e){document.getElementById('bestofHealth').innerHTML='<span class="red">BEST-OF status nedostupný</span>';}
+}
+"""
+    html = html.replace("refresh();setInterval(refresh,10000);", whale_js + fast_js + leadlag_js + tv_js + bestof_js + "refresh();refreshFlyGuard();refreshWhale();refreshFast();refreshLeadLag();refreshTV();refreshBestOf();setInterval(refresh,3000);setInterval(refreshFlyGuard,5000);setInterval(refreshWhale,5000);setInterval(refreshFast,5000);setInterval(refreshLeadLag,5000);setInterval(refreshTV,5000);setInterval(refreshBestOf,5000);")
     html = html.replace('</style>', """
 /* Shared trade history: 2026-09-28 */
 .history-note{font-size:12px;margin:8px 0}
