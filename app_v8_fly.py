@@ -25,6 +25,7 @@ PORTFOLIO_RISK_SHARES={
     "LEADLAG":0.0010,
     "TV":0.0008,
     "WHALE":0.0010,
+    "BEST":0.0010,
 }
 
 def _portfolio_reference_balance():
@@ -34,6 +35,7 @@ def _portfolio_reference_balance():
         float(leadlag.state.get("balance") or 0),
         float(tv.state.get("balance") or 0),
         float(whale.state.get("balance") or 0),
+        float(getattr(bestof.core,"PAPER_BALANCE",0) or 0),
     ]
     values=[x for x in values if x>0]
     return min(values) if values else 10000.0
@@ -68,6 +70,8 @@ tv.portfolio_entry_allowed=portfolio_entry_allowed
 tv.portfolio_risk_allowance=portfolio_risk_allowance
 whale.portfolio_entry_allowed=portfolio_entry_allowed
 whale.portfolio_risk_allowance=portfolio_risk_allowance
+bestof.core.portfolio_entry_allowed=portfolio_entry_allowed
+bestof.core.portfolio_risk_allowance=portfolio_risk_allowance
 
 app = base.app
 _original_analyze = base.analyze
@@ -581,13 +585,15 @@ async def combined_health():
     leadlag_age = _age_seconds(leadlag.state.get("last_scan"))
     fast_age = _age_seconds(fast.state.get("last_scan"))
     tv_age = _age_seconds(tv.state.get("last_scan"))
+    best_age = _age_seconds(getattr(bestof.core,"last_cycle_at",None))
     fly_ok = fly_age is not None and fly_age < 90 and not getattr(base, "last_error", None)
     whale_ok = whale_age is not None and whale_age < 180 and whale.state.get("persistence") == "postgres" and not whale.state.get("error")
     leadlag_ok = leadlag_age is not None and leadlag_age < 90 and leadlag.state.get("persistence") == "postgres" and not leadlag.state.get("error")
     fast_ok = fast_age is not None and fast_age < 90 and fast.state.get("persistence") == "postgres" and not fast.state.get("error")
     tv_ok = tv_age is not None and tv_age < 90 and tv.state.get("persistence") == "postgres" and not tv.state.get("error")
+    best_ok = best_age is not None and best_age < 90 and bool(bestof.core.DATABASE_URL) and not bestof.core.last_error
     return JSONResponse({
-        "ok": bool(fly_ok and whale_ok and leadlag_ok and fast_ok and tv_ok),
+        "ok": bool(fly_ok and whale_ok and leadlag_ok and fast_ok and tv_ok and best_ok),
         "fly": {
             "healthy": fly_ok,
             "age_seconds": fly_age,
@@ -640,6 +646,7 @@ async def combined_health():
             "analysis": tv.state.get("analysis"),
             "trades": len(tv.state.get("trades", [])),
         },
+        "bestof": {"healthy":best_ok,"age_seconds":best_age,"last_cycle_at":bestof.core.last_cycle_at,"last_error":bestof.core.last_error,"persistence":"postgres" if bestof.core.DATABASE_URL else "memory","balance":bestof.core.PAPER_BALANCE,"open_positions":bestof.core.positions,"trades":len(bestof.core.trade_history)},
         "leadlag": {
             "healthy": leadlag_ok,
             "age_seconds": leadlag_age,
