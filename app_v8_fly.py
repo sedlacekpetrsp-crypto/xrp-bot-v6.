@@ -489,6 +489,12 @@ async def start_whale_worker():
         app.state.fast_task = __import__("asyncio").create_task(fast.bot_loop())
     if _tv_task is None or _tv_task.done():
         _tv_task = __import__("asyncio").create_task(tv.bot_loop())
+    if bestof.core.http_client is None:
+        bestof.core.http_client = __import__("httpx").AsyncClient(
+            timeout=__import__("httpx").Timeout(10.0),
+            limits=__import__("httpx").Limits(max_connections=8,max_keepalive_connections=4,keepalive_expiry=30.0),
+            headers={"User-Agent":"bestof-paper-24-7/1.0"},
+        )
     bestof.core.init_db()
     bestof.core.load_state()
     if _bestof_task is None or _bestof_task.done():
