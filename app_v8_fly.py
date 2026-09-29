@@ -7,6 +7,7 @@ import lead_lag_scalper as leadlag
 import fast_scalper as fast
 import news_signal
 import tv_consensus_scalper as tv
+import bestof_bot as bestof
 from v8_fly_layer import install
 
 install(base)
@@ -73,6 +74,7 @@ _original_analyze = base.analyze
 _original_dashboard = base.dashboard
 _whale_task = None
 _tv_task = None
+_bestof_task = None
 
 app.router.routes[:] = [
     route for route in app.router.routes
@@ -474,7 +476,7 @@ async function refreshTV(){
 
 @app.on_event("startup")
 async def start_whale_worker():
-    global _whale_task, _tv_task
+    global _whale_task, _tv_task, _bestof_task
     whale.init_persistence()
     leadlag.install(base)
     fast.install(base)
@@ -487,6 +489,10 @@ async def start_whale_worker():
         app.state.fast_task = __import__("asyncio").create_task(fast.bot_loop())
     if _tv_task is None or _tv_task.done():
         _tv_task = __import__("asyncio").create_task(tv.bot_loop())
+    bestof.core.init_db()
+    bestof.core.load_state()
+    if _bestof_task is None or _bestof_task.done():
+        _bestof_task = __import__("asyncio").create_task(bestof.core.bot_loop())
 
 @app.get("/whale/status")
 async def whale_status():
@@ -660,3 +666,17 @@ async def news_status(symbol: str = "ALL"):
 async def fast_status():
     return JSONResponse(fast.state, headers={"Cache-Control":"no-store"})
 
+
+
+@app.get("/bestof/status")
+async def combined_bestof_status():
+    return JSONResponse({
+        "mode":"PAPER","build":"BESTOF-2026-09-29-A",
+        "allowed":[{"symbol":s,"setup":u,"side":d} for s,u,d in sorted(bestof.ALLOWED)],
+        "balance":bestof.core.PAPER_BALANCE,
+        "positions":bestof.core.positions,
+        "trades":bestof.core.trade_history[:50],
+        "last_cycle_at":bestof.core.last_cycle_at,
+        "last_error":bestof.core.last_error,
+        "persistence":"postgres" if bestof.core.DATABASE_URL else "memory"
+    },headers={"Cache-Control":"no-store"})
