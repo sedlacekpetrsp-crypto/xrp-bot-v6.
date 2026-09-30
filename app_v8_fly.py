@@ -477,16 +477,46 @@ async function refreshTV(){
 }
 """
     bestof_js = """
+function renderBestOfPosition(p){
+ const finite=v=>v!=null&&Number.isFinite(Number(v));
+ const valid=finite(p.unrealized_net_pnl),net=Number(p.unrealized_net_pnl);
+ const age=Date.now()-Date.parse(p.price_updated_at||'');
+ const stale=p.price_stale||!Number.isFinite(age)||age>30000;
+ const color=stale||!valid?'#ffd166':net>=0?'#5ce68b':'#ff6b6b';
+ const signed=v=>(Number(v)>=0?'+':'')+f(v,2);
+ return `<div style="border:2px solid ${color};border-radius:14px;padding:16px;margin-top:12px;background:#10171f">
+ <div style="font-size:22px;font-weight:800">${historyEscape(p.symbol)} <span class="${p.side==='LONG'?'green':'red'}">${historyEscape(p.side)}</span></div>
+ <div style="margin-top:6px">OTEVŘENÝ OBCHOD • PAPER</div>
+ <div style="margin-top:14px">${stale?'Poslední známý':'Průběžný'} čistý zisk / ztráta</div>
+ <div style="font-size:32px;font-weight:800;color:${color}">${valid?signed(net):'—'} USDT</div>
+ <div>${finite(p.unrealized_net_pct)?signed(p.unrealized_net_pct)+' % z hodnoty pozice':''}</div>
+ <div class="muted" style="font-size:12px;margin-top:5px">Odhad po vstupním a výstupním poplatku a skluzu při uzavření</div>
+ <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px">
+ <div>Vstupní cena<br><b>${f(p.entry_price,6)}</b></div>
+ <div>${stale?'Poslední cena':'Aktuální cena'}<br><b>${finite(p.current_price)?f(p.current_price,6):'—'}</b></div>
+ <div>Stop-loss<br><b>${f(p.stop_loss,6)}</b></div><div>Take-profit<br><b>${f(p.take_profit,6)}</b></div></div>
+ <div style="margin-top:12px">Otevřeno: ${historyTime(p.opened_at)}</div>
+ <div class="muted" style="margin-top:8px">Cena aktualizována: ${historyTime(p.price_updated_at)}</div>
+ ${stale?'<div style="color:#ffd166;margin-top:8px">⚠ Cena není aktuální — čekám na nová data.</div>':''}</div>`;
+}
 async function refreshBestOf(){
+ const box=document.getElementById('bestofPosition');
  try{
-  const r=await fetch('/bestof/status',{cache:'no-store'}),d=await r.json(),ts=d.trades||[];
+  const r=await fetch('/bestof/status',{cache:'no-store',signal:AbortSignal.timeout(10000)});
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  const d=await r.json(),ts=d.trades||[];
   const wins=ts.filter(t=>Number(t.pnl)>0).length,wr=ts.length?100*wins/ts.length:0;
-  document.getElementById('bestofStats').innerHTML='<div><span>Balance</span><b>'+Number(d.balance||0).toFixed(2)+' USDC</b></div><div><span>Obchody</span><b>'+ts.length+'</b></div><div><span>Win rate</span><b>'+wr.toFixed(1)+' %</b></div>';
   const ps=Array.isArray(d.positions)?d.positions:Object.values(d.positions||{});
-  document.getElementById('bestofPosition').innerHTML=ps.length?ps.map(p=>'<b>'+historyEscape(p.symbol)+' '+historyEscape(p.side)+'</b> • entry '+historyEscape(p.entry_price??p.entry??'—')).join('<br>'):'Žádná otevřená pozice';
-  document.getElementById('bestofTrades').innerHTML=renderTradeHistory(ts,'USDC');
-  document.getElementById('bestofHealth').innerHTML='Build: '+historyEscape(d.build||'—')+' • '+(d.last_error?'<span class="red">Chyba: '+historyEscape(d.last_error)+'</span>':'<span class="green">Běží</span>')+' • '+historyEscape(d.persistence||'—');
- }catch(e){document.getElementById('bestofHealth').innerHTML='<span class="red">BEST-OF status nedostupný</span>';}
+  document.getElementById('bestofStats').innerHTML=[['Balance',f(d.balance,2)+' USDT'],['Uzavřené obchody',ts.length],['Otevřené obchody',ps.length],['Win rate',f(wr,1)+' %']].map(x=>`<div class="coin"><div class="muted">${x[0]}</div><b>${x[1]}</b></div>`).join('');
+  box.innerHTML=ps.length?ps.map(renderBestOfPosition).join(''):'Žádná otevřená pozice — čekám na obchod';
+  document.getElementById('bestofTrades').innerHTML=renderTradeHistory(ts,'USDT');
+  const cycle=Date.parse(d.last_cycle_at||'');
+  const healthy=Number.isFinite(cycle)&&Date.now()-cycle<90000&&!d.last_error;
+  document.getElementById('bestofHealth').innerHTML='Build: '+historyEscape(d.build||'—')+' • '+(healthy?'<span class="green">Běží</span>':'<span class="yellow">Stav není aktuální</span>')+' • '+historyEscape(d.persistence||'—')+'<br>Obnova přehledu každých 5 sekund'+(d.last_error?'<br>'+historyEscape(d.last_error):'');
+ }catch(e){
+  box.innerHTML='<b class="yellow">⚠ Stav pozic nelze ověřit. Spojení se nezdařilo — čekám na nová data.</b>';
+  document.getElementById('bestofHealth').textContent='BEST-OF status nedostupný';
+ }
 }
 """
     html = html.replace("refresh();setInterval(refresh,10000);", whale_js + fast_js + leadlag_js + tv_js + bestof_js + "refresh();refreshFlyGuard();refreshWhale();refreshFast();refreshLeadLag();refreshTV();refreshBestOf();setInterval(refresh,3000);setInterval(refreshFlyGuard,5000);setInterval(refreshWhale,5000);setInterval(refreshFast,5000);setInterval(refreshLeadLag,5000);setInterval(refreshTV,5000);setInterval(refreshBestOf,5000);")
@@ -705,13 +735,41 @@ async def fast_status():
 
 
 
+def _bestof_position_snapshot():
+    """Read cached execution quotes without changing positions or placing orders."""
+    import math
+    rows = {}
+    for symbol, position in list(bestof.core.positions.items()):
+        p = dict(position)
+        quote = dict(bestof.core.price_cache.get(symbol) or {})
+        raw = quote.get("price")
+        try:
+            price = float(raw)
+            if not math.isfinite(price) or price <= 0:
+                price = None
+        except (TypeError, ValueError):
+            price = None
+        updated = quote.get("updated_at")
+        age = _age_seconds(updated)
+        p.update(current_price=price, price_updated_at=updated,
+                 price_stale=price is None or age is None or age > 30,
+                 unrealized_net_pnl=None, unrealized_net_pct=None)
+        if price is not None:
+            entry, qty = float(p["entry_price"]), float(p["qty"])
+            net = bestof.core.estimated_net_per_unit(p["side"], entry, price) * qty
+            p["unrealized_net_pnl"] = net
+            p["unrealized_net_pct"] = net / (entry * qty) * 100 if entry * qty > 0 else None
+        rows[symbol] = p
+    return rows
+
+
 @app.get("/bestof/status")
 async def combined_bestof_status():
     return JSONResponse({
-        "mode":"PAPER","build":"BESTOF-2026-09-29-A",
+        "mode":"PAPER","build":"BESTOF-2026-09-30-LIVE-PNL",
         "allowed":[{"symbol":s,"setup":u,"side":d} for s,u,d in sorted(bestof.ALLOWED)],
         "balance":bestof.core.PAPER_BALANCE,
-        "positions":bestof.core.positions,
+        "positions":_bestof_position_snapshot(),
         "trades":bestof.core.trade_history[:50],
         "last_cycle_at":bestof.core.last_cycle_at,
         "last_error":bestof.core.last_error,
