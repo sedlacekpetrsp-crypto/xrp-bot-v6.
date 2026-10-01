@@ -5,7 +5,7 @@ Idea:
 - BTC + ETH are treated as short-horizon leaders.
 - XRP is traded only when both leaders move in the same direction,
   XRP has not yet caught up, and XRP order-book microstructure confirms.
-- Exit on lag convergence, leader fade, book flip, hard SL/TP, or time limit.
+- Exit on lag convergence, leader fade, book flip, hard SL/TP, or confirmed setup failure.
 No live orders are sent.
 """
 from __future__ import annotations
@@ -20,7 +20,7 @@ from datetime import datetime, timezone, timedelta
 import psycopg
 from psycopg.types.json import Jsonb
 
-BUILD = "lead-lag-v4-balanced-confirmation-20261001"
+BUILD = "lead-lag-v5-confirmed-exits-20261001"
 MODE = "PAPER"
 
 TRADE_SYMBOL = "XRPUSDC"
@@ -613,41 +613,29 @@ async def manage_position(a=None):
             return
 
     age_min = (utcnow() - datetime.fromisoformat(p["opened_at"])).total_seconds() / 60.0
-    if age_min >= MAX_HOLD_MINUTES:
-        close_trade(price, "TIME EXIT")
+    if a is None or age_min < 3.0:
         return
-
-    if a is None or age_min < 0.75:
+    # Count distinct closed candles, not repeated polling of the same signal.
+    candle=a.get("candle_time")
+    if candle is None or candle == p.get("last_exit_candle"):
         return
-
-    if p["side"] == "LONG":
-        if a["lag_return"] <= EXIT_LAG_RETURN:
-            close_trade(price, "LAG CLOSED")
-            return
-        if a["leader_return"] <= LEADER_FADE_RETURN:
-            close_trade(price, "LEADER FADED")
-            return
-        if a["book_imbalance"] <= BOOK_FLIP_LONG:
-            p["book_flip_count"] = int(p.get("book_flip_count", 0)) + 1
-            if p["book_flip_count"] >= 3:
-                close_trade(price, "BOOK FLIP x3")
-                return
-        else:
-            p["book_flip_count"] = 0
-    else:
-        if a["lag_return"] >= -EXIT_LAG_RETURN:
-            close_trade(price, "LAG CLOSED")
-            return
-        if a["leader_return"] >= -LEADER_FADE_RETURN:
-            close_trade(price, "LEADER FADED")
-            return
-        if a["book_imbalance"] >= BOOK_FLIP_SHORT:
-            p["book_flip_count"] = int(p.get("book_flip_count", 0)) + 1
-            if p["book_flip_count"] >= 3:
-                close_trade(price, "BOOK FLIP x3")
-                return
-        else:
-            p["book_flip_count"] = 0
+    p["last_exit_candle"]=candle
+    direction=1 if p["side"]=="LONG" else -1
+    lag_closed=direction*float(a["lag_return"]) <= EXIT_LAG_RETURN
+    leader_reversed=direction*float(a["leader_return"]) < 0
+    book_flipped=(a["book_imbalance"]<=BOOK_FLIP_LONG if direction==1
+                  else a["book_imbalance"]>=BOOK_FLIP_SHORT)
+    # Convergence may bank a net profit; losses require a confirmed reversal.
+    failed=leader_reversed and book_flipped
+    converged=lag_closed and net>0
+    reason="CONFIRMED LEADER REVERSAL" if failed else "CONFIRMED LAG CLOSED" if converged else None
+    p["exit_confirmations"]=(int(p.get("exit_confirmations",0))+1
+                             if reason and reason==p.get("exit_candidate") else 1 if reason else 0)
+    p["exit_candidate"]=reason
+    if p["exit_confirmations"]>=2:
+        close_trade(price,reason)
+        return
+    save_state()
 
 
 def cooldown_active():

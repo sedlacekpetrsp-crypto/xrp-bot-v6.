@@ -2,7 +2,7 @@ import asyncio, math, statistics, time
 from datetime import datetime
 import news_signal
 
-BUILD = "v8-fly-layer-20261001-12-balanced-entry"
+BUILD = "v8-fly-layer-20261001-13-confirmed-exits"
 Z_ARMED = 0.45
 Z_STRONG = 0.65
 Z_DANGER = 0.55
@@ -416,13 +416,20 @@ async def manage_position():
         if price>=sl: close_trade(price,'BREAK EVEN' if p.get('breakeven_moved') else 'STOP LOSS'); return
         if price<=tp: close_trade(price,'TAKE PROFIT'); return
     age=(m.utcnow()-datetime.fromisoformat(p['opened_at'])).total_seconds()/60
-    if age>=1:
-        mon=await monitor(p['symbol']); trigger=float(p.get('entry_trigger') or e); score=0
-        if p['side']=='LONG': score+=mon['z3']<=-Z_DANGER; score+=mon['book']<=.47; score+=price<trigger*.9995
-        else: score+=mon['z3']>=Z_DANGER; score+=mon['book']>=.53; score+=price>trigger*1.0005
-        score+=mon['spread']>MAX_REAL_SPREAD_PCT; p['last_danger_score']=int(score)
-        if score>=DANGER_EXIT_SCORE and mr<=DANGER_MAX_MR: close_trade(price,'DANGER EXIT'); return
-    if age>=m.MAX_TRADE_MINUTES and mr<.35: close_trade(price,'TIME EXIT')
+    if age >= 3:
+        mon=await monitor(p['symbol'])
+        sample=_monitor_cache.get(p['symbol'],{}).get('ts')
+        if sample is not None and sample != p.get('last_exit_sample'):
+            p['last_exit_sample']=sample
+            trigger=float(p.get('entry_trigger') or e)
+            if p['side']=='LONG':
+                failed=mon['z3']<=-Z_DANGER and mon['book']<=.47 and price<trigger-.25*d
+            else:
+                failed=mon['z3']>=Z_DANGER and mon['book']>=.53 and price>trigger+.25*d
+            p['exit_confirmations']=int(p.get('exit_confirmations',0))+1 if failed else 0
+            if p['exit_confirmations']>=3 and mr<=DANGER_MAX_MR:
+                close_trade(price,'CONFIRMED SETUP FAILURE'); return
+    # Hard SL/TP remain active; elapsed time alone does not invalidate the setup.
 
 def choose_best(rows):
     confirmed=[]; armed=[]
@@ -476,7 +483,7 @@ async def cycle():
 def install(module):
     global m
     if getattr(module,'_fly_layer_installed',False):return module
-    module.ENABLED_SETUPS = {'BREAKOUT', 'NEWS_LONG'}
+    module.ENABLED_SETUPS = {'BREAKOUT', 'TREND_PULLBACK', 'NEWS_LONG'}
     module.NET_RISK_REWARD = 1.60
     m=module; module.strategy_analysis=strategy; module.open_trade=open_trade; module.close_trade=close_trade; module.manage_position=manage_position; module.choose_best=choose_best; module.cycle=cycle; module.recovery_status=recovery_status; module.FLY_LAYER_BUILD=BUILD; module.app.title='V8 Adaptive Breakout Scalper — Fly Layer'; module._fly_layer_installed=True
     return module

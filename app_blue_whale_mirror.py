@@ -40,7 +40,7 @@ WHALE_BREAKEVEN_R=float(os.getenv("WHALE_BREAKEVEN_R","1.2"))
 WHALE_PROFIT_LOCK_R=float(os.getenv("WHALE_PROFIT_LOCK_R","1.8"))
 KLINES_URL="https://data-api.binance.vision/api/v3/klines"
 
-SIGNAL_POLICY_VERSION="fib-618-786-vwap-v5-balanced-20261001"
+SIGNAL_POLICY_VERSION="fib-618-786-vwap-v6-symbol-cooldown-20261001"
 WHALE_ENTRY_TOLERANCE=float(os.getenv("WHALE_ENTRY_TOLERANCE","0.003"))
 WHALE_MIN_NET_RR=float(os.getenv("WHALE_MIN_NET_RR","1.6"))
 WHALE_TREND_EFFICIENCY=float(os.getenv("WHALE_TREND_EFFICIENCY","0.60"))
@@ -315,10 +315,10 @@ def mark_to_market(price=None):
     state["equity"]=state["balance"]+net
     _sync_legacy_open_position()
 
-def _same_side_too_soon(side):
+def _same_side_too_soon(side, symbol):
     now=utcnow()
     for p in state.get("open_positions") or []:
-        if p.get("side")!=side:
+        if p.get("side")!=side or p.get("symbol",SYMBOL)!=symbol:
             continue
         try:
             age_min=(now-datetime.fromisoformat(p["opened_at"])).total_seconds()/60.0
@@ -346,7 +346,7 @@ def open_paper(signal,side,market_price):
     if any(p.get("symbol",SYMBOL)==signal.get("symbol",SYMBOL) for p in positions):
         state["last_signal"]={"id":signal["id"],"rejected":"Na tomto trhu už je pozice"}
         return False
-    if _same_side_too_soon(side):
+    if _same_side_too_soon(side, signal.get("symbol",SYMBOL)):
         state["last_signal"]={"id":signal["id"],"side":side,"stop_raw":signal["stop"]["raw"],"rejected":"same-side cooldown","seen_at":utcnow().isoformat()}
         return False
     entry=market_price*(1+SLIPPAGE_RATE if side=="LONG" else 1-SLIPPAGE_RATE)
