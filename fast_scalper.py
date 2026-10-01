@@ -17,7 +17,7 @@ from datetime import datetime, timezone, timedelta
 import psycopg
 from psycopg.types.json import Jsonb
 
-BUILD = "fast-edge-v7-confirmed-reversion-20260928"
+BUILD = "fast-edge-v8-cost-aware-confirmed-reversion-20261001"
 MODE = "PAPER"
 
 SYMBOLS = ("XRPUSDC", "ETHUSDC", "SOLUSDC")
@@ -27,7 +27,7 @@ MAX_NOTIONAL_SHARE = min(0.20, float(os.getenv("FAST_MAX_NOTIONAL_SHARE", "0.20"
 
 SCAN_SECONDS = 12
 STATE_HEARTBEAT_SECONDS = 60.0
-SOFT_HOLD_MINUTES = 6.0
+SOFT_HOLD_MINUTES = 12.0
 EMERGENCY_HOLD_MINUTES = 120.0
 WIN_COOLDOWN_SECONDS = 30
 LOSS_COOLDOWN_SECONDS = 120
@@ -35,20 +35,20 @@ LOSS_STREAK_COOLDOWN_MINUTES = 20
 MAX_CONSECUTIVE_LOSSES = 4
 MAX_DAILY_LOSS_PCT = 0.005
 
-MIN_VOLUME_RATIO = 0.70
+MIN_VOLUME_RATIO = 0.85
 MAX_ADX = 26.0
-MIN_Z = 1.30
-TRANSITION_Z = 1.45
-BOOK_LONG_MIN = 0.54
-BOOK_SHORT_MAX = 0.46
+MIN_Z = 1.50
+TRANSITION_Z = 1.65
+BOOK_LONG_MIN = 0.56
+BOOK_SHORT_MAX = 0.44
 MAX_SPREAD_PCT = 0.0006
-MIN_EDGE_MULTIPLE = 1.35
+MIN_EDGE_MULTIPLE = 2.00
 
 MIN_STOP_RATE = 0.0030
 MAX_STOP_RATE = 0.0055
 ATR_STOP_MULT = 0.95
 MIN_NET_TARGET_RATE = 0.0026
-NET_RISK_REWARD = 1.35
+NET_RISK_REWARD = 1.70
 
 EARLY_PROFIT_R = 0.65
 PROFIT_LOCK_START_R = 0.85
@@ -512,8 +512,16 @@ async def manage_position(rows):
             return
 
     if age >= SOFT_HOLD_MINUTES:
-        close_trade(price, "FAST REVERSION TIME EXIT")
-        return
+        # Do not repeat the old fixed-time-loss mistake: only abandon a stale
+        # reversion when the setup has also lost confirmation. Winners may run.
+        stale_failed = False
+        if row:
+            z = float(row.get("z_momentum") or 0)
+            imb = float(row.get("book_imbalance") or 0.5)
+            stale_failed = (z <= -1.0 and imb < 0.50) if p["side"] == "LONG" else (z >= 1.0 and imb > 0.50)
+        if net <= 0 and stale_failed:
+            close_trade(price, "FAST STALE SETUP FAILED")
+            return
 
     if age >= EMERGENCY_HOLD_MINUTES:
         close_trade(price, "FAST EMERGENCY STALE EXIT")
