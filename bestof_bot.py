@@ -13,6 +13,7 @@ import asyncio
 from fastapi.responses import JSONResponse
 import app_bestof_core as core
 from bestof_fib_strategy import fib_pullback
+import bestof_ema4h as ema4h
 
 app=core.app
 core.ENABLED_SETUPS={"BREAKOUT","FIB_0618_0786"}
@@ -58,11 +59,12 @@ async def strategy_bestof(symbol):
     a["bestof_allowed"]=sorted(["|".join(x) for x in ALLOWED])
     return a
 core.strategy_analysis=strategy_bestof
+ema4h.install(core)
 
 @app.get("/bestof/status")
 async def bestof_status():
     return JSONResponse({
-      "mode":"PAPER","build":"BESTOF-2026-09-29-A","allowed":[{"symbol":s,"setup":u,"side":d} for s,u,d in sorted(ALLOWED)],
+      "mode":"PAPER","build":ema4h.BUILD,"ema4h":ema4h.summary(core),"allowed":[{"symbol":s,"setup":u,"side":d} for s,u,d in sorted(ALLOWED)]+[{"symbol":s,"setup":ema4h.SETUP,"side":"LONG"} for s in core.SYMBOLS],
       "balance":core.PAPER_BALANCE,"positions":core.positions,"trades":core.trade_history[:50],
       "last_cycle_at":core.last_cycle_at,"last_error":core.last_error,
       "persistence":"postgres" if core.DATABASE_URL else "memory"

@@ -228,6 +228,7 @@ async def dashboard_with_pnl_breakdown():
   <h2 style="color:#b388ff">🏆 BEST-OF</h2>
   <div class="muted" style="margin-bottom:10px">Výběr nejlepších setupů • 24/7 • PAPER</div>
   <div id="bestofStats" class="grid"></div>
+  <div id="bestofStrategies" style="margin-top:12px"></div>
   <div id="bestofPosition" class="coin muted" style="margin-top:10px">Načítám…</div>
   <div style="margin-top:12px"><b>Poslední obchody</b></div>
   <div id="bestofTrades" style="margin-top:6px"></div>
@@ -263,7 +264,7 @@ function renderTradeHistory(trades,currency){
   const value=t.net_pnl??t.pnl;
   const pnl=value==null?NaN:Number(value);
   const valid=Number.isFinite(pnl);
-  const detail=t.strategy||t.setup||'';
+  const detail=t.setup==='EMA_4H'?'BEST – EMA 4h':(t.strategy||t.setup||'');
   return `<div class="trade history-row"><span><b style="color:${color}">${historyEscape(symbol)}</b><br><b class="${t.side==='LONG'?'green':t.side==='SHORT'?'red':'muted'}">${historyEscape(t.side||'—')}</b><br><span class="history-time">${historyTime(t.closed_at)}</span></span><span>${f(t.entry??t.entry_price,6)}<br>→<br>${f(t.exit??t.exit_price,6)}</span><span>${historyEscape(t.reason||'—')}${detail?'<br><small class="muted">'+historyEscape(detail)+'</small>':''}</span><span class="${valid?(pnl>=0?'green':'red'):'muted'}">${valid?(pnl>=0?'+':'')+f(pnl,2):'—'} ${historyEscape(currency)}</span></div>`;
  }).join('');
 }
@@ -522,7 +523,7 @@ function renderBestOfPosition(p){
  const signed=v=>(Number(v)>=0?'+':'')+f(v,2);
  return `<div style="border:2px solid ${color};border-radius:14px;padding:16px;margin-top:12px;background:#10171f">
  <div style="font-size:22px;font-weight:800">${historyEscape(p.symbol)} <span class="${p.side==='LONG'?'green':'red'}">${historyEscape(p.side)}</span></div>
- <div style="margin-top:6px">OTEVŘENÝ OBCHOD • PAPER</div>
+ <div style="margin-top:6px">OTEVŘENÝ OBCHOD • PAPER • ${p.setup==='EMA_4H'?'BEST – EMA 4h':historyEscape(p.setup||'BEST')}</div>
  <div style="margin-top:14px">${stale?'Poslední známý':'Průběžný'} čistý zisk / ztráta</div>
  <div style="font-size:32px;font-weight:800;color:${color}">${valid?signed(net):'—'} USDT</div>
  <div>${finite(p.unrealized_net_pct)?signed(p.unrealized_net_pct)+' % z hodnoty pozice':''}</div>
@@ -530,7 +531,7 @@ function renderBestOfPosition(p){
  <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px">
  <div>Vstupní cena<br><b>${f(p.entry_price,6)}</b></div>
  <div>${stale?'Poslední cena':'Aktuální cena'}<br><b>${finite(p.current_price)?f(p.current_price,6):'—'}</b></div>
- <div>Stop-loss<br><b>${f(p.stop_loss,6)}</b></div><div>Take-profit<br><b>${f(p.take_profit,6)}</b></div></div>
+ <div>Stop-loss<br><b>${f(p.stop_loss,6)}</b></div><div>Take-profit<br><b>${p.take_profit==null?'Posouvaný SL + EMA výstup':f(p.take_profit,6)}</b></div></div>
  <div style="margin-top:12px">Otevřeno: ${historyTime(p.opened_at)}</div>
  <div class="muted" style="margin-top:8px">Cena aktualizována: ${historyTime(p.price_updated_at)}</div>
  ${stale?'<div style="color:#ffd166;margin-top:8px">⚠ Cena není aktuální — čekám na nová data.</div>':''}</div>`;
@@ -544,6 +545,9 @@ async function refreshBestOf(){
   const wins=ts.filter(t=>Number(t.pnl)>0).length,wr=ts.length?100*wins/ts.length:0;
   const ps=Array.isArray(d.positions)?d.positions:Object.values(d.positions||{});
   document.getElementById('bestofStats').innerHTML=[['Balance',f(d.balance,2)+' USDT'],['Uzavřené obchody',ts.length],['Otevřené obchody',ps.length],['Win rate',f(wr,1)+' %']].map(x=>`<div class="coin"><div class="muted">${x[0]}</div><b>${x[1]}</b></div>`).join('');
+  const ema=d.ema4h||{};
+  document.getElementById('bestofStrategies').innerHTML=(ema.groups||[]).map(g=>`<div class="coin" style="margin-top:8px;border:1px solid ${g.setup==='EMA_4H'?'#b388ff':'#334155'}"><b>${historyEscape(g.label)}</b><br>Uzavřené: ${g.trades} • Otevřené: ${g.open_positions} • Win rate: ${g.win_rate==null?'—':f(g.win_rate,1)+' %'}<br>Čistý výsledek: <b class="${g.net_pnl>=0?'green':'red'}">${g.net_pnl>=0?'+':''}${f(g.net_pnl,2)} USDT</b></div>`).join('')+
+   '<div class="muted" style="margin-top:8px">Statistiky: '+historyEscape(ema.stats_scope||'')+'<br>EMA 4h: PAPER LONG • risk 0,1 % • společně max. '+historyEscape(ema.max_shared_positions??2)+' pozice</div>'+Object.entries(ema.checks||{}).map(([sym,a])=>`<div class="muted" style="margin-top:5px"><b>${historyEscape(sym)}</b>: ${historyEscape(a.reason)}${a.candle_time?'<br>Poslední uzavřená 4h svíčka: '+historyTime(a.candle_time):''}</div>`).join('');
   box.innerHTML=ps.length?ps.map(renderBestOfPosition).join(''):'Žádná otevřená pozice — čekám na obchod';
   document.getElementById('bestofTrades').innerHTML=renderTradeHistory(ts,'USDT');
   const cycle=Date.parse(d.last_cycle_at||'');
@@ -792,7 +796,7 @@ def _bestof_position_snapshot():
                  unrealized_net_pnl=None, unrealized_net_pct=None)
         if price is not None:
             entry, qty = float(p["entry_price"]), float(p["qty"])
-            net = bestof.core.estimated_net_per_unit(p["side"], entry, price) * qty
+            net = (bestof.ema4h.net_per_unit(p, price) if p.get("setup")==bestof.ema4h.SETUP else bestof.core.estimated_net_per_unit(p["side"], entry, price)) * qty
             p["unrealized_net_pnl"] = net
             p["unrealized_net_pct"] = net / (entry * qty) * 100 if entry * qty > 0 else None
         rows[symbol] = p
@@ -802,8 +806,9 @@ def _bestof_position_snapshot():
 @app.get("/bestof/status")
 async def combined_bestof_status():
     return JSONResponse({
-        "mode":"PAPER","build":"BESTOF-2026-09-30-LIVE-PNL",
-        "allowed":[{"symbol":s,"setup":u,"side":d} for s,u,d in sorted(bestof.ALLOWED)],
+        "mode":"PAPER","build":bestof.ema4h.BUILD,
+        "ema4h":bestof.ema4h.summary(bestof.core),
+        "allowed":[{"symbol":s,"setup":u,"side":d} for s,u,d in sorted(bestof.ALLOWED)]+[{"symbol":s,"setup":bestof.ema4h.SETUP,"side":"LONG"} for s in bestof.core.SYMBOLS],
         "balance":bestof.core.PAPER_BALANCE,
         "positions":_bestof_position_snapshot(),
         "trades":bestof.core.trade_history[:50],
