@@ -18,7 +18,7 @@ from fastapi.responses import HTMLResponse, Response
 # - true NET R:R 1:1 after simulated fees + slippage
 # - risk sizing from NET stop loss, not gross price distance
 # - max 2 concurrent positions
-# - longer cooldowns and 120m time exit
+# - longer cooldowns; BEST-OF has no time exit
 # - separate DB tables so the old 279-trade sample is preserved
 # ============================================================
 
@@ -60,7 +60,7 @@ MAX_SIGNAL_RANGE_RATE = 0.012
 
 COOLDOWN_AFTER_WIN_MIN = 5
 COOLDOWN_AFTER_LOSS_MIN = 20
-MAX_TRADE_MINUTES = 120
+MAX_TRADE_MINUTES = None  # BEST-OF: no time-based exit
 POSITION_LOOP_SECONDS = 5
 SIGNAL_SCAN_SECONDS = 60
 
@@ -664,8 +664,6 @@ async def manage_position(symbol):
     side = p["side"]
     stop_loss = float(p["stop_loss"])
     take_profit = float(p["take_profit"])
-    opened_at = datetime.fromisoformat(p["opened_at"])
-    age_minutes = (utcnow() - opened_at).total_seconds() / 60
 
     current_net = estimated_net_per_unit(
         side, float(p["entry_price"]), price
@@ -698,8 +696,7 @@ async def manage_position(symbol):
             close_trade(symbol, price, "TAKE PROFIT")
             return
 
-    if age_minutes >= MAX_TRADE_MINUTES:
-        close_trade(symbol, price, "TIME EXIT")
+    # Hold until SL, TP or the existing break-even protection closes the trade.
 
 
 async def scan_symbol(symbol):
