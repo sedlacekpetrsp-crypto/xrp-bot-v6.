@@ -44,11 +44,45 @@ def portfolio_entry_allowed(bot_name, symbol, side):
     """Parallel positions are allowed; diversification comes from independent SL/TP logic."""
     return True,"parallel positions allowed"
 
+def _same_direction_fly_exposure(symbol, side):
+    """Count existing FLY exposure in the same crypto direction, excluding this asset."""
+    asset=_asset_key(symbol)
+    positions=[]
+    p=getattr(base,"POSITION",None)
+    if isinstance(p,dict):
+        positions.append(p)
+    extra=getattr(base,"OPEN_POSITIONS",None)
+    if isinstance(extra,dict):
+        positions.extend(extra.values())
+    elif isinstance(extra,list):
+        positions.extend(extra)
+    seen=set()
+    count=0
+    for pos in positions:
+        if not isinstance(pos,dict):
+            continue
+        key=(str(pos.get("symbol") or ""),str(pos.get("opened_at") or pos.get("entry_time") or ""))
+        if key in seen:
+            continue
+        seen.add(key)
+        if str(pos.get("side") or "").upper()==str(side or "").upper() and _asset_key(pos.get("symbol"))!=asset:
+            count+=1
+    return count
+
 def portfolio_risk_allowance(bot_name, symbol, side, desired_risk):
-    """Cap each bot's risk slice so all five can trade the same asset without risk stacking."""
+    """Cap bot risk; reduce only additional correlated FLY positions, never block them."""
     ref=_portfolio_reference_balance()
     share=float(PORTFOLIO_RISK_SHARES.get(bot_name,0.0008))
     cap=max(1.0,ref*share)
+    correlation_factor=1.0
+    same_direction=0
+    if bot_name=="FLY":
+        same_direction=_same_direction_fly_exposure(symbol,side)
+        if same_direction==1:
+            correlation_factor=0.70
+        elif same_direction>=2:
+            correlation_factor=0.50
+    cap*=correlation_factor
     allowed=min(max(0.0,float(desired_risk or 0)),cap)
     return allowed,{
         "asset":_asset_key(symbol),
@@ -57,6 +91,8 @@ def portfolio_risk_allowance(bot_name, symbol, side, desired_risk):
         "reference_balance":ref,
         "risk_share":share,
         "risk_cap_usdc":cap,
+        "same_direction_fly_positions":same_direction,
+        "correlation_factor":correlation_factor,
     }
 
 # Inject the coordinator without coupling the strategy modules to each other.
