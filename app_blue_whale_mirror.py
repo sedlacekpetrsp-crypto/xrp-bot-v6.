@@ -40,10 +40,10 @@ WHALE_BREAKEVEN_R=float(os.getenv("WHALE_BREAKEVEN_R","1.2"))
 WHALE_PROFIT_LOCK_R=float(os.getenv("WHALE_PROFIT_LOCK_R","1.8"))
 KLINES_URL="https://data-api.binance.vision/api/v3/klines"
 
-SIGNAL_POLICY_VERSION="fib-618-786-vwap-v6-symbol-cooldown-20261001"
-WHALE_ENTRY_TOLERANCE=float(os.getenv("WHALE_ENTRY_TOLERANCE","0.003"))
+SIGNAL_POLICY_VERSION="fib-618-786-vwap-v7-selective-entry-20261002"
+WHALE_ENTRY_TOLERANCE=float(os.getenv("WHALE_ENTRY_TOLERANCE","0.0035"))
 WHALE_MIN_NET_RR=float(os.getenv("WHALE_MIN_NET_RR","1.6"))
-WHALE_TREND_EFFICIENCY=float(os.getenv("WHALE_TREND_EFFICIENCY","0.60"))
+WHALE_TREND_EFFICIENCY=float(os.getenv("WHALE_TREND_EFFICIENCY","0.57"))
 WHALE_TREND_VWAP_BARS=int(os.getenv("WHALE_TREND_VWAP_BARS","15"))
 
 app=FastAPI(title=APP_NAME)
