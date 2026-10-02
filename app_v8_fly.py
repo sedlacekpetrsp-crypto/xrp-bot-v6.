@@ -668,7 +668,7 @@ def _age_seconds(value):
         return None
 
 
-@app.get("/combined/health")
+@app.api_route("/combined/health", methods=["GET", "HEAD"])
 async def combined_health():
     fly_age = _age_seconds(getattr(base, "last_cycle_at", None))
     whale_age = _age_seconds(whale.state.get("last_scan"))
