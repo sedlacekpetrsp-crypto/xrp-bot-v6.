@@ -20,7 +20,7 @@ from datetime import datetime, timezone, timedelta
 import psycopg
 from psycopg.types.json import Jsonb
 
-BUILD = "lead-lag-v6-single-blocker-release-20261002"
+BUILD = "lead-lag-v7-blocker-diagnostics-20261003"
 MODE = "PAPER"
 
 TRADE_SYMBOL = "XRPUSDC"
@@ -88,6 +88,7 @@ state = {
     "cooldown_until": None,
     "last_entry_candle": None,
     "analysis": None,
+    "blocker_counts": {},
 }
 
 
@@ -112,6 +113,7 @@ def _payload():
         "error": state["error"],
         "last_scan": state["last_scan"],
         "analysis": state["analysis"],
+        "blocker_counts": state.get("blocker_counts", {}),
         "build": state["build"],
     }
 
@@ -427,6 +429,12 @@ async def analyze():
         "blockers": blockers,
     }
     state["analysis"] = out
+    if blockers:
+        counts=state.setdefault("blocker_counts", {})
+        for blocker in blockers:
+            counts[blocker]=int(counts.get(blocker,0))+1
+        if len(counts)>30:
+            state["blocker_counts"]=dict(sorted(counts.items(), key=lambda kv: kv[1], reverse=True)[:30])
     return out
 
 
