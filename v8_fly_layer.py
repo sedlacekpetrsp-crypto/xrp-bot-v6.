@@ -2,7 +2,7 @@ import asyncio, math, statistics, time
 from datetime import datetime
 import news_signal
 
-BUILD = "v8-fly-layer-20261001-13-confirmed-exits"
+BUILD = "v8-fly-layer-20261003-14-loss-reentry-guard"
 Z_ARMED = 0.45
 Z_STRONG = 0.65
 Z_DANGER = 0.55
@@ -16,6 +16,8 @@ PROFIT_GIVEBACK_R = 0.50
 PROFIT_MIN_LOCK_R = 0.20
 MONITOR_REFRESH_SECONDS = 30.0
 PERSIST_HEARTBEAT_SECONDS = 60.0
+LOSS_REENTRY_COOLDOWN_MIN = 30.0
+SAME_SETUP_COOLDOWN_MIN = 15.0
 
 NO_TRADE_MIN_ADX = 16.0
 NO_TRADE_MIN_VOL = 0.80
@@ -344,6 +346,10 @@ def armed_candidate(row):
 
 def open_trade(a,price):
     if m.paper_position or not a.get('atr'): return
+    reentry_block=_recent_reentry_block(a)
+    if reentry_block:
+        m.log_signal(a,'REJECT',reentry_block)
+        return
     guard=getattr(m,'portfolio_entry_allowed',None)
     if callable(guard):
         allowed,why=guard('FLY',a.get('symbol'),a.get('signal'))
@@ -431,9 +437,33 @@ async def manage_position():
                 close_trade(price,'CONFIRMED SETUP FAILURE'); return
     # Hard SL/TP remain active; elapsed time alone does not invalidate the setup.
 
+def _recent_reentry_block(row):
+    """Prevent churn: after an exit, do not immediately repeat the same FLY idea."""
+    symbol=row.get('symbol')
+    side=row.get('signal') or row.get('armed_side')
+    setup=row.get('setup') or ('BREAKOUT' if row.get('armed_side') else None)
+    now=m.utcnow()
+    for t in m.trade_history:
+        if t.get('symbol')!=symbol or t.get('side')!=side:
+            continue
+        try:
+            age=(now-datetime.fromisoformat(t.get('closed_at'))).total_seconds()/60
+        except Exception:
+            continue
+        if age<0:
+            continue
+        if float(t.get('pnl') or 0)<0 and age<LOSS_REENTRY_COOLDOWN_MIN:
+            return f'LOSS_REENTRY_COOLDOWN {age:.1f}/{LOSS_REENTRY_COOLDOWN_MIN:.0f}m'
+        if setup and t.get('setup')==setup and age<SAME_SETUP_COOLDOWN_MIN:
+            return f'SAME_SETUP_COOLDOWN {age:.1f}/{SAME_SETUP_COOLDOWN_MIN:.0f}m'
+        break
+    return None
+
 def choose_best(rows):
     confirmed=[]; armed=[]
     for x in rows:
+        if _recent_reentry_block(x):
+            continue
         if x.get('signal') in ('LONG','SHORT') and m.last_entry_candle.get(x['symbol'])!=x.get('candle_time'):
             rank=(float(x.get('ensemble_score') or 0),float(x.get('expected_move_pct') or 0),abs(float(x.get('z_momentum') or 0)))
             confirmed.append((rank,x))
