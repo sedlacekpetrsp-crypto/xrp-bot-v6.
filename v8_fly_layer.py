@@ -2,7 +2,7 @@ import asyncio, math, statistics, time
 from datetime import datetime
 import news_signal
 
-BUILD = "v8-fly-layer-20261003-14-loss-reentry-guard"
+BUILD = "v8-fly-layer-20261005-15-entry-diagnostics"
 Z_ARMED = 0.45
 Z_STRONG = 0.65
 Z_DANGER = 0.55
@@ -172,6 +172,8 @@ def quality_risk(a):
 
 m = None
 _monitor_cache = {}
+_rejection_counts = {}
+_rejection_snapshot = []
 _last_persist_heartbeat = 0.0
 
 def _persistence_heartbeat():
@@ -459,6 +461,38 @@ def _recent_reentry_block(row):
         break
     return None
 
+def _update_entry_diagnostics(rows):
+    """Observe why FLY is idle without changing any entry threshold."""
+    global _rejection_snapshot
+    snap=[]
+    for x in rows:
+        reason=_recent_reentry_block(x)
+        candidate=x
+        if reason is None and x.get('signal') in ('LONG','SHORT'):
+            reason=entry_blocker(x)
+        elif reason is None and x.get('armed_side') in ('LONG','SHORT'):
+            candidate=armed_candidate(x)
+            if candidate is None:
+                probe=dict(x)
+                probe.update(signal=x.get('armed_side'), raw_signal=x.get('armed_side'), setup='BREAKOUT',
+                             score=int(x.get('long_score' if x.get('armed_side')=='LONG' else 'short_score') or 0))
+                probe['ensemble_score']=_ensemble_score(probe)
+                reason=entry_blocker(probe) or 'ARMED_NOT_READY'
+            else:
+                reason='ARMED_WAIT_TRIGGER'
+        elif reason is None:
+            reason=x.get('no_trade_reason') or 'NO_SIGNAL'
+        reason=str(reason or 'ELIGIBLE')
+        _rejection_counts[reason]=int(_rejection_counts.get(reason,0))+1
+        snap.append({'symbol':x.get('symbol'),'signal':x.get('signal'),'armed_side':x.get('armed_side'),
+                     'setup':x.get('setup'),'reason':reason,'ensemble_score':x.get('ensemble_score'),
+                     'expected_move_pct':x.get('expected_move_pct'),'volume_ratio':x.get('volume_ratio'),
+                     'adx5':x.get('adx5'),'spread_pct':x.get('real_spread_pct')})
+    _rejection_snapshot=snap
+    m.FLY_ENTRY_DIAGNOSTICS={'build':BUILD,'snapshot':snap,
+        'counts':dict(sorted(_rejection_counts.items(),key=lambda kv:kv[1],reverse=True)[:30]),
+        'updated_at':m.utcnow().isoformat()}
+
 def choose_best(rows):
     confirmed=[]; armed=[]
     for x in rows:
@@ -486,6 +520,7 @@ async def cycle():
         _,streak,blocked,_=m.daily_risk_status()
         recovery=recovery_status()
         rows=await m.analyze_all()
+        _update_entry_diagnostics(rows)
         if recovery['breached']:
             best=_recovery_candidate(rows)
             if not best:
@@ -515,5 +550,5 @@ def install(module):
     if getattr(module,'_fly_layer_installed',False):return module
     module.ENABLED_SETUPS = {'BREAKOUT', 'TREND_PULLBACK', 'NEWS_LONG'}
     module.NET_RISK_REWARD = 1.60
-    m=module; module.strategy_analysis=strategy; module.open_trade=open_trade; module.close_trade=close_trade; module.manage_position=manage_position; module.choose_best=choose_best; module.cycle=cycle; module.recovery_status=recovery_status; module.FLY_LAYER_BUILD=BUILD; module.app.title='V8 Adaptive Breakout Scalper — Fly Layer'; module._fly_layer_installed=True
+    m=module; module.strategy_analysis=strategy; module.open_trade=open_trade; module.close_trade=close_trade; module.manage_position=manage_position; module.choose_best=choose_best; module.cycle=cycle; module.recovery_status=recovery_status; module.FLY_LAYER_BUILD=BUILD; module.FLY_ENTRY_DIAGNOSTICS={'build':BUILD,'snapshot':[],'counts':{},'updated_at':None}; module.app.title='V8 Adaptive Breakout Scalper — Fly Layer'; module._fly_layer_installed=True
     return module
