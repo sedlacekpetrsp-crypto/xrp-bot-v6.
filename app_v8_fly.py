@@ -141,6 +141,7 @@ async def analyze_with_pnl_breakdown():
             net = base.estimated_net_per_unit(side, entry, px) * qty
             costs = max(gross - net, 0.0)
     data["fly_build"] = base.FLY_LAYER_BUILD
+    data["fly_entry_diagnostics"] = getattr(base, "FLY_ENTRY_DIAGNOSTICS", {})
     data["unrealized_gross_pnl"] = gross
     data["unrealized_pnl"] = net
     data["estimated_costs"] = costs
