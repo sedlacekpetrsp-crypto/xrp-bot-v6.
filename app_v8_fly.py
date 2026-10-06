@@ -8,6 +8,8 @@ import fast_scalper as fast
 import news_signal
 import tv_consensus_scalper as tv
 import bestof_bot as bestof
+import swing_paper
+import swing_dashboard
 from v8_fly_layer import install
 
 install(base)
@@ -570,6 +572,7 @@ async function refreshBestOf(){
 .trade.history-heading{font-size:11px;color:#a7b6c6;padding:8px 0}
 @media(max-width:420px){.trade.history-row{font-size:11px;gap:5px}.trade.history-heading{font-size:10px}}
 </style>""")
+    html = swing_dashboard.enhance(html)
     return HTMLResponse(html, headers={"Cache-Control": "no-store"})
 
 
@@ -817,3 +820,7 @@ async def combined_bestof_status():
         "last_error":bestof.core.last_error,
         "persistence":"postgres" if bestof.core.DATABASE_URL else "memory"
     },headers={"Cache-Control":"no-store"})
+
+
+# Independent PAPER portfolios; deliberately separate from BEST balances and risk hooks.
+swing_paper.install(app, bestof.core)
