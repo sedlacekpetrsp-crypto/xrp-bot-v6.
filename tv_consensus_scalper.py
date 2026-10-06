@@ -16,7 +16,7 @@ from datetime import datetime, timezone, timedelta
 import psycopg
 from psycopg.types.json import Jsonb
 
-BUILD = "tv-consensus-v7-entry-quality-20261001"
+BUILD = "tv-consensus-v8-stale-confirmation-20261006"
 MODE = "PAPER"
 SYMBOL = "XRPUSDC"
 
@@ -699,8 +699,11 @@ async def manage_position(a=None):
                                  if a.get("trend_15m")==opposite and opposing_edge>=20 else 0)
     if age>=FLIP_EXIT_MIN_AGE and p.get("flip_confirmations",0)>=3:
         close_trade(price,"TV CONFIRMED TREND FLIP"); return
-    if age>=STALE_HOLD_MINUTES and net<=0 and a.get("trend_15m")!=p["side"]:
-        close_trade(price,"TV STALE TRADE"); return
+    if age>=STALE_HOLD_MINUTES and net<=0:
+        stale_against = a.get("trend_15m")!=p["side"] and opposing_edge>=MIN_SCORE_EDGE
+        p["stale_confirmations"]=(int(p.get("stale_confirmations",0))+1 if stale_against else 0)
+        if p["stale_confirmations"]>=2:
+            close_trade(price,"TV STALE TRADE"); return
 
     heartbeat_state()
 
