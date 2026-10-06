@@ -1,6 +1,7 @@
 from fastapi.responses import HTMLResponse, JSONResponse
 # deploy marker 2026-09-26 quality fixes
 from datetime import datetime, timezone, timedelta
+import httpx
 import app_v8 as base
 import app_blue_whale_mirror as whale
 import lead_lag_scalper as leadlag
@@ -821,6 +822,20 @@ async def combined_bestof_status():
         "persistence":"postgres" if bestof.core.DATABASE_URL else "memory"
     },headers={"Cache-Control":"no-store"})
 
+
+@app.get("/liquidity-hunter/status")
+async def liquidity_hunter_status():
+    """Same-origin proxy for the isolated Liquidity Hunter PAPER service."""
+    url = "https://xrp-liquidity-hunter-24-7.onrender.com/liquidity/status"
+    try:
+        async with httpx.AsyncClient(timeout=12) as client:
+            r = await client.get(url, headers={"User-Agent":"xrp-shared-dashboard/1.0"})
+            r.raise_for_status()
+            return JSONResponse(r.json(), headers={"Cache-Control":"no-store"})
+    except Exception as e:
+        return JSONResponse({"bot":"LIQUIDITY HUNTER","mode":"PAPER","running":False,
+                             "error":str(e)}, status_code=503,
+                            headers={"Cache-Control":"no-store"})
 
 # Independent PAPER portfolios; deliberately separate from BEST balances and risk hooks.
 swing_paper.install(app, bestof.core)
