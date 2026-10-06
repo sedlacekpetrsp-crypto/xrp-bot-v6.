@@ -17,7 +17,7 @@ from datetime import datetime, timezone, timedelta
 import psycopg
 from psycopg.types.json import Jsonb
 
-BUILD = "fast-edge-v9-quality-gated-reversion-20261002"
+BUILD = "fast-edge-v10-exhaustion-confirmed-reversion-20261006"
 MODE = "PAPER"
 
 SYMBOLS = ("XRPUSDC", "ETHUSDC", "SOLUSDC")
@@ -39,8 +39,8 @@ MIN_VOLUME_RATIO = 0.95
 MAX_ADX = 26.0
 MIN_Z = 1.70
 TRANSITION_Z = 1.85
-BOOK_LONG_MIN = 0.58
-BOOK_SHORT_MAX = 0.42
+BOOK_LONG_MIN = 0.60
+BOOK_SHORT_MAX = 0.40
 MAX_SPREAD_PCT = 0.0006
 MIN_EDGE_MULTIPLE = 2.25
 
@@ -277,13 +277,15 @@ def _fast_signal(row):
     ]
     long_checks = common + [
         ("OVERSOLD_Z", z <= -threshold_z),
-        ("RSI", rsi <= 43),
+        ("EXHAUSTION_Z", z <= -2.00),
+        ("RSI", rsi <= 41),
         ("BOOK_ABSORPTION", imb >= BOOK_LONG_MIN),
         ("NEWS", not bool(news.get("bearish"))),
     ]
     short_checks = common + [
         ("OVERBOUGHT_Z", z >= threshold_z),
-        ("RSI", rsi >= 57),
+        ("EXHAUSTION_Z", z >= 2.00),
+        ("RSI", rsi >= 59),
         ("BOOK_ABSORPTION", imb <= BOOK_SHORT_MAX),
         ("NEWS", not bool(news.get("bullish"))),
     ]
