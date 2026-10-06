@@ -11,8 +11,8 @@ from datetime import datetime, timezone
 BUILD = 'SWING-PAPER-2026-10-06-1'
 SYMBOLS = ['XRPUSDT', 'BTCUSDT', 'ETHUSDT', 'SOLUSDT']
 CONFIG = {
-    'aroon_1h_4h': {'label': 'AROON 1h · filtr 4h', 'interval': '1h', 'hours': 1, 'mode': 'LONG'},
-    'supertrend_4h': {'label': 'SUPERTREND 4h', 'interval': '4h', 'hours': 4, 'mode': 'LONG / SHORT'},
+    'aroon_1h_4h': {'label': 'AROON 1h · filtr 4h', 'interval': '1h', 'hours': 1, 'directions': 'LONG'},
+    'supertrend_4h': {'label': 'SUPERTREND 4h', 'interval': '4h', 'hours': 4, 'directions': 'LONG / SHORT'},
 }
 FEE, SLIP, CARRY = .00095, .0002, .0001
 RISK, POOL = .005, .015

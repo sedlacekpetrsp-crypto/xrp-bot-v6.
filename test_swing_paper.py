@@ -15,6 +15,12 @@ def ready():
 def opened(side=1): return s.advance(ready(),F,quote(),frame(side),NOW)[0]
 
 class Paper(unittest.TestCase):
+ def test_snapshot_initial_and_running(self):
+  with patch.object(s,"runtime",{}):
+   data=s.snapshot();self.assertEqual(len(data["accounts"]),2)
+   self.assertTrue(all(a["mode"]=="PAPER" for a in data["accounts"]))
+   st=opened();s.runtime[F]={"state":st,"quotes":quote(),"checks":frame(),"errors":{},"persistence":"postgres"}
+   json.dumps(s.snapshot(),allow_nan=False)
  def test_independent_accounts(self):
   a=s.initial();b=s.initial();a['positions']['X']=1;self.assertEqual(b['positions'],{})
  def test_boot_does_not_enter_old_signal(self):
