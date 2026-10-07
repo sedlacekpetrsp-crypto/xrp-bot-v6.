@@ -662,6 +662,17 @@ document.addEventListener('DOMContentLoaded',()=>{
 </script></body>""")
     html = swing_dashboard.enhance(html)
     html = lh_whale_dashboard.enhance(html)
+    # Force both liquidity cards into the same visible grid, independent of legacy injection points.
+    if 'id="lhWhaleStatus"' not in html:
+        html = html.replace('<div class="card muted" id="health">', lh_whale_dashboard.CARD + '<div class="card muted" id="health">', 1)
+        html = html.replace('</body>', lh_whale_dashboard.SCRIPT + '</body>')
+    # Move the original Hunter card directly before V2 so they are visibly adjacent.
+    import re as _re
+    _m = _re.search(r'(<div class="card" style="border:2px solid #66e0c1[\\s\\S]*?<div id="lhWhaleStatus"[\\s\\S]*?</div></div>)', html)
+    if _m and '🎯 LIQUIDITY HUNTER V2' in html:
+        _card = _m.group(1)
+        html = html[:_m.start()] + html[_m.end():]
+        html = html.replace('<div class="card" style="border:2px solid #22d3ee', _card + '<div class="card" style="border:2px solid #22d3ee', 1)
     if PAUSED_BOTS:
         banner = ''
         html = html.replace('<div class="wrap">', '<div class="wrap">' + banner, 1)
