@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 12576)
-Total output lines: 845
-
 from fastapi.responses import HTMLResponse, JSONResponse
 # deploy marker 2026-09-26 quality fixes
 from datetime import datetime, timezone, timedelta
@@ -427,7 +424,32 @@ async function refreshLeadLag(){
   const fees=ts.reduce((a,t)=>a+Number(t.fees||0),0);
   const wr=ts.length?100*wins/ts.length:0;
   const p=w.open_position;
-  const unreal=Number(w.equity||0)-Nu…576 tokens truncated…f7;font-weight:800">XRP ${f(Number(a.xrp_return||0)*100,3)} %</span> •
+  const unreal=Number(w.equity||0)-Number(w.balance||0);
+  const pnlText=`<span class="${pnl>=0?'green':'red'}">${pnl>=0?'+':''}${f(pnl,2)} USDC</span>`;
+  const unrealText=`<span class="${unreal>=0?'green':'red'}">${unreal>=0?'+':''}${f(unreal,2)} USDC</span>`;
+  document.getElementById('leadlagStats').innerHTML=[
+   ['Balance',f(w.balance,2)+' USDC'],['Equity',f(w.equity,2)+' USDC'],
+   ['Obchody',ts.length],['Win rate',f(wr,1)+' %'],
+   ['Realizované PnL',pnlText],['Poplatky',f(fees,2)+' USDC'],
+   ['Nerealizované PnL',unrealText],['Status',w.status||'—'],
+   ['Obchodní stav',p?'OBCHOD OTEVŘEN':'⏳ ČEKÁM NA OBCHOD']
+  ].map(x=>x[0]==='Obchody' ? `<div class="coin" onclick="const e=document.getElementById('leadlagTrades');const open=e.style.display!=='block';e.style.display=open?'block':'none';this.querySelector('.leadlag-arrow').textContent=open?'▲':'▼'" style="cursor:pointer"><div class="muted">Obchody <span class="leadlag-arrow">▼</span></div><b>${x[1]}</b><div class="muted" style="font-size:12px;margin-top:5px">Klepni pro historii</div></div>` : `<div class="coin"><div class="muted">${x[0]}</div><b>${x[1]}</b></div>`).join('');
+  document.getElementById('leadlagPosition').innerHTML=p
+   ? `<b>XRPUSDC ${p.side}</b> • entry ${f(p.entry,6)} • SL ${f(p.stop,6)} • TP ${f(p.tp,6)} • risk ${f(p.risk_dollars,2)} USDC • uPnL ${unreal>=0?'+':''}${f(unreal,2)} USDC`
+   : '<b class="yellow">⏳ ČEKÁM NA OBCHOD</b><div style="margin-top:6px">Žádná otevřená Lead-Lag pozice.</div>';
+  const a=w.analysis||{};
+  const scanText=w.last_scan?new Date(w.last_scan).toLocaleString('cs-CZ'):'—';
+  const blockerList=a.blockers||[];
+  const blockerText=blockerList.length
+   ? 'Blokuje vstup: '+blockerList.slice(0,5).join(' • ')
+   : (a.signal==='WAIT'?'Čekám na nový setup':'Vstupní podmínky splněny');
+  const tradeState=p?'🟢 OBCHOD OTEVŘEN':'⏳ ČEKÁM NA OBCHOD';
+  document.getElementById('leadlagAnalysis').innerHTML=
+   `<b class="${p?'green':'yellow'}">${tradeState}</b> • poslední scan ${scanText}<br>
+   Signal <b>${a.signal||'WAIT'}</b> •
+   <span style="color:#f7931a;font-weight:800">BTC ${f(Number(a.btc_return||0)*100,3)} %</span> •
+   <span style="color:#8c9eff;font-weight:800">ETH ${f(Number(a.eth_return||0)*100,3)} %</span> •
+   <span style="color:#4fc3f7;font-weight:800">XRP ${f(Number(a.xrp_return||0)*100,3)} %</span> •
    lag ${f(Number(a.lag_return||0)*100,3)} % • book ${f(a.book_imbalance,3)}<br><span class="muted">${blockerText}</span>`;
   document.getElementById('leadlagTrades').innerHTML=renderTradeHistory(ts, 'USDC');
   document.getElementById('leadlagHealth').textContent=
