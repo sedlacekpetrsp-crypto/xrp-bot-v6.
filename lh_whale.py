@@ -12,7 +12,7 @@ import httpx
 from swing_paper import connect
 from lh_sweep import signal_from_closed_candles
 
-BUILD = 'LH-WHALE-2026-10-07-1'
+BUILD = 'LH-WHALE-SHARED-2026-10-07-2'
 SYMBOL = 'XRPUSDT'
 FEE, SLIP, RISK, RR = .0005, .0002, .005, 2.5
 runtime = {}
@@ -130,6 +130,17 @@ def futures_confirmation(oi,top,taker,stamp,side):
     return dict(oi_change_pct=100*change,top_ratio=tr,taker_ratio=ta,checks=checks,score=sum(checks.values()))
 
 async def analyze(core,client):
+    signal_url=os.getenv('LH_SIGNAL_URL','').rstrip('/')
+    if signal_url:
+        r=await client.get(signal_url+'/lh-whale/signal')
+        r.raise_for_status(); data=r.json(); now=int(time.time()*1000)
+        if not isinstance(data,dict) or data.get('signal') not in ('WAIT','LONG','SHORT'):
+            raise ValueError('Neplatná data signálu')
+        if not 0<=now-int(data['candle'])<=420000:
+            raise ValueError('Zastaralý signál')
+        if data['signal']!='WAIT' and (not math.isfinite(float(data['stop'])) or float(data['stop'])<=0):
+            raise ValueError('Neplatný stop signálu')
+        return data
     raw = await asyncio.gather(*(core.get_klines(SYMBOL,interval,250) for interval in ('5m','15m','1h')))
     now = int(time.time()*1000)
     rows = [closed(r,m,now) for r,m in zip(raw,(5,15,60))]
@@ -189,6 +200,7 @@ def snapshot():
         p=s['position']; ps=[dict(p,current_price=q['price'] if fresh else None,
             unrealized_net_pnl=net(p,q['price'])[0] if fresh else None,price_stale=not fresh)]
     return dict(bot='LH-WHALE',mode='PAPER',build=BUILD,running=_task is not None and not _task.done(),
+        execution='shared-paid-service',signal_source='europe' if os.getenv('LH_SIGNAL_URL') else 'local',
         healthy=age<45000 and fresh and not runtime.get('last_error') and not runtime.get('data_error'),
         balance=s['balance'] if s else None,equity=s['equity'] if s and fresh else None,
         net_pnl=s['balance']-10000 if s else None,trades_count=s['count'] if s else 0,
