@@ -4,6 +4,7 @@ Public market data; persistent simulated positions. No live orders.
 """
 from __future__ import annotations
 import news_signal
+import whale_trendline
 import asyncio, html, os, re, math, hashlib, time
 import psycopg
 from psycopg.types.json import Jsonb
@@ -40,7 +41,7 @@ WHALE_BREAKEVEN_R=float(os.getenv("WHALE_BREAKEVEN_R","1.2"))
 WHALE_PROFIT_LOCK_R=float(os.getenv("WHALE_PROFIT_LOCK_R","1.8"))
 KLINES_URL="https://data-api.binance.vision/api/v3/klines"
 
-SIGNAL_POLICY_VERSION="fib-618-786-vwap-v7-selective-entry-20261002"
+SIGNAL_POLICY_VERSION="fib-vwap-trendline4h-v8-20261007"
 WHALE_ENTRY_TOLERANCE=float(os.getenv("WHALE_ENTRY_TOLERANCE","0.0035"))
 WHALE_MIN_NET_RR=float(os.getenv("WHALE_MIN_NET_RR","1.6"))
 WHALE_TREND_EFFICIENCY=float(os.getenv("WHALE_TREND_EFFICIENCY","0.57"))
@@ -49,7 +50,7 @@ WHALE_TREND_VWAP_BARS=int(os.getenv("WHALE_TREND_VWAP_BARS","15"))
 app=FastAPI(title=APP_NAME)
 state={"balance":START_BALANCE,"equity":START_BALANCE,"open_positions":[],"open_position":None,"trades":[],"seen_signal_ids":[],"last_scan":None,"last_signal":None,"status":"starting","error":None,"persistence":"memory","persistence_error":None}
 
-state.update({"mode":"PAPER","build":SIGNAL_POLICY_VERSION,"signal_policy":SIGNAL_POLICY_VERSION,"strategies":["FIB_618_786","VWAP_REVERSION","VWAP_TREND_PULLBACK"],"entry_status":"Čekám na kontrolu signálů","signal_checks":[],"last_source_scan":None})
+state.update({"mode":"PAPER","build":SIGNAL_POLICY_VERSION,"signal_policy":SIGNAL_POLICY_VERSION,"strategies":["FIB_618_786","VWAP_REVERSION","VWAP_TREND_RECLAIM",whale_trendline.STRATEGY],"entry_status":"Čekám na kontrolu signálů","signal_checks":[],"last_source_scan":None})
 
 def utcnow(): return datetime.now(timezone.utc)
 
@@ -67,6 +68,8 @@ def _persistent_payload():
         "seen_signal_ids":state["seen_signal_ids"][-200:],
         "last_scan":state["last_scan"],
         "last_signal":state["last_signal"],
+        "trendline_seen_keys":state.get("trendline_seen_keys",[]),
+        "trendline_last_candle":state.get("trendline_last_candle"),
     }
 
 def init_persistence():
@@ -95,7 +98,7 @@ def init_persistence():
             row=conn.execute("SELECT state FROM blue_whale_state WHERE id=1").fetchone()
             if row and isinstance(row[0],dict):
                 saved=row[0]
-                for key in ("balance","equity","trades","seen_signal_ids","last_scan","last_signal"):
+                for key in ("balance","equity","trades","seen_signal_ids","last_scan","last_signal","trendline_seen_keys","trendline_last_candle"):
                     if key in saved:
                         state[key]=saved[key]
                 if isinstance(saved.get("open_positions"),list):
@@ -329,6 +332,9 @@ def _same_side_too_soon(side, symbol):
     return False
 
 def open_paper(signal,side,market_price):
+    trendline=signal.get("strategy")==whale_trendline.STRATEGY
+    if trendline and (side!="LONG" or signal.get("symbol")!=whale_trendline.SYMBOL):
+        return False
     guard=globals().get("portfolio_entry_allowed")
     if callable(guard):
         allowed,why=guard("WHALE",signal.get("symbol",SYMBOL),side)
@@ -352,32 +358,35 @@ def open_paper(signal,side,market_price):
     entry=market_price*(1+SLIPPAGE_RATE if side=="LONG" else 1-SLIPPAGE_RATE)
     stop=effective_stop(side,signal["stop"])
     stop_rate=(entry-stop)/entry if side=="LONG" else (stop-entry)/entry
-    if stop_rate<=0 or stop_rate>WHALE_MAX_STOP_RATE or stop_rate<WHALE_MIN_STOP_RATE:
+    if stop_rate<=0 or stop_rate>(0.12 if trendline else WHALE_MAX_STOP_RATE) or stop_rate<WHALE_MIN_STOP_RATE:
         state["last_signal"]={"id":signal["id"],"side":side,"stop_raw":signal["stop"]["raw"],"rejected":"stop distance outside quality band","stop_rate":stop_rate,"seen_at":utcnow().isoformat()}
         return False
     account_basis=state["balance"]+sum(float(p.get("entry_fee",0.0)) for p in positions)
-    risk=account_basis*RISK_PER_TRADE
+    risk=account_basis*(0.03 if trendline else RISK_PER_TRADE)
     risk_meta=None
     allowance=globals().get("portfolio_risk_allowance")
     if callable(allowance):
-        risk,risk_meta=allowance("WHALE",signal.get("symbol",SYMBOL),side,risk)
+        risk,risk_meta=allowance("WHALE_TRENDLINE" if trendline else "WHALE",signal.get("symbol",SYMBOL),side,risk)
     open_risk=sum(float(p.get("risk_dollars",0.0)) for p in positions)
-    if open_risk+risk > account_basis*MAX_TOTAL_RISK_RATE+1e-9:
+    total_limit=0.0312 if trendline or any(p.get("strategy")==whale_trendline.STRATEGY for p in positions) else MAX_TOTAL_RISK_RATE
+    if open_risk+risk > account_basis*total_limit+1e-9:
         state["last_signal"]={"id":signal["id"],"side":side,"stop_raw":signal["stop"]["raw"],"rejected":"max total risk","seen_at":utcnow().isoformat()}
         return False
     eff=stop_rate+2*(FEE_RATE+SLIPPAGE_RATE)
-    notional=min(risk/eff, max(0.0, account_basis-sum(float(p.get("notional",0)) for p in positions)), account_basis*0.5)
+    available=max(0.0, account_basis-sum(float(p.get("notional",0)) for p in positions))
+    if trendline:available=max(0.0,state["balance"]-sum(float(p.get("notional",0)) for p in positions))/(1+FEE_RATE)
+    notional=min(risk/eff, available, account_basis*(1.0 if trendline else 0.5))
     if notional<=0:return False
     risk=notional*eff
     qty=notional/entry
-    tp=float(signal["tp"])
+    tp=entry+2*(entry-stop) if trendline else float(signal["tp"])
     reward_rate=((tp-entry) if side=="LONG" else (entry-tp))/entry-2*(FEE_RATE+SLIPPAGE_RATE)
-    if reward_rate < WHALE_MIN_NET_RR*eff:
+    if (reward_rate<=0 if trendline else reward_rate<WHALE_MIN_NET_RR*eff):
         state["last_signal"]={"id":signal["id"],"rejected":"Nedostatečný poměr zisku k riziku po poplatcích"}
         return False
     entry_fee=entry*qty*FEE_RATE
     state["balance"]-=entry_fee
-    position={"symbol":signal.get("symbol",SYMBOL),"strategy":signal.get("strategy","LEGACY_TELEGRAM"),"signal_policy":SIGNAL_POLICY_VERSION,"confirmation":signal.get("confirmation"),"source_entry":signal["entry"],"signal_id":signal["id"],"signal_text":signal["text"],"side":side,"entry":entry,"stop":stop,"initial_stop":stop,"tp":tp,"qty":qty,"notional":notional,"risk_dollars":risk,"portfolio_risk":risk_meta,"opened_at":utcnow().isoformat(),"entry_fee":entry_fee,"breakeven":False,"profit_lock":False}
+    position={"symbol":signal.get("symbol",SYMBOL),"strategy":signal.get("strategy","LEGACY_TELEGRAM"),"signal_policy":SIGNAL_POLICY_VERSION,"confirmation":signal.get("confirmation"),"source_entry":signal["entry"],"signal_id":signal["id"],"signal_text":signal["text"],"side":side,"entry":entry,"stop":stop,"initial_stop":stop,"tp":tp,"qty":qty,"notional":notional,"risk_dollars":risk,"portfolio_risk":risk_meta,"target_risk_rate":0.03 if trendline else RISK_PER_TRADE,"actual_risk_rate":risk/account_basis,"opened_at":utcnow().isoformat(),"entry_fee":entry_fee,"breakeven":False,"profit_lock":False}
     state["open_positions"].append(position)
     _sync_legacy_open_position()
     state["last_signal"]={"symbol":signal.get("symbol",SYMBOL),"strategy":signal.get("strategy"),"id":signal["id"],"side":side,"stop_raw":signal["stop"]["raw"],"accepted_at":utcnow().isoformat()}
@@ -538,6 +547,53 @@ def vwap_candidate(rows, trend_rows=None):
     stop=min(float(r[3]) for r in rows[-5:])-.5*atr if side=="LONG" else max(float(r[2]) for r in rows[-5:])+.5*atr
     return dict(side=side,entry=b,stop=stop,tp=mean,key=f"vwap:{last[0]}:{side}",strategy="VWAP_REVERSION",confirmation=diag),diag
 
+async def scan_trendline(client):
+    diag={"strategy":whale_trendline.STRATEGY,"symbol":whale_trendline.SYMBOL}
+    try:
+        r=await market_get(client,KLINES_URL,params={"symbol":whale_trendline.SYMBOL,"interval":"4h","limit":400},timeout=15)
+        now_ms=int(time.time()*1000)
+        rows=closed_candles(r.json(),now_ms,240)
+        candidate,detail=whale_trendline.candidate(rows)
+        diag.update(detail)
+        state["trendline_last_check"]=utcnow().isoformat()
+        candle=int(rows[-1][6])+1
+        if candidate:
+            if state.get("trendline_last_candle")==candle or candidate["key"] in state.get("trendline_seen_keys",[]):
+                diag["reason"]="Tento 4h signál už byl vyhodnocen; čekám na nový"
+            elif now_ms-candle>300000:
+                diag["reason"]="4h signál je starší než 5 minut; nevstupuji zpětně"
+            elif state.get("persistence")!="postgres" or state.get("persistence_error"):
+                diag["reason"]="Nový vstup čeká na funkční ukládání"
+            else:
+                # Consume the setup even when portfolio/cooldown rejects it; never queue old signals.
+                state["trendline_last_candle"]=candle
+                state["trendline_seen_keys"]=(state.get("trendline_seen_keys",[])+[candidate["key"]])[-100:]
+                save_state()
+                recent=[t for t in state["trades"] if t.get("strategy")==whale_trendline.STRATEGY]
+                cooling=any((utcnow()-datetime.fromisoformat(t["closed_at"])).total_seconds()<3600 for t in recent)
+                if cooling:
+                    diag["reason"]="Pauza 60 minut po uzavření trendline obchodu"
+                elif state.get("persistence_error"):
+                    diag["reason"]="Nepodařilo se uložit nový signál"
+                else:
+                    r=await market_get(client,BINANCE_PRICE_URL,params={"symbol":whale_trendline.SYMBOL},timeout=15)
+                    px=float(r.json()["price"])
+                    if not math.isfinite(px) or px<=0:raise ValueError("Neplatná cena")
+                    state.setdefault("market_prices",{})[whale_trendline.SYMBOL]=px
+                    sid=int.from_bytes(hashlib.sha256((whale_trendline.SYMBOL+candidate["key"]).encode()).digest()[:8],"big") & ((1<<63)-1)
+                    sl=candidate["stop"]
+                    candidate.update(id=sid,text="LONG",symbol=whale_trendline.SYMBOL,stop={"raw":str(sl),"low":sl,"high":sl,"masked":False})
+                    # The tested rule has no MTF/news filter. Shared risk and direction guards still apply.
+                    if open_paper(candidate,"LONG",px):
+                        diag["reason"]="Obchod otevřen: TRENDLINE_4H_LONG"
+                    else:
+                        diag["reason"]=(state.get("last_signal") or {}).get("rejected","Limit rizika nebo pozic")
+        state["trendline_stats"]=whale_trendline.snapshot(state)
+    except Exception as exc:
+        diag.update(reason=str(exc),error=True)
+    return diag
+
+
 async def scan_entries(client, price=None):
     diagnostics=[]
     for symbol in SYMBOLS:
@@ -586,6 +642,7 @@ async def scan_entries(client, price=None):
                     diag["reason"]=(state.get("last_signal") or {}).get("rejected","Limit pozic nebo rizika")
         except Exception as exc:
             diagnostics.append({"symbol":symbol,"strategy":"DATA","reason":str(exc),"error":True})
+    diagnostics.append(await scan_trendline(client))
     state["signal_checks"]=diagnostics
     state["entry_status"]=" | ".join(d["symbol"]+" "+d["strategy"]+": "+d["reason"] for d in diagnostics)
     state["last_source_scan"]=utcnow().isoformat()
@@ -613,6 +670,8 @@ async def bot_loop():
                                 close_paper(p,price,"SL",price);continue
                             if (price>=p["tp"] if p["side"]=="LONG" else price<=p["tp"]):
                                 close_paper(p,p["tp"],"TP",price);continue
+                            # Fixed SL/TP only for the tested trendline strategy.
+                            if p.get("strategy")==whale_trendline.STRATEGY:continue
                             if age_hours(p)>=MAX_HOLD_HOURS:
                                 close_paper(p,price,"TIME",price);continue
                             one_r=abs(p["entry"]-p.get("initial_stop",p["stop"]))

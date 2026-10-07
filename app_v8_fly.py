@@ -31,6 +31,7 @@ PORTFOLIO_RISK_SHARES={
     "LEADLAG":0.0010,
     "TV":0.0008,
     "WHALE":0.0010,
+    "WHALE_TRENDLINE":0.03,
     "BEST":0.0010,
 }
 
@@ -82,7 +83,7 @@ def _same_direction_fly_exposure(symbol, side):
 
 def portfolio_risk_allowance(bot_name, symbol, side, desired_risk):
     """Cap bot risk; reduce only additional correlated FLY positions, never block them."""
-    ref=_portfolio_reference_balance()
+    ref=float(whale.state["balance"])+sum(float(p.get("entry_fee",0)) for p in whale.state.get("open_positions",[])) if bot_name=="WHALE_TRENDLINE" else _portfolio_reference_balance()
     share=float(PORTFOLIO_RISK_SHARES.get(bot_name,0.0008))
     cap=max(1.0,ref*share)
     correlation_factor=1.0
@@ -227,10 +228,11 @@ async def dashboard_with_pnl_breakdown():
     html = html.replace('document.getElementById(\'trades\').innerHTML=(d.trade_history||[]).slice(0,20).map(t=>`<div class="trade"><span>${t.symbol}</span><span>${t.side}</span><span>${t.reason}<br><small class="muted">Uzavřeno: ${closedTime(t.closed_at)}</small></span><span class="${Number(t.pnl)>=0?\'green\':\'red\'}">${f(t.pnl,2)}</span></div>`).join(\'\')||\'<div class="muted">Zatím bez obchodů.</div>\';', "document.getElementById('trades').innerHTML=renderTradeHistory(d.trade_history||[], 'USDC');")
     whale_card = """
 <div class="card" style="border:2px solid #7dd3fc;background:rgba(125,211,252,.03)">
-  <h2>🐋 BLUE WHALE · FIB + VWAP</h2>
-  <div class="muted">PAPER • Fibonacci 0,618–0,786 + návrat k VWAP • BTC / ETH / SOL / XRP</div>
+  <h2>🐋 BLUE WHALE · FIB + VWAP + TRENDLINE</h2>
+  <div class="muted">PAPER • FIB + VWAP: BTC / ETH / SOL / XRP • Trendline 4h: XRP LONG</div>
+  <div id="whaleStats" class="grid" style="margin-top:10px"></div>
+  <div id="whaleTrendline" class="coin" style="margin-top:10px"></div>
   <div id="whaleSignals" class="coin muted" style="margin-top:10px"></div>
-  <div id="whaleStats" class="grid"></div>
   <div id="whalePosition" class="coin muted" style="margin-top:10px">Načítám…</div>
   <div id="whaleTrades" style="display:none;margin-top:10px"></div>
   <div id="whaleHealth" class="muted" style="margin-top:10px">Načítám…</div>
@@ -355,6 +357,10 @@ async function refreshWhale(){
    ['Nerealizované PnL',unrealText],['Status',w.status||'—'],
    ['Obchodní stav',p?'OBCHOD OTEVŘEN':'⏳ ČEKÁM NA OBCHOD']
   ].map(x=>x[0]==='Uzavřené obchody' ? `<div class="coin" onclick="const e=document.getElementById('whaleTrades');const o=e.style.display!=='block';e.style.display=o?'block':'none';this.querySelector('.whale-arrow').textContent=o?'▲':'▼'" style="cursor:pointer"><div class="muted">Uzavřené obchody <span class="whale-arrow">▼</span></div><b>${x[1]}</b><div class="muted" style="font-size:12px;margin-top:5px">Klepni pro historii</div></div>` : `<div class="coin"><div class="muted">${x[0]}</div><b>${x[1]}</b></div>`).join('');
+  const nt=ts.filter(t=>t.strategy==='TRENDLINE_4H_LONG');
+  const nw=nt.filter(t=>Number(t.net_pnl)>0).length;
+  const np=nt.reduce((a,t)=>a+Number(t.net_pnl||0),0);
+  document.getElementById('whaleTrendline').innerHTML=`<b>Nová strategie: Trendline 4h · XRP LONG</b><br>Uzavřené: ${nt.length} • Win rate: ${nt.length?f(100*nw/nt.length,1)+' %':'— (zatím bez obchodů)'} • Čisté P/L: ${f(np,2)} USD<br><span class="muted">PAPER • cílové riziko 3 % (omezeno dostupným kapitálem, bez páky) • pevný SL 2 ATR a TP 2R • bez časového výstupu</span>`;
   document.getElementById('whalePosition').innerHTML=ps.length
    ? ps.map((p,i)=>`<div style="${i?'margin-top:10px;padding-top:10px;border-top:1px solid #29343e':''}"><b>#${i+1} ${p.symbol||'BTCUSDT'} ${p.side} · ${p.strategy||'Původní signál'}</b> • entry ${f(p.entry,6)} • SL ${f(p.stop,6)} • TP ${f(p.tp,6)} • risk ${f(p.risk_dollars,2)} USD</div>`).join('')+`<div style="margin-top:8px">Celkové uPnL <b class="${unreal>=0?'green':'red'}">${unreal>=0?'+':''}${f(unreal,2)} USD</b></div>`
    : (p
@@ -378,7 +384,7 @@ async function refreshWhale(){
    const s=symbolStyle[sym]||{label:sym,accent:'#a7b6c6',bg:'rgba(167,182,198,.06)'};
    const body=rows.map(a=>{
     const reason=String(a.reason||'');
-    const ready=/Obchod otevřen|potvrzen/i.test(reason);
+    const ready=/^Obchod otevřen|^.* potvrzen$/i.test(reason);
     const waiting=/Čekám|Swing je příliš malý|příliš malý/i.test(reason);
     const stateColor=ready?'#5ce68b':waiting?'#ffd166':'#ff8a80';
     return `<div style="padding:9px 0;border-top:1px solid rgba(255,255,255,.07)">
@@ -652,7 +658,7 @@ async def start_whale_worker():
 
 @app.get("/whale/status")
 async def whale_status():
-    return JSONResponse(whale.state, headers={"Cache-Control":"no-store"})
+    return JSONResponse({**whale.state,"trendline_stats":whale.whale_trendline.snapshot(whale.state)}, headers={"Cache-Control":"no-store"})
 
 
 @app.get("/leadlag/status")
