@@ -1,7 +1,7 @@
 CARD = '''<div class="card" style="border:2px solid #66e0c1;background:rgba(102,224,193,.03)">
-<h2>🐋 LH-WHALE · XRP · 24/7</h2>
+<h2>🎯 LIQUIDITY HUNTER · XRP · 24/7</h2>
 <div class="muted">PAPER · sweep + reclaim · 5m / 15m / 1h · OI + Top Traders + Taker · risk max. 0,5 % · SL ≥ 2× ATR · čisté R:R 2,5:1</div>
-<div id="lhWhaleStatus" style="margin-top:12px">Načítám LH-Whale…</div></div>'''
+<div id="lhWhaleStatus" style="margin-top:12px">Načítám Liquidity Hunter…</div></div>'''
 SCRIPT = '''<script>
 async function refreshLHWhale(){
  const root=document.getElementById('lhWhaleStatus');if(!root)return;
@@ -21,7 +21,7 @@ async function refreshLHWhale(){
    (d.last_error?'<p class="red">'+esc(d.last_error)+'</p>':'')+(d.data_error?'<p class="yellow">Nové vstupy pozastavené: '+esc(d.data_error)+'</p>':'')+
    '<div class="muted" style="margin-top:12px">Poslední kontrola '+when(d.last_cycle_at)+' · ukládání '+esc(d.persistence)+'</div>';
   root.querySelector('details').open=!!opened;
- }catch(e){root.innerHTML='<p class="yellow">Stav LH-Whale není dostupný. Čekám na obnovení spojení.</p>';}
+ }catch(e){root.innerHTML='<p class="yellow">Stav Liquidity Hunter není dostupný. Čekám na obnovení spojení.</p>';}
 }
 refreshLHWhale();setInterval(refreshLHWhale,5000);
 </script>'''
