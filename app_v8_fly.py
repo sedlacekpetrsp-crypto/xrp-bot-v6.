@@ -46,8 +46,13 @@ def _portfolio_reference_balance():
     values=[x for x in values if x>0]
     return min(values) if values else 10000.0
 
+# User-requested pause, 2026-10-07. Keep portfolios and trade history intact.
+PAUSED_BOTS = frozenset({"FLY", "FAST", "LEADLAG"})
+
 def portfolio_entry_allowed(bot_name, symbol, side):
-    """Parallel positions are allowed; diversification comes from independent SL/TP logic."""
+    """Paused bots cannot enter; existing positions retain their exit management."""
+    if bot_name in PAUSED_BOTS:
+        return False, "USER_PAUSED"
     return True,"parallel positions allowed"
 
 def _same_direction_fly_exposure(symbol, side):
@@ -115,6 +120,36 @@ whale.portfolio_risk_allowance=portfolio_risk_allowance
 bestof.core.portfolio_entry_allowed=portfolio_entry_allowed
 bestof.core.portfolio_risk_allowance=portfolio_risk_allowance
 
+def _install_pause_cycle(module, bot_name, fly=False):
+    original_cycle = module.cycle
+
+    async def cycle_with_pause():
+        if bot_name not in PAUSED_BOTS:
+            return await original_cycle()
+        position = module.paper_position if fly else module.state.get("open_position")
+        if position:
+            # Never abandon an existing position during a deployment.
+            # The shared entry guard also prevents a replacement trade.
+            await original_cycle()
+        now = datetime.now(timezone.utc).isoformat()
+        if fly:
+            module.last_cycle_at = now
+            if not position:
+                module.last_error = None
+        else:
+            module.state["last_scan"] = now
+            module.state["status"] = "paused"
+            module.state["trading_paused"] = True
+            if not position:
+                module.state["error"] = None
+                module.state["equity"] = module.state["balance"]
+
+    module.cycle = cycle_with_pause
+
+_install_pause_cycle(base, "FLY", fly=True)
+_install_pause_cycle(fast, "FAST")
+_install_pause_cycle(leadlag, "LEADLAG")
+
 app = base.app
 _original_analyze = base.analyze
 _original_dashboard = base.dashboard
@@ -155,7 +190,11 @@ async def analyze_with_pnl_breakdown():
     risk = data.get("risk_status") or {}
     recovery = base.recovery_status() if hasattr(base, "recovery_status") else {}
     data["recovery_status"] = recovery
-    if recovery.get("breached") and not recovery.get("used"):
+    data["trading_paused"] = "FLY" in PAUSED_BOTS
+    if "FLY" in PAUSED_BOTS:
+        data["trading_status"] = "PAUSED"
+        data["trading_status_label"] = "POZASTAVENO – nové vstupy vypnuté"
+    elif recovery.get("breached") and not recovery.get("used"):
         data["trading_status"] = "RECOVERY_MODE"
         data["trading_status_label"] = "RECOVERY MODE – ČEKÁM NA A+ XRP LONG"
     elif risk.get("blocked"):
@@ -578,6 +617,10 @@ async function refreshBestOf(){
 </style>""")
     html = swing_dashboard.enhance(html)
     html = lh_whale_dashboard.enhance(html)
+    if PAUSED_BOTS:
+        banner = '<div class="card" style="border:2px solid #ffd166"><b>⏸ POZASTAVENO: FLY, FAST a LEAD-LAG</b><p>Nové obchody jsou vypnuté. Historie a zůstatky zůstávají zachované. Ostatní boty pokračují.</p></div>'
+        html = html.replace('<div class="wrap">', '<div class="wrap">' + banner, 1)
+        html = html.replace("w.status||'—'", "w.status==='paused'?'⏸ POZASTAVENO':(w.status||'—')")
     return HTMLResponse(html, headers={"Cache-Control": "no-store"})
 
 
@@ -653,7 +696,8 @@ async def fly_status():
     return JSONResponse({
         "build":getattr(base,"FLY_LAYER_BUILD",None),
         "mode":"PAPER",
-        "status":"running" if getattr(base,"last_cycle_at",None) and not getattr(base,"last_error",None) else "error",
+        "status":"paused" if "FLY" in PAUSED_BOTS else ("running" if getattr(base,"last_cycle_at",None) and not getattr(base,"last_error",None) else "error"),
+        "trading_paused":"FLY" in PAUSED_BOTS,
         "last_cycle_at":getattr(base,"last_cycle_at",None),
         "error":getattr(base,"last_error",None),
         "persistence":"postgres" if getattr(base,"DATABASE_URL",None) else "memory",
@@ -697,6 +741,7 @@ async def combined_health():
     best_ok = best_age is not None and best_age < 90 and bool(bestof.core.DATABASE_URL) and not bestof.core.last_error
     return JSONResponse({
         "ok": bool(fly_ok and whale_ok and leadlag_ok and fast_ok and tv_ok and best_ok),
+        "paused_bots": sorted(PAUSED_BOTS),
         "fly": {
             "healthy": fly_ok,
             "age_seconds": fly_age,
