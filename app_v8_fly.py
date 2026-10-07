@@ -13,6 +13,7 @@ import swing_paper
 import swing_dashboard
 import lh_whale
 import lh_whale_dashboard
+import liquidity_monitor
 from v8_fly_layer import install
 
 install(base)
@@ -828,18 +829,9 @@ async def combined_bestof_status():
 
 @app.get("/liquidity-hunter/status")
 async def liquidity_hunter_status():
-    """Same-origin proxy for the isolated Liquidity Hunter PAPER service."""
-    url = "https://xrp-liquidity-hunter-24-7.onrender.com/liquidity/status"
-    try:
-        async with httpx.AsyncClient(timeout=12) as client:
-            r = await client.get(url, headers={"User-Agent":"xrp-shared-dashboard/1.0"})
-            r.raise_for_status()
-            return JSONResponse(r.json(), headers={"Cache-Control":"no-store"})
-    except Exception as e:
-        return JSONResponse({"bot":"LIQUIDITY HUNTER","mode":"PAPER","running":False,
-                             "error":str(e)}, status_code=503,
-                            headers={"Cache-Control":"no-store"})
+    return JSONResponse(liquidity_monitor.snapshot(),headers={"Cache-Control":"no-store"})
 
 # Independent PAPER portfolios; deliberately separate from BEST balances and risk hooks.
 swing_paper.install(app, bestof.core)
 lh_whale.install(app, bestof.core)
+liquidity_monitor.install(app)
