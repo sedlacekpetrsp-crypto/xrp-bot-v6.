@@ -21,15 +21,18 @@ async function refreshLiquidityHunter(){
  try{
   const r=await fetch('/liquidity-hunter/status',{cache:'no-store',signal:AbortSignal.timeout(10000)});
   if(!r.ok)throw new Error('HTTP '+r.status); const d=await r.json();
+  if(!d.status_available){root.innerHTML='<p class="yellow">Probouzím samostatnou službu a načítám její stav. První načtení může trvat přibližně minutu.</p>';return;}
   const ts=d.trades||[], ps=Object.values(d.positions||{}), wins=ts.filter(t=>Number(t.pnl)>0).length;
   const pnl=ts.reduce((s,t)=>s+Number(t.pnl||0),0), wr=ts.length?100*wins/ts.length:0;
   const a=(d.analysis||{}).XRPUSDT||{};
-  root.innerHTML='<div><b>'+(d.running?'🟢 Běží':'🟠 Čekám')+'</b> · PAPER · XRPUSDT</div><div class="grid" style="margin-top:12px">'+
+  root.innerHTML='<div><b>'+(d.status_fresh&&d.running?'🟢 Běží':d.status_fresh?'🟠 Bot není spuštěný':'🟠 Čekám na aktuální stav')+'</b> · PAPER · XRPUSDT</div>'+
+   (!d.status_fresh?'<p class="yellow">Zobrazuji poslední dostupný stav; aktuální běh nelze potvrdit.</p>':'')+'<div class="grid" style="margin-top:12px">'+
    '<div class="coin">Zůstatek<br><b>'+num(d.balance)+' USDT</b></div><div class="coin">Čistý realizovaný výsledek<br><b class="'+(pnl>=0?'green':'red')+'">'+(pnl>=0?'+':'')+num(pnl)+' USDT</b></div>'+
    '<div class="coin">Uzavřené / otevřené<br><b>'+ts.length+' / '+ps.length+'</b></div><div class="coin">Win rate<br><b>'+num(wr)+' %</b></div></div>'+
    '<div class="coin" style="margin-top:12px"><b>Aktuální signál: '+esc(a.signal||'WAIT')+'</b><br>'+esc(a.reason||'čekám na další kontrolu')+'<br>Cena '+num(a.market_price,6)+'</div>'+
-   (ps.length?ps.map(p=>'<div class="coin" style="margin-top:8px"><b>'+esc(p.symbol)+' '+esc(p.side)+'</b><br>Vstup '+num(p.entry_price,6)+' · SL '+num(p.stop_loss,6)+' · TP '+num(p.take_profit,6)+'</div>').join(''):'<div style="margin-top:12px">⏳ Žádná otevřená pozice — čekám na liquidity sweep.</div>');
- }catch(e){root.innerHTML='<p class="yellow">Liquidity Hunter běží samostatně, ale společný dashboard teď nedostal jeho stav.</p>';}
+   (ps.length?ps.map(p=>'<div class="coin" style="margin-top:8px"><b>'+esc(p.symbol)+' '+esc(p.side)+'</b><br>Vstup '+num(p.entry_price,6)+' · SL '+num(p.stop_loss,6)+' · TP '+num(p.take_profit,6)+'</div>').join(''):'<div style="margin-top:12px">⏳ Žádná otevřená pozice — čekám na liquidity sweep.</div>')+
+   '<div class="muted" style="margin-top:10px">Poslední kontrola bota: '+esc(d.last_cycle_at?new Date(d.last_cycle_at).toLocaleString('cs-CZ',{timeZone:'Europe/Prague'}):'—')+'</div>';
+ }catch(e){root.innerHTML='<p class="yellow">Spojení se společným přehledem se nezdařilo. Aktuální běh Liquidity Huntera nelze ověřit.</p>';}
 }
 refreshLiquidityHunter();setInterval(refreshLiquidityHunter,5000);
 </script>
