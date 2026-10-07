@@ -224,7 +224,8 @@ async def dashboard_with_pnl_breakdown():
   <div id="flyGuardText" class="red" style="font-weight:700">BLOKOVÁNO – DAILY LOSS LIMIT</div>
 </div>
 """
-    html = html.replace('<div class="card"><h2>📡 Trhy</h2>', fly_guard_card + '<div class="card" style="border:2px solid #5ce68b;background:rgba(92,230,139,.035)"><h2>✈️ FLY · TRHY</h2>')
+    html = html.replace('<div class="card"><h2>📡 Trhy</h2>', '<div style="display:none"><div class="card"><h2>📡 Trhy</h2>')
+    html = html.replace('<div class="card"><h2>📜 Poslední obchody</h2>', '</div><div style="display:none"><div class="card"><h2>📜 Poslední obchody</h2>')
     html = html.replace('document.getElementById(\'trades\').innerHTML=(d.trade_history||[]).slice(0,20).map(t=>`<div class="trade"><span>${t.symbol}</span><span>${t.side}</span><span>${t.reason}<br><small class="muted">Uzavřeno: ${closedTime(t.closed_at)}</small></span><span class="${Number(t.pnl)>=0?\'green\':\'red\'}">${f(t.pnl,2)}</span></div>`).join(\'\')||\'<div class="muted">Zatím bez obchodů.</div>\';', "document.getElementById('trades').innerHTML=renderTradeHistory(d.trade_history||[], 'USDC');")
     whale_card = """
 <div class="card" style="border:2px solid #7dd3fc;background:rgba(125,211,252,.03)">
@@ -271,6 +272,16 @@ async def dashboard_with_pnl_breakdown():
   <div id="tvTrades" style="margin-top:10px"></div>
 </div>
 """
+    liquidity_hunter_card = """
+<div class="card" style="border:2px solid #22d3ee;background:rgba(34,211,238,.03)">
+  <h2 style="color:#22d3ee">🎯 LIQUIDITY HUNTER V2</h2>
+  <div class="muted">Liquidity sweep → reclaim → potvrzení • XRP • 24/7 PAPER • risk 0,5 % • RR 2:1</div>
+  <div id="lhv2Stats" class="grid" style="margin-top:10px"></div>
+  <div id="lhv2Position" class="coin muted" style="margin-top:10px">Načítám…</div>
+  <div id="lhv2Analysis" class="coin muted" style="margin-top:10px">Načítám…</div>
+  <div id="lhv2Health" class="muted" style="margin-top:10px">Načítám…</div>
+</div>
+"""
     bestof_card = """
 <div class="card" style="border:2px solid #b388ff;background:rgba(179,136,255,.03)">
   <h2 style="color:#b388ff">🏆 BEST-OF</h2>
@@ -283,7 +294,7 @@ async def dashboard_with_pnl_breakdown():
   <div id="bestofHealth" class="muted" style="margin-top:10px">Načítám…</div>
 </div>
 """
-    html = html.replace('<div class="card muted" id="health">', whale_card + fast_card + leadlag_card + tv_card + bestof_card + '<div class="card muted" id="health">')
+    html = html.replace('<div class="card muted" id="health">', whale_card + tv_card + bestof_card + liquidity_hunter_card + '<div class="card muted" id="health">')
     whale_js = """
 
 function historyEscape(v){
@@ -565,6 +576,21 @@ async function refreshTV(){
  }
 }
 """
+    liquidity_hunter_js = """
+async function refreshLiquidityHunterV2(){
+ try{
+  const r=await fetch('/liquidity-v2/status',{cache:'no-store'}),d=await r.json();
+  if(!r.ok)throw new Error(d.last_error||('HTTP '+r.status));
+  const ts=d.trades||[], wins=ts.filter(t=>Number(t.pnl)>0).length, wr=ts.length?100*wins/ts.length:0;
+  document.getElementById('lhv2Stats').innerHTML=[['Balance',f(d.balance,2)+' USDT'],['Obchody',ts.length],['Win rate',f(wr,1)+' %'],['Risk',f(d.risk_per_trade_pct,1)+' %'],['RR','1:'+f(d.net_rr,1)],['Stav',d.running?'BĚŽÍ':'STOP']].map(x=>`<div class="coin"><div class="muted">${x[0]}</div><b>${x[1]}</b></div>`).join('');
+  const ps=d.positions||{}, arr=Array.isArray(ps)?ps:Object.values(ps);
+  document.getElementById('lhv2Position').innerHTML=arr.length?'<b class="green">OBCHOD OTEVŘEN</b>':'<b class="yellow">ČEKÁM NA OBCHOD</b>';
+  const a=(d.analysis||{}).XRPUSDT||Object.values(d.analysis||{})[0]||{};
+  document.getElementById('lhv2Analysis').innerHTML='<b>'+historyEscape(a.signal||'WAIT')+'</b> • '+historyEscape(a.reason||'čekám na setup');
+  document.getElementById('lhv2Health').innerHTML=(d.running?'<span class="green">● 24/7 BĚŽÍ</span>':'<span class="red">● STOP</span>')+' • poslední cyklus '+historyEscape(d.last_cycle_at||'—')+(d.last_error?'<br>'+historyEscape(d.last_error):'');
+ }catch(e){document.getElementById('lhv2Health').innerHTML='<span class="yellow">Stav nelze načíst</span> • '+historyEscape(e);}
+}
+"""
     bestof_js = """
 function renderBestOfPosition(p){
  const finite=v=>v!=null&&Number.isFinite(Number(v));
@@ -611,7 +637,7 @@ async function refreshBestOf(){
  }
 }
 """
-    html = html.replace("refresh();setInterval(refresh,10000);", whale_js + fast_js + leadlag_js + tv_js + bestof_js + "refresh();refreshFlyGuard();refreshWhale();refreshFast();refreshLeadLag();refreshTV();refreshBestOf();setInterval(refresh,3000);setInterval(refreshFlyGuard,5000);setInterval(refreshWhale,5000);setInterval(refreshFast,5000);setInterval(refreshLeadLag,5000);setInterval(refreshTV,5000);setInterval(refreshBestOf,5000);")
+    html = html.replace("refresh();setInterval(refresh,10000);", whale_js + tv_js + liquidity_hunter_js + bestof_js + "refresh();refreshWhale();refreshTV();refreshLiquidityHunterV2();refreshBestOf();setInterval(refresh,3000);setInterval(refreshWhale,5000);setInterval(refreshTV,5000);setInterval(refreshLiquidityHunterV2,5000);setInterval(refreshBestOf,5000);")
     html = html.replace('</style>', """
 /* Shared trade history: 2026-09-28 */
 .history-note{font-size:12px;margin:8px 0}
@@ -624,7 +650,7 @@ async function refreshBestOf(){
     html = swing_dashboard.enhance(html)
     html = lh_whale_dashboard.enhance(html)
     if PAUSED_BOTS:
-        banner = '<div class="card" style="border:2px solid #ffd166"><b>⏸ POZASTAVENO: FLY, FAST a LEAD-LAG</b><p>Nové obchody jsou vypnuté. Historie a zůstatky zůstávají zachované. Ostatní boty pokračují.</p></div>'
+        banner = ''
         html = html.replace('<div class="wrap">', '<div class="wrap">' + banner, 1)
         html = html.replace("w.status||'—'", "w.status==='paused'?'⏸ POZASTAVENO':(w.status||'—')")
     return HTMLResponse(html, headers={"Cache-Control": "no-store"})
@@ -730,6 +756,16 @@ def _age_seconds(value):
     except Exception:
         return None
 
+
+@app.get("/liquidity-v2/status")
+async def liquidity_v2_status():
+    try:
+        async with httpx.AsyncClient(timeout=8.0) as client:
+            r = await client.get("https://xrp-liquidity-hunter-24-7.onrender.com/liquidity/status")
+            r.raise_for_status()
+            return JSONResponse(r.json(), headers={"Cache-Control":"no-store"})
+    except Exception as exc:
+        return JSONResponse({"running":False,"last_error":str(exc)}, status_code=503, headers={"Cache-Control":"no-store"})
 
 @app.api_route("/combined/health", methods=["GET", "HEAD"])
 async def combined_health():
