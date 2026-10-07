@@ -216,16 +216,15 @@ async def dashboard_with_pnl_breakdown():
     old = "const p=d.position; document.getElementById('position').innerHTML=p?`<b>${p.symbol} ${p.side}</b> • entry ${f(p.entry_price,6)} • SL ${f(p.stop_loss,6)} • TP ${f(p.take_profit,6)} • uPnL ${f(d.unrealized_pnl,2)}`:'Žádná otevřená pozice';"
     new = "const p=d.position; document.getElementById('position').innerHTML=p?`<b>${p.symbol} ${p.side}</b> • entry ${f(p.entry_price,6)} • SL ${f(p.stop_loss,6)} • TP ${f(p.take_profit,6)}<br>Hrubý P/L <b class=\"${Number(d.unrealized_gross_pnl)>=0?'green':'red'}\">${Number(d.unrealized_gross_pnl)>=0?'+':''}${f(d.unrealized_gross_pnl,2)} USDC</b> • Čistý P/L <b class=\"${Number(d.unrealized_pnl)>=0?'green':'red'}\">${Number(d.unrealized_pnl)>=0?'+':''}${f(d.unrealized_pnl,2)} USDC</b> • Náklady ${f(d.estimated_costs,2)} USDC`:'Žádná otevřená pozice';"
     html = html.replace(old, new)
-    html = html.replace("⚡ BOT V8 ADAPTIVE BREAKOUT SCALPER", "⚡ FLY + 🐋 WHALE + 🔗 LEAD-LAG — 24/7 PAPER")
-    html = html.replace("PAPER • pouze BREAKOUT • čisté R:R 1:1,3", "FLY: BREAKOUT + TREND PULLBACK • WHALE • LEAD-LAG • FAST • PAPER")
+    html = html.replace("⚡ BOT V8 ADAPTIVE BREAKOUT SCALPER", "🐋 WHALE + 📊 TV + 🏆 BEST + 🎯 LIQUIDITY HUNTER — 24/7 PAPER")
+    html = html.replace("PAPER • pouze BREAKOUT • čisté R:R 1:1,3", "Aktivní PAPER boti • zastavené strategie jsou skryté")
     fly_guard_card = """
 <div class="card" id="flyGuardCard" style="display:none;border:1px solid #7a2b2b;background:#2a1518">
   <h2 style="margin-top:0">🛑 FLY BLOKOVÁN</h2>
   <div id="flyGuardText" class="red" style="font-weight:700">BLOKOVÁNO – DAILY LOSS LIMIT</div>
 </div>
 """
-    html = html.replace('<div class="card"><h2>📡 Trhy</h2>', '<div style="display:none"><div class="card"><h2>📡 Trhy</h2>')
-    html = html.replace('<div class="card"><h2>📜 Poslední obchody</h2>', '</div><div style="display:none"><div class="card"><h2>📜 Poslední obchody</h2>')
+    html = html.replace('<div class="card"><h2>📡 Trhy</h2>', fly_guard_card + '<div class="card" style="border:2px solid #5ce68b;background:rgba(92,230,139,.035)"><h2>✈️ FLY · TRHY</h2>')
     html = html.replace('document.getElementById(\'trades\').innerHTML=(d.trade_history||[]).slice(0,20).map(t=>`<div class="trade"><span>${t.symbol}</span><span>${t.side}</span><span>${t.reason}<br><small class="muted">Uzavřeno: ${closedTime(t.closed_at)}</small></span><span class="${Number(t.pnl)>=0?\'green\':\'red\'}">${f(t.pnl,2)}</span></div>`).join(\'\')||\'<div class="muted">Zatím bez obchodů.</div>\';', "document.getElementById('trades').innerHTML=renderTradeHistory(d.trade_history||[], 'USDC');")
     whale_card = """
 <div class="card" style="border:2px solid #7dd3fc;background:rgba(125,211,252,.03)">
@@ -647,6 +646,20 @@ async function refreshBestOf(){
 .trade.history-heading{font-size:11px;color:#a7b6c6;padding:8px 0}
 @media(max-width:420px){.trade.history-row{font-size:11px;gap:5px}.trade.history-heading{font-size:10px}}
 </style>""")
+    html = html.replace('</body>', """<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  const stopped=['✈️ FLY · TRHY','📜 Poslední obchody'];
+  document.querySelectorAll('.card').forEach(card=>{
+    const h=card.querySelector('h2');
+    if(h && stopped.some(x=>h.textContent.includes(x))) card.style.display='none';
+  });
+  const topCards=[...document.querySelectorAll('.card')];
+  topCards.forEach(card=>{
+    const txt=(card.textContent||'');
+    if(txt.includes('Balance') && txt.includes('Equity') && txt.includes('Win rate') && txt.includes('Fees') && !card.querySelector('h2')) card.style.display='none';
+  });
+});
+</script></body>""")
     html = swing_dashboard.enhance(html)
     html = lh_whale_dashboard.enhance(html)
     if PAUSED_BOTS:
