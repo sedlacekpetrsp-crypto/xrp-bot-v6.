@@ -5,6 +5,7 @@ import asyncio
 import copy
 import json
 import math
+import os
 import time
 from datetime import datetime, timezone
 import httpx
@@ -192,6 +193,25 @@ def snapshot():
 
 def install(app,core):
     from fastapi.responses import JSONResponse
+    remote=os.getenv('LH_WHALE_REMOTE_URL','').rstrip('/')
+    if remote:
+        from urllib.parse import urlsplit
+        parsed=urlsplit(remote)
+        if parsed.scheme!='https' or not (parsed.hostname or '').endswith('.onrender.com') or parsed.username or parsed.password:
+            raise ValueError('LH_WHALE_REMOTE_URL musí být HTTPS Render služba')
+        @app.get('/lh-whale/status')
+        async def remote_status():
+            try:
+                async with httpx.AsyncClient(timeout=10) as client:
+                    r=await client.get(remote+'/lh-whale/status')
+                    r.raise_for_status()
+                    d=r.json()
+                    if d.get('bot')!='LH-WHALE' or d.get('mode')!='PAPER': raise ValueError('Neplatný stav vzdáleného bota')
+                return JSONResponse(d,headers={'Cache-Control':'no-store'})
+            except Exception as exc:
+                return JSONResponse(dict(bot='LH-WHALE',mode='PAPER',running=False,healthy=False,
+                    error=type(exc).__name__),status_code=503,headers={'Cache-Control':'no-store'})
+        return
     @app.on_event('startup')
     async def start():
         global _task
