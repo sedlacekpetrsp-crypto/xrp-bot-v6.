@@ -161,8 +161,10 @@ async def worker(core):
                     try:
                         analysis = await asyncio.wait_for(analyze(core,client),timeout=20)
                         runtime.update(analysis=analysis,data_error=None)
+                        print('LH-WHALE scan',BUILD,analysis['signal'],'postgres',flush=True)
                     except Exception as exc:
                         analysis = None; runtime.update(analysis=None,data_error=type(exc).__name__+': '+str(exc))
+                        print('LH-WHALE data unavailable',BUILD,type(exc).__name__,str(exc),flush=True)
                     next_scan = time.monotonic()+30
             except asyncio.CancelledError: raise
             except Exception as exc:
