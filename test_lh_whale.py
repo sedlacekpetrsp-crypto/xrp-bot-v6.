@@ -1,7 +1,20 @@
 import unittest
+import asyncio
+import os
+import time
+import httpx
+from unittest.mock import patch
 import lh_whale as lh
 
 class Tests(unittest.TestCase):
+    def test_external_data_stale_or_invalid_blocks_entry(self):
+        async def run():
+            for data in [dict(candle=1,signal='LONG',stop=98),dict(candle=int(time.time()*1000),signal='LONG',stop=-1)]:
+                async with httpx.AsyncClient(transport=httpx.MockTransport(lambda req:httpx.Response(200,json=data))) as c:
+                    with patch.dict(os.environ,{'LH_SIGNAL_URL':'https://test.onrender.com'}):
+                        with self.assertRaises(ValueError): await lh.analyze(None,c)
+        asyncio.run(run())
+
     def setup_account(self, side):
         s=lh.initial(); s['activated_at']=1
         a=dict(candle=300000,signal=side,stop=98 if side=='LONG' else 102)
