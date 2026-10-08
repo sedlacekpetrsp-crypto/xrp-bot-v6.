@@ -30,7 +30,7 @@ async def refresh(client):
     try:
         r=await client.get(URL)
         r.raise_for_status(); d=r.json()
-        if not isinstance(d,dict) or d.get('bot')!='LIQUIDITY HUNTER' or d.get('mode')!='PAPER':
+        if not isinstance(d,dict) or d.get('bot') not in ('LIQUIDITY HUNTER', 'LIQUIDITY HUNTER V2') or d.get('mode')!='PAPER':
             raise ValueError(f"Unexpected liquidity status schema: keys={list(d)[:15]}, bot={str(d.get('bot'))[:50]!r}, mode={str(d.get('mode'))[:50]!r}")
         data=d;received_at=time.monotonic();error=None
         print('LIQUIDITY-MONITOR OK',d.get('last_cycle_at'),flush=True)
