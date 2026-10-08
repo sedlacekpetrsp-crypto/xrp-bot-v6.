@@ -396,14 +396,46 @@ def open_trade(a,price):
     m.last_entry_candle[a['symbol']]=a['candle_time']; m.save_state(); m.log_signal(a,'ENTER',f"{quality} risk={risk_rate*100:.2f}% {m.paper_position['entry_kind']} z={m.paper_position['z_entry']:.2f}")
 
 def close_trade(price,reason):
-    if not m.paper_position:return
-    p=m.paper_position; e=float(p['entry_price']); q=float(p['qty']); x=price*(1-m.SLIPPAGE_RATE if p['side']=='LONG' else 1+m.SLIPPAGE_RATE)
-    gross=(x-e)*q if p['side']=='LONG' else (e-x)*q; fees=(e*q+x*q)*m.FEE_RATE; net=gross-fees; risk=max(float(p.get('initial_risk_usdc') or 0),1e-12); rr=net/risk; mfe=float(p.get('mfe_r',0)); mae=float(p.get('mae_r',0)); cap=(rr/mfe*100) if mfe>0 and rr>0 else 0; age=(m.utcnow()-datetime.fromisoformat(p['opened_at'])).total_seconds()/60
-    detail=f'{reason} | {p.get("quality_tier","STANDARD")} risk={float(p.get("risk_rate",m.RISK_PER_TRADE))*100:.2f}% R={rr:.2f} MFE={mfe:.2f} MAE={mae:.2f} CAP={cap:.0f}% DUR={age:.1f}m Z={float(p.get("z_entry",0)):.2f} DANGER={int(p.get("last_danger_score",0))}'
-    m.PAPER_BALANCE+=net; now=m.utcnow(); t={**p,'exit_price':x,'gross_pnl':gross,'fees':fees,'pnl':net,'reason':detail,'closed_at':now.isoformat(),'realized_r':rr,'profit_capture_pct':cap,'duration_min':age}; m.save_trade(t); m.trade_history.insert(0,t); m.trade_history=m.trade_history[:500]
-    _,streak,_,_=m.daily_risk_status(); cd=2 if net<0 else 0
-    if net<0 and streak>=m.MAX_CONSECUTIVE_LOSSES: cd=m.LOSS_STREAK_COOLDOWN_MIN
-    m.cooldown_until=now+m.timedelta(minutes=cd); m.paper_position=None; m.save_state()
+    # Claim the position before any persistence I/O so concurrent exit loops cannot
+    # settle the same PAPER position twice.
+    p=m.paper_position
+    if not p or p.get('_closing'): return
+    p['_closing']=True
+    try:
+        e=float(p['entry_price']); q=float(p['qty'])
+        x=price*(1-m.SLIPPAGE_RATE if p['side']=='LONG' else 1+m.SLIPPAGE_RATE)
+        gross=(x-e)*q if p['side']=='LONG' else (e-x)*q
+        fees=(e*q+x*q)*m.FEE_RATE; net=gross-fees
+        risk=max(float(p.get('initial_risk_usdc') or 0),1e-12)
+        rr=net/risk; mfe=float(p.get('mfe_r',0)); mae=float(p.get('mae_r',0))
+        cap=(rr/mfe*100) if mfe>0 and rr>0 else 0
+        now=m.utcnow()
+        age=(now-datetime.fromisoformat(p['opened_at'])).total_seconds()/60
+        detail=f'{reason} | {p.get("quality_tier","STANDARD")} risk={float(p.get("risk_rate",m.RISK_PER_TRADE))*100:.2f}% R={rr:.2f} MFE={mfe:.2f} MAE={mae:.2f} CAP={cap:.0f}% DUR={age:.1f}m Z={float(p.get("z_entry",0)):.2f} DANGER={int(p.get("last_danger_score",0))}'
+        # The same opening fingerprint must never be settled twice, including after restart.
+        fingerprint=(p.get('symbol'),p.get('side'),p.get('opened_at'),p.get('entry_price'),p.get('qty'))
+        for old in m.trade_history:
+            old_fp=(old.get('symbol'),old.get('side'),old.get('opened_at'),old.get('entry_price'),old.get('qty'))
+            if old_fp==fingerprint:
+                m.paper_position=None
+                m.save_state()
+                return
+        t={**p,'exit_price':x,'gross_pnl':gross,'fees':fees,'pnl':net,'reason':detail,
+           'closed_at':now.isoformat(),'realized_r':rr,'profit_capture_pct':cap,'duration_min':age}
+        t.pop('_closing',None)
+        m.PAPER_BALANCE+=net
+        m.trade_history.insert(0,t); m.trade_history=m.trade_history[:500]
+        m.paper_position=None
+        _,streak,_,_=m.daily_risk_status()
+        cd=2 if net<0 else 0
+        if net<0 and streak>=m.MAX_CONSECUTIVE_LOSSES: cd=m.LOSS_STREAK_COOLDOWN_MIN
+        m.cooldown_until=now+m.timedelta(minutes=cd)
+        # Save the cleared position and balance before the trade insert.
+        m.save_state()
+        m.save_trade(t)
+    except Exception:
+        p.pop('_closing',None)
+        raise
 
 async def monitor(symbol):
     now=time.monotonic(); old=_monitor_cache.get(symbol)
