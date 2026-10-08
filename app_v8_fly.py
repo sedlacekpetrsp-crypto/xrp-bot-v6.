@@ -234,7 +234,7 @@ async def dashboard_with_pnl_breakdown():
   <div id="whaleTrendline" class="coin" style="margin-top:10px"></div>
   <div id="whaleSignals" class="coin muted" style="margin-top:10px"></div>
   <div id="whalePosition" class="coin muted" style="margin-top:10px">Načítám…</div>
-  <div id="whaleTrades" style="display:none;margin-top:10px"></div>
+  <details id="whaleHistory" open style="margin-top:12px"><summary style="cursor:pointer;font-weight:700">Historie obchodů</summary><div id="whaleTrades" style="margin-top:10px"></div></details>
   <div id="whaleHealth" class="muted" style="margin-top:10px">Načítám…</div>
 </div>
 """
@@ -268,7 +268,7 @@ async def dashboard_with_pnl_breakdown():
   <div id="tvPosition" role="status" aria-live="polite" style="padding:18px;border:2px solid #566475;border-radius:14px;margin-bottom:14px">Načítám stav pozice…</div>
   <div id="tvStats" class="grid"></div>
   <div id="tvSignal" class="coin muted" style="margin-top:10px">Načítám…</div>
-  <div id="tvTrades" style="margin-top:10px"></div>
+  <details id="tvHistory" open style="margin-top:12px"><summary style="cursor:pointer;font-weight:700">Historie obchodů</summary><div id="tvTrades" style="margin-top:10px"></div></details>
 </div>
 """
     liquidity_hunter_card = """
@@ -370,7 +370,7 @@ async function refreshWhale(){
    ['Win rate',f(wr,1)+' %'],['Realizované PnL',realizedText],
    ['Nerealizované PnL',unrealText],['Status',w.status||'—'],
    ['Obchodní stav',p?'OBCHOD OTEVŘEN':'⏳ ČEKÁM NA OBCHOD']
-  ].map(x=>x[0]==='Uzavřené obchody' ? `<div class="coin" onclick="const e=document.getElementById('whaleTrades');const o=e.style.display!=='block';e.style.display=o?'block':'none';this.querySelector('.whale-arrow').textContent=o?'▲':'▼'" style="cursor:pointer"><div class="muted">Uzavřené obchody <span class="whale-arrow">▼</span></div><b>${x[1]}</b><div class="muted" style="font-size:12px;margin-top:5px">Klepni pro historii</div></div>` : `<div class="coin"><div class="muted">${x[0]}</div><b>${x[1]}</b></div>`).join('');
+  ].map(x=>x[0]==='Uzavřené obchody' ? `<div class="coin" onclick="const e=document.getElementById('whaleHistory');e.open=true;e.scrollIntoView({behavior:'smooth',block:'start'})" style="cursor:pointer"><div class="muted">Uzavřené obchody</div><b>${x[1]}</b><div class="muted" style="font-size:12px;margin-top:5px">Klepni pro historii</div></div>` : `<div class="coin"><div class="muted">${x[0]}</div><b>${x[1]}</b></div>`).join('');
   const nt=ts.filter(t=>t.strategy==='TRENDLINE_4H_LONG');
   const nw=nt.filter(t=>Number(t.net_pnl)>0).length;
   const np=nt.reduce((a,t)=>a+Number(t.net_pnl||0),0);
@@ -553,7 +553,7 @@ async function refreshTV(){
    <div class="coin"><div class="muted">Balance</div><b>${f(w.balance,2)} USDC</b></div>
    <div class="coin"><div class="muted">Equity</div><b>${f(w.equity,2)} USDC</b></div>
    <div class="coin" id="tvTradesToggle" style="cursor:pointer;border:1px solid #334155">
-    <div class="muted">Obchody <span id="tvTradesArrow">▼</span></div><b>${ts.length}</b>
+    <div class="muted">Obchody</div><b>${ts.length}</b>
     <div class="muted" style="font-size:12px;margin-top:5px">Klepni pro historii</div>
    </div>
    <div class="coin"><div class="muted">Win rate</div><b>${f(wr,1)} %</b></div>
@@ -561,8 +561,7 @@ async function refreshTV(){
    <div class="coin"><div class="muted">Status</div><b>${w.status||'—'}</b></div>`;
   const toggle=document.getElementById('tvTradesToggle');
   if(toggle) toggle.onclick=()=>{
-   const e=document.getElementById('tvTrades'),arrow=document.getElementById('tvTradesArrow');
-   const open=e.style.display!=='block'; e.style.display=open?'block':'none'; if(arrow)arrow.textContent=open?'▲':'▼';
+   const e=document.getElementById('tvHistory');e.open=true;e.scrollIntoView({behavior:'smooth',block:'start'});
   };
   const sig=a.signal||'WAIT', cls=sig==='LONG'?'green':sig==='SHORT'?'red':'yellow';
   document.getElementById('tvSignal').innerHTML=`<b class="${cls}">${sig}</b> • L/S ${f(a.long_score,1)} / ${f(a.short_score,1)} • accel ${f(a.long_accel,1)} / ${f(a.short_accel,1)} • 15m ${a.trend_15m||'—'}<br><span class="muted">MA buy/sell ${a.ma_buy??'—'}/${a.ma_sell??'—'} • ADX ${f(a.adx5,1)} • volume ${f(a.volume_ratio,2)}x • ${p?'OBCHOD OTEVŘEN':'ČEKÁM NA SETUP'}</span>`;
@@ -570,7 +569,6 @@ async function refreshTV(){
     ? `<br><b>XRPUSDC ${p.side}</b> • vstup ${f(p.entry,6)} • SL ${f(p.stop,6)} • TP ${f(p.tp,6)}<br>Čistý otevřený P/L ${f(Number(w.equity)-Number(w.balance),2)} USDC • ${p.profit_protected?'OCHRANA ZISKU AKTIVNÍ':'Základní stop-loss'}`
     : `<br>${w.status==='daily_loss_guard'?'Denní limit ztráty — nové vstupy pozastaveny do '+closedTime(w.guard_until):((a.blockers||[]).join(' • ') || 'Signál připraven / kontroluji rizikové limity')}${w.cooldown_until&&Date.parse(w.cooldown_until)>Date.now()?' • Pauza do '+closedTime(w.cooldown_until):''}<br>Cena ${f(w.current_price??a.price,6)} • ${w.build||''}`;
   document.getElementById('tvSignal').innerHTML += tvDetails;
-  if(!document.getElementById('tvTrades').dataset.init){document.getElementById('tvTrades').style.display='none';document.getElementById('tvTrades').dataset.init='1';}
   document.getElementById('tvTrades').innerHTML=renderTradeHistory(ts, 'USDC');
  }catch(e){
   document.getElementById('tvPosition').innerHTML='<b style="font-size:22px;color:#ffd166">⚠ STAV POZICE NELZE OVĚŘIT</b><div style="margin-top:10px">Spojení se nezdařilo. Čekám na nová data.</div>';
