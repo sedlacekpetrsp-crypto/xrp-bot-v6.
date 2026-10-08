@@ -276,6 +276,10 @@ async def dashboard_with_pnl_breakdown():
   <h2 style="color:#22d3ee">🎯 LIQUIDITY HUNTER V2</h2>
   <div class="muted">Liquidity sweep → reclaim → potvrzení • XRP • 24/7 PAPER • risk 0,5 % • RR 2:1</div>
   <div id="lhv2Stats" class="grid" style="margin-top:10px"></div>
+  <details id="lhv2History" open style="margin-top:12px">
+    <summary style="cursor:pointer;font-weight:700">Historie obchodů (<span id="lhv2TradeCount">0</span>)</summary>
+    <div id="lhv2Trades" style="margin-top:8px">Načítám historii…</div>
+  </details>
   <div id="lhv2Position" class="coin muted" style="margin-top:10px">Načítám…</div>
   <div id="lhv2Analysis" class="coin muted" style="margin-top:10px">Načítám…</div>
   <div id="lhv2Health" class="muted" style="margin-top:10px">Načítám…</div>
@@ -582,6 +586,15 @@ async function refreshLiquidityHunterV2(){
   if(!r.ok)throw new Error(d.last_error||('HTTP '+r.status));
   const ts=d.trades||[], wins=ts.filter(t=>Number(t.pnl)>0).length, wr=ts.length?100*wins/ts.length:0;
   document.getElementById('lhv2Stats').innerHTML=[['Balance',f(d.balance,2)+' USDT'],['Obchody',ts.length],['Win rate',f(wr,1)+' %'],['Risk',f(d.risk_per_trade_pct,1)+' %'],['RR','1:'+f(d.net_rr,1)],['Stav',d.running?'BĚŽÍ':'STOP']].map(x=>`<div class="coin"><div class="muted">${x[0]}</div><b>${x[1]}</b></div>`).join('');
+  document.getElementById('lhv2TradeCount').textContent=ts.length;
+  document.getElementById('lhv2Trades').innerHTML=renderTradeHistory(ts,'USDT');
+  const tradeStat=document.getElementById('lhv2Stats').children[1];
+  const historyButton=document.createElement('button');
+  historyButton.type='button';
+  historyButton.style.cssText='cursor:pointer;color:inherit;background:transparent;border:1px solid #334155;border-radius:6px;padding:6px;margin-top:6px;font:inherit';
+  historyButton.textContent='Zobrazit historii';
+  historyButton.onclick=()=>{const history=document.getElementById('lhv2History');history.open=true;history.scrollIntoView({behavior:'smooth',block:'start'});};
+  tradeStat.appendChild(historyButton);
   const ps=d.positions||{}, arr=Array.isArray(ps)?ps:Object.values(ps);
   document.getElementById('lhv2Position').innerHTML=arr.length?'<b class="green">OBCHOD OTEVŘEN</b>':'<b class="yellow">ČEKÁM NA OBCHOD</b>';
   const a=(d.analysis||{}).XRPUSDT||Object.values(d.analysis||{})[0]||{};
