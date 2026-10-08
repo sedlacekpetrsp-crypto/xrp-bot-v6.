@@ -31,13 +31,13 @@ async def refresh(client):
         r=await client.get(URL)
         r.raise_for_status(); d=r.json()
         if not isinstance(d,dict) or d.get('bot')!='LIQUIDITY HUNTER' or d.get('mode')!='PAPER':
-            raise ValueError('Neplatný stav Liquidity Huntera')
+            raise ValueError(f"Unexpected liquidity status schema: keys={list(d)[:15]}, bot={str(d.get('bot'))[:50]!r}, mode={str(d.get('mode'))[:50]!r}")
         data=d;received_at=time.monotonic();error=None
         print('LIQUIDITY-MONITOR OK',d.get('last_cycle_at'),flush=True)
     except asyncio.CancelledError: raise
     except Exception as exc:
         error=type(exc).__name__
-        print('LIQUIDITY-MONITOR unavailable',error,flush=True)
+        print('LIQUIDITY-MONITOR unavailable',error,str(exc)[:250],flush=True)
 
 async def worker():
     # Cold starts can exceed one minute; UI never waits for this network call.
