@@ -435,6 +435,16 @@ def close_trade(price,reason):
                             closed_at timestamptz NOT NULL DEFAULT now()
                         )
                     """)
+                    # Check persisted historical closes too: the settlement ledger was
+                    # introduced after some positions had already been closed.
+                    cur.execute("""
+                        SELECT 1 FROM v8fixed_trades
+                        WHERE symbol=%s AND side=%s AND opened_at=%s
+                          AND entry_price=%s AND qty=%s LIMIT 1
+                    """,(p['symbol'],p['side'],p['opened_at'],p['entry_price'],p['qty']))
+                    if cur.fetchone():
+                        m.paper_position=None
+                        return
                     key='|'.join(map(str,fingerprint))
                     cur.execute("INSERT INTO fly_settlements(position_key) VALUES (%s) ON CONFLICT DO NOTHING RETURNING position_key",(key,))
                     if not cur.fetchone():
