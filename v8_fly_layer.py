@@ -423,6 +423,49 @@ def close_trade(price,reason):
         t={**p,'exit_price':x,'gross_pnl':gross,'fees':fees,'pnl':net,'reason':detail,
            'closed_at':now.isoformat(),'realized_r':rr,'profit_capture_pct':cap,'duration_min':age}
         t.pop('_closing',None)
+        # Commit trade and PAPER balance in one database transaction.
+        # A unique fingerprint survives restarts and prevents double settlement.
+        if m.DATABASE_URL:
+            import json
+            with m.get_db() as conn:
+                with conn.cursor() as cur:
+                    cur.execute("""
+                        CREATE TABLE IF NOT EXISTS fly_settlements (
+                            position_key text PRIMARY KEY,
+                            closed_at timestamptz NOT NULL DEFAULT now()
+                        )
+                    """)
+                    key='|'.join(map(str,fingerprint))
+                    cur.execute("INSERT INTO fly_settlements(position_key) VALUES (%s) ON CONFLICT DO NOTHING RETURNING position_key",(key,))
+                    if not cur.fetchone():
+                        m.paper_position=None
+                        return
+                    cur.execute("""
+                        INSERT INTO v8fixed_trades(
+                            symbol,side,setup,regime,score,entry_price,exit_price,qty,
+                            gross_pnl,fees,pnl,initial_risk_usdc,mae_r,mfe_r,reason,opened_at,closed_at,
+                            ensemble_score,entry_features
+                        ) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s::jsonb)
+                    """,(
+                        t['symbol'],t['side'],t['setup'],t.get('regime'),t.get('score'),
+                        t['entry_price'],t['exit_price'],t['qty'],t['gross_pnl'],t['fees'],t['pnl'],
+                        t.get('initial_risk_usdc'),t.get('mae_r'),t.get('mfe_r'),t['reason'],
+                        t['opened_at'],t['closed_at'],t.get('ensemble_score'),
+                        json.dumps(t.get('entry_features') or {})
+                    ))
+                    new_balance=m.PAPER_BALANCE+net
+                    state_payload={
+                        'paper_balance':new_balance,'paper_position':None,
+                        'last_entry_candle':m.last_entry_candle,
+                        'cooldown_until':(now+m.timedelta(minutes=2 if net<0 else 0)).isoformat(),
+                        'last_cycle_at':getattr(m,'last_cycle_at',None),
+                        'last_error':getattr(m,'last_error',None),
+                    }
+                    cur.execute("""
+                        INSERT INTO v8fixed_state(id,state,updated_at) VALUES(1,%s::jsonb,NOW())
+                        ON CONFLICT(id) DO UPDATE SET state=EXCLUDED.state,updated_at=NOW()
+                    """,(json.dumps(state_payload),))
+                conn.commit()
         m.PAPER_BALANCE+=net
         m.trade_history.insert(0,t); m.trade_history=m.trade_history[:500]
         m.paper_position=None
@@ -430,9 +473,9 @@ def close_trade(price,reason):
         cd=2 if net<0 else 0
         if net<0 and streak>=m.MAX_CONSECUTIVE_LOSSES: cd=m.LOSS_STREAK_COOLDOWN_MIN
         m.cooldown_until=now+m.timedelta(minutes=cd)
-        # Save the cleared position and balance before the trade insert.
-        m.save_state()
-        m.save_trade(t)
+        if not m.DATABASE_URL:
+            m.save_state()
+
     except Exception:
         p.pop('_closing',None)
         raise
