@@ -41,7 +41,7 @@ WHALE_BREAKEVEN_R=float(os.getenv("WHALE_BREAKEVEN_R","1.2"))
 WHALE_PROFIT_LOCK_R=float(os.getenv("WHALE_PROFIT_LOCK_R","1.8"))
 KLINES_URL="https://data-api.binance.vision/api/v3/klines"
 
-SIGNAL_POLICY_VERSION="fib-vwap-trendline4h-v8-20261007"
+SIGNAL_POLICY_VERSION="fib-vwap-trendline4h-v8-20261010"
 WHALE_ENTRY_TOLERANCE=float(os.getenv("WHALE_ENTRY_TOLERANCE","0.0035"))
 WHALE_MIN_NET_RR=float(os.getenv("WHALE_MIN_NET_RR","1.6"))
 WHALE_TREND_EFFICIENCY=float(os.getenv("WHALE_TREND_EFFICIENCY","0.57"))
@@ -230,8 +230,9 @@ async def technical_confirmation(client, symbol, side):
     for interval,limit in (("5m",120),("15m",120),("1h",120)):
         r=await market_get(client,KLINES_URL,params={"symbol":symbol,"interval":interval,"limit":limit},timeout=15)
         rows=r.json()
-        # Ignore the live candle; trade only from completed information.
-        closed=rows[:-1] if len(rows)>2 else rows
+        # Validate freshness and continuity, including closed-only provider responses.
+        minutes={"5m":5,"15m":15,"1h":60}[interval]
+        closed=closed_candles(rows,int(time.time()*1000),minutes)
         closes=[float(x[4]) for x in closed]
         vols=[float(x[5]) for x in closed]
         if len(closes)<55:
@@ -332,6 +333,11 @@ def _same_side_too_soon(side, symbol):
     return False
 
 def open_paper(signal,side,market_price):
+    levels=[market_price,signal.get("entry"),signal.get("tp")]
+    levels.extend((signal.get("stop") or {}).get(k) for k in ("low","high"))
+    if any(not isinstance(v,(int,float)) or not math.isfinite(v) or v<=0 for v in levels):
+        state["last_signal"]={"id":signal.get("id"),"rejected":"Neplatná cena vstupu, SL nebo TP"}
+        return False
     trendline=signal.get("strategy")==whale_trendline.STRATEGY
     if trendline and (side!="LONG" or signal.get("symbol")!=whale_trendline.SYMBOL):
         return False
@@ -598,11 +604,10 @@ async def scan_entries(client, price=None):
     diagnostics=[]
     for symbol in SYMBOLS:
         try:
-            now_ms=int(time.time()*1000)
             frames={}
             for interval,minutes in (("1m",1),("5m",5)):
                 r=await market_get(client,KLINES_URL,params={"symbol":symbol,"interval":interval,"limit":120},timeout=15)
-                frames[interval]=closed_candles(r.json(),now_ms,minutes)
+                frames[interval]=closed_candles(r.json(),int(time.time()*1000),minutes)
             candidates=[]
             candidate,diag=fib_candidate(frames["5m"]); diag["symbol"]=symbol
             diagnostics.append(diag)
@@ -610,9 +615,10 @@ async def scan_entries(client, price=None):
             candidate,diag=vwap_candidate(frames["1m"],frames["5m"]); diag["symbol"]=symbol
             diagnostics.append(diag)
             if candidate:candidates.append((candidate,diag))
-            # Fresh execution mark after candle requests; do not chase a closed-bar signal.
+            # Display mark; execution refreshes it after all signal checks.
             r=await market_get(client,BINANCE_PRICE_URL,params={"symbol":symbol},timeout=15)
             px=float(r.json()["price"])
+            if not math.isfinite(px) or px<=0:raise ValueError("Neplatná cena")
             state.setdefault("market_prices",{})[symbol]=px
             for candidate,diag in candidates:
                 sid=int.from_bytes(hashlib.sha256((symbol+candidate["key"]).encode()).digest()[:8],"big") & ((1<<63)-1)
@@ -628,12 +634,19 @@ async def scan_entries(client, price=None):
                 candidate["technical_confirmation"]=tech
                 if not ok:
                     h1=(tech.get("details") or {}).get("1h",{})
-                    if tech.get("hard_veto"):
+                    if tech.get("reason")=="BTC_NEWS_CONFLICT":
+                        diag["reason"]="Vstup blokuje konflikt se zprávami"
+                    elif tech.get("hard_veto"):
                         diag["reason"]="BLOKOVÁNO: směr je proti 1h trendu"
                     else:
                         diag["reason"]="Čekám na MTF potvrzení směru (score "+str(tech.get("score",0))+"/"+str(tech.get("min_score",WHALE_CONFIRM_MIN_SCORE))+")"
                     diag["technical_confirmation"]=tech
                     continue
+                # News/MTF requests can take seconds; never fill at the earlier mark.
+                r=await market_get(client,BINANCE_PRICE_URL,params={"symbol":symbol},timeout=15)
+                px=float(r.json()["price"])
+                if not math.isfinite(px) or px<=0:raise ValueError("Neplatná cena")
+                state.setdefault("market_prices",{})[symbol]=px
                 if open_paper(candidate,candidate["side"],px):
                     remember_signal(sid)
                     diag["reason"]="Obchod otevřen: "+candidate["strategy"]+" • MTF potvrzeno"
