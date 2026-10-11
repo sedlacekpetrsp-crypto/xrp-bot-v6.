@@ -2,7 +2,7 @@ import asyncio, math, statistics, time
 from datetime import datetime
 import news_signal
 
-BUILD = "v8-fly-layer-20261005-15-entry-diagnostics"
+BUILD = "v8-fly-layer-20261011-position-identity"
 Z_ARMED = 0.45
 Z_STRONG = 0.65
 Z_DANGER = 0.55
@@ -411,6 +411,12 @@ def accounting_audit():
             duplicates=[dict(symbol=r[0],side=r[1],opened_at=r[2].isoformat(),
                              entry_price=r[3],qty=r[4],count=r[5],net_pnl=r[6])
                         for r in cur.fetchall()]
+            cur.execute('''WITH ranked AS (
+                SELECT pnl,row_number() OVER (
+                    PARTITION BY symbol,side,opened_at,entry_price,qty
+                    ORDER BY closed_at,id) rn FROM v8fixed_trades
+                ) SELECT COALESCE(SUM(pnl) FILTER (WHERE rn>1),0) FROM ranked''')
+            later_duplicate_pnl=float(cur.fetchone()[0])
     if not saved or saved[0] is None:
         return {'verified':False,'reason':'Persisted balance unavailable'}
     expected=float(m.STARTING_BALANCE)+float(total)
@@ -419,8 +425,11 @@ def accounting_audit():
                 starting_balance=float(m.STARTING_BALANCE),stored_balance=float(saved[0]),
                 ledger_balance=expected,balance_difference=difference,
                 duplicate_groups=duplicates,reconciled=abs(difference)<1e-6 and not duplicates,
+                later_duplicate_pnl=later_duplicate_pnl,
+                first_close_only_balance=expected-later_duplicate_pnl,
+                difference_if_later_duplicates_excluded=difference+later_duplicate_pnl,
                 automatic_repair=False,
-                scope='All persisted records, including ambiguous duplicates; no deletions or balance changes')
+                scope='Raw ledger; first-close-only numbers are a sensitivity calculation, not a corrected balance')
 
 
 def close_trade(price,reason):
@@ -525,7 +534,13 @@ async def monitor(symbol):
 
 async def manage_position():
     if not m.paper_position:return
-    p=m.paper_position; price=await m.get_live_price(p['symbol'],max_age=1.0); e=float(p['entry_price']); d=float(p['risk_distance']); mr=(price-e)/d if p['side']=='LONG' else (e-price)/d; p['mfe_r']=max(float(p.get('mfe_r',0)),mr); p['mae_r']=min(float(p.get('mae_r',0)),mr)
+    p=m.paper_position
+    price=await m.get_live_price(p['symbol'],max_age=1.0)
+    if m.paper_position is not p:
+        return
+    if not math.isfinite(price) or price<=0:
+        raise ValueError('Invalid FLY execution price')
+    e=float(p['entry_price']); d=float(p['risk_distance']); mr=(price-e)/d if p['side']=='LONG' else (e-price)/d; p['mfe_r']=max(float(p.get('mfe_r',0)),mr); p['mae_r']=min(float(p.get('mae_r',0)),mr)
     if not p.get('breakeven_moved') and mr>=BREAKEVEN_TRIGGER_R: p['stop_loss']=e*(1+m.ROUND_TRIP_COST) if p['side']=='LONG' else e*(1-m.ROUND_TRIP_COST); p['breakeven_moved']=True; m.save_state()
     mfe=float(p.get('mfe_r',0)); p['profit_mode']=p.get('profit_mode') or mfe>=PROFIT_MODE_R
     if p.get('profit_mode') and mr>=PROFIT_MIN_LOCK_R and mfe-mr>=PROFIT_GIVEBACK_R: close_trade(price,'PROFIT PULLBACK'); return
@@ -539,6 +554,8 @@ async def manage_position():
     age=(m.utcnow()-datetime.fromisoformat(p['opened_at'])).total_seconds()/60
     if age >= 3:
         mon=await monitor(p['symbol'])
+        if m.paper_position is not p:
+            return
         sample=_monitor_cache.get(p['symbol'],{}).get('ts')
         if sample is not None and sample != p.get('last_exit_sample'):
             p['last_exit_sample']=sample

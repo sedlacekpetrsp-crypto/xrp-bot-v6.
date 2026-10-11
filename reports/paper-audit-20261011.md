@@ -11,3 +11,13 @@ FLY /fly/accounting-audit reads all persisted trades rather than the in-memory t
 Validation: 20 focused tests pass (test_paper_audit_regressions, test_exit_regressions, test_whale_execution_freshness, test_bestof_portfolio), Python compilation and git diff --check pass. FLY double close, restart replay, persisted duplicate and failed transaction paths are checked with isolated functions/database mocks. This does not prove real PostgreSQL concurrency or crash recovery.
 
 Six failures in test_whale_fib_vwap and test_whale_signals were reproduced on an unchanged baseline archive; these suites still expect older pullback/Telegram scanner behavior. They are not reported as passing. No profitability backtest was performed and no claim of improved returns is made. A new entry filter or replacement strategy requires cost-inclusive evaluation on an unused period before deployment.
+
+## Follow-up: identity races and reconciliation sensitivity
+
+FLY's exit manager now verifies position object identity after awaiting both live price and indicators. If another task closed/replaced the position during the wait, the stale task returns without writing stops or closing the replacement. Invalid live prices are rejected before mutation. This is an additional technical fix, not evidence that it caused every historical duplicate or the full balance discrepancy.
+
+Read-only SQL confirmed every recorded P/L equals gross P/L minus recorded fees. The three later duplicate closes total -33.328148182659355 USDC. Counting only the earliest close for each fingerprint would yield net P/L -806.6424727109649 and balance 9193.357527289035, still 133.920128563900 below the saved balance. The first-close-only calculation is an explicit sensitivity assumption, not a repaired ledger. Two October 2 duplicate pairs also used different fee rates (0.05% and 0.095% per side); exact writer provenance and the remainder cannot be recovered from available state alone. No balance adjustments or exclusions were applied.
+
+Whale journal persistence was confirmed directly in blue_whale_state (27 observations at 07:29 UTC, then 45). Initial candidates included two hour-trend vetoes and one stop-distance veto. This sample is insufficient for changing filters. Multiple observations can refer to the same candidate and are not independent trades.
+
+The focused suite now has 24 passing tests, including replacement/closure during a price await, replacement during an indicator await, and invalid-price nonmutation. PostgreSQL transaction tests still use mocks.

@@ -1,6 +1,7 @@
 """Isolated behavioral checks; no network, database, or profitability assumptions."""
 import ast
 import asyncio
+import math
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from types import SimpleNamespace
@@ -24,7 +25,7 @@ class ExitTests(unittest.TestCase):
         async def live(*a,**k):return price[0]
         async def monitor(*a):return sample
         m=SimpleNamespace(paper_position=p,get_live_price=live,utcnow=lambda:now,save_state=lambda:None)
-        env=dict(m=m,datetime=datetime,monitor=monitor,_monitor_cache=cache,
+        env=dict(m=m,datetime=datetime,math=math,monitor=monitor,_monitor_cache=cache,
                  BREAKEVEN_TRIGGER_R=.9,PROFIT_MODE_R=1.15,PROFIT_MIN_LOCK_R=.2,
                  PROFIT_GIVEBACK_R=.5,DANGER_MAX_MR=.45,Z_DANGER=.55,
                  close_trade=lambda price,reason:closed.append(reason))

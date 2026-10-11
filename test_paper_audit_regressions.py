@@ -115,6 +115,90 @@ class FlySettlementTests(unittest.TestCase):
                 self.assertEqual(calls[-1][0],'COMMIT')
 
 
+class FlyManageTests(unittest.TestCase):
+    def env(self):
+        now=datetime.now(timezone.utc)
+        position=dict(symbol='XRP',side='LONG',entry_price=100,risk_distance=2,
+                      stop_loss=98,take_profit=104,opened_at=(now-timedelta(hours=2)).isoformat())
+        closed=[];saved=[]
+        module=SimpleNamespace(paper_position=position,get_live_price=AsyncMock(return_value=99),
+                               utcnow=lambda:now,save_state=lambda:saved.append(True))
+        env=dict(m=module,datetime=datetime,math=math,monitor=AsyncMock(return_value=dict(z3=-1,book=.4)),
+                 _monitor_cache={'XRP':{'ts':1}},BREAKEVEN_TRIGGER_R=.9,PROFIT_MODE_R=1.15,
+                 PROFIT_MIN_LOCK_R=.2,PROFIT_GIVEBACK_R=.5,DANGER_MAX_MR=.45,Z_DANGER=.55,
+                 close_trade=lambda price,reason:closed.append(reason))
+        return env,closed,saved
+
+    def test_replaced_or_closed_while_waiting_for_price(self):
+        for replacement in (None,dict(symbol='ETH',side='SHORT',stop_loss=200)):
+            env,closed,saved=self.env();module=env['m'];old=copy.deepcopy(module.paper_position)
+            async def live(*a,**k):module.paper_position=replacement;return 97
+            module.get_live_price=live
+            original=module.paper_position
+            manage=functions('v8_fly_layer.py',{'manage_position'},env)['manage_position']
+            asyncio.run(manage())
+            self.assertEqual(original,old)
+            self.assertIs(module.paper_position,replacement)
+            self.assertEqual(closed,[]);self.assertEqual(saved,[])
+
+    def test_replaced_while_waiting_for_indicators(self):
+        env,closed,saved=self.env();module=env['m']
+        module.paper_position['exit_confirmations']=2
+        replacement=dict(symbol='ETH',side='SHORT',stop_loss=200)
+        expected=copy.deepcopy(replacement)
+        async def monitor(*a):
+            module.paper_position=replacement
+            return dict(z3=-1,book=.4)
+        env['monitor']=monitor
+        manage=functions('v8_fly_layer.py',{'manage_position'},env)['manage_position']
+        asyncio.run(manage())
+        self.assertEqual(replacement,expected)
+        self.assertEqual(closed,[]);self.assertEqual(saved,[])
+
+    def test_invalid_price_cannot_modify_position(self):
+        for price in (float('nan'),float('inf'),0,-1):
+            env,closed,saved=self.env();module=env['m']
+            old=copy.deepcopy(module.paper_position)
+            module.get_live_price=AsyncMock(return_value=price)
+            manage=functions('v8_fly_layer.py',{'manage_position'},env)['manage_position']
+            with self.assertRaises(ValueError):asyncio.run(manage())
+            self.assertEqual(module.paper_position,old)
+            self.assertEqual(closed,[]);self.assertEqual(saved,[])
+
+
+class AccountingTests(unittest.TestCase):
+    def test_sensitivity_reports_unexplained_remainder_without_writes(self):
+        queries=[]
+        class Cursor:
+            def __enter__(self):return self
+            def __exit__(self,*a):return False
+            def execute(self,sql):
+                self.sql=sql;queries.append(sql)
+                self.assert_read_only(sql)
+            def assert_read_only(self,sql):
+                if not sql.strip().startswith(('SELECT','WITH')):raise AssertionError('write')
+            def fetchone(self):
+                if 'COUNT(*)' in self.sql:return (287,-839.9706208936245)
+                if 'paper_balance' in self.sql:return ('9327.277655852935',)
+                return (-33.328148182659355,)
+            def fetchall(self):
+                return [('XRP','LONG',datetime.now(timezone.utc),1.5,1,2,-10)]
+        class Connection:
+            def __enter__(self):return self
+            def __exit__(self,*a):return False
+            def cursor(self):return Cursor()
+        module=SimpleNamespace(DATABASE_URL='mock',STARTING_BALANCE=10000,
+                               PAPER_BALANCE=9327.277655852935,get_db=lambda:Connection())
+        audit=functions('v8_fly_layer.py',{'accounting_audit'},{'m':module})['accounting_audit']
+        report=audit()
+        self.assertAlmostEqual(report['balance_difference'],167.248276746559)
+        self.assertAlmostEqual(report['difference_if_later_duplicates_excluded'],133.9201285638996)
+        self.assertAlmostEqual(report['first_close_only_balance'],9193.357527289035)
+        self.assertFalse(report['reconciled']);self.assertFalse(report['automatic_repair'])
+        self.assertEqual(module.PAPER_BALANCE,9327.277655852935)
+        self.assertEqual(len(queries),4)
+
+
 class JournalTests(unittest.TestCase):
     def test_bounded_history_survives_payload_and_does_not_mutate_account(self):
         state=copy.deepcopy(whale.state)
