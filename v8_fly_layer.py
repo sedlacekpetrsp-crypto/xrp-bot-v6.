@@ -215,7 +215,7 @@ async def leader_context():
     except Exception:
         return {'direction':None,'strength':0.0,'btc_return':0.0,'eth_return':0.0}
 
-async def strategy(symbol):
+async def strategy(symbol, news_only=False):
     if symbol == 'XRPUSDC':
         k1,k5,bk,news,leader=await asyncio.gather(m.get_klines(symbol,'1m'),m.get_klines(symbol,'5m'),book(symbol),news_signal.get_news(symbol),leader_context())
     else:
@@ -269,6 +269,9 @@ async def strategy(symbol):
     elif raw=='WAIT' and pullback_confirm_short:
         raw,setup,score='SHORT','TREND_PULLBACK',ss
 
+    if news_only:
+        raw, setup, score = 'WAIT', None, 0
+
     # NEWS_LONG: positive news for this specific asset is allowed to create an entry only
     # when price/volume/order-book confirm that the market is reacting.
     if raw=='WAIT' and news.get('bullish') and not news.get('bearish'):
@@ -287,14 +290,14 @@ async def strategy(symbol):
     edge=(av*p['atr_mult']*p['rr'])/cl if av and cl else 0
     signal=raw; reject=None
     if raw in ('LONG','SHORT'):
-        if setup not in m.ENABLED_SETUPS: signal,reject='WAIT','SETUP_ROLE_FILTER'
+        if not news_only and setup not in m.ENABLED_SETUPS: signal,reject='WAIT','SETUP_ROLE_FILTER'
         elif edge < m.ROUND_TRIP_COST*m.MIN_EDGE_MULTIPLE: signal,reject='WAIT','EDGE_TOO_SMALL'
         elif not spread_ok: signal,reject='WAIT',f'REAL_SPREAD_{spread*100:.3f}%'
         elif raw=='LONG' and news.get('bearish'): signal,reject='WAIT','NEGATIVE_NEWS_BLOCK'
         elif raw=='LONG' and z<Z_ARMED: signal,reject='WAIT',f'Z_TOO_WEAK_{z:.2f}'
         elif raw=='SHORT' and z>-Z_ARMED: signal,reject='WAIT',f'Z_TOO_WEAK_{z:.2f}'
     armed_side=None; armed_trigger=None; armed_dist=None
-    if av and av>0 and spread_ok and raw=='WAIT':
+    if not news_only and av and av>0 and spread_ok and raw=='WAIT':
         ld=(bh-cl)/av; sd=(cl-bl)/av
         if regime=='TREND_LONG' and 0<=ld<=ARMED_MAX_DISTANCE_ATR and ls>=max(7,m.MIN_SCORE) and vr>=max(m.MIN_BREAKOUT_VOLUME,1.15) and z>=Z_STRONG and imb>=max(m.BOOK_LONG_MIN,0.55):
             armed_side,armed_trigger,armed_dist='LONG',bh,ld

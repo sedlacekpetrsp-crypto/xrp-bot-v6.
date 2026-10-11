@@ -10,7 +10,7 @@ from urllib.parse import urlsplit
 
 import httpx
 
-BUILD = "crypto-news-v7-multiasset-20260923"
+BUILD = "crypto-news-v8-background-20261011"
 FEEDS = {
     "coindesk.com": "https://www.coindesk.com/arc/outboundfeeds/rss/",
     "cointelegraph.com": "https://cointelegraph.com/rss",
@@ -268,3 +268,26 @@ def blocks_entry(symbol, side):
     data = cached_state(symbol)
     return bool((side == "LONG" and data["bearish"]) or
                 (side == "SHORT" and data["bullish"]))
+
+
+async def background_loop():
+    """Refresh independently of trading, dashboard visits and paused strategies."""
+    while True:
+        await get_news("XRP")
+        await asyncio.sleep(5)
+
+
+def install(app):
+    @app.on_event("startup")
+    async def start_news_feed():
+        task = getattr(app.state, "news_feed_task", None)
+        if task is None or task.done():
+            app.state.news_feed_task = asyncio.create_task(background_loop())
+
+    @app.on_event("shutdown")
+    async def stop_news_feed():
+        tasks = [getattr(app.state, "news_feed_task", None), _refresh_task]
+        for task in tasks:
+            if task is not None:
+                task.cancel()
+        await asyncio.gather(*(t for t in tasks if t is not None), return_exceptions=True)

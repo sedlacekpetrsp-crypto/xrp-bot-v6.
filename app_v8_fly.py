@@ -7,6 +7,8 @@ import app_blue_whale_mirror as whale
 import lead_lag_scalper as leadlag
 import fast_scalper as fast
 import news_signal
+import news_paper
+import news_dashboard
 import tv_consensus_scalper as tv
 import bestof_bot as bestof
 import swing_paper
@@ -686,6 +688,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   });
 });
 </script></body>""")
+    html = news_dashboard.enhance(html)
     html = swing_dashboard.enhance(html)
     html = lh_whale_dashboard.enhance(html)
     # Force both liquidity cards into the same visible grid, independent of legacy injection points.
@@ -878,6 +881,7 @@ async def combined_health():
             "open_positions": whale.state.get("open_positions", []),
         },
         "news": news_signal.cached_all(),
+        "news_paper": news_paper.snapshot(),
         "fast": {
             "healthy": fast_ok,
             "age_seconds": fast_age,
@@ -991,3 +995,7 @@ async def liquidity_hunter_status():
 swing_paper.install(app, bestof.core)
 lh_whale.install(app, bestof.core)
 liquidity_monitor.install(app)
+
+# News refresh and trading stay active independently of paused FLY.
+news_signal.install(app)
+news_paper.install(app, base)

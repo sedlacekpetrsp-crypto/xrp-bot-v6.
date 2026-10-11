@@ -128,12 +128,12 @@ class MultiAssetTests(unittest.IsolatedAsyncioTestCase):
         import app_blue_whale_mirror as whale
         news._cache["items"] = news._parse_feed(feed("Bitcoin ETF approved"), "coindesk.com")
         with patch.object(whale, "WHALE_TECH_CONFIRM", False):
-            ok, details = await whale.technical_confirmation(None, "SHORT")
+            ok, details = await whale.technical_confirmation(None, "BTCUSDT", "SHORT")
             self.assertFalse(ok)
             self.assertEqual(details["reason"], "BTC_NEWS_CONFLICT")
-            self.assertTrue((await whale.technical_confirmation(None, "LONG"))[0])
+            self.assertTrue((await whale.technical_confirmation(None, "BTCUSDT", "LONG"))[0])
             news._cache["items"] = []
-            self.assertTrue((await whale.technical_confirmation(None, "SHORT"))[0])
+            self.assertTrue((await whale.technical_confirmation(None, "BTCUSDT", "SHORT"))[0])
         news._cache["items"] = news._parse_feed(feed("Bitcoin hacked"), "coindesk.com")
         self.assertTrue(news.blocks_entry("BTCUSDT", "LONG"))
         self.assertFalse(news.blocks_entry("ETHUSDC", "LONG"))
