@@ -1,0 +1,32 @@
+{
+  "hourly_filter": {
+    "eligible_for_shadow": false,
+    "checks": {
+      "positive_net": false,
+      "min_30_trades": true,
+      "pf_at_least_1_1": false,
+      "drawdown_not_worse": true,
+      "positive_stress_net": false
+    }
+  },
+  "fib_structural_stop": {
+    "eligible_for_shadow": false,
+    "checks": {
+      "positive_net": false,
+      "min_30_trades": true,
+      "pf_at_least_1_1": false,
+      "drawdown_not_worse": true,
+      "positive_stress_net": false
+    }
+  },
+  "no_xrp_breakout": {
+    "eligible_for_shadow": false,
+    "checks": {
+      "positive_net": false,
+      "min_30_trades": true,
+      "pf_at_least_1_1": false,
+      "drawdown_not_worse": false,
+      "positive_stress_net": false
+    }
+  }
+}

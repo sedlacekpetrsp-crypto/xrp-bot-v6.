@@ -1,0 +1,296 @@
+[
+  {
+    "variant": "baseline",
+    "start": "2026-07-04",
+    "end_exclusive": "2026-09-01",
+    "slippage_per_side": 0.0002,
+    "trades": 184,
+    "forced_exits": 0,
+    "net": -555.2856898689848,
+    "return_pct": -5.552856898689848,
+    "pf": 0.6576069057859323,
+    "win_rate": 32.608695652173914,
+    "drawdown_pct": 6.631469730562822,
+    "fees": 435.0151423204082,
+    "slippage": 174.0060590775675,
+    "counts": {
+      "candidates": 276,
+      "opened": 184
+    },
+    "month_end_cumulative": {
+      "2026-07": -455.400492330813,
+      "2026-08": -555.2856898689843
+    },
+    "period": "train"
+  },
+  {
+    "variant": "hourly_filter",
+    "start": "2026-07-04",
+    "end_exclusive": "2026-09-01",
+    "slippage_per_side": 0.0002,
+    "trades": 114,
+    "forced_exits": 0,
+    "net": -122.5583118260446,
+    "return_pct": -1.225583118260446,
+    "pf": 0.8700399044417227,
+    "win_rate": 38.59649122807018,
+    "drawdown_pct": 3.8470739027062884,
+    "fees": 266.9215793013875,
+    "slippage": 106.76864176582114,
+    "counts": {
+      "candidates": 276,
+      "opened": 114,
+      "hourly_reject": 109
+    },
+    "month_end_cumulative": {
+      "2026-07": -320.90167774571273,
+      "2026-08": -122.55831182605107
+    },
+    "period": "train"
+  },
+  {
+    "variant": "fib_structural_stop",
+    "start": "2026-07-04",
+    "end_exclusive": "2026-09-01",
+    "slippage_per_side": 0.0002,
+    "trades": 171,
+    "forced_exits": 0,
+    "net": -515.2447402727247,
+    "return_pct": -5.152447402727247,
+    "pf": 0.6591189206015811,
+    "win_rate": 33.333333333333336,
+    "drawdown_pct": 6.06847213976278,
+    "fees": 383.795764137462,
+    "slippage": 153.51830653774365,
+    "counts": {
+      "candidates": 276,
+      "opened": 171
+    },
+    "month_end_cumulative": {
+      "2026-07": -397.8480545612256,
+      "2026-08": -515.2447402727248
+    },
+    "period": "train"
+  },
+  {
+    "variant": "no_xrp_breakout",
+    "start": "2026-07-04",
+    "end_exclusive": "2026-09-01",
+    "slippage_per_side": 0.0002,
+    "trades": 139,
+    "forced_exits": 0,
+    "net": -527.6051459830071,
+    "return_pct": -5.276051459830071,
+    "pf": 0.5879070619296759,
+    "win_rate": 30.215827338129497,
+    "drawdown_pct": 5.388938870174806,
+    "fees": 346.96624250339715,
+    "slippage": 138.78649532724947,
+    "counts": {
+      "candidates": 276,
+      "opened": 139,
+      "xrp_reject": 72
+    },
+    "month_end_cumulative": {
+      "2026-07": -348.7455621814024,
+      "2026-08": -527.605145982996
+    },
+    "period": "train"
+  },
+  {
+    "variant": "baseline",
+    "start": "2026-09-01",
+    "end_exclusive": "2026-10-02",
+    "slippage_per_side": 0.0002,
+    "trades": 152,
+    "forced_exits": 1,
+    "net": -450.6880970965335,
+    "return_pct": -4.5068809709653355,
+    "pf": 0.6706099179075733,
+    "win_rate": 32.23684210526316,
+    "drawdown_pct": 4.621488183553336,
+    "fees": 363.0127423931836,
+    "slippage": 145.2050992584506,
+    "counts": {
+      "candidates": 240,
+      "opened": 152
+    },
+    "month_end_cumulative": {
+      "2026-09": -407.72791502642576,
+      "2026-10": -450.6880970965285
+    },
+    "period": "validation"
+  },
+  {
+    "variant": "hourly_filter",
+    "start": "2026-09-01",
+    "end_exclusive": "2026-10-02",
+    "slippage_per_side": 0.0002,
+    "trades": 89,
+    "forced_exits": 0,
+    "net": -309.8891420700214,
+    "return_pct": -3.0988914207002143,
+    "pf": 0.6260381225847422,
+    "win_rate": 30.337078651685392,
+    "drawdown_pct": 3.551075890798985,
+    "fees": 209.5235801397002,
+    "slippage": 83.80943139362857,
+    "counts": {
+      "candidates": 240,
+      "hourly_reject": 97,
+      "opened": 89
+    },
+    "month_end_cumulative": {
+      "2026-09": -280.7532701857199,
+      "2026-10": -309.88914207002017
+    },
+    "period": "validation"
+  },
+  {
+    "variant": "fib_structural_stop",
+    "start": "2026-09-01",
+    "end_exclusive": "2026-10-02",
+    "slippage_per_side": 0.0002,
+    "trades": 141,
+    "forced_exits": 1,
+    "net": -329.5483776853386,
+    "return_pct": -3.295483776853386,
+    "pf": 0.7273406229107829,
+    "win_rate": 33.333333333333336,
+    "drawdown_pct": 3.626986631752113,
+    "fees": 314.8656554213379,
+    "slippage": 125.94626661906466,
+    "counts": {
+      "candidates": 240,
+      "opened": 141
+    },
+    "month_end_cumulative": {
+      "2026-09": -286.0432155732469,
+      "2026-10": -329.548377685338
+    },
+    "period": "validation"
+  },
+  {
+    "variant": "no_xrp_breakout",
+    "start": "2026-09-01",
+    "end_exclusive": "2026-10-02",
+    "slippage_per_side": 0.0002,
+    "trades": 116,
+    "forced_exits": 1,
+    "net": -508.49635698816024,
+    "return_pct": -5.0849635698816025,
+    "pf": 0.537485751867253,
+    "win_rate": 27.586206896551722,
+    "drawdown_pct": 5.198356112055481,
+    "fees": 288.1652731312072,
+    "slippage": 115.26610504987258,
+    "counts": {
+      "candidates": 240,
+      "xrp_reject": 67,
+      "opened": 116
+    },
+    "month_end_cumulative": {
+      "2026-09": -465.7962411296685,
+      "2026-10": -508.49635698815655
+    },
+    "period": "validation"
+  },
+  {
+    "variant": "baseline",
+    "start": "2026-09-01",
+    "end_exclusive": "2026-10-02",
+    "slippage_per_side": 0.0004,
+    "trades": 148,
+    "forced_exits": 1,
+    "net": -562.613927802612,
+    "return_pct": -5.62613927802612,
+    "pf": 0.5862569291971935,
+    "win_rate": 29.72972972972973,
+    "drawdown_pct": 5.73151300750209,
+    "fees": 328.28960858450364,
+    "slippage": 262.63169139675324,
+    "counts": {
+      "candidates": 240,
+      "opened": 148
+    },
+    "month_end_cumulative": {
+      "2026-09": -519.2169470065273,
+      "2026-10": -562.6139278026167
+    },
+    "period": "validation_double_slippage"
+  },
+  {
+    "variant": "hourly_filter",
+    "start": "2026-09-01",
+    "end_exclusive": "2026-10-02",
+    "slippage_per_side": 0.0004,
+    "trades": 89,
+    "forced_exits": 0,
+    "net": -324.4326683610153,
+    "return_pct": -3.244326683610153,
+    "pf": 0.6146986696391439,
+    "win_rate": 31.46067415730337,
+    "drawdown_pct": 3.6703948416584518,
+    "fees": 196.0805899876454,
+    "slippage": 156.86447655208167,
+    "counts": {
+      "candidates": 240,
+      "hourly_reject": 97,
+      "opened": 89
+    },
+    "month_end_cumulative": {
+      "2026-09": -295.340525421092,
+      "2026-10": -324.4326683610125
+    },
+    "period": "validation_double_slippage"
+  },
+  {
+    "variant": "fib_structural_stop",
+    "start": "2026-09-01",
+    "end_exclusive": "2026-10-02",
+    "slippage_per_side": 0.0004,
+    "trades": 139,
+    "forced_exits": 1,
+    "net": -457.05219873032945,
+    "return_pct": -4.5705219873032945,
+    "pf": 0.6235116099853868,
+    "win_rate": 30.93525179856115,
+    "drawdown_pct": 4.677074372923689,
+    "fees": 288.0291188861847,
+    "slippage": 230.42330493295876,
+    "counts": {
+      "candidates": 240,
+      "opened": 139
+    },
+    "month_end_cumulative": {
+      "2026-09": -413.1698017083527,
+      "2026-10": -457.05219873032365
+    },
+    "period": "validation_double_slippage"
+  },
+  {
+    "variant": "no_xrp_breakout",
+    "start": "2026-09-01",
+    "end_exclusive": "2026-10-02",
+    "slippage_per_side": 0.0004,
+    "trades": 114,
+    "forced_exits": 1,
+    "net": -583.0771789907446,
+    "return_pct": -5.8307717899074465,
+    "pf": 0.4674856986555313,
+    "win_rate": 25.43859649122807,
+    "drawdown_pct": 5.935917035661423,
+    "fees": 262.69828754836215,
+    "slippage": 210.15861240342056,
+    "counts": {
+      "candidates": 240,
+      "xrp_reject": 67,
+      "opened": 114
+    },
+    "month_end_cumulative": {
+      "2026-09": -539.7742966358983,
+      "2026-10": -583.0771789907412
+    },
+    "period": "validation_double_slippage"
+  }
+]

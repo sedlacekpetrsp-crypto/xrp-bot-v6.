@@ -1,0 +1,12 @@
+{
+  "frozen_at": "2026-10-10",
+  "production_commit": "a0c05bc4161f12bc7d5b3d9869f86fb11c43bb55",
+  "scope": "Isolated original BEST BREAKOUT/FIB sleeve; EMA4h and cross-bot coordinator excluded, so not a full production portfolio replay.",
+  "variants": ["baseline", "hourly_filter", "fib_structural_stop", "no_xrp_breakout"],
+  "train_start": "2026-07-04", "train_end_exclusive": "2026-09-01",
+  "validation_start": "2026-09-01", "validation_end_exclusive": "2026-10-02",
+  "data_status": "These dates were used in prior research. Chronological validation is NOT a pristine unseen holdout. Recent October losses motivated variants. Future paper evaluation required.",
+  "selection": "No parameter sweep or combined variant. Compare individual hypotheses at unchanged risk. Candidate requires positive validation net, >=30 closed trades, PF>=1.1, drawdown no worse than baseline and positive net under doubled slippage. Passing is eligibility for shadow paper, not production replacement.",
+  "execution": "5m OHLC replay: signal on closed bars, entry next open, stop first on ambiguous bars, gap stop at open, break-even update on close effective next bar; no time exit. Deterministic symbol priority matches configured list, not live asynchronous ordering.",
+  "limitations": ["5m candles cannot reconstruct 3-second stop/BE path", "short financing omitted as in existing paper model", "no shared portfolio coordinator", "no database durability claim from offline simulation", "no historical regime labels inferred from future prices"]
+}
