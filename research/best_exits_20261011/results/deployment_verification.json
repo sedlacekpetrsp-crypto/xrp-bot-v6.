@@ -1,0 +1,64 @@
+{
+  "service": "xrp-fly-whale-24-7",
+  "service_id": "srv-dang770ae00c73em1sm0",
+  "deploy_id": "dep-db5jdhqd0e5s73fmdi30",
+  "commit": "47e2acc2785268463118f87a85e7b79645d746f5",
+  "deploy_status": "live",
+  "finished_at": "2026-10-11T07:12:49.44505Z",
+  "verified_cycle_at": "2026-10-11T07:13:08.663132+00:00",
+  "build": "BESTOF-2026-10-11-PORTFOLIO",
+  "mode": "PAPER",
+  "persistence": "postgres",
+  "last_error": null,
+  "balance": 9929.671906638316,
+  "history_preserved": true,
+  "balance_preserved": true,
+  "open_positions": 0,
+  "strategy_groups": [
+    {
+      "setup": "BREAKOUT",
+      "label": "BEST – BREAKOUT",
+      "trades": 34,
+      "wins": 10,
+      "win_rate": 29.41176470588235,
+      "net_pnl": -63.20083802517103,
+      "pf": 0.7599020754962762,
+      "fees": 79.55907519414194,
+      "slippage": 31.82363200493041,
+      "open_positions": 0
+    },
+    {
+      "setup": "FIB_0618_0786",
+      "label": "BEST – FIB",
+      "trades": 13,
+      "wins": 5,
+      "win_rate": 38.46153846153846,
+      "net_pnl": -7.127255336511322,
+      "pf": 0.9331352388161117,
+      "fees": 33.330857919706816,
+      "slippage": 13.332344749319304,
+      "open_positions": 0
+    },
+    {
+      "setup": "EMA_4H",
+      "label": "BEST – EMA 4h",
+      "trades": 0,
+      "wins": 0,
+      "win_rate": null,
+      "net_pnl": 0,
+      "pf": null,
+      "fees": 0,
+      "slippage": 0,
+      "open_positions": 0
+    }
+  ],
+  "tests": {
+    "research_suite": 26,
+    "deployed_branch_suite": 16,
+    "combined_app_import": "passed"
+  },
+  "limitations": [
+    "No real database crash injection; restart had no open positions.",
+    "No passing candidate, so no shadow PAPER launch or strategy promotion."
+  ]
+}
