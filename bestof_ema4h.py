@@ -3,10 +3,10 @@ Legacy strategies retain their handlers. Positions, cash and slots are shared.
 """
 import math
 from datetime import timedelta
+from bestof_portfolio import entry_budget, BUILD
 
 SETUP='EMA_4H'
 LABEL='BEST – EMA 4h'
-BUILD='BESTOF-2026-10-02-EMA4H'
 TF_MS=4*60*60*1000
 FEE=.00095
 SLIP=.0002
@@ -94,20 +94,9 @@ def open_ema(core,symbol,a,market_price):
     stop=float(a['price_closed'])-2.5*float(a['atr'])
     entry=float(market_price)*(1+SLIP);rate=(entry-stop)/entry
     if not all(math.isfinite(x) for x in (entry,stop,rate)) or not .002<=rate<=.12:return False
-    entry_check=getattr(core,'portfolio_entry_allowed',None)
-    if callable(entry_check) and not entry_check('BEST',symbol,'LONG')[0]:return False
-    # Never expand the original BEST maximum budget: original risk * original slots.
-    budget=max(0.,core.PAPER_BALANCE*core.RISK_PER_TRADE*core.MAX_OPEN_POSITIONS)
-    open_risk=sum(float(p.get('risk_usdt',0)) for p in core.positions.values())
-    risk=min(core.PAPER_BALANCE*RISK,max(0.,budget-open_risk))
-    allowance=getattr(core,'portfolio_risk_allowance',None)
-    if callable(allowance):risk,_=allowance('BEST',symbol,'LONG',risk)
-    if risk<=0:return False
+    risk,notional=entry_budget(core,symbol,'LONG',core.PAPER_BALANCE*RISK)
+    if risk<=0 or notional<=0:return False
     stop_fill=stop*(1-SLIP);loss=entry-stop_fill+FEE*(entry+stop_fill)
-    exposure=sum(float(p['qty'])*float(p['entry_price']) for p in core.positions.values())
-    position_cap=min(.5,getattr(core,'MAX_NOTIONAL_SHARE',.35))
-    total_cap=min(1.,getattr(core,'MAX_NOTIONAL_SHARE',.35)*core.MAX_OPEN_POSITIONS)
-    notional=min(core.PAPER_BALANCE*position_cap,max(0,core.PAPER_BALANCE*total_cap-exposure))
     qty=min(risk/loss,notional/entry)
     if qty<=0:return False
     core.positions[symbol]=dict(symbol=symbol,side='LONG',setup=SETUP,strategy_label=LABEL,
@@ -156,10 +145,26 @@ def summary(core):
         groups.append(dict(label=label,setup=SETUP if ema_group else 'LEGACY',trades=len(rows),
             wins=wins,win_rate=100*wins/len(rows) if rows else None,
             net_pnl=sum(float(t.get('pnl',0)) for t in rows),open_positions=len(ps)))
+    strategy_groups=[]
+    known={'BREAKOUT','FIB_0618_0786',SETUP}
+    setups=[('BREAKOUT','BEST – BREAKOUT'),('FIB_0618_0786','BEST – FIB'),(SETUP,LABEL)]
+    if any(t.get('setup') not in known for t in core.trade_history):
+        setups.append(('OTHER','BEST – ostatní historie'))
+    for setup,label in setups:
+        matches=lambda x: x.get('setup')==setup if setup!='OTHER' else x.get('setup') not in known
+        rows=[t for t in core.trade_history if matches(t)]
+        ps=[p for p in core.positions.values() if matches(p)]
+        pnl=[float(t.get('pnl',0)) for t in rows]
+        profits=sum(max(x,0) for x in pnl);losses=-sum(min(x,0) for x in pnl)
+        strategy_groups.append(dict(setup=setup,label=label,trades=len(rows),wins=sum(x>0 for x in pnl),
+            win_rate=100*sum(x>0 for x in pnl)/len(rows) if rows else None,
+            net_pnl=sum(pnl),pf=profits/losses if losses else None,
+            fees=sum(float(t.get('fees',0)) for t in rows),
+            slippage=sum(float(t.get('slippage',0)) for t in rows),open_positions=len(ps)))
     return dict(build=BUILD,mode='PAPER',timeframe='4h',risk_per_trade=RISK,
         max_shared_positions=core.MAX_OPEN_POSITIONS,
         max_shared_initial_risk_rate=core.RISK_PER_TRADE*core.MAX_OPEN_POSITIONS,
-        stats_scope='posledních 500 uzavřených obchodů Bestu',groups=groups,
+        stats_scope='posledních 500 uzavřených obchodů Bestu',groups=groups,strategy_groups=strategy_groups,
         checks=dict(checks),errors=dict(errors),fee_rate=FEE,slippage_rate=SLIP)
 
 
