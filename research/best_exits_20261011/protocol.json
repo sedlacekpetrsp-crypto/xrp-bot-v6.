@@ -1,0 +1,16 @@
+{
+ "frozen_before_calculation": "2026-10-11",
+ "hypothesis": "Moving SL to net break-even at +0.75R prematurely exits otherwise profitable trades; compare disabling only that move, keeping initial SL, TP and risk unchanged.",
+ "variants": ["baseline", "no_breakeven"],
+ "data": "Exact original SHA256 manifest in research/best_validation/results/data_manifest.json",
+ "development": ["2026-07-04", "2026-09-01"],
+ "chronological_diagnostic": ["2026-09-01", "2026-10-02"],
+ "warning": "Both windows were previously studied, NOT unseen holdout. Results cannot authorize promotion.",
+ "execution": "Original isolated BREAKOUT/FIB 5m replay; next open entry, stop first ambiguity, BE close effective next bar. Common local risk/notional guards corrected for BOTH arms; no cross-bot coordinator or EMA4h entries.",
+ "selection": {"net_positive": true, "min_trades": 30, "min_pf": 1.1, "drawdown_no_worse_than_baseline": true, "positive_net_double_slippage": true},
+ "future_holdout_utc": ["2026-10-12T00:00:00+00:00", "2026-11-12T00:00:00+00:00"],
+ "future_rules": "Freeze code and manifest before start; compare same two arms once after end. No parameter tuning. If fewer than 30 trades: inconclusive, no promotion. Even a passing holdout permits only isolated shadow PAPER, using existing resources. Do not launch candidate now.",
+ "costs": {"fee_per_side": 0.0005, "slippage_per_side": 0.0002, "stress_slippage_per_side": 0.0004, "funding": "omitted as original PAPER model"},
+ "risk_per_trade_max": 0.0015,
+ "ema4h": "Assess actual paper history separately; excluded from this exit hypothesis and replay. Zero trades is insufficient evidence."
+}

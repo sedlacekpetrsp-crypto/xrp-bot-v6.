@@ -39,11 +39,9 @@ class ReplayTests(unittest.TestCase):
         with contextlib.redirect_stdout(io.StringIO()):a=r.prepare({'XRPUSDT':rows[:1300]});b=r.prepare({'XRPUSDT':rows})
         self.assertTrue(a['XRPUSDT'])
         self.assertEqual(a['XRPUSDT'],{i:v for i,v in b['XRPUSDT'].items() if i<1300})
-    @unittest.expectedFailure
     def test_known_defect_legacy_respects_portfolio_entry_denial(self):
         with patch.object(r.c,'portfolio_entry_allowed',return_value=(False,'TEST_DENY'),create=True):
             self.assertFalse(self.open())
-    @unittest.expectedFailure
     def test_known_defect_legacy_respects_portfolio_risk_allowance(self):
         with patch.object(r.c,'portfolio_risk_allowance',return_value=(1.,{}),create=True):
             self.assertTrue(self.open())
