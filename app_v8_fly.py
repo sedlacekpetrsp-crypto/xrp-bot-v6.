@@ -14,9 +14,11 @@ import swing_dashboard
 import lh_whale
 import lh_whale_dashboard
 import liquidity_monitor
+import legacy_fly_recovery
 from v8_fly_layer import install
 
 install(base)
+base.FLY_LEGACY_RECOVERY_PENDING = True
 
 def _asset_key(symbol):
     s=str(symbol or "").upper()
@@ -125,6 +127,9 @@ def _install_pause_cycle(module, bot_name, fly=False):
     original_cycle = module.cycle
 
     async def cycle_with_pause():
+        if fly and getattr(module,"FLY_LEGACY_RECOVERY_PENDING",False):
+            module.last_cycle_at = datetime.now(timezone.utc).isoformat()
+            return
         if bot_name not in PAUSED_BOTS:
             return await original_cycle()
         position = module.paper_position if fly else module.state.get("open_position")
@@ -152,6 +157,16 @@ _install_pause_cycle(fast, "FAST")
 _install_pause_cycle(leadlag, "LEADLAG")
 
 app = base.app
+
+
+@app.on_event("startup")
+async def recover_disabled_scanner_fly():
+    # The legacy worker is disabled. Block FLY cycles until the one-time PAPER
+    # recovery finishes so no stale manager can settle the same position.
+    result = await legacy_fly_recovery.recover(base)
+    base.FLY_LEGACY_RECOVERY_PENDING = False
+    print("FLY LEGACY RECOVERY",result,flush=True)
+
 _original_analyze = base.analyze
 _original_dashboard = base.dashboard
 _whale_task = None

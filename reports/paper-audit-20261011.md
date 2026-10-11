@@ -21,3 +21,11 @@ Read-only SQL confirmed every recorded P/L equals gross P/L minus recorded fees.
 Whale journal persistence was confirmed directly in blue_whale_state (27 observations at 07:29 UTC, then 45). Initial candidates included two hour-trend vetoes and one stop-distance veto. This sample is insufficient for changing filters. Multiple observations can refer to the same candidate and are not independent trades.
 
 The focused suite now has 24 passing tests, including replacement/closure during a price await, replacement during an indicator await, and invalid-price nonmutation. PostgreSQL transaction tests still use mocks.
+
+## Hidden scanner worker found and disabled
+
+Candle Scanner branch v8-candle-scanner has an integrated FLY worker using the same v8fixed_state/v8fixed_trades tables and an older multi-position engine. Its code accounts for MARKET STOP records and uses fixed fee 0.0005 versus 0.00095 in the current shared engine. On 11 October the scanner /health reported enabled=true and running=true while the shared dashboard FLY was paused. This establishes a second enabled writer and a concrete conflict mechanism, but does not reconstruct all historic cash mutations.
+
+The diagnostic HTTP request woke the free service; the legacy worker opened ETHUSDC, SOLUSDC and XRPUSDC PAPER shorts at 07:39 UTC. No exchange orders exist. FLY_INTEGRATED_ENABLED was set false on the scanner service using a merge update; its replacement deploy is live. These three residual simulated positions must be settled rather than abandoned. The recovery is scoped to their exact opening fingerprints, uses observed fresh exit quotes, the deployed legacy engine's fixed fee/slippage constants (0.0005/0.0002), checks a state lease under row lock, and writes all trade records and the balance delta in one transaction with settlement claims. Original records and the full recovered position snapshots are retained. Partial positions, unexpected openings, stale state and duplicate claims fail closed. Shared FLY cycles remain blocked while recovery runs. No historical account offset is adjusted.
+
+Thirty focused tests pass, including one-time settlement, repeat startup, rollback, changed-state refusal, unexpected opening refusal and recovery cost arithmetic. Transaction tests use mocks; deployment/database verification is separately required.
