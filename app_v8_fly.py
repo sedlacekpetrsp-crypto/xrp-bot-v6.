@@ -719,7 +719,16 @@ async def start_whale_worker():
 
 @app.get("/whale/status")
 async def whale_status():
-    return JSONResponse({**whale.state,"trendline_stats":whale.whale_trendline.snapshot(whale.state)}, headers={"Cache-Control":"no-store"})
+    data={k:v for k,v in whale.state.items() if k!="signal_journal"}
+    return JSONResponse({**data,"trendline_stats":whale.whale_trendline.snapshot(whale.state)}, headers={"Cache-Control":"no-store"})
+
+
+@app.get("/whale/signal-journal")
+async def whale_signal_journal():
+    return JSONResponse({"observations":whale.state.get("signal_journal",[]),
+                         "capacity":500,"build":whale.SIGNAL_POLICY_VERSION,
+                         "scope":"Recorded scan diagnostics and sampled prices; not a backtest"},
+                        headers={"Cache-Control":"no-store"})
 
 
 @app.get("/leadlag/status")
@@ -774,6 +783,16 @@ async def fly_status():
         "last_24h":_fly_trade_metrics(recent),
         "last_trade_at":rows[0].get("closed_at") if rows else None,
     },headers={"Cache-Control":"no-store"})
+
+
+@app.get("/fly/accounting-audit")
+async def fly_accounting_audit():
+    try:
+        data=await __import__('asyncio').to_thread(__import__('v8_fly_layer').accounting_audit)
+        return JSONResponse(data,headers={"Cache-Control":"no-store"})
+    except Exception:
+        return JSONResponse({"verified":False,"reason":"Accounting database unavailable"},
+                            status_code=503,headers={"Cache-Control":"no-store"})
 
 
 @app.get("/tv/status")

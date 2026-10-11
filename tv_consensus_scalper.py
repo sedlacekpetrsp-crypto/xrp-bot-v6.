@@ -16,7 +16,7 @@ from datetime import datetime, timezone, timedelta
 import psycopg
 from psycopg.types.json import Jsonb
 
-BUILD = "tv-consensus-v8-stale-confirmation-20261006"
+BUILD = "tv-consensus-v9-distinct-stale-candles-20261011"
 MODE = "PAPER"
 SYMBOL = "XRPUSDC"
 
@@ -701,8 +701,17 @@ async def manage_position(a=None):
         close_trade(price,"TV CONFIRMED TREND FLIP"); return
     if age>=STALE_HOLD_MINUTES and net<=0:
         stale_against = a.get("trend_15m")!=p["side"] and opposing_edge>=MIN_SCORE_EDGE
-        p["stale_confirmations"]=(int(p.get("stale_confirmations",0))+1 if stale_against else 0)
-        if p["stale_confirmations"]>=2:
+        candle = a.get("candle_time")
+        # Polling the same closed candle is not another independent confirmation.
+        # Ignore missing and out-of-order timestamps, including after a restart.
+        previous = p.get("last_stale_candle")
+        if previous is None:
+            p["stale_confirmations"] = 0
+        if candle is not None and (previous is None or candle > previous):
+            p["last_stale_candle"] = candle
+            p["stale_confirmations"]=(int(p.get("stale_confirmations",0))+1 if stale_against else 0)
+            save_state()
+        if p.get("stale_confirmations",0)>=2:
             close_trade(price,"TV STALE TRADE"); return
 
     heartbeat_state()

@@ -41,7 +41,7 @@ WHALE_BREAKEVEN_R=float(os.getenv("WHALE_BREAKEVEN_R","1.2"))
 WHALE_PROFIT_LOCK_R=float(os.getenv("WHALE_PROFIT_LOCK_R","1.8"))
 KLINES_URL="https://data-api.binance.vision/api/v3/klines"
 
-SIGNAL_POLICY_VERSION="fib-vwap-trendline4h-v8-20261010"
+SIGNAL_POLICY_VERSION="fib-vwap-trendline4h-v9-rejection-journal-20261011"
 WHALE_ENTRY_TOLERANCE=float(os.getenv("WHALE_ENTRY_TOLERANCE","0.0035"))
 WHALE_MIN_NET_RR=float(os.getenv("WHALE_MIN_NET_RR","1.6"))
 WHALE_TREND_EFFICIENCY=float(os.getenv("WHALE_TREND_EFFICIENCY","0.57"))
@@ -70,6 +70,7 @@ def _persistent_payload():
         "last_signal":state["last_signal"],
         "trendline_seen_keys":state.get("trendline_seen_keys",[]),
         "trendline_last_candle":state.get("trendline_last_candle"),
+        "signal_journal":state.get("signal_journal",[])[-500:],
     }
 
 def init_persistence():
@@ -98,7 +99,7 @@ def init_persistence():
             row=conn.execute("SELECT state FROM blue_whale_state WHERE id=1").fetchone()
             if row and isinstance(row[0],dict):
                 saved=row[0]
-                for key in ("balance","equity","trades","seen_signal_ids","last_scan","last_signal","trendline_seen_keys","trendline_last_candle"):
+                for key in ("balance","equity","trades","seen_signal_ids","last_scan","last_signal","trendline_seen_keys","trendline_last_candle","signal_journal"):
                     if key in saved:
                         state[key]=saved[key]
                 if isinstance(saved.get("open_positions"),list):
@@ -600,6 +601,19 @@ async def scan_trendline(client):
     return diag
 
 
+def record_signal_checks(diagnostics):
+    """Bounded observations, not simulated trades or inferred profitability."""
+    journal=state.setdefault("signal_journal",[])
+    now=utcnow().isoformat()
+    for diag in diagnostics:
+        item=dict(diag,seen_at=now)
+        mark=(state.get("market_prices") or {}).get(diag.get("symbol"))
+        if not diag.get("error") and mark is not None:
+            item["observed_price"]=mark
+        journal.append(item)
+    del journal[:-500]
+
+
 async def scan_entries(client, price=None):
     diagnostics=[]
     for symbol in SYMBOLS:
@@ -621,6 +635,10 @@ async def scan_entries(client, price=None):
             if not math.isfinite(px) or px<=0:raise ValueError("Neplatná cena")
             state.setdefault("market_prices",{})[symbol]=px
             for candidate,diag in candidates:
+                diag.update(candidate_key=candidate["key"],side=candidate["side"],
+                            candidate_entry=candidate["entry"],candidate_stop=candidate["stop"],
+                            candidate_target=candidate["tp"],
+                            signal_candle=int(frames["1m"][-1][0]) if frames["1m"] else None)
                 sid=int.from_bytes(hashlib.sha256((symbol+candidate["key"]).encode()).digest()[:8],"big") & ((1<<63)-1)
                 if sid in state["seen_signal_ids"]:
                     diag["reason"]="Tento setup již byl zobchodován";continue
@@ -656,6 +674,7 @@ async def scan_entries(client, price=None):
         except Exception as exc:
             diagnostics.append({"symbol":symbol,"strategy":"DATA","reason":str(exc),"error":True})
     diagnostics.append(await scan_trendline(client))
+    record_signal_checks(diagnostics)
     state["signal_checks"]=diagnostics
     state["entry_status"]=" | ".join(d["symbol"]+" "+d["strategy"]+": "+d["reason"] for d in diagnostics)
     state["last_source_scan"]=utcnow().isoformat()

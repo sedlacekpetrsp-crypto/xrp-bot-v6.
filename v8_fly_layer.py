@@ -395,6 +395,34 @@ def open_trade(a,price):
     m.paper_position={'symbol':a['symbol'],'side':side,'setup':a.get('setup') or 'BREAKOUT','regime':a['regime'],'score':a.get('score',0),'entry_price':entry,'qty':qty,'stop_loss':sl,'take_profit':tp,'risk_distance':dist,'initial_risk_usdc':actual_risk,'risk_rate':risk_rate,'quality_tier':quality,'ensemble_score':ensemble,'entry_features':features,'net_rr':m.NET_RISK_REWARD,'mae_r':0.0,'mfe_r':0.0,'breakeven_moved':False,'profit_mode':False,'z_entry':float(a.get('z_momentum') or 0),'entry_trigger':float(a.get('entry_trigger') or a.get('armed_trigger') or price),'entry_spread_pct':float(a.get('real_spread_pct') or 0),'entry_kind':a.get('entry_kind','CLOSED_CANDLE'),'last_danger_score':0,'opened_at':m.utcnow().isoformat()}
     m.last_entry_candle[a['symbol']]=a['candle_time']; m.save_state(); m.log_signal(a,'ENTER',f"{quality} risk={risk_rate*100:.2f}% {m.paper_position['entry_kind']} z={m.paper_position['z_entry']:.2f}")
 
+def accounting_audit():
+    """Read the complete ledger; never repair ambiguous historical balances."""
+    if not m.DATABASE_URL:
+        return {'verified':False,'reason':'Full persisted ledger unavailable'}
+    with m.get_db() as conn:
+        with conn.cursor() as cur:
+            cur.execute('SELECT COUNT(*), COALESCE(SUM(pnl),0) FROM v8fixed_trades')
+            count,total=cur.fetchone()
+            cur.execute("SELECT state->>'paper_balance' FROM v8fixed_state WHERE id=1")
+            saved=cur.fetchone()
+            cur.execute('''SELECT symbol,side,opened_at,entry_price,qty,COUNT(*),SUM(pnl)
+                           FROM v8fixed_trades GROUP BY symbol,side,opened_at,entry_price,qty
+                           HAVING COUNT(*)>1 ORDER BY opened_at''')
+            duplicates=[dict(symbol=r[0],side=r[1],opened_at=r[2].isoformat(),
+                             entry_price=r[3],qty=r[4],count=r[5],net_pnl=r[6])
+                        for r in cur.fetchall()]
+    if not saved or saved[0] is None:
+        return {'verified':False,'reason':'Persisted balance unavailable'}
+    expected=float(m.STARTING_BALANCE)+float(total)
+    difference=float(saved[0])-expected
+    return dict(verified=True,trade_count=count,recorded_net_pnl=float(total),
+                starting_balance=float(m.STARTING_BALANCE),stored_balance=float(saved[0]),
+                ledger_balance=expected,balance_difference=difference,
+                duplicate_groups=duplicates,reconciled=abs(difference)<1e-6 and not duplicates,
+                automatic_repair=False,
+                scope='All persisted records, including ambiguous duplicates; no deletions or balance changes')
+
+
 def close_trade(price,reason):
     # Claim the position before any persistence I/O so concurrent exit loops cannot
     # settle the same PAPER position twice.
