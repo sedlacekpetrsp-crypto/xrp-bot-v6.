@@ -2,6 +2,9 @@ import os
 import json
 import asyncio
 import time
+import math
+import sys
+from bestof_portfolio import entry_budget
 from datetime import datetime, timezone, timedelta
 
 import httpx
@@ -519,6 +522,8 @@ def open_trade(symbol, analysis, market_price):
 
     signal_low = float(analysis["signal_low"])
     signal_high = float(analysis["signal_high"])
+    if not all(math.isfinite(x) and x > 0 for x in (market_price, signal_low, signal_high)):
+        return False
 
     if side == "LONG":
         entry_market = market_price
@@ -557,9 +562,12 @@ def open_trade(symbol, analysis, market_price):
         print("SKIP V8.1 FIX", symbol, "TARGET_TOO_SMALL", target_move_rate)
         return False
 
-    risk_usdt = PAPER_BALANCE * RISK_PER_TRADE
+    risk_usdt, max_notional = entry_budget(
+        sys.modules[__name__], symbol, side, PAPER_BALANCE * RISK_PER_TRADE
+    )
+    if risk_usdt <= 0 or max_notional <= 0:
+        return False
     qty_by_risk = risk_usdt / net_loss_per_unit
-    max_notional = PAPER_BALANCE * MAX_NOTIONAL_SHARE
     qty_by_notional = max_notional / entry_price
     qty = min(qty_by_risk, qty_by_notional)
     if qty <= 0:
