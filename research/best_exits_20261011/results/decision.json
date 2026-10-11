@@ -1,0 +1,12 @@
+{
+  "gates": {
+    "positive_net": false,
+    "min_trades": true,
+    "pf": false,
+    "drawdown": false,
+    "stress_positive": false
+  },
+  "diagnostic_pass": false,
+  "promotion": false,
+  "reason": "Known-data diagnostic only; future holdout and isolated PAPER required even if all gates pass."
+}

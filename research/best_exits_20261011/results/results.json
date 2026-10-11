@@ -1,0 +1,302 @@
+[
+  {
+    "variant": "baseline",
+    "start": "2026-07-04",
+    "end_exclusive": "2026-09-01",
+    "slippage_per_side": 0.0002,
+    "trades": 184,
+    "forced_exits": 0,
+    "net": -555.2492420016345,
+    "return_pct": -5.552492420016344,
+    "pf": 0.6576156031625003,
+    "win_rate": 32.608695652173914,
+    "drawdown_pct": 6.631531153734087,
+    "fees": 434.99760480787864,
+    "slippage": 173.99904407303148,
+    "counts": {
+      "candidates": 276,
+      "opened": 184
+    },
+    "month_end_cumulative": {
+      "2026-07": -455.42834362857866,
+      "2026-08": -555.2492420016315
+    },
+    "period": "train",
+    "by_strategy": [
+      {
+        "setup": "BREAKOUT",
+        "trades": 137,
+        "net": -250.46304072645236,
+        "pf": 0.7780676309882697,
+        "fees": 314.6974865570044,
+        "slippage": 125.87900222732847
+      },
+      {
+        "setup": "FIB_0618_0786",
+        "trades": 47,
+        "net": -304.78620127518207,
+        "pf": 0.3819696541577742,
+        "fees": 120.30011825087423,
+        "slippage": 48.12004184570302
+      },
+      {
+        "setup": "EMA_4H",
+        "trades": 0,
+        "net": 0,
+        "pf": null,
+        "fees": 0,
+        "slippage": 0
+      }
+    ]
+  },
+  {
+    "variant": "no_breakeven",
+    "start": "2026-07-04",
+    "end_exclusive": "2026-09-01",
+    "slippage_per_side": 0.0002,
+    "trades": 181,
+    "forced_exits": 0,
+    "net": -496.9034659129903,
+    "return_pct": -4.969034659129903,
+    "pf": 0.7077637088937128,
+    "win_rate": 35.35911602209945,
+    "drawdown_pct": 6.138809591598183,
+    "fees": 429.63468273903294,
+    "slippage": 171.8538772789982,
+    "counts": {
+      "candidates": 276,
+      "opened": 181
+    },
+    "month_end_cumulative": {
+      "2026-07": -405.0599878596895,
+      "2026-08": -496.9034659129775
+    },
+    "period": "train",
+    "by_strategy": [
+      {
+        "setup": "BREAKOUT",
+        "trades": 135,
+        "net": -228.721649794048,
+        "pf": 0.8102424850230499,
+        "fees": 310.54361203970507,
+        "slippage": 124.21745305744581
+      },
+      {
+        "setup": "FIB_0618_0786",
+        "trades": 46,
+        "net": -268.1818161189423,
+        "pf": 0.4582314653136795,
+        "fees": 119.09107069932789,
+        "slippage": 47.63642422155239
+      },
+      {
+        "setup": "EMA_4H",
+        "trades": 0,
+        "net": 0,
+        "pf": null,
+        "fees": 0,
+        "slippage": 0
+      }
+    ]
+  },
+  {
+    "variant": "baseline",
+    "start": "2026-09-01",
+    "end_exclusive": "2026-10-02",
+    "slippage_per_side": 0.0002,
+    "trades": 152,
+    "forced_exits": 1,
+    "net": -450.7159620394913,
+    "return_pct": -4.507159620394913,
+    "pf": 0.6705891125053425,
+    "win_rate": 32.23684210526316,
+    "drawdown_pct": 4.621766498558469,
+    "fees": 363.0086693650625,
+    "slippage": 145.2034700458595,
+    "counts": {
+      "candidates": 240,
+      "opened": 152
+    },
+    "month_end_cumulative": {
+      "2026-09": -407.75590532742535,
+      "2026-10": -450.71596203948866
+    },
+    "period": "validation",
+    "by_strategy": [
+      {
+        "setup": "BREAKOUT",
+        "trades": 107,
+        "net": -215.66503274298654,
+        "pf": 0.7710932787282166,
+        "fees": 252.6332148767652,
+        "slippage": 101.05329147155624
+      },
+      {
+        "setup": "FIB_0618_0786",
+        "trades": 45,
+        "net": -235.05092929650476,
+        "pf": 0.4483616441917043,
+        "fees": 110.37545448829728,
+        "slippage": 44.15017857430325
+      },
+      {
+        "setup": "EMA_4H",
+        "trades": 0,
+        "net": 0,
+        "pf": null,
+        "fees": 0,
+        "slippage": 0
+      }
+    ]
+  },
+  {
+    "variant": "no_breakeven",
+    "start": "2026-09-01",
+    "end_exclusive": "2026-10-02",
+    "slippage_per_side": 0.0002,
+    "trades": 148,
+    "forced_exits": 1,
+    "net": -437.96907734217797,
+    "return_pct": -4.37969077342178,
+    "pf": 0.6897023381782983,
+    "win_rate": 35.13513513513514,
+    "drawdown_pct": 4.86771561772487,
+    "fees": 352.7709411671063,
+    "slippage": 141.10837870324056,
+    "counts": {
+      "candidates": 240,
+      "opened": 148
+    },
+    "month_end_cumulative": {
+      "2026-09": -394.9516752953914,
+      "2026-10": -437.9690773421735
+    },
+    "period": "validation",
+    "by_strategy": [
+      {
+        "setup": "BREAKOUT",
+        "trades": 104,
+        "net": -162.98623778240014,
+        "pf": 0.8240868433727961,
+        "fees": 245.17243700044875,
+        "slippage": 98.06898201037833
+      },
+      {
+        "setup": "FIB_0618_0786",
+        "trades": 44,
+        "net": -274.98283955977786,
+        "pf": 0.4329465805794309,
+        "fees": 107.59850416665755,
+        "slippage": 43.03939669286223
+      },
+      {
+        "setup": "EMA_4H",
+        "trades": 0,
+        "net": 0,
+        "pf": null,
+        "fees": 0,
+        "slippage": 0
+      }
+    ]
+  },
+  {
+    "variant": "baseline",
+    "start": "2026-09-01",
+    "end_exclusive": "2026-10-02",
+    "slippage_per_side": 0.0004,
+    "trades": 148,
+    "forced_exits": 1,
+    "net": -562.6414124699423,
+    "return_pct": -5.626414124699424,
+    "pf": 0.5862361795124057,
+    "win_rate": 29.72972972972973,
+    "drawdown_pct": 5.73178754729348,
+    "fees": 328.28584589292177,
+    "slippage": 262.62868123800655,
+    "counts": {
+      "candidates": 240,
+      "opened": 148
+    },
+    "month_end_cumulative": {
+      "2026-09": -519.2445580596432,
+      "2026-10": -562.6414124699331
+    },
+    "period": "validation_double_slippage",
+    "by_strategy": [
+      {
+        "setup": "BREAKOUT",
+        "trades": 105,
+        "net": -328.532188827461,
+        "pf": 0.6490541905963633,
+        "fees": 229.79159207849014,
+        "slippage": 183.83328727760386
+      },
+      {
+        "setup": "FIB_0618_0786",
+        "trades": 43,
+        "net": -234.10922364248137,
+        "pf": 0.447437672073778,
+        "fees": 98.49425381443164,
+        "slippage": 78.79539396040266
+      },
+      {
+        "setup": "EMA_4H",
+        "trades": 0,
+        "net": 0,
+        "pf": null,
+        "fees": 0,
+        "slippage": 0
+      }
+    ]
+  },
+  {
+    "variant": "no_breakeven",
+    "start": "2026-09-01",
+    "end_exclusive": "2026-10-02",
+    "slippage_per_side": 0.0004,
+    "trades": 145,
+    "forced_exits": 1,
+    "net": -592.5812183049073,
+    "return_pct": -5.925812183049073,
+    "pf": 0.5896100881632458,
+    "win_rate": 31.03448275862069,
+    "drawdown_pct": 6.03085131085265,
+    "fees": 321.54493981353716,
+    "slippage": 257.2359496427493,
+    "counts": {
+      "candidates": 240,
+      "opened": 145
+    },
+    "month_end_cumulative": {
+      "2026-09": -549.3220394298714,
+      "2026-10": -592.5812183049093
+    },
+    "period": "validation_double_slippage",
+    "by_strategy": [
+      {
+        "setup": "BREAKOUT",
+        "trades": 102,
+        "net": -334.209467610594,
+        "pf": 0.6581175314548547,
+        "fees": 222.54210412738584,
+        "slippage": 178.03369392050385
+      },
+      {
+        "setup": "FIB_0618_0786",
+        "trades": 43,
+        "net": -258.37175069431333,
+        "pf": 0.44601809280181925,
+        "fees": 99.0028356861513,
+        "slippage": 79.20225572224545
+      },
+      {
+        "setup": "EMA_4H",
+        "trades": 0,
+        "net": 0,
+        "pf": null,
+        "fees": 0,
+        "slippage": 0
+      }
+    ]
+  }
+]

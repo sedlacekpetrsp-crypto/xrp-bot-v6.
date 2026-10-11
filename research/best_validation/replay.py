@@ -93,7 +93,7 @@ def simulate(data,signals,variant,start,end,slip=.0002):
                 row=data[sym][i];ex=bar_exit(p,row);now(ms+STEP)
                 if ex:c.close_trade(sym,*ex);continue
                 net=c.estimated_net_per_unit(p['side'],p['entry_price'],row[4])*p['qty']
-                if not p['breakeven_moved'] and net>=p['risk_usdt']*c.BREAKEVEN_TRIGGER_R:
+                if variant!='no_breakeven' and not p['breakeven_moved'] and net>=p['risk_usdt']*c.BREAKEVEN_TRIGGER_R:
                     p['stop_loss']=c.target_market_for_net_profit(p['side'],p['entry_price'],0.)
                     p['breakeven_moved']=True
             equity=c.PAPER_BALANCE+sum(c.estimated_net_per_unit(p['side'],p['entry_price'],data[sym][i][4])*p['qty'] for sym,p in c.positions.items())

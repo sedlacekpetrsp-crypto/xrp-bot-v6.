@@ -7,7 +7,7 @@
 | Neviditelná otevřená pozice / zaměněné statistiky | Dřívější UI incidenty a nula pouze u EMA 4h | Oddělené účty, otevřené pozice i celkové a dílčí statistiky |
 | Dvě karty pro stejný Hunter | Dřívější chybná záměna služeb | Unikátní identita, verze a tabulky každého kandidáta |
 | Staré ceny a nehotové svíčky | Whale opraven 10. 10.; BEST legacy čerstvost není ekvivalentně testována | Ověření stáří, mezer, NaN a ceny po všech filtrech |
-| Vynechané společné kontroly rizika | app_v8_fly přiřazuje hooks, legacy open_trade je nevolá; EMA je volá | Opravit a převést dva expectedFailure testy na úspěšné |
+| Vynechané společné kontroly rizika | Opraveno 11. 10.: obě části používají bestof_portfolio.entry_budget | Dva původní expectedFailure testy nyní procházejí, navíc limity po obnově a fail-closed testy |
 | Náklady zahrnuté nesprávně / dvakrát | U historie BEST rozklad přesně sedí | PnL = hrubý pohyb − skluz − poplatky; test zachován |
 | Zvýšení rizika širším SL | Výzkumná varianta upravuje velikost pozice | Peněžní riziko stejné nebo menší; test zachován |
 | Filtr blokující všechny vstupy | Každá testovaná varianta má obchody | Počty kandidátů, blokací a obchodů součástí výsledků |

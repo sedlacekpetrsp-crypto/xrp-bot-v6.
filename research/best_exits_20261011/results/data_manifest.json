@@ -1,0 +1,30 @@
+[
+  {
+    "symbol": "XRPUSDT",
+    "sha256": "abe7483ffaa6c310c0187b2b968dba5c6f820bb1e92f2f1e4d782c49f294036e",
+    "bars": 31968,
+    "start": "2026-06-13T00:00:00+00:00",
+    "end": "2026-10-02T00:00:00+00:00"
+  },
+  {
+    "symbol": "BTCUSDT",
+    "sha256": "51a2ca05895eec00cf89ee3846a3b65a64cd03fbfedf4c68582e7d1806b7a1c1",
+    "bars": 31968,
+    "start": "2026-06-13T00:00:00+00:00",
+    "end": "2026-10-02T00:00:00+00:00"
+  },
+  {
+    "symbol": "ETHUSDT",
+    "sha256": "c9b1481ee8befc5fae1b28da076181acafcd2101f89d38a64eb12f9d574f7eaf",
+    "bars": 31968,
+    "start": "2026-06-13T00:00:00+00:00",
+    "end": "2026-10-02T00:00:00+00:00"
+  },
+  {
+    "symbol": "SOLUSDT",
+    "sha256": "c9c921dbacbfb31cfdccfeacc5bd46446a1276fba8568af31ab495cc06e69ef1",
+    "bars": 31968,
+    "start": "2026-06-13T00:00:00+00:00",
+    "end": "2026-10-02T00:00:00+00:00"
+  }
+]
