@@ -399,40 +399,40 @@ def open_trade(a,price):
     m.last_entry_candle[a['symbol']]=a['candle_time']; m.save_state(); m.log_signal(a,'ENTER',f"{quality} risk={risk_rate*100:.2f}% {m.paper_position['entry_kind']} z={m.paper_position['z_entry']:.2f}")
 
 def accounting_audit():
-    """Read the complete ledger; never repair ambiguous historical balances."""
+    """Read canonical ledger and retained raw records; never mutate accounting."""
     if not m.DATABASE_URL:
         return {'verified':False,'reason':'Full persisted ledger unavailable'}
     with m.get_db() as conn:
         with conn.cursor() as cur:
             cur.execute('SELECT COUNT(*), COALESCE(SUM(pnl),0) FROM v8fixed_trades')
-            count,total=cur.fetchone()
+            raw_count,raw_total=cur.fetchone()
             cur.execute("SELECT state->>'paper_balance' FROM v8fixed_state WHERE id=1")
             saved=cur.fetchone()
-            cur.execute('''SELECT symbol,side,opened_at,entry_price,qty,COUNT(*),SUM(pnl)
-                           FROM v8fixed_trades GROUP BY symbol,side,opened_at,entry_price,qty
-                           HAVING COUNT(*)>1 ORDER BY opened_at''')
+            cur.execute('SELECT trade_id,canonical_trade_id,reason FROM fly_trade_exclusions ORDER BY trade_id')
+            excluded=[dict(trade_id=r[0],canonical_trade_id=r[1],reason=r[2]) for r in cur.fetchall()]
+            cur.execute("""SELECT COUNT(*), COALESCE(SUM(pnl),0) FROM v8fixed_trades t
+                           WHERE NOT EXISTS (SELECT 1 FROM fly_trade_exclusions e WHERE e.trade_id=t.id)""")
+            count,total=cur.fetchone()
+            cur.execute("""SELECT symbol,side,opened_at,entry_price,qty,COUNT(*),SUM(pnl)
+                           FROM v8fixed_trades t
+                           WHERE NOT EXISTS (SELECT 1 FROM fly_trade_exclusions e WHERE e.trade_id=t.id)
+                           GROUP BY symbol,side,opened_at,entry_price,qty HAVING COUNT(*)>1""")
             duplicates=[dict(symbol=r[0],side=r[1],opened_at=r[2].isoformat(),
-                             entry_price=r[3],qty=r[4],count=r[5],net_pnl=r[6])
-                        for r in cur.fetchall()]
-            cur.execute('''WITH ranked AS (
-                SELECT pnl,row_number() OVER (
-                    PARTITION BY symbol,side,opened_at,entry_price,qty
-                    ORDER BY closed_at,id) rn FROM v8fixed_trades
-                ) SELECT COALESCE(SUM(pnl) FILTER (WHERE rn>1),0) FROM ranked''')
-            later_duplicate_pnl=float(cur.fetchone()[0])
+                             entry_price=r[3],qty=r[4],count=r[5],net_pnl=r[6]) for r in cur.fetchall()]
+            cur.execute('SELECT details FROM fly_accounting_reconciliations ORDER BY created_at DESC LIMIT 1')
+            correction=cur.fetchone()
     if not saved or saved[0] is None:
         return {'verified':False,'reason':'Persisted balance unavailable'}
     expected=float(m.STARTING_BALANCE)+float(total)
     difference=float(saved[0])-expected
     return dict(verified=True,trade_count=count,recorded_net_pnl=float(total),
+                raw_trade_count=raw_count,raw_net_pnl=float(raw_total),
                 starting_balance=float(m.STARTING_BALANCE),stored_balance=float(saved[0]),
                 ledger_balance=expected,balance_difference=difference,
                 duplicate_groups=duplicates,reconciled=abs(difference)<1e-6 and not duplicates,
-                later_duplicate_pnl=later_duplicate_pnl,
-                first_close_only_balance=expected-later_duplicate_pnl,
-                difference_if_later_duplicates_excluded=difference+later_duplicate_pnl,
+                exclusions=excluded,last_reconciliation=correction[0] if correction else None,
                 automatic_repair=False,
-                scope='Raw ledger; first-close-only numbers are a sensitivity calculation, not a corrected balance')
+                scope='Canonical PAPER ledger with reviewed duplicate exclusions; raw records retained')
 
 
 def close_trade(price,reason):

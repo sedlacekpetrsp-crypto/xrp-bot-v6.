@@ -167,36 +167,33 @@ class FlyManageTests(unittest.TestCase):
 
 
 class AccountingTests(unittest.TestCase):
-    def test_sensitivity_reports_unexplained_remainder_without_writes(self):
+    def test_canonical_audit_retains_raw_discrepancy_and_exclusions(self):
         queries=[]
         class Cursor:
             def __enter__(self):return self
             def __exit__(self,*a):return False
-            def execute(self,sql):
-                self.sql=sql;queries.append(sql)
-                self.assert_read_only(sql)
-            def assert_read_only(self,sql):
-                if not sql.strip().startswith(('SELECT','WITH')):raise AssertionError('write')
+            def execute(self,sql):self.sql=sql;queries.append(sql)
             def fetchone(self):
-                if 'COUNT(*)' in self.sql:return (287,-839.9706208936245)
-                if 'paper_balance' in self.sql:return ('9327.277655852935',)
-                return (-33.328148182659355,)
+                if 'COUNT(*)' in self.sql:
+                    return (287,-821.7950517690388) if 'NOT EXISTS' in self.sql else (290,-855.1231999516979)
+                if 'paper_balance' in self.sql:return ('9178.20494823096',)
+                return ({'accounting_adjustment':-133.92012856389962},)
             def fetchall(self):
-                return [('XRP','LONG',datetime.now(timezone.utc),1.5,1,2,-10)]
+                if 'trade_id,canonical_trade_id' in self.sql:return [(250,248,'duplicate'),(290,289,'duplicate'),(314,313,'duplicate')]
+                return []
         class Connection:
             def __enter__(self):return self
             def __exit__(self,*a):return False
             def cursor(self):return Cursor()
         module=SimpleNamespace(DATABASE_URL='mock',STARTING_BALANCE=10000,
-                               PAPER_BALANCE=9327.277655852935,get_db=lambda:Connection())
+                               PAPER_BALANCE=9178.20494823096,get_db=lambda:Connection())
         audit=functions('v8_fly_layer.py',{'accounting_audit'},{'m':module})['accounting_audit']
         report=audit()
-        self.assertAlmostEqual(report['balance_difference'],167.248276746559)
-        self.assertAlmostEqual(report['difference_if_later_duplicates_excluded'],133.9201285638996)
-        self.assertAlmostEqual(report['first_close_only_balance'],9193.357527289035)
-        self.assertFalse(report['reconciled']);self.assertFalse(report['automatic_repair'])
-        self.assertEqual(module.PAPER_BALANCE,9327.277655852935)
-        self.assertEqual(len(queries),4)
+        self.assertAlmostEqual(report['balance_difference'],0)
+        self.assertEqual(report['raw_trade_count'],290);self.assertEqual(report['trade_count'],287)
+        self.assertEqual(len(report['exclusions']),3)
+        self.assertTrue(report['reconciled']);self.assertFalse(report['automatic_repair'])
+        self.assertTrue(all(q.strip().startswith('SELECT') for q in queries))
 
 
 class JournalTests(unittest.TestCase):

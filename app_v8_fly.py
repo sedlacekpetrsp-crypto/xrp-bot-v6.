@@ -17,6 +17,7 @@ import lh_whale
 import lh_whale_dashboard
 import liquidity_monitor
 import legacy_fly_recovery
+import fly_accounting_reconcile
 from v8_fly_layer import install
 
 install(base)
@@ -52,7 +53,7 @@ def _portfolio_reference_balance():
     return min(values) if values else 10000.0
 
 # User-requested pause, 2026-10-07. Keep portfolios and trade history intact.
-PAUSED_BOTS = frozenset({"FLY", "FAST", "LEADLAG"})
+PAUSED_BOTS = frozenset({"FLY", "FAST", "LEADLAG", "TV"})
 
 def portfolio_entry_allowed(bot_name, symbol, side):
     """Paused bots cannot enter; existing positions retain their exit management."""
@@ -157,6 +158,7 @@ def _install_pause_cycle(module, bot_name, fly=False):
 _install_pause_cycle(base, "FLY", fly=True)
 _install_pause_cycle(fast, "FAST")
 _install_pause_cycle(leadlag, "LEADLAG")
+_install_pause_cycle(tv, "TV")
 
 app = base.app
 
@@ -166,8 +168,12 @@ async def recover_disabled_scanner_fly():
     # The legacy worker is disabled. Block FLY cycles until the one-time PAPER
     # recovery finishes so no stale manager can settle the same position.
     result = await legacy_fly_recovery.recover(base)
+    if "FLY" not in PAUSED_BOTS:
+        raise ValueError("FLY must remain paused during ledger reconciliation")
+    reconciliation = fly_accounting_reconcile.reconcile(base)
     base.FLY_LEGACY_RECOVERY_PENDING = False
     print("FLY LEGACY RECOVERY",result,flush=True)
+    print("FLY ACCOUNTING RECONCILIATION",reconciliation,flush=True)
 
 _original_analyze = base.analyze
 _original_dashboard = base.dashboard
@@ -282,6 +288,7 @@ async def dashboard_with_pnl_breakdown():
 <div class="card" style="border:2px solid #4fc3f7;background:rgba(79,195,247,.03)">
   <h2 style="color:#4fc3f7">📊 TV CONSENSUS XRP</h2>
   <div class="muted" style="margin-bottom:10px">MA + MACD/Momentum + RSI/Stoch/CCI + ADX • 15m trend • PAPER</div>
+  <div id="tvPause" class="yellow" style="display:none;margin:12px 0;font-weight:700">POZASTAVENO – nové vstupy vypnuté do ověření strategie</div>
   <div id="tvPosition" role="status" aria-live="polite" style="padding:18px;border:2px solid #566475;border-radius:14px;margin-bottom:14px">Načítám stav pozice…</div>
   <div id="tvStats" class="grid"></div>
   <div id="tvSignal" class="coin muted" style="margin-top:10px">Načítám…</div>
@@ -542,6 +549,7 @@ async function refreshTV(){
   const r=await fetch('/tv/status',{cache:'no-store'});
   if(!r.ok)throw new Error('HTTP '+r.status);
   const w=await r.json(),a=w.analysis||{},ts=w.trades||[];
+  document.getElementById('tvPause').style.display=w.trading_paused?'block':'none';
   const p=w.open_position;
   const updated=Date.parse(w.last_scan||'');
   const stale=!Number.isFinite(updated)||Date.now()-updated>60000||Boolean(w.error)||Boolean(w.exit_error);

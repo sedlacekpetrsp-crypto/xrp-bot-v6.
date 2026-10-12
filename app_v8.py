@@ -148,6 +148,11 @@ def init_db():
             cur.execute("ALTER TABLE v8fixed_trades ADD COLUMN IF NOT EXISTS ensemble_score DOUBLE PRECISION")
             cur.execute("ALTER TABLE v8fixed_trades ADD COLUMN IF NOT EXISTS entry_features JSONB")
             cur.execute("ALTER TABLE v8fixed_state ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()")
+            cur.execute('''CREATE TABLE IF NOT EXISTS fly_trade_exclusions (
+                trade_id integer PRIMARY KEY REFERENCES v8fixed_trades(id),
+                canonical_trade_id integer NOT NULL REFERENCES v8fixed_trades(id),
+                reason text NOT NULL,marker text NOT NULL,
+                created_at timestamptz NOT NULL DEFAULT now())''')
         conn.commit()
 
 
@@ -194,7 +199,9 @@ def load_state():
                 cur.execute("""
                     SELECT symbol,side,setup,regime,score,entry_price,exit_price,qty,
                            gross_pnl,fees,pnl,initial_risk_usdc,mae_r,mfe_r,reason,opened_at,closed_at
-                    FROM v8fixed_trades ORDER BY id DESC LIMIT 500
+                    FROM v8fixed_trades t
+                    WHERE NOT EXISTS (SELECT 1 FROM fly_trade_exclusions e WHERE e.trade_id=t.id)
+                    ORDER BY id DESC LIMIT 500
                 """)
                 trade_history = []
                 for r in cur.fetchall():
