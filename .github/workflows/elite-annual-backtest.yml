@@ -24,11 +24,11 @@ jobs:
       - name: Verify unit tests before data download
         run: python -m unittest discover -s elite -p 'test_*.py' -v
       - name: Download checksummed 5m XRP data and evaluate
-        run: python -m elite.evaluate --start 2025-10 --end 2026-09 --output elite-results.json
+        run: python -m elite.evaluate --start 2025-10 --end 2026-09 --strategy v2 --output elite-v2-results.json
       - name: Archive results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: elite-annual-backtest
-          path: elite-results.json
+          name: elite-v2-annual-backtest
+          path: elite-v2-results.json
           if-no-files-found: warn
