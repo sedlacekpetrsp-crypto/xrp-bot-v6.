@@ -55,7 +55,7 @@ def main():
     parser.add_argument("--start",default="2025-10")
     parser.add_argument("--end",default="2026-09")
     parser.add_argument("--output",default="elite-results.json")
-    parser.add_argument("--strategy",choices=["v1","v2","v3"],default="v1")
+    parser.add_argument("--strategy",choices=["v1","v2","v3","v4"],default="v1")
     args=parser.parse_args()
     report=evaluate(load(args.start,args.end),strategy=args.strategy)
     with open(args.output,"w") as f:
