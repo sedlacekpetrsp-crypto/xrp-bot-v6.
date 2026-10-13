@@ -9,13 +9,13 @@ from dataclasses import asdict
 from elite.data_loader import load
 from elite.backtest import backtest
 
-def evaluate(rows):
+def evaluate(rows, strategy='v1'):
     if len(rows)<1200:
         raise ValueError("insufficient candles for chronological evaluation")
     n=len(rows)
     cuts=[0,int(n*0.6),int(n*0.8),n]
     labels=["development","validation","holdout"]
-    result={"total_bars":n,"periods":{}}
+    result={"strategy":strategy,"total_bars":n,"periods":{}}
     for j,label in enumerate(labels):
         start,end=cuts[j],cuts[j+1]
         # Exactly 101 prior candles for indicator warmup; results only
@@ -23,7 +23,7 @@ def evaluate(rows):
         offset=max(0,start-101)
         warm=rows[offset:end]
         candles=[tuple(r[1:5]) for r in warm]
-        summary=backtest(candles)
+        summary=backtest(candles,strategy=strategy)
         # For the first period, all entries are in-period. For later periods,
         # warmup length is 101 and first entry occurs at index 100 or later.
         trades=[t for t in summary["trade_log"] if t.entry_index+offset>=start]
@@ -55,8 +55,9 @@ def main():
     parser.add_argument("--start",default="2025-10")
     parser.add_argument("--end",default="2026-09")
     parser.add_argument("--output",default="elite-results.json")
+    parser.add_argument("--strategy",choices=["v1","v2"],default="v1")
     args=parser.parse_args()
-    report=evaluate(load(args.start,args.end))
+    report=evaluate(load(args.start,args.end),strategy=args.strategy)
     with open(args.output,"w") as f:
         json.dump(report,f,indent=2)
     print(json.dumps(report,indent=2))
