@@ -11,7 +11,7 @@ class Tests(unittest.TestCase):
         p=[100.0]*110
         self.assertIsNone(slow_trend([x-1 for x in p],p,p))
     def test_crossover(self):
-        p=[100.0]*100+[102.0]
+        p=[100.0]*100+[110.0]
         s=slow_trend([x+.1 for x in p],[x-.1 for x in p],p,min_gap=.001)
         self.assertIsNotNone(s)
         self.assertEqual(s.side,'LONG')
