@@ -1,5 +1,9 @@
 name: ELITE annual research backtest
 on:
+  pull_request:
+    paths:
+      - 'elite/**'
+      - '.github/workflows/elite-annual-backtest.yml'
   workflow_dispatch:
   push:
     branches: [elite-research-v1]
