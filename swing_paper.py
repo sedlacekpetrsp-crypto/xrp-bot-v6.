@@ -1,3 +1,4 @@
+import paper_stop_policy
 """Independent forward PAPER portfolios. Public quotes only; no order API.
 Atomic PostgreSQL state/trade commits, row locking, persisted signal deduplication.
 """
@@ -160,6 +161,7 @@ def advance(state, family, quotes, frames, now):
             side='LONG' if side == 1 else 'SHORT',entry_price=entry,qty=qty,stop_loss=stop,
             initial_stop=stop,risk_usdt=qty*loss,best_close=d['close'],last_trail_candle=stamp,
             entry_ms=now,opened_at=iso(now),signal_candle=stamp,setup=CONFIG[family]['label'])
+        paper_stop_policy.apply(s['positions'][sym], FEE, SLIP)
     complete = True; equity = s['balance']
     for sym,p in s['positions'].items():
         q = quotes.get(sym)

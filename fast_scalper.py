@@ -8,6 +8,7 @@ Purpose:
 - One open FAST position at a time across XRP/ETH/SOL.
 """
 from __future__ import annotations
+import paper_stop_policy
 
 import asyncio
 import os
@@ -419,6 +420,7 @@ def open_trade(a, market_price):
         "opened_at": utcnow().isoformat(),
         "candle_time": a.get("candle_time"),
     }
+    paper_stop_policy.apply(p, base.FEE_RATE, base.SLIPPAGE_RATE)
     state["open_position"] = p
     state["last_entry_candle"][a["symbol"]] = a.get("candle_time")
     save_state()

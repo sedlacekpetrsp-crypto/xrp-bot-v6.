@@ -1,3 +1,4 @@
+import paper_stop_policy
 """Additive EMA20/50 4h PAPER strategy for BEST. No exchange order APIs.
 Legacy strategies retain their handlers. Positions, cash and slots are shared.
 """
@@ -106,6 +107,7 @@ def open_ema(core,symbol,a,market_price):
         opened_at=core.utcnow().isoformat(),signal_candle=stamp,
         last_trail_candle=stamp,best_close=float(a['price_closed']),
         fee_rate=FEE,slippage_rate=SLIP,volume_ratio=None,trend='LONG')
+    paper_stop_policy.apply(core.positions[symbol], FEE, SLIP)
     core.last_entry_candle[key]=stamp
     core.last_entry_candle[symbol]=stamp
     core.save_state()

@@ -9,6 +9,7 @@ Idea:
 No live orders are sent.
 """
 from __future__ import annotations
+import paper_stop_policy
 
 import asyncio
 import json
@@ -510,6 +511,7 @@ def open_trade(a, market_price):
         "opened_at": utcnow().isoformat(),
         "candle_time": a["candle_time"],
     }
+    paper_stop_policy.apply(state["open_position"], base.FEE_RATE, base.SLIPPAGE_RATE)
     state["last_entry_candle"] = a["candle_time"]
     state["last_signal"] = {
         "side": side,

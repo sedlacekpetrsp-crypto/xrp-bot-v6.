@@ -1016,3 +1016,12 @@ liquidity_monitor.install(app)
 # News refresh and trading stay active independently of paused FLY.
 news_signal.install(app)
 news_paper.install(app, base)
+
+
+@app.get("/stop-loss-policy")
+async def stop_loss_policy_status():
+    import paper_stop_policy
+    return JSONResponse({"mode": "PAPER", **paper_stop_policy.status(),
+        "bots": ["BEST", "BEST EMA 4h", "BLUE WHALE", "NEWS LONG", "LH WHALE",
+                 "AROON", "SUPERTREND", "FLY", "FAST", "LEADLAG", "TV"],
+        "paused_bots": sorted(PAUSED_BOTS)}, headers={"Cache-Control": "no-store"})

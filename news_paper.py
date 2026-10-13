@@ -1,3 +1,4 @@
+import paper_stop_policy
 """Independent XRP NEWS_LONG PAPER account; no exchange order API.
 Shares read-only FLY market confirmation, never its paused cycle or accounting.
 """
@@ -116,6 +117,7 @@ def advance(state, quote, analysis, news, now, config):
                     stop_loss=stop, take_profit=target, risk_usdc=qty*loss, fee=fee, slip=slip,
                     opened_at=iso(now), headline_keys=keys, headlines=news['headlines'],
                     signal_candle=analysis['candle_time'])
+                paper_stop_policy.apply(s['position'], fee, slip)
                 s['used_headlines'] = sorted(set(s['used_headlines']) | set(keys))
                 s['last_candle'] = analysis['candle_time']
                 reason = 'Otevřen NEWS_LONG v PAPER'

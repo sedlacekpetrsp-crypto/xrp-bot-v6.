@@ -1,3 +1,4 @@
+import paper_stop_policy
 """Independent XRP spot PAPER portfolio with Binance futures confirmation.
 No exchange order routes. Atomic state/trade persistence, no BEST modifications.
 """
@@ -68,6 +69,7 @@ def advance(state, quote, analysis, now):
                         s['position'] = dict(id=f'lh-whale:{stamp}',symbol=SYMBOL,side=analysis['signal'],
                             direction=side,entry_price=entry,entry_market=quote['price'],qty=qty,stop_loss=stop,
                             take_profit=target,risk_usdt=qty*loss,opened_at=iso(now),signal_candle=stamp)
+                        paper_stop_policy.apply(s['position'], FEE, SLIP)
     s['equity_stale'] = not valid
     if valid:
         s['equity'] = s['balance']+(net(s['position'],quote['price'])[0] if s['position'] else 0)

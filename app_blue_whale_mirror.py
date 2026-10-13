@@ -3,6 +3,7 @@ Blue Whale Fibonacci 0.618–0.786 + VWAP reversion — PAPER ONLY.
 Public market data; persistent simulated positions. No live orders.
 """
 from __future__ import annotations
+import paper_stop_policy
 import news_signal
 import whale_trendline
 import asyncio, html, os, re, math, hashlib, time
@@ -404,6 +405,7 @@ def open_paper(signal,side,market_price):
     entry_fee=entry*qty*FEE_RATE
     state["balance"]-=entry_fee
     position={"symbol":signal.get("symbol",SYMBOL),"strategy":signal.get("strategy","LEGACY_TELEGRAM"),"signal_policy":SIGNAL_POLICY_VERSION,"confirmation":signal.get("confirmation"),"source_entry":signal["entry"],"signal_id":signal["id"],"signal_text":signal["text"],"side":side,"entry":entry,"stop":stop,"initial_stop":stop,"tp":tp,"qty":qty,"notional":notional,"risk_dollars":risk,"portfolio_risk":risk_meta,"target_risk_rate":0.03 if trendline else RISK_PER_TRADE,"actual_risk_rate":risk/account_basis,"opened_at":utcnow().isoformat(),"entry_fee":entry_fee,"breakeven":False,"profit_lock":False}
+    paper_stop_policy.apply(position, FEE_RATE, SLIPPAGE_RATE)
     state["open_positions"].append(position)
     _sync_legacy_open_position()
     state["last_signal"]={"symbol":signal.get("symbol",SYMBOL),"strategy":signal.get("strategy"),"id":signal["id"],"side":side,"stop_raw":signal["stop"]["raw"],"accepted_at":utcnow().isoformat()}

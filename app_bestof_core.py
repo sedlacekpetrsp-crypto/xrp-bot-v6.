@@ -1,3 +1,4 @@
+import paper_stop_policy
 import os
 import json
 import asyncio
@@ -595,6 +596,7 @@ def open_trade(symbol, analysis, market_price):
         "trend": analysis.get("trend"),
         "trend_strength": analysis.get("trend_strength"),
     }
+    paper_stop_policy.apply(positions[symbol], FEE_RATE, SLIPPAGE_RATE)
     last_entry_candle[symbol] = analysis["candle_time"]
     save_state()
     print(

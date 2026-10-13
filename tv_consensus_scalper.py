@@ -5,6 +5,7 @@ TradingView Technicals with Binance candles: moving-average consensus,
 oscillator/momentum consensus, ADX strength, and score acceleration.
 """
 from __future__ import annotations
+import paper_stop_policy
 
 import asyncio
 import math
@@ -615,6 +616,7 @@ def open_trade(a, market_price):
         "countertrend":bool(a.get("countertrend")),"opened_at":utcnow().isoformat(),
         "candle_time":a.get("candle_time"),"peak_net":0.0
     }
+    paper_stop_policy.apply(p, base.FEE_RATE, base.SLIPPAGE_RATE)
     state["open_position"]=p
     state["last_entry_candle"]=a.get("candle_time")
     save_state()
