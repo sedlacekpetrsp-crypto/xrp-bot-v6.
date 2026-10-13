@@ -1,0 +1,30 @@
+name: ELITE annual research backtest
+on:
+  workflow_dispatch:
+  push:
+    branches: [elite-research-v1]
+    paths:
+      - 'elite/**'
+      - '.github/workflows/elite-annual-backtest.yml'
+permissions:
+  contents: read
+jobs:
+  annual-backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify unit tests before data download
+        run: python -m unittest discover -s elite -p 'test_*.py' -v
+      - name: Download checksummed 5m XRP data and evaluate
+        run: python -m elite.evaluate --start 2025-10 --end 2026-09 --output elite-results.json
+      - name: Archive results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: elite-annual-backtest
+          path: elite-results.json
+          if-no-files-found: warn
