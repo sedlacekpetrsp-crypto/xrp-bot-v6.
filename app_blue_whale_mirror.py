@@ -41,7 +41,7 @@ WHALE_BREAKEVEN_R=float(os.getenv("WHALE_BREAKEVEN_R","1.2"))
 WHALE_PROFIT_LOCK_R=float(os.getenv("WHALE_PROFIT_LOCK_R","1.8"))
 KLINES_URL="https://data-api.binance.vision/api/v3/klines"
 
-SIGNAL_POLICY_VERSION="fib-vwap-trendline4h-v10-reversion-paused-20261013"
+SIGNAL_POLICY_VERSION="fib-vwap-trendline4h-v11-candidate-evidence-20261013"
 PAUSED_STRATEGIES=frozenset({"VWAP_REVERSION"})
 WHALE_ENTRY_TOLERANCE=float(os.getenv("WHALE_ENTRY_TOLERANCE","0.0035"))
 WHALE_MIN_NET_RR=float(os.getenv("WHALE_MIN_NET_RR","1.6"))
@@ -72,6 +72,7 @@ def _persistent_payload():
         "trendline_seen_keys":state.get("trendline_seen_keys",[]),
         "trendline_last_candle":state.get("trendline_last_candle"),
         "signal_journal":state.get("signal_journal",[])[-500:],
+        "candidate_journal":state.get("candidate_journal",[])[-1000:],
     }
 
 def init_persistence():
@@ -100,7 +101,7 @@ def init_persistence():
             row=conn.execute("SELECT state FROM blue_whale_state WHERE id=1").fetchone()
             if row and isinstance(row[0],dict):
                 saved=row[0]
-                for key in ("balance","equity","trades","seen_signal_ids","last_scan","last_signal","trendline_seen_keys","trendline_last_candle","signal_journal"):
+                for key in ("balance","equity","trades","seen_signal_ids","last_scan","last_signal","trendline_seen_keys","trendline_last_candle","signal_journal","candidate_journal"):
                     if key in saved:
                         state[key]=saved[key]
                 if isinstance(saved.get("open_positions"),list):
@@ -110,6 +111,9 @@ def init_persistence():
                 else:
                     state["open_positions"]=[]
                 _sync_legacy_open_position()
+                # Preserve still-available candidates from the old rolling journal.
+                for observation in saved.get("signal_journal",[]):
+                    retain_candidates([observation],observation.get("seen_at") or utcnow().isoformat())
             else:
                 conn.execute(
                     "INSERT INTO blue_whale_state (id,state,updated_at) VALUES (1,%s,now()) ON CONFLICT (id) DO NOTHING",
@@ -632,10 +636,66 @@ def reversion_review(candidate,technical):
             "profitability_verified":False}
 
 
+def retain_candidates(diagnostics,now):
+    """Keep compact, distinct candidate evidence separately from routine WAIT scans."""
+    journal=state.setdefault("candidate_journal",[])
+    indexed={(r["symbol"],r["strategy"],r["candidate_key"]):r for r in journal}
+    for diag in diagnostics:
+        if not diag.get("candidate_key") or diag.get("error") or diag.get("side") not in ("LONG","SHORT"):
+            continue
+        key=(diag["symbol"],diag["strategy"],diag["candidate_key"])
+        if key in indexed:
+            if now<=indexed[key]["last_seen_at"]:
+                continue
+            indexed[key].update(last_seen_at=now,observations=indexed[key].get("observations",1)+1,
+                                latest_reason=diag.get("reason"))
+            continue
+        item={k:diag.get(k) for k in ("symbol","strategy","candidate_key","side","candidate_entry",
+                                     "candidate_stop","candidate_target","signal_candle","reason","reversion_review")}
+        details=(diag.get("technical_confirmation") or {}).get("details") or {}
+        item.update(first_seen_at=now,last_seen_at=now,observations=1,
+                    technical_details=details,followups={},profitability_verified=False)
+        mark=diag.get("observed_price",(state.get("market_prices") or {}).get(diag["symbol"]))
+        if isinstance(mark,(int,float)) and math.isfinite(mark) and mark>0:
+            item["initial_observed_price"]=mark
+        journal.append(item);indexed[key]=item
+    del journal[:-1000]
+
+
+def observe_candidate_prices(symbol,price):
+    """Sample later marks; no orders, simulated fills, or strategy profitability claims."""
+    if not math.isfinite(price) or price<=0:
+        return
+    now=utcnow();stamp=now.isoformat()
+    for item in state.get("candidate_journal",[]):
+        if item.get("symbol")!=symbol or not item.get("initial_observed_price"):
+            continue
+        elapsed=(now-datetime.fromisoformat(item["first_seen_at"])).total_seconds()/60
+        if elapsed<0 or elapsed>24*60:
+            continue
+        direction=1 if item.get("side")=="LONG" else -1
+        move=direction*(price/item["initial_observed_price"]-1)*100
+        item.update(latest_price=price,price_observed_at=stamp,
+                    sampled_favorable_pct=max(float(item.get("sampled_favorable_pct",0)),move),
+                    sampled_adverse_pct=min(float(item.get("sampled_adverse_pct",0)),move))
+        for horizon in (15,60,240):
+            key=str(horizon)
+            if elapsed>=horizon and key not in item["followups"]:
+                if elapsed>horizon+5:
+                    item["followups"][key]={"missed":True,"observed_at":stamp,
+                                            "actual_elapsed_minutes":elapsed,"scope":"No timely quote; no return inferred"}
+                    continue
+                item["followups"][key]={"price":price,"observed_at":stamp,"actual_elapsed_minutes":elapsed,
+                                        "directional_move_pct":move,
+                                        "estimated_round_trip_cost_pct":2*(FEE_RATE+SLIPPAGE_RATE)*100,
+                                        "scope":"Sampled mark, not a trade result"}
+
+
 def record_signal_checks(diagnostics):
     """Bounded observations, not simulated trades or inferred profitability."""
     journal=state.setdefault("signal_journal",[])
     now=utcnow().isoformat()
+    retain_candidates(diagnostics,now)
     for diag in diagnostics:
         item=dict(diag,seen_at=now)
         mark=(state.get("market_prices") or {}).get(diag.get("symbol"))
@@ -731,6 +791,7 @@ async def bot_loop():
                         price=float(r.json()["price"])
                         if not math.isfinite(price) or price<=0:raise ValueError("Neplatná cena")
                         state.setdefault("market_prices",{})[symbol]=price
+                        observe_candidate_prices(symbol,price)
                         if symbol==SYMBOL:state["market_price"]=price
                         for p in list(state["open_positions"]):
                             if p.get("symbol",SYMBOL)!=symbol:continue

@@ -747,7 +747,7 @@ async def start_whale_worker():
 
 @app.get("/whale/status")
 async def whale_status():
-    data={k:v for k,v in whale.state.items() if k!="signal_journal"}
+    data={k:v for k,v in whale.state.items() if k not in {"signal_journal","candidate_journal"}}
     return JSONResponse({**data,"trendline_stats":whale.whale_trendline.snapshot(whale.state)}, headers={"Cache-Control":"no-store"})
 
 
@@ -756,6 +756,13 @@ async def whale_signal_journal():
     return JSONResponse({"observations":whale.state.get("signal_journal",[]),
                          "capacity":500,"build":whale.SIGNAL_POLICY_VERSION,
                          "scope":"Recorded scan diagnostics and sampled prices; not a backtest"},
+                        headers={"Cache-Control":"no-store"})
+
+
+@app.get("/whale/candidate-journal")
+async def whale_candidate_journal():
+    return JSONResponse({"candidates":whale.state.get("candidate_journal",[]),"capacity":1000,
+                         "scope":"Unique candidates with sampled future marks; not a profitability backtest"},
                         headers={"Cache-Control":"no-store"})
 
 
