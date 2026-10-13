@@ -1,34 +1,34 @@
-name: ELITE V4 annual research backtest
+name: ELITE frozen research evaluation
 on:
-  pull_request:
-    paths:
-      - 'elite/**'
-      - '.github/workflows/elite-annual-backtest.yml'
   workflow_dispatch:
   push:
     branches: [elite-research-v1]
     paths:
-      - 'elite/**'
+      - 'elite/**.py'
+      - 'elite/RESEARCH_PROTOCOL_V5.md'
       - '.github/workflows/elite-annual-backtest.yml'
 permissions:
   contents: read
+concurrency:
+  group: elite-frozen-research
+  cancel-in-progress: false
 jobs:
-  annual-backtest:
+  research:
     runs-on: ubuntu-latest
-    timeout-minutes: 55
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Verify unit tests before data download
+      - name: Verify accounting, causality and strategy tests
         run: python -m unittest discover -s elite -p 'test_*.py' -v
-      - name: Download checksummed 5m XRP data and evaluate
-        run: python -m elite.evaluate --start 2025-10 --end 2026-09 --strategy v4 --output elite-v4-results.json
-      - name: Archive results
+      - name: Checksummed data and predeclared V5-V7 evaluation
+        run: python -u -m elite.research_run --cache /tmp/elite-data --out elite-ci-results
+      - name: Archive full evidence (success is execution, not strategy acceptance)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: elite-v4-annual-backtest
-          path: elite-v4-results.json
-          if-no-files-found: warn
+          name: elite-frozen-research
+          path: elite-ci-results/
+          if-no-files-found: error
