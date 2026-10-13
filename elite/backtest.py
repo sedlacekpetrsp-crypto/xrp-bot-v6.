@@ -6,6 +6,7 @@ subsequent OHLC bars. If both touch in one bar, assume STOP first.
 from dataclasses import dataclass
 from typing import Sequence
 from elite.strategy import signal_from_closed_bars
+from elite.v2_candidate import compression_expansion
 
 @dataclass
 class Trade:
@@ -19,7 +20,7 @@ class Trade:
 
 def backtest(bars: Sequence[tuple], initial_equity=10000.0, risk_fraction=0.005,
              fee_rate=0.0005, slippage_rate=0.0002, max_bars=24,
-             max_notional_fraction=0.35):
+             max_notional_fraction=0.35, strategy='v1'):
     """Bars: (open,high,low,close), sorted oldest to newest; all values > 0.
     Spot OHLCV data supports simulated shorts but not executable spot shorting.
     Short performance is hypothetical until a valid derivatives execution model exists.
@@ -28,14 +29,19 @@ def backtest(bars: Sequence[tuple], initial_equity=10000.0, risk_fraction=0.005,
             0 <= slippage_rate < 0.1 and max_bars >= 1 and initial_equity > 0 and
             0 < max_notional_fraction <= 1):
         raise ValueError("invalid backtest settings")
+    if strategy not in ('v1', 'v2'):
+        raise ValueError('Unknown strategy')
     equity=float(initial_equity)
     trades=[]
     equity_curve=[equity]
     i=100
     while i < len(bars)-1:
         hist=bars[i-100:i+1]
-        sig=signal_from_closed_bars([b[1] for b in hist],[b[2] for b in hist],
-                                    [b[3] for b in hist])
+        highs=[b[1] for b in hist]
+        lows=[b[2] for b in hist]
+        closes=[b[3] for b in hist]
+        sig=(signal_from_closed_bars(highs,lows,closes) if strategy=='v1'
+             else compression_expansion(highs,lows,closes))
         if sig is None:
             i+=1
             continue
