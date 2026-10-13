@@ -1,3 +1,4 @@
+import paper_stop_policy
 from market_data import market_get, market, install_data_health
 import os
 import json
@@ -355,6 +356,7 @@ def open_position(symbol, analysis, market, atr_value):
         "qty":qty,"stop_loss":stop,"take_profit":tp,"initial_stop":stop,"initial_risk_distance":stop_distance,
         "opened_at":utcnow().isoformat(),"entry_candle":analysis["candle_time"],"breakeven":False,
     }
+    paper_stop_policy.apply(positions[symbol], FEE_RATE, SLIPPAGE_RATE)
     last_entry_candle[symbol] = analysis["candle_time"]
     save_state()
     return True

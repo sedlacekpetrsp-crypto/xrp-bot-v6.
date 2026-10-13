@@ -43,4 +43,4 @@ async def liquidity_status():
         "last_error":core.last_error,"balance":core.paper_balance,"positions":core.positions,
         "trades":core.trade_history[:50],"analysis":core.last_analysis,
         "risk_per_trade_pct":core.RISK_PER_TRADE*100,"atr_stop_mult":core.ATR_STOP_MULT,
-        "net_rr":core.NET_RISK_REWARD},headers={"Cache-Control":"no-store"})
+        "net_rr":core.NET_RISK_REWARD,"stop_loss_policy":core.paper_stop_policy.status()},headers={"Cache-Control":"no-store"})
