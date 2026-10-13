@@ -29,9 +29,10 @@ def backtest(bars: Sequence[tuple], initial_equity=10000.0, risk_fraction=0.005,
         raise ValueError("invalid backtest settings")
     equity=float(initial_equity)
     trades=[]
+    equity_curve=[equity]
     i=99
     while i < len(bars)-1:
-        hist=bars[:i+1]
+        hist=bars[max(0,i-100):i+1]
         sig=signal_from_closed_bars([b[1] for b in hist],[b[2] for b in hist],
                                     [b[3] for b in hist])
         if sig is None:
@@ -77,13 +78,19 @@ def backtest(bars: Sequence[tuple], initial_equity=10000.0, risk_fraction=0.005,
         fees=fee_rate*qty*(entry+fill_exit)
         pnl=gross-fees
         equity+=pnl
+        equity_curve.append(equity)
         trades.append(Trade(sig.side,i+1,exit_i,entry,fill_exit,pnl,reason))
         i=exit_i+1  # never overlap positions; no reentry on same exit bar
+    peak=initial_equity
+    max_drawdown=0.0
+    for value in equity_curve:
+        peak=max(peak,value)
+        max_drawdown=max(max_drawdown,(peak-value)/peak)
     wins=sum(t.pnl>0 for t in trades)
     gross_profit=sum(max(t.pnl,0) for t in trades)
     gross_loss=-sum(min(t.pnl,0) for t in trades)
     return {"starting_equity":initial_equity,"ending_equity":equity,
-            "net_pnl":equity-initial_equity,"trades":len(trades),
+            "net_pnl":equity-initial_equity,"max_drawdown_pct":max_drawdown*100,"trades":len(trades),
             "win_rate":wins/len(trades) if trades else None,
             "profit_factor":gross_profit/gross_loss if gross_loss else None,
             "trade_log":trades}
