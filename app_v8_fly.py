@@ -256,6 +256,7 @@ async def dashboard_with_pnl_breakdown():
   <div id="whaleStats" class="grid" style="margin-top:10px"></div>
   <div id="whaleTrendline" class="coin" style="margin-top:10px"></div>
   <div id="whaleSignals" class="coin muted" style="margin-top:10px"></div>
+  <div id="whalePaused" class="yellow" style="margin-top:10px;font-weight:700"></div>
   <div id="whalePosition" class="coin muted" style="margin-top:10px">Načítám…</div>
   <details id="whaleHistory" open style="margin-top:12px"><summary style="cursor:pointer;font-weight:700">Historie obchodů</summary><div id="whaleTrades" style="margin-top:10px"></div></details>
   <div id="whaleHealth" class="muted" style="margin-top:10px">Načítám…</div>
@@ -413,6 +414,7 @@ async function refreshWhale(){
    XRPUSDT:{label:'XRP',accent:'#4fc3f7',bg:'rgba(79,195,247,.08)'}
   };
   const checks=w.signal_checks||[];
+  document.getElementById('whalePaused').textContent=(w.paused_strategies||[]).includes('VWAP_REVERSION')?'VWAP Reversion: POZASTAVENO – nové vstupy vypnuté do ověření':'';
   const grouped={};
   checks.forEach(a=>(grouped[a.symbol]||(grouped[a.symbol]=[])).push(a));
   const order=['BTCUSDT','ETHUSDT','SOLUSDT','XRPUSDT'];

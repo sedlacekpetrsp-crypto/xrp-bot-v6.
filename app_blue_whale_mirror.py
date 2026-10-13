@@ -41,7 +41,8 @@ WHALE_BREAKEVEN_R=float(os.getenv("WHALE_BREAKEVEN_R","1.2"))
 WHALE_PROFIT_LOCK_R=float(os.getenv("WHALE_PROFIT_LOCK_R","1.8"))
 KLINES_URL="https://data-api.binance.vision/api/v3/klines"
 
-SIGNAL_POLICY_VERSION="fib-vwap-trendline4h-v9-rejection-journal-20261011"
+SIGNAL_POLICY_VERSION="fib-vwap-trendline4h-v10-reversion-paused-20261013"
+PAUSED_STRATEGIES=frozenset({"VWAP_REVERSION"})
 WHALE_ENTRY_TOLERANCE=float(os.getenv("WHALE_ENTRY_TOLERANCE","0.0035"))
 WHALE_MIN_NET_RR=float(os.getenv("WHALE_MIN_NET_RR","1.6"))
 WHALE_TREND_EFFICIENCY=float(os.getenv("WHALE_TREND_EFFICIENCY","0.57"))
@@ -50,7 +51,7 @@ WHALE_TREND_VWAP_BARS=int(os.getenv("WHALE_TREND_VWAP_BARS","15"))
 app=FastAPI(title=APP_NAME)
 state={"balance":START_BALANCE,"equity":START_BALANCE,"open_positions":[],"open_position":None,"trades":[],"seen_signal_ids":[],"last_scan":None,"last_signal":None,"status":"starting","error":None,"persistence":"memory","persistence_error":None}
 
-state.update({"mode":"PAPER","build":SIGNAL_POLICY_VERSION,"signal_policy":SIGNAL_POLICY_VERSION,"strategies":["FIB_618_786","VWAP_REVERSION","VWAP_TREND_RECLAIM",whale_trendline.STRATEGY],"entry_status":"Čekám na kontrolu signálů","signal_checks":[],"last_source_scan":None})
+state.update({"mode":"PAPER","build":SIGNAL_POLICY_VERSION,"signal_policy":SIGNAL_POLICY_VERSION,"strategies":["FIB_618_786","VWAP_REVERSION","VWAP_TREND_RECLAIM",whale_trendline.STRATEGY],"paused_strategies":sorted(PAUSED_STRATEGIES),"entry_status":"Čekám na kontrolu signálů","signal_checks":[],"last_source_scan":None})
 
 def utcnow(): return datetime.now(timezone.utc)
 
@@ -334,6 +335,11 @@ def _same_side_too_soon(side, symbol):
     return False
 
 def open_paper(signal,side,market_price):
+    if signal.get("strategy") in PAUSED_STRATEGIES:
+        state["last_signal"]={"id":signal.get("id"),"strategy":signal.get("strategy"),
+                              "rejected":"VWAP Reversion pozastavena do ověření vstupů",
+                              "seen_at":utcnow().isoformat()}
+        return False
     levels=[market_price,signal.get("entry"),signal.get("tp")]
     levels.extend((signal.get("stop") or {}).get(k) for k in ("low","high"))
     if any(not isinstance(v,(int,float)) or not math.isfinite(v) or v<=0 for v in levels):
@@ -601,6 +607,31 @@ async def scan_trendline(client):
     return diag
 
 
+def reversion_review(candidate,technical):
+    """Shadow hypotheses only; neither changes a filter nor places a PAPER trade."""
+    details=technical.get("details") or {}
+    h1,five=details.get("1h") or {},details.get("5m") or {}
+    side=candidate.get("side")
+    rsi=h1.get("rsi")
+    available=isinstance(rsi,(int,float)) and math.isfinite(rsi)
+    stretched=available and ((side=="SHORT" and rsi<20) or (side=="LONG" and rsi>80))
+    values=[five.get(k) for k in ("close","ema20","ema50","ret3")]
+    valid=all(isinstance(v,(int,float)) and math.isfinite(v) for v in values)
+    continuation=valid and ((values[0]<values[1]<values[2] and values[3]<0) if side=="SHORT"
+                            else (values[0]>values[1]>values[2] and values[3]>0))
+    entry=float(candidate["entry"])
+    target=float(candidate["tp"])
+    direction=1 if side=="LONG" else -1
+    entry_fill=entry*(1+direction*SLIPPAGE_RATE)
+    target_fill=target*(1-direction*SLIPPAGE_RATE)
+    fees=(entry_fill+target_fill)*FEE_RATE
+    net=direction*(target_fill-entry_fill)-fees
+    return {"mode":"SHADOW_REVIEW","rsi_1h":rsi,"rsi_available":available,
+            "extreme_rsi_would_block":bool(stretched),"continuation_5m":bool(continuation),
+            "target_net_rate":net/entry_fill,"target_net_to_fees":net/fees if fees>0 else None,
+            "profitability_verified":False}
+
+
 def record_signal_checks(diagnostics):
     """Bounded observations, not simulated trades or inferred profitability."""
     journal=state.setdefault("signal_journal",[])
@@ -650,6 +681,12 @@ async def scan_entries(client, price=None):
                                  stop={"raw":str(candidate["stop"]),"low":candidate["stop"],"high":candidate["stop"],"masked":False})
                 ok,tech=await technical_confirmation(client,symbol,candidate["side"])
                 candidate["technical_confirmation"]=tech
+                if candidate["strategy"]=="VWAP_REVERSION":
+                    diag["reversion_review"]=reversion_review(candidate,tech)
+                if candidate["strategy"] in PAUSED_STRATEGIES:
+                    diag.update(reason="VWAP Reversion pozastavena do ověření vstupů",
+                                trading_paused=True,technical_confirmation=tech)
+                    continue
                 if not ok:
                     h1=(tech.get("details") or {}).get("1h",{})
                     if tech.get("reason")=="BTC_NEWS_CONFLICT":
