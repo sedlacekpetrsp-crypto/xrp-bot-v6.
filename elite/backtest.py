@@ -8,6 +8,7 @@ from typing import Sequence
 from elite.strategy import signal_from_closed_bars
 from elite.v2_candidate import compression_expansion
 from elite.v3_candidate import multi_horizon_momentum
+from elite.v4_candidate import slow_trend
 
 @dataclass
 class Trade:
@@ -30,7 +31,7 @@ def backtest(bars: Sequence[tuple], initial_equity=10000.0, risk_fraction=0.005,
             0 <= slippage_rate < 0.1 and max_bars >= 1 and initial_equity > 0 and
             0 < max_notional_fraction <= 1):
         raise ValueError("invalid backtest settings")
-    if strategy not in ('v1', 'v2', 'v3'):
+    if strategy not in ('v1', 'v2', 'v3', 'v4'):
         raise ValueError('Unknown strategy')
     equity=float(initial_equity)
     trades=[]
@@ -45,8 +46,10 @@ def backtest(bars: Sequence[tuple], initial_equity=10000.0, risk_fraction=0.005,
             sig=signal_from_closed_bars(highs,lows,closes)
         elif strategy=='v2':
             sig=compression_expansion(highs,lows,closes)
-        else:
+        elif strategy=='v3':
             sig=multi_horizon_momentum(highs,lows,closes)
+        else:
+            sig=slow_trend(highs,lows,closes)
         if sig is None:
             i+=1
             continue
