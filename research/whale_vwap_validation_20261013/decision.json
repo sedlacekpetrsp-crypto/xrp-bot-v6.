@@ -1,0 +1,6 @@
+{
+  "promote": false,
+  "reason": "Insufficient trades, stress/asset gates fail, and minute-open replay omits recorded losing ETH fill",
+  "production_strategy_paused": true,
+  "variants_passed": 0
+}

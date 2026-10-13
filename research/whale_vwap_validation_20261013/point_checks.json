@@ -1,0 +1,15 @@
+{
+  "symbol": "ETHUSDT",
+  "signal_minute": "2026-10-13T01:53:00Z",
+  "bar_open": 2463.9,
+  "bar_low": 2462.14,
+  "bar_high": 2464.8,
+  "initial_stop": 2467.4189285714283,
+  "replay_entry_fill": 2463.40722,
+  "replay_stop_rate": 0.0016285202620410619,
+  "recorded_entry_fill": 2462.327436,
+  "recorded_stop_rate": 0.0020677560981488662,
+  "minimum_stop_rate": 0.002,
+  "live_opened_at": "2026-10-13T01:53:21.324939Z",
+  "limitation": "Minute-open fill rejects this recorded trade; actual later quote cleared the stop-distance floor. Signals matched, but replay does not reproduce every live fill."
+}

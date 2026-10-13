@@ -1,0 +1,182 @@
+[
+  {
+    "variant": "baseline",
+    "development": {
+      "net_pnl": -8.886447974708062,
+      "trades": 1,
+      "profit_factor": 0.0,
+      "max_drawdown": 8.886447974708062,
+      "fees": 2.842888900340184,
+      "wins": 0,
+      "by_symbol": {
+        "ETHUSDT": 0,
+        "SOLUSDT": -8.886447974708243
+      },
+      "candidate_count": 547,
+      "rejections": {
+        "stop distance outside quality band": 365,
+        "Nedostate\u010dn\u00fd pom\u011br zisku k riziku po poplatc\u00edch": 181
+      },
+      "window_end_closes": 0
+    },
+    "check": {
+      "net_pnl": 6.4269640506408905,
+      "trades": 2,
+      "profit_factor": 1.7304297140946516,
+      "max_drawdown": 8.798880886995903,
+      "fees": 6.801830250483352,
+      "wins": 1,
+      "by_symbol": {
+        "ETHUSDT": 0,
+        "SOLUSDT": 6.426964050640933
+      },
+      "candidate_count": 621,
+      "rejections": {
+        "Nedostate\u010dn\u00fd pom\u011br zisku k riziku po poplatc\u00edch": 196,
+        "stop distance outside quality band": 423
+      },
+      "window_end_closes": 0
+    },
+    "double_slippage": {
+      "net_pnl": -8.500913522448172,
+      "trades": 1,
+      "profit_factor": 0.0,
+      "max_drawdown": 8.500913522448172,
+      "fees": 3.2544580453476906,
+      "wins": 0,
+      "by_symbol": {
+        "ETHUSDT": 0,
+        "SOLUSDT": -8.500913522448348
+      },
+      "candidate_count": 621,
+      "rejections": {
+        "Nedostate\u010dn\u00fd pom\u011br zisku k riziku po poplatc\u00edch": 232,
+        "stop distance outside quality band": 388
+      },
+      "window_end_closes": 0
+    },
+    "passes_numeric_gate": false
+  },
+  {
+    "variant": "rsi_extremes",
+    "development": {
+      "net_pnl": -8.886447974708062,
+      "trades": 1,
+      "profit_factor": 0.0,
+      "max_drawdown": 8.886447974708062,
+      "fees": 2.842888900340184,
+      "wins": 0,
+      "by_symbol": {
+        "ETHUSDT": 0,
+        "SOLUSDT": -8.886447974708243
+      },
+      "candidate_count": 547,
+      "rejections": {
+        "stop distance outside quality band": 347,
+        "Nedostate\u010dn\u00fd pom\u011br zisku k riziku po poplatc\u00edch": 162,
+        "hypothesis": 37
+      },
+      "window_end_closes": 0
+    },
+    "check": {
+      "net_pnl": 15.225844937636793,
+      "trades": 1,
+      "profit_factor": null,
+      "max_drawdown": 3.676750247768723,
+      "fees": 3.138006459431112,
+      "wins": 1,
+      "by_symbol": {
+        "ETHUSDT": 0,
+        "SOLUSDT": 15.225844937636317
+      },
+      "candidate_count": 621,
+      "rejections": {
+        "hypothesis": 58,
+        "Nedostate\u010dn\u00fd pom\u011br zisku k riziku po poplatc\u00edch": 168,
+        "stop distance outside quality band": 394
+      },
+      "window_end_closes": 0
+    },
+    "double_slippage": {
+      "net_pnl": 0.0,
+      "trades": 0,
+      "profit_factor": null,
+      "max_drawdown": 0.0,
+      "fees": 0,
+      "wins": 0,
+      "by_symbol": {
+        "ETHUSDT": 0,
+        "SOLUSDT": 0
+      },
+      "candidate_count": 621,
+      "rejections": {
+        "hypothesis": 58,
+        "Nedostate\u010dn\u00fd pom\u011br zisku k riziku po poplatc\u00edch": 200,
+        "stop distance outside quality band": 363
+      },
+      "window_end_closes": 0
+    },
+    "passes_numeric_gate": false
+  },
+  {
+    "variant": "rsi_and_5m_continuation",
+    "development": {
+      "net_pnl": 0.0,
+      "trades": 0,
+      "profit_factor": null,
+      "max_drawdown": 0.0,
+      "fees": 0,
+      "wins": 0,
+      "by_symbol": {
+        "ETHUSDT": 0,
+        "SOLUSDT": 0
+      },
+      "candidate_count": 547,
+      "rejections": {
+        "hypothesis": 526,
+        "stop distance outside quality band": 18,
+        "Nedostate\u010dn\u00fd pom\u011br zisku k riziku po poplatc\u00edch": 3
+      },
+      "window_end_closes": 0
+    },
+    "check": {
+      "net_pnl": 0.0,
+      "trades": 0,
+      "profit_factor": null,
+      "max_drawdown": 0.0,
+      "fees": 0,
+      "wins": 0,
+      "by_symbol": {
+        "ETHUSDT": 0,
+        "SOLUSDT": 0
+      },
+      "candidate_count": 621,
+      "rejections": {
+        "hypothesis": 605,
+        "Nedostate\u010dn\u00fd pom\u011br zisku k riziku po poplatc\u00edch": 6,
+        "stop distance outside quality band": 10
+      },
+      "window_end_closes": 0
+    },
+    "double_slippage": {
+      "net_pnl": 0.0,
+      "trades": 0,
+      "profit_factor": null,
+      "max_drawdown": 0.0,
+      "fees": 0,
+      "wins": 0,
+      "by_symbol": {
+        "ETHUSDT": 0,
+        "SOLUSDT": 0
+      },
+      "candidate_count": 621,
+      "rejections": {
+        "hypothesis": 605,
+        "Nedostate\u010dn\u00fd pom\u011br zisku k riziku po poplatc\u00edch": 6,
+        "stop distance outside quality band": 10
+      },
+      "window_end_closes": 0
+    },
+    "passes_numeric_gate": false
+  }
+]
