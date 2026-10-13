@@ -46,3 +46,10 @@ No existing app, Render config, bot branch, live credentials, or order endpoints
 may be changed. Research code and results only on elite-research-v1. No deploy.
 A passing candidate still needs prospective PAPER observation before any live
 proposal; live trading always requires explicit user approval.
+
+## Data-quality amendment before candidate results
+The first download failed strict cadence: March 2023 has 16 missing 5m bars
+between timestamps 1679661300000 and 1679666400000. No prices are imputed.
+Use 2023-04 through 2026-09, development April–December 2023. Validation and
+holdout are unchanged. This is a coverage correction before any V5–V7 results,
+not a performance-based exclusion. Full-month coverage remains mandatory.
