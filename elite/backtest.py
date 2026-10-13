@@ -25,7 +25,8 @@ def backtest(bars: Sequence[tuple], initial_equity=10000.0, risk_fraction=0.005,
     Short performance is hypothetical until a valid derivatives execution model exists.
     """
     if not (0 < risk_fraction <= 0.02 and 0 <= fee_rate < 0.1 and
-            0 <= slippage_rate < 0.1 and max_bars >= 1 and initial_equity > 0 and\n            0 < max_notional_fraction <= 1):
+            0 <= slippage_rate < 0.1 and max_bars >= 1 and initial_equity > 0 and
+            0 < max_notional_fraction <= 1):
         raise ValueError("invalid backtest settings")
     equity=float(initial_equity)
     trades=[]
