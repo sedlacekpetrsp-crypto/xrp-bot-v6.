@@ -30,9 +30,9 @@ def backtest(bars: Sequence[tuple], initial_equity=10000.0, risk_fraction=0.005,
     equity=float(initial_equity)
     trades=[]
     equity_curve=[equity]
-    i=99
+    i=100
     while i < len(bars)-1:
-        hist=bars[max(0,i-100):i+1]
+        hist=bars[i-100:i+1]
         sig=signal_from_closed_bars([b[1] for b in hist],[b[2] for b in hist],
                                     [b[3] for b in hist])
         if sig is None:
