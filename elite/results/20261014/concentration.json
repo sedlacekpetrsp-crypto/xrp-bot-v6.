@@ -1,0 +1,66 @@
+{
+  "v8": {
+    "net_pnl": 199.90552995577673,
+    "largest_win": 94.93682322148197,
+    "largest_3_wins": 276.3122833797788,
+    "net_excluding_largest_win": 104.96870673429476,
+    "net_excluding_largest_3_wins": -76.40675342400209,
+    "top3_share_gross_profit": 0.45326216702390093,
+    "positive_quarters": 7,
+    "total_quarters": 14,
+    "stress_net_pnl": 101.36550417018225,
+    "mean_daily_pnl_95pct_ci": [
+      -0.17758318018506922,
+      0.5128688699702854
+    ],
+    "note": "Arithmetic sensitivity with original ledger and sizing; not a causal rerun without those trades."
+  },
+  "v9": {
+    "net_pnl": -1784.2007532244097,
+    "largest_win": 66.99465940344089,
+    "largest_3_wins": 189.62874899868257,
+    "net_excluding_largest_win": -1851.1954126278506,
+    "net_excluding_largest_3_wins": -1973.8295022230923,
+    "top3_share_gross_profit": 0.12215005529522713,
+    "positive_quarters": 3,
+    "total_quarters": 14,
+    "stress_net_pnl": -2234.181383101134,
+    "mean_daily_pnl_95pct_ci": [
+      -2.1511331457543843,
+      -0.6403082803248825
+    ],
+    "note": "Arithmetic sensitivity with original ledger and sizing; not a causal rerun without those trades."
+  },
+  "v10": {
+    "net_pnl": 925.7975376612212,
+    "largest_win": 1140.2568224047536,
+    "largest_3_wins": 1719.1131877759126,
+    "net_excluding_largest_win": -214.4592847435324,
+    "net_excluding_largest_3_wins": -793.3156501146914,
+    "top3_share_gross_profit": 0.7053131680928428,
+    "positive_quarters": 5,
+    "total_quarters": 14,
+    "stress_net_pnl": 647.9319926234784,
+    "mean_daily_pnl_95pct_ci": [
+      -0.7015600451531547,
+      2.7689399687351197
+    ],
+    "note": "Arithmetic sensitivity with original ledger and sizing; not a causal rerun without those trades."
+  },
+  "v11": {
+    "net_pnl": 660.4659759427068,
+    "largest_win": 342.05184528796053,
+    "largest_3_wins": 723.5426511226615,
+    "net_excluding_largest_win": 318.41413065474626,
+    "net_excluding_largest_3_wins": -63.07667517995469,
+    "top3_share_gross_profit": 0.5900542606280851,
+    "positive_quarters": 6,
+    "total_quarters": 14,
+    "stress_net_pnl": 581.0987393395444,
+    "mean_daily_pnl_95pct_ci": [
+      -0.249869106349174,
+      1.439740770695456
+    ],
+    "note": "Arithmetic sensitivity with original ledger and sizing; not a causal rerun without those trades."
+  }
+}
