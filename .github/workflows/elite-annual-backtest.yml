@@ -1,16 +1,16 @@
-name: ELITE frozen research evaluation
+name: ELITE V8-V11 frozen discovery
 on:
   workflow_dispatch:
   push:
     branches: [elite-research-v1]
     paths:
       - 'elite/**.py'
-      - 'elite/RESEARCH_PROTOCOL_V5.md'
+      - 'elite/PROTOCOL_V8_V11.md'
       - '.github/workflows/elite-annual-backtest.yml'
 permissions:
   contents: read
 concurrency:
-  group: elite-frozen-research
+  group: elite-v8-v11-discovery
   cancel-in-progress: false
 jobs:
   research:
@@ -23,12 +23,12 @@ jobs:
           python-version: '3.11'
       - name: Verify accounting, causality and strategy tests
         run: python -m unittest discover -s elite -p 'test_*.py' -v
-      - name: Checksummed data and predeclared V5-V7 evaluation
-        run: python -u -m elite.research_run --cache /tmp/elite-data --out elite-ci-results
+      - name: Checksummed data and predeclared V8-V11 discovery
+        run: python -u -m elite.batch_v8 --cache /tmp/elite-data --out elite-ci-results
       - name: Archive full evidence (success is execution, not strategy acceptance)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: elite-frozen-research
+          name: elite-v8-v11-discovery
           path: elite-ci-results/
           if-no-files-found: error
