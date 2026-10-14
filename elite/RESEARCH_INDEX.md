@@ -36,11 +36,14 @@ oddělený od ostatních botů na větvi `elite-research-v1`.
 | V26 | Průraz s objemem: +0,89%, záporný stres; horší než bez filtru | REPORT_V26_V27_20261014.md |
 | V27 | Obrat s objemem: −0,88%, pouze37 obchodů | REPORT_V26_V27_20261014.md |
 
+| V28 | Průraz s taker-buy převahou: +14,34%,54 obchodů,2/4 kladné bloky | REPORT_V28_V29_20261014.md |
+| V29 | Zotavení přes převahu taker-sell: −7,33%,1/4 kladné bloky | REPORT_V28_V29_20261014.md |
+
 ## Datový registr
 
-- Říjen 2025–září 2026: opakovaně použito V1–V27. Nikdy znovu neoznačovat
+- Říjen 2025–září 2026: opakovaně použito V1–V29. Nikdy znovu neoznačovat
   jako nedotčený závěrečný test.
-- Duben 2023–září 2026: prohlédnuto při V5–V27; všechna tato data jsou vývojová.
+- Duben 2023–září 2026: prohlédnuto při V5–V29; všechna tato data jsou vývojová.
 - Březen 2023: kontrola kvality našla mezeru 16 svíček. Data nebyla imputována;
   posun počátku na duben byl zaznamenán před prvními výsledky V5–V7.
 - Roky 2022 a 2021: během této série výzkumu neotevřeny, rezervované pro předem
@@ -56,7 +59,7 @@ oddělený od ostatních botů na větvi `elite-research-v1`.
    nevyhovujícímu výsledku. Levnější skutečné provedení je nutné doložit.
 4. Nedávat novému názvu strategie význam nové nezávislé hypotézy; V12 je
    například přenos V8 na jiný časový rámec a V11 odvozenina V5.
-5. Pamatovat na selekční zkreslení po nejméně dvaceti sedmi zkoušených verzích.
+5. Pamatovat na selekční zkreslení po nejméně dvaceti devíti zkoušených verzích.
    Uváděné intervaly nejsou opravené na mnohonásobné hledání.
 6. Další vstupní pravidla formulovat jako ověřitelnou hypotézu, předem uložit
    parametry a ukázat i neúspěšné pokusy. Neměnit běžící boty.
@@ -76,3 +79,6 @@ rezervovaného testu. V25 přežije stres nákladů, ale neprokazuje stabilitu.
 
 V26–V27: první experiment této série s base-asset volume; evidence a předem
 stanovené cenové kontroly v `results/20261014_v26`. Nový vstup neobnovuje OOS.
+
+V28–V29: směrový taker objem a cenové kontroly v `results/20261014_v28`.
+Směrový filtr nevyřešil stabilitu; žádný kandidát k rezervovanému testu.
