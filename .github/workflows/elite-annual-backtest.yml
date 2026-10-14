@@ -1,16 +1,16 @@
-name: ELITE V32-V33 frozen discovery
+name: ELITE V34-V35 frozen discovery
 on:
   workflow_dispatch:
   push:
     branches: [elite-research-v1]
     paths:
       - 'elite/**.py'
-      - 'elite/PROTOCOL_V32_V33.md'
+      - 'elite/PROTOCOL_V34_V35.md'
       - '.github/workflows/elite-annual-backtest.yml'
 permissions:
   contents: read
 concurrency:
-  group: elite-v32-v33-discovery
+  group: elite-v34-v35-discovery
   cancel-in-progress: false
 jobs:
   research:
@@ -23,12 +23,12 @@ jobs:
           python-version: '3.11'
       - name: Verify accounting, causality and strategy tests
         run: python -m unittest discover -s elite -p 'test_*.py' -v
-      - name: Checksummed data and predeclared V32-V33 discovery
-        run: python -u -m elite.batch_v32 --cache /tmp/elite-data --out elite-ci-results
+      - name: Checksummed data and predeclared V34-V35 discovery
+        run: python -u -m elite.batch_v34 --cache /tmp/elite-data --out elite-ci-results
       - name: Archive full evidence (success is execution, not strategy acceptance)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: elite-v32-v33-discovery
+          name: elite-v34-v35-discovery
           path: elite-ci-results/
           if-no-files-found: error
