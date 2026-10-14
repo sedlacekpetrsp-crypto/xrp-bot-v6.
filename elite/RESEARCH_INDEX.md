@@ -19,12 +19,15 @@ oddělený od ostatních botů na větvi `elite-research-v1`.
 | V12 | Hodinová V8, 161 obchodů; ztrátová i bez nákladů | REPORT_V12_V14_20261014.md |
 | V13 | Zotavení RSI, ztrátové i bez nákladů | REPORT_V12_V14_20261014.md |
 | V14 | Průraz po úzkém rozpětí: hrubý zisk neodolá nákladům | REPORT_V12_V14_20261014.md |
+| V15 | Kombinace +47,39 %, ale jen 2/4 kladné bloky a nadlimitní DD | REPORT_V15_V17_20261014.md |
+| V16 | Režimová kombinace +23,63 %, jen 2/4 kladné bloky a nadlimitní DD | REPORT_V15_V17_20261014.md |
+| V17 | Kombinace +12,15 %, jen 2/4 kladné bloky, koncentrovaný zisk | REPORT_V15_V17_20261014.md |
 
 ## Datový registr
 
-- Říjen 2025–září 2026: opakovaně použito V1–V14. Nikdy znovu neoznačovat
+- Říjen 2025–září 2026: opakovaně použito V1–V17. Nikdy znovu neoznačovat
   jako nedotčený závěrečný test.
-- Duben 2023–září 2026: prohlédnuto při V5–V14; všechna tato data jsou vývojová.
+- Duben 2023–září 2026: prohlédnuto při V5–V17; všechna tato data jsou vývojová.
 - Březen 2023: kontrola kvality našla mezeru 16 svíček. Data nebyla imputována;
   posun počátku na duben byl zaznamenán před prvními výsledky V5–V7.
 - Roky 2022 a 2021: během této série výzkumu neotevřeny, rezervované pro předem
@@ -40,10 +43,10 @@ oddělený od ostatních botů na větvi `elite-research-v1`.
    nevyhovujícímu výsledku. Levnější skutečné provedení je nutné doložit.
 4. Nedávat novému názvu strategie význam nové nezávislé hypotézy; V12 je
    například přenos V8 na jiný časový rámec a V11 odvozenina V5.
-5. Pamatovat na selekční zkreslení po nejméně čtrnácti zkoušených verzích.
+5. Pamatovat na selekční zkreslení po nejméně sedmnácti zkoušených verzích.
    Uváděné intervaly nejsou opravené na mnohonásobné hledání.
 6. Další vstupní pravidla formulovat jako ověřitelnou hypotézu, předem uložit
    parametry a ukázat i neúspěšné pokusy. Neměnit běžící boty.
 
 Úplná evidence je v adresářích `results/20261013`, `results/20261014` a
-`results/20261014_v12`. Protokoly mají vlastní soubory pro každou sadu.
+`results/20261014_v12` a `results/20261014_v15`. Protokoly mají vlastní soubory pro každou sadu.
