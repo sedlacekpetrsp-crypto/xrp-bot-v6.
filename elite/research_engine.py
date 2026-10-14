@@ -117,7 +117,7 @@ def simulate(rows, signals, start=0, end=None, fee=.001, slip=.0003, half_spread
                 costs+=qty*(entry-o+entry*fee)
                 pos=dict(qty=qty,stop=stop,target=entry+signal.target_distance if signal.target_distance else 0,
                          before=before,index=i,expiry=i+signal.max_bars if signal.max_bars else 0,
-                         source=getattr(signal,'source',None))
+                         source=getattr(signal,'source',None),trail_distance=getattr(signal,'trail_distance',0))
         if pos:
             px=None; reason=None
             if l<=pos['stop']: px=min(o,pos['stop']); reason='STOP'
@@ -140,6 +140,9 @@ def simulate(rows, signals, start=0, end=None, fee=.001, slip=.0003, half_spread
             ledger.append(dict(entry_index=pos['index'],exit_index=i,entry_timestamp=rows[pos['index']][0],exit_timestamp=ts,
                                pnl=cash-pos['before'],reason='BOUNDARY',**({'source':pos['source']} if pos.get('source') else {})))
             pos=None
+        # Ratchet from this CLOSED candle only; new stop becomes active next bar.
+        if pos and pos['trail_distance']>0:
+            pos['stop']=max(pos['stop'],c-pos['trail_distance'])
         equity=liq(c)
         peak=max(peak,equity); dd=max(dd,(peak-equity)/peak)
         bound_peak=max(bound_peak,equity); bound_dd=max(bound_dd,(bound_peak-equity)/bound_peak)
