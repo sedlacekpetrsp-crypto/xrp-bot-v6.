@@ -39,11 +39,14 @@ oddělený od ostatních botů na větvi `elite-research-v1`.
 | V28 | Průraz s taker-buy převahou: +14,34%,54 obchodů,2/4 kladné bloky | REPORT_V28_V29_20261014.md |
 | V29 | Zotavení přes převahu taker-sell: −7,33%,1/4 kladné bloky | REPORT_V28_V29_20261014.md |
 
+| V30 | Měsíční výběr180d: +10,69%, DD5,79%,2/4 kladné bloky | REPORT_V30_V31_20261014.md |
+| V31 | Výběr180d+90d: +7,36%, DD4,16%,51 obchodů a nejistota | REPORT_V30_V31_20261014.md |
+
 ## Datový registr
 
-- Říjen 2025–září 2026: opakovaně použito V1–V29. Nikdy znovu neoznačovat
+- Říjen 2025–září 2026: opakovaně použito V1–V31. Nikdy znovu neoznačovat
   jako nedotčený závěrečný test.
-- Duben 2023–září 2026: prohlédnuto při V5–V29; všechna tato data jsou vývojová.
+- Duben 2023–září 2026: prohlédnuto při V5–V31; všechna tato data jsou vývojová.
 - Březen 2023: kontrola kvality našla mezeru 16 svíček. Data nebyla imputována;
   posun počátku na duben byl zaznamenán před prvními výsledky V5–V7.
 - Roky 2022 a 2021: během této série výzkumu neotevřeny, rezervované pro předem
@@ -59,7 +62,7 @@ oddělený od ostatních botů na větvi `elite-research-v1`.
    nevyhovujícímu výsledku. Levnější skutečné provedení je nutné doložit.
 4. Nedávat novému názvu strategie význam nové nezávislé hypotézy; V12 je
    například přenos V8 na jiný časový rámec a V11 odvozenina V5.
-5. Pamatovat na selekční zkreslení po nejméně dvaceti devíti zkoušených verzích.
+5. Pamatovat na selekční zkreslení po nejméně třiceti jedné zkoušených verzích.
    Uváděné intervaly nejsou opravené na mnohonásobné hledání.
 6. Další vstupní pravidla formulovat jako ověřitelnou hypotézu, předem uložit
    parametry a ukázat i neúspěšné pokusy. Neměnit běžící boty.
@@ -82,3 +85,6 @@ stanovené cenové kontroly v `results/20261014_v26`. Nový vstup neobnovuje OOS
 
 V28–V29: směrový taker objem a cenové kontroly v `results/20261014_v28`.
 Směrový filtr nevyřešil stabilitu; žádný kandidát k rezervovanému testu.
+
+V30–V31: kauzální měsíční volba ze6 pevných strategií,432 uložených skóre
+a úplná evidence v `results/20261014_v30`. Kauzalita výběru není nezávislé OOS.
