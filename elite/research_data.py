@@ -7,12 +7,14 @@ from elite.data_loader import months, BASE
 from elite.research_engine import validate
 
 
-def download(cache, month):
-    p=Path(cache)/f'XRPUSDT-5m-{month}.zip'
+def download(cache, month, symbol='XRPUSDT'):
+    if symbol not in ('XRPUSDT','BTCUSDT'):raise ValueError('unsupported symbol')
+    base=BASE.replace('/XRPUSDT/','/'+symbol+'/')
+    p=Path(cache)/f'{symbol}-5m-{month}.zip'
     p.parent.mkdir(parents=True,exist_ok=True)
     check=p.with_suffix('.sha256')
     if not p.exists() or not check.exists():
-        url=BASE+'/'+p.name
+        url=base+'/'+p.name
         with urllib.request.urlopen(url,timeout=60) as r: raw=r.read()
         with urllib.request.urlopen(url+'.CHECKSUM',timeout=60) as r: expected=r.read().decode().split()[0].lower()
         if hashlib.sha256(raw).hexdigest()!=expected: raise ValueError('checksum mismatch')
@@ -33,12 +35,12 @@ def download(cache, month):
     following=int(datetime(y+1 if m==12 else y,1 if m==12 else m+1,1,tzinfo=timezone.utc).timestamp()*1000)
     if rows[0][0]!=first or rows[-1][0]!=following-300000 or len(rows)!=(following-first)//300000:
         raise ValueError('incomplete month '+month)
-    return rows,dict(month=month,sha256=expected,bars=len(rows),url=BASE+'/'+p.name)
+    return rows,dict(month=month,sha256=expected,bars=len(rows),url=base+'/'+p.name)
 
 
-def load_cached(cache,start='2023-04',end='2026-09'):
+def load_cached(cache,start='2023-04',end='2026-09',symbol='XRPUSDT'):
     with ThreadPoolExecutor(max_workers=6) as pool:
-        parts=list(pool.map(lambda month:download(cache,month),months(start,end)))
+        parts=list(pool.map(lambda month:download(cache,month,symbol),months(start,end)))
     rows=[r for part,_ in parts for r in part]
     validate(rows)
     return rows,[manifest for _,manifest in parts]

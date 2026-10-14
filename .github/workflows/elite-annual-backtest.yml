@@ -1,16 +1,16 @@
-name: ELITE V15-V17 frozen discovery
+name: ELITE V18-V20 frozen discovery
 on:
   workflow_dispatch:
   push:
     branches: [elite-research-v1]
     paths:
       - 'elite/**.py'
-      - 'elite/PROTOCOL_V15_V17.md'
+      - 'elite/PROTOCOL_V18_V20.md'
       - '.github/workflows/elite-annual-backtest.yml'
 permissions:
   contents: read
 concurrency:
-  group: elite-v15-v17-discovery
+  group: elite-v18-v20-discovery
   cancel-in-progress: false
 jobs:
   research:
@@ -23,12 +23,12 @@ jobs:
           python-version: '3.11'
       - name: Verify accounting, causality and strategy tests
         run: python -m unittest discover -s elite -p 'test_*.py' -v
-      - name: Checksummed data and predeclared V15-V17 discovery
-        run: python -u -m elite.batch_v15 --cache /tmp/elite-data --out elite-ci-results
+      - name: Checksummed data and predeclared V18-V20 discovery
+        run: python -u -m elite.batch_v18 --cache /tmp/elite-data --out elite-ci-results
       - name: Archive full evidence (success is execution, not strategy acceptance)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: elite-v15-v17-discovery
+          name: elite-v18-v20-discovery
           path: elite-ci-results/
           if-no-files-found: error
