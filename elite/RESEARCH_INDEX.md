@@ -30,11 +30,14 @@ oddělený od ostatních botů na větvi `elite-research-v1`.
 | V22 | Výstup při oslabení BTC: +42,81 %, DD 9,60 %, jen 2/4 kladné bloky | REPORT_V21_V23_20261014.md |
 | V23 | Kombinace výstupů: +6,06 %, záporný zátěžový test | REPORT_V21_V23_20261014.md |
 
+| V24 | Návrat nad proražené minimum: −0,04%, náklady a zpoždění ruší výhodu | REPORT_V24_V25_20261014.md |
+| V25 | Návrat k proraženému maximu: +10,07%, jen2/4 kladné bloky | REPORT_V24_V25_20261014.md |
+
 ## Datový registr
 
-- Říjen 2025–září 2026: opakovaně použito V1–V23. Nikdy znovu neoznačovat
+- Říjen 2025–září 2026: opakovaně použito V1–V25. Nikdy znovu neoznačovat
   jako nedotčený závěrečný test.
-- Duben 2023–září 2026: prohlédnuto při V5–V23; všechna tato data jsou vývojová.
+- Duben 2023–září 2026: prohlédnuto při V5–V25; všechna tato data jsou vývojová.
 - Březen 2023: kontrola kvality našla mezeru 16 svíček. Data nebyla imputována;
   posun počátku na duben byl zaznamenán před prvními výsledky V5–V7.
 - Roky 2022 a 2021: během této série výzkumu neotevřeny, rezervované pro předem
@@ -50,7 +53,7 @@ oddělený od ostatních botů na větvi `elite-research-v1`.
    nevyhovujícímu výsledku. Levnější skutečné provedení je nutné doložit.
 4. Nedávat novému názvu strategie význam nové nezávislé hypotézy; V12 je
    například přenos V8 na jiný časový rámec a V11 odvozenina V5.
-5. Pamatovat na selekční zkreslení po nejméně dvaceti třech zkoušených verzích.
+5. Pamatovat na selekční zkreslení po nejméně dvaceti pěti zkoušených verzích.
    Uváděné intervaly nejsou opravené na mnohonásobné hledání.
 6. Další vstupní pravidla formulovat jako ověřitelnou hypotézu, předem uložit
    parametry a ukázat i neúspěšné pokusy. Neměnit běžící boty.
@@ -64,3 +67,6 @@ nedělá již prohlédnuté XRP období nezávislým testem.
 
 V21–V23: evidence v `results/20261014_v21`. Výstupní varianty V18 snížily
 propad, ale nevyřešily stabilitu mezi obdobími. Podmínky nebyly změkčeny.
+
+V24–V25: evidence a diagnostika v `results/20261014_v24`; žádný postup do
+rezervovaného testu. V25 přežije stres nákladů, ale neprokazuje stabilitu.
