@@ -90,7 +90,8 @@ def simulate(rows, signals, start=0, end=None, fee=.001, slip=.0003, half_spread
         return cash if pos is None else cash+pos['qty']*price*(1-adverse)*(1-fee)
     for i in range(start,end):
         ts,o,h,l,c=rows[i]
-        signal=signals.get(i-1,Decision())
+        signal=(signals.for_position(i-1,pos.get('source') if pos else None)
+                if hasattr(signals,'for_position') else signals.get(i-1,Decision()))
         just_exited=False
         # Existing orders and gap stops take precedence over new signals.
         if pos:
@@ -104,7 +105,7 @@ def simulate(rows, signals, start=0, end=None, fee=.001, slip=.0003, half_spread
                 costs+=pos['qty']*(px-fill+fill*fee)
                 cash+=proceeds
                 ledger.append(dict(entry_index=pos['index'],exit_index=i,entry_timestamp=rows[pos['index']][0],exit_timestamp=ts,
-                                   pnl=cash-pos['before'],reason=reason))
+                                   pnl=cash-pos['before'],reason=reason,**({'source':pos['source']} if pos.get('source') else {})))
                 pos=None; just_exited=True
         if pos is None and not just_exited and signal.stop_distance>0:
             entry=o*(1+adverse); stop=entry-signal.stop_distance
@@ -115,7 +116,8 @@ def simulate(rows, signals, start=0, end=None, fee=.001, slip=.0003, half_spread
                 before=cash; cash-=qty*entry*(1+fee)
                 costs+=qty*(entry-o+entry*fee)
                 pos=dict(qty=qty,stop=stop,target=entry+signal.target_distance if signal.target_distance else 0,
-                         before=before,index=i,expiry=i+signal.max_bars if signal.max_bars else 0)
+                         before=before,index=i,expiry=i+signal.max_bars if signal.max_bars else 0,
+                         source=getattr(signal,'source',None))
         if pos:
             px=None; reason=None
             if l<=pos['stop']: px=min(o,pos['stop']); reason='STOP'
@@ -126,7 +128,7 @@ def simulate(rows, signals, start=0, end=None, fee=.001, slip=.0003, half_spread
                 fill=px*(1-adverse); costs+=pos['qty']*(px-fill+fill*fee)
                 cash+=pos['qty']*fill*(1-fee)
                 ledger.append(dict(entry_index=pos['index'],exit_index=i,entry_timestamp=rows[pos['index']][0],exit_timestamp=ts,
-                                   pnl=cash-pos['before'],reason=reason))
+                                   pnl=cash-pos['before'],reason=reason,**({'source':pos['source']} if pos.get('source') else {})))
                 pos=None
                 bound_dd=max(bound_dd,(bound_peak-cash)/bound_peak)
             else:
@@ -136,7 +138,7 @@ def simulate(rows, signals, start=0, end=None, fee=.001, slip=.0003, half_spread
             fill=c*(1-adverse); costs+=pos['qty']*(c-fill+fill*fee)
             cash+=pos['qty']*fill*(1-fee)
             ledger.append(dict(entry_index=pos['index'],exit_index=i,entry_timestamp=rows[pos['index']][0],exit_timestamp=ts,
-                               pnl=cash-pos['before'],reason='BOUNDARY'))
+                               pnl=cash-pos['before'],reason='BOUNDARY',**({'source':pos['source']} if pos.get('source') else {})))
             pos=None
         equity=liq(c)
         peak=max(peak,equity); dd=max(dd,(peak-equity)/peak)
