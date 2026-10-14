@@ -25,6 +25,8 @@ jobs:
         run: python -m unittest discover -s elite -p 'test_*.py' -v
       - name: Checksummed data and predeclared V12-V14 discovery
         run: python -u -m elite.batch_v12 --cache /tmp/elite-data --out elite-ci-results
+      - name: Cost ablation and five-minute latency sensitivity
+        run: python -u -m elite.robustness_v12 --cache /tmp/elite-data --out elite-ci-results
       - name: Archive full evidence (success is execution, not strategy acceptance)
         if: always()
         uses: actions/upload-artifact@v4
