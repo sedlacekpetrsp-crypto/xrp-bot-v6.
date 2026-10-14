@@ -22,12 +22,15 @@ oddělený od ostatních botů na větvi `elite-research-v1`.
 | V15 | Kombinace +47,39 %, ale jen 2/4 kladné bloky a nadlimitní DD | REPORT_V15_V17_20261014.md |
 | V16 | Režimová kombinace +23,63 %, jen 2/4 kladné bloky a nadlimitní DD | REPORT_V15_V17_20261014.md |
 | V17 | Kombinace +12,15 %, jen 2/4 kladné bloky, koncentrovaný zisk | REPORT_V15_V17_20261014.md |
+| V18 | Filtr BTC: +47,18 %, 3/4 kladné bloky; nadlimitní DD a nejistota | REPORT_V18_V20_20261014.md |
+| V19 | Relativní síla XRP/BTC: ztrátová souvislá bilance | REPORT_V18_V20_20261014.md |
+| V20 | Dohánění BTC: +2,92 %, jen 32 obchodů a 2/4 kladné bloky | REPORT_V18_V20_20261014.md |
 
 ## Datový registr
 
-- Říjen 2025–září 2026: opakovaně použito V1–V17. Nikdy znovu neoznačovat
+- Říjen 2025–září 2026: opakovaně použito V1–V20. Nikdy znovu neoznačovat
   jako nedotčený závěrečný test.
-- Duben 2023–září 2026: prohlédnuto při V5–V17; všechna tato data jsou vývojová.
+- Duben 2023–září 2026: prohlédnuto při V5–V20; všechna tato data jsou vývojová.
 - Březen 2023: kontrola kvality našla mezeru 16 svíček. Data nebyla imputována;
   posun počátku na duben byl zaznamenán před prvními výsledky V5–V7.
 - Roky 2022 a 2021: během této série výzkumu neotevřeny, rezervované pro předem
@@ -43,10 +46,14 @@ oddělený od ostatních botů na větvi `elite-research-v1`.
    nevyhovujícímu výsledku. Levnější skutečné provedení je nutné doložit.
 4. Nedávat novému názvu strategie význam nové nezávislé hypotézy; V12 je
    například přenos V8 na jiný časový rámec a V11 odvozenina V5.
-5. Pamatovat na selekční zkreslení po nejméně sedmnácti zkoušených verzích.
+5. Pamatovat na selekční zkreslení po nejméně dvaceti zkoušených verzích.
    Uváděné intervaly nejsou opravené na mnohonásobné hledání.
 6. Další vstupní pravidla formulovat jako ověřitelnou hypotézu, předem uložit
    parametry a ukázat i neúspěšné pokusy. Neměnit běžící boty.
 
 Úplná evidence je v adresářích `results/20261013`, `results/20261014` a
 `results/20261014_v12` a `results/20261014_v15`. Protokoly mají vlastní soubory pro každou sadu.
+
+Pro V18–V20 ověřeny také 42 měsíční archivy BTCUSDT, duben 2023–září 2026, přesně
+časově shodné s XRP. Evidence navíc v `results/20261014_v18`. Přidání BTC
+nedělá již prohlédnuté XRP období nezávislým testem.
