@@ -51,16 +51,20 @@ oddělený od ostatních botů na větvi `elite-research-v1`.
 | V36 | V18 OR V28: +51,64%, vyšší DD12,30%,2/4 kladné bloky | REPORT_V36_V37_20261015.md |
 | V37 | V18 AND V28: +9,07%, DD4,70%,pouze36 obchodů | REPORT_V36_V37_20261015.md |
 
+| V38 | Vývoj +51,67 %, prošla původními branami; rezervovaný rok 2022 −0,36 %, zamítnuta | REPORT_V38_V39_20261015.md |
+| V39 | Vývoj +50,91 %, DD10,15 % nad limitem; zamítnuta | REPORT_V38_V39_20261015.md |
+
 ## Datový registr
 
-- Říjen 2025–září 2026: opakovaně použito V1–V37. Nikdy znovu neoznačovat
+- Říjen 2025–září 2026: opakovaně použito V1–V39. Nikdy znovu neoznačovat
   jako nedotčený závěrečný test.
-- Duben 2023–září 2026: prohlédnuto při V5–V37; všechna tato data jsou vývojová.
+- Duben 2023–září 2026: prohlédnuto při V5–V39; všechna tato data jsou vývojová.
 - Březen 2023: kontrola kvality našla mezeru 16 svíček. Data nebyla imputována;
   posun počátku na duben byl zaznamenán před prvními výsledky V5–V7.
-- Roky 2022 a 2021: během této série výzkumu neotevřeny, rezervované pro předem
-  zmrazené kandidáty podle protokolů. Toto neprokazuje, že je nikdo nikdy dříve
-  nepoužil v jiném projektu. Test na minulých letech není dopředná validace.
+- Rok 2022: otevřen 15.10.2026 pouze pro předem zmrazenou V38. Kandidát selhal.
+  Nyní prohlédnutý: další ladění podle tohoto roku není nezávislá validace.
+- Rok 2021: v této sérii nadále neotevřený, rezervovaný. Toto neprokazuje,
+  že jej nikdo nepoužil jinde. Test minulých let není dopředná validace.
 - Nová budoucí data: nezbytná pro skutečnou prospektivní validaci.
 
 ## Co neopakovat
@@ -71,7 +75,7 @@ oddělený od ostatních botů na větvi `elite-research-v1`.
    nevyhovujícímu výsledku. Levnější skutečné provedení je nutné doložit.
 4. Nedávat novému názvu strategie význam nové nezávislé hypotézy; V12 je
    například přenos V8 na jiný časový rámec a V11 odvozenina V5.
-5. Pamatovat na selekční zkreslení po nejméně třiceti sedmi zkoušených verzích.
+5. Pamatovat na selekční zkreslení po nejméně třiceti devíti zkoušených verzích.
    Uváděné intervaly nejsou opravené na mnohonásobné hledání.
 6. Další vstupní pravidla formulovat jako ověřitelnou hypotézu, předem uložit
    parametry a ukázat i neúspěšné pokusy. Neměnit běžící boty.
@@ -113,3 +117,7 @@ Viz `REPORT_HALFYEAR_20261015.md` a `results/20261015_halfyear`.
 
 V36–V37: evidence `results/20261015_v36`; kombinace původních filtrů nevyřešila
 stabilitu. V36 zhoršuje DD, V37 snižuje již malý počet obchodů.
+
+V38–V39: evidence `results/20261015_v38`; V38 jako první prošla vývojovými
+bránami. Beze změny však selhala v rezervovaném roce 2022; evidence
+`results/20261015_v38_challenge`. Žádný kandidát pro PAPER.

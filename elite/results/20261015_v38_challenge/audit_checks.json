@@ -1,0 +1,5 @@
+{
+  "ledgers_reconciled": 6,
+  "events_recomputed": true,
+  "no_entries_during_pause": true
+}
