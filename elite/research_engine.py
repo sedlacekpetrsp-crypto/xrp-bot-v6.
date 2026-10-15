@@ -85,6 +85,8 @@ def simulate(rows, signals, start=0, end=None, fee=.001, slip=.0003, half_spread
         raise ValueError('bad settings')
     adverse=slip+half_spread
     cash=10000.; pos=None; ledger=[]; daily={}
+    notified=0
+    if hasattr(signals,'reset'): signals.reset()
     peak=10000.; dd=0.; bound_peak=10000.; bound_dd=0.; costs=0.
     def liq(price):
         return cash if pos is None else cash+pos['qty']*price*(1-adverse)*(1-fee)
@@ -147,7 +149,13 @@ def simulate(rows, signals, start=0, end=None, fee=.001, slip=.0003, half_spread
         peak=max(peak,equity); dd=max(dd,(peak-equity)/peak)
         bound_peak=max(bound_peak,equity); bound_dd=max(bound_dd,(bound_peak-equity)/bound_peak)
         daily[ts//86400000]=equity
+        # Feedback only after this bar is complete; cannot affect its own fill.
+        if hasattr(signals,'on_closed_trade'):
+            for trade in ledger[notified:]:signals.on_closed_trade(dict(trade))
+            notified=len(ledger)
     gp=sum(max(t['pnl'],0) for t in ledger); gl=-sum(min(t['pnl'],0) for t in ledger)
-    return dict(net_pnl=cash-10000,return_pct=(cash/10000-1)*100,trades=len(ledger),
+    result=dict(net_pnl=cash-10000,return_pct=(cash/10000-1)*100,trades=len(ledger),
                 profit_factor=gp/gl if gl else None,close_mtm_drawdown_pct=dd*100,
                 intrabar_drawdown_bound_pct=bound_dd*100,costs=costs,trade_log=ledger,daily_equity=daily)
+    if hasattr(signals,'events'):result['overlay_events']=list(signals.events)
+    return result
