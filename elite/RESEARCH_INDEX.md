@@ -66,11 +66,13 @@ oddělený od ostatních botů na větvi `elite-research-v1`.
 | V46 | Trendový návrat s ER: −0,50 %, jediný obchod, filtry téměř blokují vstupy | REPORT_V46_V47_20261015.md |
 | V47 | Návrat do pásma: −43,90 %,635 obchodů; ztráta i bez nákladů | REPORT_V46_V47_20261015.md |
 
+| V48 | Trend před korekcí:51 obchodů, −1,88 %,2/4 kladné bloky | REPORT_V48_20261015.md |
+
 ## Datový registr
 
-- Říjen 2025–září 2026: opakovaně použito V1–V47. Nikdy znovu neoznačovat
+- Říjen 2025–září 2026: opakovaně použito V1–V48. Nikdy znovu neoznačovat
   jako nedotčený závěrečný test.
-- Duben 2023–září 2026: prohlédnuto při V5–V47; všechna tato data jsou vývojová.
+- Duben 2023–září 2026: prohlédnuto při V5–V48; všechna tato data jsou vývojová.
 - Březen 2023: kontrola kvality našla mezeru 16 svíček. Data nebyla imputována;
   posun počátku na duben byl zaznamenán před prvními výsledky V5–V7.
 - Rok 2022: otevřen 15.10.2026 pouze pro předem zmrazenou V38. Kandidát selhal.
@@ -87,7 +89,7 @@ oddělený od ostatních botů na větvi `elite-research-v1`.
    nevyhovujícímu výsledku. Levnější skutečné provedení je nutné doložit.
 4. Nedávat novému názvu strategie význam nové nezávislé hypotézy; V12 je
    například přenos V8 na jiný časový rámec a V11 odvozenina V5.
-5. Pamatovat na selekční zkreslení po nejméně čtyřiceti sedmi zkoušených verzích.
+5. Pamatovat na selekční zkreslení po nejméně čtyřiceti osmi zkoušených verzích.
    Uváděné intervaly nejsou opravené na mnohonásobné hledání.
 6. Další vstupní pravidla formulovat jako ověřitelnou hypotézu, předem uložit
    parametry a ukázat i neúspěšné pokusy. Neměnit běžící boty.
@@ -147,3 +149,7 @@ V46–V47: evidence `results/20261015_v46`. V46: souběh návratu a vysoké
 48h efektivity ponechá1 ze609 trendových návratů. Neopakovat tuto kombinaci
 bez kontroly průniku podmínek. V47: samotné překřížení pásma zpět nestačí;
 ztrátová i bez nákladů. Dvouprocentní cíl nezaručuje dostatečný skutečný zisk.
+
+V48: časové oddělení kvalifikace od korekce odstranilo blokaci V46 (51 vs1
+obchod), ale nevytvořilo výhodu po nákladech. Evidence `results/20261015_v48`.
+Původní V46 přesně reprodukována; žádné nasazení, rok2021 neotevřen.
