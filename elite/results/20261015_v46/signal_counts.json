@@ -1,0 +1,10 @@
+{
+  "phase": "POST_RESULT_COUNTS_ONLY",
+  "v46": {
+    "hours": 30496,
+    "reclaim": 1725,
+    "reclaim_and_trend": 609,
+    "reclaim_trend_and_efficiency": 1,
+    "all_conditions": 1
+  }
+}
