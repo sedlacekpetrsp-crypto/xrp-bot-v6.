@@ -45,11 +45,14 @@ oddělený od ostatních botů na větvi `elite-research-v1`.
 | V32 | 15m komprese/průraz: −14,89%, ztráta i při nulových nákladech | REPORT_V32_V33_20261014.md |
 | V33 | 15m zotavení v4h trendu: −8,48%, nedostatečná rezerva na náklady | REPORT_V32_V33_20261014.md |
 
+| V34 | Týdenní VWAP reclaim: −11,13%, časté výstupy a náklady | REPORT_V34_V35_20261014.md |
+| V35 | Návrat k VWAP: −45,07%, ztráta i bez nákladů ve vývojovém souhrnu | REPORT_V34_V35_20261014.md |
+
 ## Datový registr
 
-- Říjen 2025–září 2026: opakovaně použito V1–V33. Nikdy znovu neoznačovat
+- Říjen 2025–září 2026: opakovaně použito V1–V35. Nikdy znovu neoznačovat
   jako nedotčený závěrečný test.
-- Duben 2023–září 2026: prohlédnuto při V5–V33; všechna tato data jsou vývojová.
+- Duben 2023–září 2026: prohlédnuto při V5–V35; všechna tato data jsou vývojová.
 - Březen 2023: kontrola kvality našla mezeru 16 svíček. Data nebyla imputována;
   posun počátku na duben byl zaznamenán před prvními výsledky V5–V7.
 - Roky 2022 a 2021: během této série výzkumu neotevřeny, rezervované pro předem
@@ -65,7 +68,7 @@ oddělený od ostatních botů na větvi `elite-research-v1`.
    nevyhovujícímu výsledku. Levnější skutečné provedení je nutné doložit.
 4. Nedávat novému názvu strategie význam nové nezávislé hypotézy; V12 je
    například přenos V8 na jiný časový rámec a V11 odvozenina V5.
-5. Pamatovat na selekční zkreslení po nejméně třiceti třech zkoušených verzích.
+5. Pamatovat na selekční zkreslení po nejméně třiceti pěti zkoušených verzích.
    Uváděné intervaly nejsou opravené na mnohonásobné hledání.
 6. Další vstupní pravidla formulovat jako ověřitelnou hypotézu, předem uložit
    parametry a ukázat i neúspěšné pokusy. Neměnit běžící boty.
@@ -94,3 +97,6 @@ a úplná evidence v `results/20261014_v30`. Kauzalita výběru není nezávisl�
 
 V32–V33: evidence a diagnostika v `results/20261014_v32`. Častější15m vstupy
 ani pevný2% cílový odstup nevytvořily přijatelnou strategii.
+
+V34–V35: evidence v `results/20261014_v34`; obě zamítnuty. Následuje
+pevně vymezený půlroční audit existujících variant, nikoli další ladění prahů.
