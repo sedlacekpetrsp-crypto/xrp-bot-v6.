@@ -1,16 +1,16 @@
-name: ELITE V44 V45 relative discovery
+name: ELITE V46 V47 regime discovery
 on:
   workflow_dispatch:
   push:
     branches: [elite-research-v1]
     paths:
       - 'elite/**.py'
-      - 'elite/PROTOCOL_V44_V45.md'
+      - 'elite/PROTOCOL_V46_V47.md'
       - '.github/workflows/elite-annual-backtest.yml'
 permissions:
   contents: read
 concurrency:
-  group: elite-v44-v45-discovery
+  group: elite-v46-v47-discovery
   cancel-in-progress: false
 jobs:
   research:
@@ -23,12 +23,12 @@ jobs:
           python-version: '3.11'
       - name: Verify accounting, causality and strategy tests
         run: python -m unittest discover -s elite -p 'test_*.py' -v
-      - name: Fixed relative discovery; no reserved data
-        run: python -u -m elite.batch_v44 --cache /tmp/elite-data --out elite-ci-results
+      - name: Fixed regime discovery; no reserved data
+        run: python -u -m elite.batch_v46 --cache /tmp/elite-data --out elite-ci-results
       - name: Archive full evidence (success is execution, not strategy acceptance)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: elite-v44-v45-discovery
+          name: elite-v46-v47-discovery
           path: elite-ci-results/
           if-no-files-found: error
