@@ -54,11 +54,14 @@ oddělený od ostatních botů na větvi `elite-research-v1`.
 | V38 | Vývoj +51,67 %, prošla původními branami; rezervovaný rok 2022 −0,36 %, zamítnuta | REPORT_V38_V39_20261015.md |
 | V39 | Vývoj +50,91 %, DD10,15 % nad limitem; zamítnuta | REPORT_V38_V39_20261015.md |
 
+| V40 | Denní průraz: +19,91 %, pouze17 obchodů,2/4 kladné bloky | REPORT_V40_V41_20261015.md |
+| V41 | Denní zotavení: −2,38 %,12 obchodů; ztráta i bez nákladů | REPORT_V40_V41_20261015.md |
+
 ## Datový registr
 
-- Říjen 2025–září 2026: opakovaně použito V1–V39. Nikdy znovu neoznačovat
+- Říjen 2025–září 2026: opakovaně použito V1–V41. Nikdy znovu neoznačovat
   jako nedotčený závěrečný test.
-- Duben 2023–září 2026: prohlédnuto při V5–V39; všechna tato data jsou vývojová.
+- Duben 2023–září 2026: prohlédnuto při V5–V41; všechna tato data jsou vývojová.
 - Březen 2023: kontrola kvality našla mezeru 16 svíček. Data nebyla imputována;
   posun počátku na duben byl zaznamenán před prvními výsledky V5–V7.
 - Rok 2022: otevřen 15.10.2026 pouze pro předem zmrazenou V38. Kandidát selhal.
@@ -75,7 +78,7 @@ oddělený od ostatních botů na větvi `elite-research-v1`.
    nevyhovujícímu výsledku. Levnější skutečné provedení je nutné doložit.
 4. Nedávat novému názvu strategie význam nové nezávislé hypotézy; V12 je
    například přenos V8 na jiný časový rámec a V11 odvozenina V5.
-5. Pamatovat na selekční zkreslení po nejméně třiceti devíti zkoušených verzích.
+5. Pamatovat na selekční zkreslení po nejméně čtyřiceti jedné zkoušených verzích.
    Uváděné intervaly nejsou opravené na mnohonásobné hledání.
 6. Další vstupní pravidla formulovat jako ověřitelnou hypotézu, předem uložit
    parametry a ukázat i neúspěšné pokusy. Neměnit běžící boty.
@@ -121,3 +124,6 @@ stabilitu. V36 zhoršuje DD, V37 snižuje již malý počet obchodů.
 V38–V39: evidence `results/20261015_v38`; V38 jako první prošla vývojovými
 bránami. Beze změny však selhala v rezervovaném roce 2022; evidence
 `results/20261015_v38_challenge`. Žádný kandidát pro PAPER.
+
+V40–V41: denní signály nevyřešily stabilitu ani dostatečný vzorek.
+Evidence `results/20261015_v40`; rok2021 neotevřen, žádný PAPER kandidát.
