@@ -138,13 +138,15 @@ async def analyze(core,client):
         [float(r[4]) for r in c5],[float(r[5]) for r in c5],
         [float(r[4]) for r in c15],[float(r[4]) for r in c1h],stop_atr=2.,rr=RR)
     result = dict(candle=stamp,signal='WAIT',reason='Čekám na sweep + reclaim + 15m/1h trend + volume')
-    # Fetch periodically even without a sweep so API availability is visible.
+    # Futures confirmation is required only for an actionable sweep.
     async def get(path):
         r = await client.get('https://fapi.binance.com/futures/data/'+path,
                              params=dict(symbol=SYMBOL,period='5m',limit=8))
         r.raise_for_status(); data = r.json()
         if not isinstance(data,list): raise ValueError('Neplatná odpověď futures API')
         return data
+    if sig is None:
+        return result
     oi,top,taker = await asyncio.gather(*(get(p) for p in ('openInterestHist','topLongShortPositionRatio','takerlongshortRatio')))
     f = futures_confirmation(oi,top,taker,stamp,sig.side if sig else 'LONG')
     result['futures'] = f
