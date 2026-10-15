@@ -37,7 +37,7 @@ async def signal():
             try:
                 data=await asyncio.wait_for(analyze(core,core.client),timeout=20)
             except Exception as exc:
-                print('LH-DATA unavailable',type(exc).__name__,flush=True)
+                print('LH-DATA unavailable',type(exc).__name__,str(exc),flush=True)
                 return JSONResponse(dict(error='Market data unavailable'),status_code=503)
             cache=data;cached_at=time.monotonic()
             print('LH-DATA OK',data['signal'],data['candle'],flush=True)
