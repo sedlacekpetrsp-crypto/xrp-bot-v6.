@@ -100,3 +100,10 @@ ani pevný2% cílový odstup nevytvořily přijatelnou strategii.
 
 V34–V35: evidence v `results/20261014_v34`; obě zamítnuty. Následuje
 pevně vymezený půlroční audit existujících variant, nikoli další ladění prahů.
+
+## Audit půlroků 15.10.2026
+
+Beze změny strategií V5,V18,V22,V28,V30,V31. Společných6 půlroků říjen2023–
+září2026: V18 a V28 mají5/6 kladných, ale nejde o nové brány ani OOS.
+V28 má málo obchodů; měsíční výběr V30/V31 stabilitu jednoznačně nezlepšil.
+Viz `REPORT_HALFYEAR_20261015.md` a `results/20261015_halfyear`.
