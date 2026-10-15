@@ -1,0 +1,29 @@
+{
+  "ledgers_reconciled": 20,
+  "entry_signal_overlap": {
+    "btc_only": 332,
+    "flow_only": 34,
+    "both": 56,
+    "neither": 30074
+  },
+  "results": {
+    "v36": {
+      "stress": 3859.8216283576785,
+      "largest_trade": 2608.1623384562517,
+      "pnl_minus_top3": -118.8117083573652,
+      "daily_mean_ci": [
+        -0.005630212389517285,
+        9.20642519894095
+      ]
+    },
+    "v37": {
+      "stress": 638.9141053421172,
+      "largest_trade": 527.0310179042408,
+      "pnl_minus_top3": -344.8334734517557,
+      "daily_mean_ci": [
+        -0.4769959432419046,
+        2.1812371372335355
+      ]
+    }
+  }
+}
