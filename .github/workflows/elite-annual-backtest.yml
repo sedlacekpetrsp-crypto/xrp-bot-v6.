@@ -1,16 +1,16 @@
-name: ELITE V38-V39 frozen discovery
+name: ELITE V38 reserved 2022 challenge
 on:
   workflow_dispatch:
   push:
     branches: [elite-research-v1]
     paths:
       - 'elite/**.py'
-      - 'elite/PROTOCOL_V38_V39.md'
+      - 'elite/PROTOCOL_CHALLENGE_V38.md'
       - '.github/workflows/elite-annual-backtest.yml'
 permissions:
   contents: read
 concurrency:
-  group: elite-v38-v39-discovery
+  group: elite-v38-2022-challenge
   cancel-in-progress: false
 jobs:
   research:
@@ -23,12 +23,12 @@ jobs:
           python-version: '3.11'
       - name: Verify accounting, causality and strategy tests
         run: python -m unittest discover -s elite -p 'test_*.py' -v
-      - name: Checksummed data and frozen V38-V39 discovery
-        run: python -u -m elite.batch_v38 --cache /tmp/elite-data --out elite-ci-results
+      - name: Reserved 2022 challenge with frozen V38
+        run: python -u -m elite.challenge_v38 --cache /tmp/elite-data --out elite-ci-results
       - name: Archive full evidence (success is execution, not strategy acceptance)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: elite-v38-v39-discovery
+          name: elite-v38-2022-challenge
           path: elite-ci-results/
           if-no-files-found: error
