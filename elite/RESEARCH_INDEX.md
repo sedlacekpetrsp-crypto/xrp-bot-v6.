@@ -60,11 +60,14 @@ oddělený od ostatních botů na větvi `elite-research-v1`.
 | V42 | Uklidnění po růstu: −6,12 %,25 obchodů;0/4 kladné bloky | REPORT_V42_V43_20261015.md |
 | V43 | Zotavení po poklesu: −1,93 %,19 obchodů; ztráta i bez nákladů | REPORT_V42_V43_20261015.md |
 
+| V44 | Návrat poměru XRP/BTC: −4,38 %,103 obchodů,2/4 kladné bloky | REPORT_V44_V45_20261015.md |
+| V45 | Průraz poměru XRP/BTC: −0,28 %,80 obchodů,DD10,11 % | REPORT_V44_V45_20261015.md |
+
 ## Datový registr
 
-- Říjen 2025–září 2026: opakovaně použito V1–V43. Nikdy znovu neoznačovat
+- Říjen 2025–září 2026: opakovaně použito V1–V45. Nikdy znovu neoznačovat
   jako nedotčený závěrečný test.
-- Duben 2023–září 2026: prohlédnuto při V5–V43; všechna tato data jsou vývojová.
+- Duben 2023–září 2026: prohlédnuto při V5–V45; všechna tato data jsou vývojová.
 - Březen 2023: kontrola kvality našla mezeru 16 svíček. Data nebyla imputována;
   posun počátku na duben byl zaznamenán před prvními výsledky V5–V7.
 - Rok 2022: otevřen 15.10.2026 pouze pro předem zmrazenou V38. Kandidát selhal.
@@ -81,7 +84,7 @@ oddělený od ostatních botů na větvi `elite-research-v1`.
    nevyhovujícímu výsledku. Levnější skutečné provedení je nutné doložit.
 4. Nedávat novému názvu strategie význam nové nezávislé hypotézy; V12 je
    například přenos V8 na jiný časový rámec a V11 odvozenina V5.
-5. Pamatovat na selekční zkreslení po nejméně čtyřiceti třech zkoušených verzích.
+5. Pamatovat na selekční zkreslení po nejméně čtyřiceti pěti zkoušených verzích.
    Uváděné intervaly nejsou opravené na mnohonásobné hledání.
 6. Další vstupní pravidla formulovat jako ověřitelnou hypotézu, předem uložit
    parametry a ukázat i neúspěšné pokusy. Neměnit běžící boty.
@@ -133,3 +136,6 @@ Evidence `results/20261015_v40`; rok2021 neotevřen, žádný PAPER kandidát.
 
 V42–V43: evidence `results/20261015_v42`; obě selhaly i bez nákladů.
 Čekání po impulsu samo neprokázalo výhodu. Rok2021 zůstává rezervovaný.
+
+V44–V45: evidence `results/20261015_v44`; větší vzorek neprokázal výhodu
+po nákladech. Obě zamítnuty, rok2021 neotevřen, žádné nasazení.
