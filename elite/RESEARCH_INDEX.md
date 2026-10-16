@@ -160,3 +160,12 @@ Původní V46 přesně reprodukována; žádné nasazení, rok2021 neotevřen.
 V49–V50: evidence `results/20261015_v49`; nejvýše1 vstup za den a výstup
 do UTC půlnoci ověřeny. V49 nestačí na náklady, V50 ztrácí i bez nich.
 Samotný denní limit nezajišťuje ekonomickou výhodu. Žádné nasazení.
+
+## Audit nákladů16.10.2026
+
+Zmrazené V18 a V49,6 hypotetických úrovní nákladů,60 simulací. V18 má DD
+nad10 % i bez nákladů; V49 bez nákladů stále PF<1,2 a zápornou dolní mez CI.
+Při50 % nákladů V49 +2,82 %, ale DD13,69 % a jen2/4 kladné bloky.
+Nižší poplatky tedy samy žádnou nevalidují. Protokol `PROTOCOL_COST_AUDIT.md`,
+zpráva `REPORT_COST_AUDIT_20261016.md`, evidence `results/20261016_cost_audit`.
+Není to nová strategie ani nové OOS. Přijímací brány nezměněny.
