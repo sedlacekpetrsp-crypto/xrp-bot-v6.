@@ -1,5 +1,5 @@
 """Post-fix exact historical replay and real-data prefix causality audit."""
-import argparse,hashlib,json,tarfile,io,unittest
+import argparse,hashlib,json,tarfile,io,unittest,sys
 from pathlib import Path
 from elite.research_data import load_cached
 from elite.research_engine import simulate
@@ -11,7 +11,7 @@ from elite.loss_overlay_v38 import LossOverlay
 def run(cache,out):
     dest=Path(out);dest.mkdir(parents=True,exist_ok=True)
     report={'phase':'ENGINE_VALIDATION_AUDIT_NOT_SELECTION','paper_eligible':[],
-            'replays':{},'real_data_prefix_checks':{},'references':{}}
+            'replays':{},'real_data_prefix_checks':{},'references':{},'python_version':sys.version}
     suite=unittest.defaultTestLoader.discover('elite',pattern='test_*.py')
     capture=io.StringIO();tests=unittest.TextTestRunner(stream=capture).run(suite)
     (dest/'tests.txt').write_text(capture.getvalue())

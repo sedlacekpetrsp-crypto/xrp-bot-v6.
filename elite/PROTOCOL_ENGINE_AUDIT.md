@@ -26,3 +26,10 @@ backtesty použily vadná data. Neotevírat2021 ani2022,žádné nasazení.
 Historické protokoly/hash guards se nemění. Starý challenge V38 může být
 znovu reprodukován na původním zmrazeném commitu; po změně engine hash guard
 správně odmítne považovat nový kód za původní. Tento audit není novým OOS.
+
+Cross-runtime kontrola nalezla pouze rozdíl PF V49 stress:
+Python3.11 0.6442399315550612 vs reference3.12 0.6442399315550604.
+Stejné ledgery,denní equity a ostatní metriky. Sekvenční součet původního
+ledgeru přesně reprodukuje hodnotu3.11. Pro bitově přesný audit sjednoceno
+CI na Python3.12, shodně s lokálním zdrojem reference. Žádná tolerance
+ani změna přijímacích bran; audit nadále vyžaduje přesnou shodu všech polí.
