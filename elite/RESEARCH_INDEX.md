@@ -71,11 +71,13 @@ oddělený od ostatních botů na větvi `elite-research-v1`.
 | V49 | Průraz UTC range: −14,19 %,541 obchodů; náklady ruší hrubou výhodu | REPORT_V49_V50_20261015.md |
 | V50 | Návrat nad low UTC range: −18,22 %,200 obchodů; ztráta i bez nákladů | REPORT_V49_V50_20261015.md |
 
+| V51 | První hodina průrazu: +46,64 %, DD11,48 %, stále97 obchodů; horší než V18 | REPORT_V51_20261016.md |
+
 ## Datový registr
 
-- Říjen 2025–září 2026: opakovaně použito V1–V50. Nikdy znovu neoznačovat
+- Říjen 2025–září 2026: opakovaně použito V1–V51. Nikdy znovu neoznačovat
   jako nedotčený závěrečný test.
-- Duben 2023–září 2026: prohlédnuto při V5–V50; všechna tato data jsou vývojová.
+- Duben 2023–září 2026: prohlédnuto při V5–V51; všechna tato data jsou vývojová.
 - Březen 2023: kontrola kvality našla mezeru 16 svíček. Data nebyla imputována;
   posun počátku na duben byl zaznamenán před prvními výsledky V5–V7.
 - Rok 2022: otevřen 15.10.2026 pouze pro předem zmrazenou V38. Kandidát selhal.
@@ -92,7 +94,7 @@ oddělený od ostatních botů na větvi `elite-research-v1`.
    nevyhovujícímu výsledku. Levnější skutečné provedení je nutné doložit.
 4. Nedávat novému názvu strategie význam nové nezávislé hypotézy; V12 je
    například přenos V8 na jiný časový rámec a V11 odvozenina V5.
-5. Pamatovat na selekční zkreslení po nejméně padesáti zkoušených verzích.
+5. Pamatovat na selekční zkreslení po nejméně padesáti jedné zkoušené verzi.
    Uváděné intervaly nejsou opravené na mnohonásobné hledání.
 6. Další vstupní pravidla formulovat jako ověřitelnou hypotézu, předem uložit
    parametry a ukázat i neúspěšné pokusy. Neměnit běžící boty.
@@ -181,3 +183,7 @@ bězích nemění P/L a neřeší jejich ekonomickou nevýhodu.
 Viz `REPORT_ENGINE_AUDIT_20261016.md`, `results/20261016_engine_audit`.
 Historické hash guards zachovány; původní V38 challenge reprodukovat na
 původním zmrazeném commitu, nikoli měnit jeho očekávané hashe.
+
+V51: evidence `results/20261016_v51`;257 místo388 signálů, ale shodně97 obchodů.
+Jediný vstup posunut o17 hodin, nižší zisk a vyšší DD. Hypotéza nepotvrzena.
+130 testů, kontrola V18 přesně reprodukována, žádné nasazení.

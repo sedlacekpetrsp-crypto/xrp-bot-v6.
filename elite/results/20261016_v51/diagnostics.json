@@ -1,0 +1,61 @@
+{
+  "phase": "POST_RESULT_DIAGNOSTICS_NOT_SELECTION",
+  "control_summary_exact": true,
+  "ledgers_reconciled": 20,
+  "entry_signal_counts": {
+    "v51": 257,
+    "v18_control": 388
+  },
+  "comparisons": {
+    "base": {
+      "common_entries": 96,
+      "only_v51": [
+        {
+          "entry_index": 135096,
+          "exit_index": 136584,
+          "entry_timestamp": 1720836000000,
+          "exit_timestamp": 1721282400000,
+          "pnl": 333.43893438644227,
+          "reason": "SIGNAL"
+        }
+      ],
+      "only_control": [
+        {
+          "entry_index": 134892,
+          "exit_index": 136584,
+          "entry_timestamp": 1720774800000,
+          "exit_timestamp": 1721282400000,
+          "pnl": 369.3790685372551,
+          "reason": "SIGNAL"
+        }
+      ],
+      "common_exit_changes": [],
+      "net_pnl_difference": -53.59237238674723
+    },
+    "stress": {
+      "common_entries": 96,
+      "only_v51": [
+        {
+          "entry_index": 135096,
+          "exit_index": 136584,
+          "entry_timestamp": 1720836000000,
+          "exit_timestamp": 1721282400000,
+          "pnl": 301.0634678548522,
+          "reason": "SIGNAL"
+        }
+      ],
+      "only_control": [
+        {
+          "entry_index": 134892,
+          "exit_index": 136584,
+          "entry_timestamp": 1720774800000,
+          "exit_timestamp": 1721282400000,
+          "pnl": 335.2167125491924,
+          "reason": "SIGNAL"
+        }
+      ],
+      "common_exit_changes": [],
+      "net_pnl_difference": -47.70861438873362
+    }
+  }
+}
