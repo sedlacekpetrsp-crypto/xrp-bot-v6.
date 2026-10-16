@@ -74,12 +74,25 @@ def decisions(rows, candidate):
     return out
 
 
+
+def validate_decision(signal):
+    """Reject malformed consumed instructions instead of silently altering trades."""
+    try:
+        distances=(signal.stop_distance,signal.target_distance,getattr(signal,'trail_distance',0))
+        valid=all(not isinstance(v,bool) and isfinite(v) and v>=0 for v in distances)
+        valid=valid and type(signal.max_bars) is int and signal.max_bars>=0 and type(signal.exit) is bool
+    except (AttributeError,TypeError,ValueError):
+        valid=False
+    if not valid:raise ValueError('invalid trading decision')
+
+
 def simulate(rows, signals, start=0, end=None, fee=.001, slip=.0003, half_spread=.0001):
     """Boundary reset; prior-bar signal may enter at split's first open.
 
     Intrabar DD is an intentionally pessimistic high-before-low bound on bars
     that remain open, not a reconstruction of the unknown tick path.
     """
+    validate(rows)
     end=len(rows) if end is None else end
     if not 0<=start<end<=len(rows) or not all(isfinite(x) and 0<=x<.1 for x in (fee,slip,half_spread)):
         raise ValueError('bad settings')
@@ -94,6 +107,7 @@ def simulate(rows, signals, start=0, end=None, fee=.001, slip=.0003, half_spread
         ts,o,h,l,c=rows[i]
         signal=(signals.for_position(i-1,pos.get('source') if pos else None)
                 if hasattr(signals,'for_position') else signals.get(i-1,Decision()))
+        validate_decision(signal)
         just_exited=False
         # Existing orders and gap stops take precedence over new signals.
         if pos:

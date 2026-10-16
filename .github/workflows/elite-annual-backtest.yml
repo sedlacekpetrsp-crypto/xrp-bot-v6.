@@ -1,16 +1,16 @@
-name: ELITE frozen-strategy cost audit
+name: ELITE engine input and accounting audit
 on:
   workflow_dispatch:
   push:
     branches: [elite-research-v1]
     paths:
       - 'elite/**.py'
-      - 'elite/PROTOCOL_COST_AUDIT.md'
+      - 'elite/PROTOCOL_ENGINE_AUDIT.md'
       - '.github/workflows/elite-annual-backtest.yml'
 permissions:
   contents: read
 concurrency:
-  group: elite-cost-audit
+  group: elite-engine-audit
   cancel-in-progress: false
 jobs:
   research:
@@ -23,12 +23,12 @@ jobs:
           python-version: '3.11'
       - name: Verify accounting, causality and strategy tests
         run: python -m unittest discover -s elite -p 'test_*.py' -v
-      - name: Fixed cost diagnostics; no reserved data
-        run: python -u -m elite.cost_audit --cache /tmp/elite-data --out elite-ci-results
+      - name: Full evidence replay and real-data causality audit
+        run: python -u -m elite.engine_audit --cache /tmp/elite-data --out elite-ci-results
       - name: Archive full evidence (success is execution, not strategy acceptance)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: elite-cost-audit
+          name: elite-engine-audit
           path: elite-ci-results/
           if-no-files-found: error
