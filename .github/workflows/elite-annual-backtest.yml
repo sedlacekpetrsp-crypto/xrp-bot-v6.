@@ -1,16 +1,16 @@
-name: ELITE V53 weekly regression trend discovery
+name: ELITE V54 daily taker imbalance discovery
 on:
   workflow_dispatch:
   push:
     branches: [elite-research-v1]
     paths:
       - 'elite/**.py'
-      - 'elite/PROTOCOL_V53.md'
+      - 'elite/PROTOCOL_V54.md'
       - '.github/workflows/elite-annual-backtest.yml'
 permissions:
   contents: read
 concurrency:
-  group: elite-v53-discovery
+  group: elite-v54-discovery
   cancel-in-progress: false
 jobs:
   research:
@@ -23,12 +23,12 @@ jobs:
           python-version: '3.12'
       - name: Verify accounting, causality and strategy tests
         run: python -m unittest discover -s elite -p 'test_*.py' -v
-      - name: Fixed V53 discovery with unchanged V18 control
-        run: python -u -m elite.batch_v53 --cache /tmp/elite-data --out elite-ci-results
+      - name: Fixed V54 discovery with unchanged V18 control
+        run: python -u -m elite.batch_v54 --cache /tmp/elite-data --out elite-ci-results
       - name: Archive full evidence (success is execution, not strategy acceptance)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: elite-v53-discovery
+          name: elite-v54-discovery
           path: elite-ci-results/
           if-no-files-found: error
