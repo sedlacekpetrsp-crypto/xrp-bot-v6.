@@ -36,7 +36,15 @@ def run(cache,out):
             current=simulate(rows,sig,fee=.001*scale,slip=.0003*scale,half_spread=.0001*scale)
             # Normalize integer date keys exactly as historical JSON storage did.
             normalized=json.loads(json.dumps(current,allow_nan=False))
-            assert normalized==previous[mode],(name,mode,'full evidence changed')
+            if normalized!=previous[mode]:
+                differences={}
+                for field,value in normalized.items():
+                    if value!=previous[mode].get(field):
+                        differences[field]=({'current':value,'reference':previous[mode].get(field)}
+                                            if isinstance(value,(int,float,str)) else {'structured_field_changed':True})
+                print('REPLAY_DIFFERENCES',name,mode,json.dumps(differences),flush=True)
+                (dest/'replay_differences.json').write_text(json.dumps({'candidate':name,'mode':mode,'differences':differences},indent=2))
+                raise AssertionError((name,mode,'full evidence changed'))
             digest=hashlib.sha256(json.dumps(normalized,sort_keys=True,separators=(',',':')).encode()).hexdigest()
             report['replays'][name][mode]={'full_evidence_exact_match':True,'sha256':digest,'trades':current['trades'],
                                          'net_pnl':current['net_pnl'],'daily_points':len(current['daily_equity'])}
