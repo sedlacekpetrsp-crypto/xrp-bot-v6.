@@ -169,3 +169,15 @@ Při50 % nákladů V49 +2,82 %, ale DD13,69 % a jen2/4 kladné bloky.
 Nižší poplatky tedy samy žádnou nevalidují. Protokol `PROTOCOL_COST_AUDIT.md`,
 zpráva `REPORT_COST_AUDIT_20261016.md`, evidence `results/20261016_cost_audit`.
 Není to nová strategie ani nové OOS. Přijímací brány nezměněny.
+
+## Audit simulátoru16.10.2026
+
+Opravena hranice API: simulate validuje OHLC/kadenci i spotřebované pokyny.
+Před opravou prošlo6 ručních účetních fixtures,12 neplatných subpřípadů nebylo
+odmítnuto. Po opravě126 testů bez chyby. Šest úplných souvislých replayů
+V18,V38,V49 (base/stress) přesně shodných s původní evidencí;1450 obchodů.
+Data loader ověřoval vstupní řady již dříve. Oprava tedy ve zkontrolovaných
+bězích nemění P/L a neřeší jejich ekonomickou nevýhodu.
+Viz `REPORT_ENGINE_AUDIT_20261016.md`, `results/20261016_engine_audit`.
+Historické hash guards zachovány; původní V38 challenge reprodukovat na
+původním zmrazeném commitu, nikoli měnit jeho očekávané hashe.
