@@ -1,16 +1,16 @@
-name: ELITE V49 V50 session discovery
+name: ELITE frozen-strategy cost audit
 on:
   workflow_dispatch:
   push:
     branches: [elite-research-v1]
     paths:
       - 'elite/**.py'
-      - 'elite/PROTOCOL_V49_V50.md'
+      - 'elite/PROTOCOL_COST_AUDIT.md'
       - '.github/workflows/elite-annual-backtest.yml'
 permissions:
   contents: read
 concurrency:
-  group: elite-v49-v50-discovery
+  group: elite-cost-audit
   cancel-in-progress: false
 jobs:
   research:
@@ -23,12 +23,12 @@ jobs:
           python-version: '3.11'
       - name: Verify accounting, causality and strategy tests
         run: python -m unittest discover -s elite -p 'test_*.py' -v
-      - name: Fixed session discovery; no reserved data
-        run: python -u -m elite.batch_v49 --cache /tmp/elite-data --out elite-ci-results
+      - name: Fixed cost diagnostics; no reserved data
+        run: python -u -m elite.cost_audit --cache /tmp/elite-data --out elite-ci-results
       - name: Archive full evidence (success is execution, not strategy acceptance)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: elite-v49-v50-discovery
+          name: elite-cost-audit
           path: elite-ci-results/
           if-no-files-found: error
