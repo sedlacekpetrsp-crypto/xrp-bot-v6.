@@ -77,11 +77,13 @@ oddělený od ostatních botů na větvi `elite-research-v1`.
 
 | V53 | Regresní týdenní trend: +1,25 %, DD4,56 %,3/4 kladné; stress −0,75 % | REPORT_V53_20261016.md |
 
+| V54 | Denní taker převaha: +2,98 %,44 obchodů,2/4 kladné; stress −0,40 % | REPORT_V54_20261016.md |
+
 ## Datový registr
 
-- Říjen 2025–září 2026: opakovaně použito V1–V53. Nikdy znovu neoznačovat
+- Říjen 2025–září 2026: opakovaně použito V1–V54. Nikdy znovu neoznačovat
   jako nedotčený závěrečný test.
-- Duben 2023–září 2026: prohlédnuto při V5–V53; všechna tato data jsou vývojová.
+- Duben 2023–září 2026: prohlédnuto při V5–V54; všechna tato data jsou vývojová.
 - Březen 2023: kontrola kvality našla mezeru 16 svíček. Data nebyla imputována;
   posun počátku na duben byl zaznamenán před prvními výsledky V5–V7.
 - Rok 2022: otevřen 15.10.2026 pouze pro předem zmrazenou V38. Kandidát selhal.
@@ -98,7 +100,7 @@ oddělený od ostatních botů na větvi `elite-research-v1`.
    nevyhovujícímu výsledku. Levnější skutečné provedení je nutné doložit.
 4. Nedávat novému názvu strategie význam nové nezávislé hypotézy; V12 je
    například přenos V8 na jiný časový rámec a V11 odvozenina V5.
-5. Pamatovat na selekční zkreslení po nejméně padesáti třech zkoušených verzích.
+5. Pamatovat na selekční zkreslení po nejméně padesáti čtyřech zkoušených verzích.
    Uváděné intervaly nejsou opravené na mnohonásobné hledání.
 6. Další vstupní pravidla formulovat jako ověřitelnou hypotézu, předem uložit
    parametry a ukázat i neúspěšné pokusy. Neměnit běžící boty.
@@ -197,3 +199,6 @@ Bez nákladů jen +1,17 %, PF1,034; po nákladech −4,87 %. Žádné nasazení.
 
 V53: evidence `results/20261016_v53`;77 obchodů, malá výhoda nevydrží stres.
 Bez tří nejlepších obchodů −158,86 USDT.140 testů, žádný kandidát pro PAPER.
+
+V54: evidence `results/20261016_v54`; malý vzorek a nedostatečná nákladová
+rezerva.146 testů, kontrola V18 přesná; žádný PAPER kandidát.
