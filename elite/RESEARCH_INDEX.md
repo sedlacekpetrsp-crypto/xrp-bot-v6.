@@ -73,11 +73,13 @@ oddělený od ostatních botů na větvi `elite-research-v1`.
 
 | V51 | První hodina průrazu: +46,64 %, DD11,48 %, stále97 obchodů; horší než V18 | REPORT_V51_20261016.md |
 
+| V52 | Potvrzené dvojité dno: −4,87 %,125 obchodů,1/4 kladný blok; slabá rezerva na náklady | REPORT_V52_20261016.md |
+
 ## Datový registr
 
-- Říjen 2025–září 2026: opakovaně použito V1–V51. Nikdy znovu neoznačovat
+- Říjen 2025–září 2026: opakovaně použito V1–V52. Nikdy znovu neoznačovat
   jako nedotčený závěrečný test.
-- Duben 2023–září 2026: prohlédnuto při V5–V51; všechna tato data jsou vývojová.
+- Duben 2023–září 2026: prohlédnuto při V5–V52; všechna tato data jsou vývojová.
 - Březen 2023: kontrola kvality našla mezeru 16 svíček. Data nebyla imputována;
   posun počátku na duben byl zaznamenán před prvními výsledky V5–V7.
 - Rok 2022: otevřen 15.10.2026 pouze pro předem zmrazenou V38. Kandidát selhal.
@@ -94,7 +96,7 @@ oddělený od ostatních botů na větvi `elite-research-v1`.
    nevyhovujícímu výsledku. Levnější skutečné provedení je nutné doložit.
 4. Nedávat novému názvu strategie význam nové nezávislé hypotézy; V12 je
    například přenos V8 na jiný časový rámec a V11 odvozenina V5.
-5. Pamatovat na selekční zkreslení po nejméně padesáti jedné zkoušené verzi.
+5. Pamatovat na selekční zkreslení po nejméně padesáti dvou zkoušených verzích.
    Uváděné intervaly nejsou opravené na mnohonásobné hledání.
 6. Další vstupní pravidla formulovat jako ověřitelnou hypotézu, předem uložit
    parametry a ukázat i neúspěšné pokusy. Neměnit běžící boty.
@@ -187,3 +189,6 @@ původním zmrazeném commitu, nikoli měnit jeho očekávané hashe.
 V51: evidence `results/20261016_v51`;257 místo388 signálů, ale shodně97 obchodů.
 Jediný vstup posunut o17 hodin, nižší zisk a vyšší DD. Hypotéza nepotvrzena.
 130 testů, kontrola V18 přesně reprodukována, žádné nasazení.
+
+V52: odlišná cenová formace bez BTC filtru; evidence `results/20261016_v52`.
+Bez nákladů jen +1,17 %, PF1,034; po nákladech −4,87 %. Žádné nasazení.
