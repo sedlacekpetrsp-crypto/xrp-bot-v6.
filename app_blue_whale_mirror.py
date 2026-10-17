@@ -42,7 +42,7 @@ WHALE_BREAKEVEN_R=float(os.getenv("WHALE_BREAKEVEN_R","1.2"))
 WHALE_PROFIT_LOCK_R=float(os.getenv("WHALE_PROFIT_LOCK_R","1.8"))
 KLINES_URL="https://data-api.binance.vision/api/v3/klines"
 
-SIGNAL_POLICY_VERSION="fib-vwap-trendline4h-v11-candidate-evidence-20261013"
+SIGNAL_POLICY_VERSION="fib-vwap-trendline4h-v12-actual-stop-risk-20261017"
 PAUSED_STRATEGIES=frozenset({"VWAP_REVERSION"})
 WHALE_ENTRY_TOLERANCE=float(os.getenv("WHALE_ENTRY_TOLERANCE","0.0035"))
 WHALE_MIN_NET_RR=float(os.getenv("WHALE_MIN_NET_RR","1.6"))
@@ -52,7 +52,7 @@ WHALE_TREND_VWAP_BARS=int(os.getenv("WHALE_TREND_VWAP_BARS","15"))
 app=FastAPI(title=APP_NAME)
 state={"balance":START_BALANCE,"equity":START_BALANCE,"open_positions":[],"open_position":None,"trades":[],"seen_signal_ids":[],"last_scan":None,"last_signal":None,"status":"starting","error":None,"persistence":"memory","persistence_error":None}
 
-state.update({"mode":"PAPER","build":SIGNAL_POLICY_VERSION,"signal_policy":SIGNAL_POLICY_VERSION,"strategies":["FIB_618_786","VWAP_REVERSION","VWAP_TREND_RECLAIM",whale_trendline.STRATEGY],"paused_strategies":sorted(PAUSED_STRATEGIES),"entry_status":"Čekám na kontrolu signálů","signal_checks":[],"last_source_scan":None})
+state.update({"mode":"PAPER","build":SIGNAL_POLICY_VERSION,"signal_policy":SIGNAL_POLICY_VERSION,"strategies":["FIB_618_786","VWAP_REVERSION","VWAP_TREND_RECLAIM",whale_trendline.STRATEGY],"paused_strategies":sorted(PAUSED_STRATEGIES),"entry_risk_policy":"Reject actual widened stop loss above existing cash caps; preserve quantity and target; gaps may exceed estimate","entry_status":"Čekám na kontrolu signálů","signal_checks":[],"last_source_scan":None})
 
 def utcnow(): return datetime.now(timezone.utc)
 
@@ -385,7 +385,8 @@ def open_paper(signal,side,market_price):
     allowance=globals().get("portfolio_risk_allowance")
     if callable(allowance):
         risk,risk_meta=allowance("WHALE_TRENDLINE" if trendline else "WHALE",signal.get("symbol",SYMBOL),side,risk)
-    open_risk=sum(float(p.get("risk_dollars",0.0)) for p in positions)
+    risk_budget=risk
+    open_risk=sum(paper_stop_policy.net_stop_risk(p,FEE_RATE,SLIPPAGE_RATE) for p in positions)
     total_limit=0.0312 if trendline or any(p.get("strategy")==whale_trendline.STRATEGY for p in positions) else MAX_TOTAL_RISK_RATE
     if open_risk+risk > account_basis*total_limit+1e-9:
         state["last_signal"]={"id":signal["id"],"side":side,"stop_raw":signal["stop"]["raw"],"rejected":"max total risk","seen_at":utcnow().isoformat()}
@@ -403,9 +404,16 @@ def open_paper(signal,side,market_price):
         state["last_signal"]={"id":signal["id"],"rejected":"Nedostatečný poměr zisku k riziku po poplatcích"}
         return False
     entry_fee=entry*qty*FEE_RATE
-    state["balance"]-=entry_fee
     position={"symbol":signal.get("symbol",SYMBOL),"strategy":signal.get("strategy","LEGACY_TELEGRAM"),"signal_policy":SIGNAL_POLICY_VERSION,"confirmation":signal.get("confirmation"),"source_entry":signal["entry"],"signal_id":signal["id"],"signal_text":signal["text"],"side":side,"entry":entry,"stop":stop,"initial_stop":stop,"tp":tp,"qty":qty,"notional":notional,"risk_dollars":risk,"portfolio_risk":risk_meta,"target_risk_rate":0.03 if trendline else RISK_PER_TRADE,"actual_risk_rate":risk/account_basis,"opened_at":utcnow().isoformat(),"entry_fee":entry_fee,"breakeven":False,"profit_lock":False}
     paper_stop_policy.apply(position, FEE_RATE, SLIPPAGE_RATE)
+    actual_risk=paper_stop_policy.net_stop_risk(position,FEE_RATE,SLIPPAGE_RATE)
+    cap=min(account_basis*(0.03 if trendline else RISK_PER_TRADE),float((risk_meta or {}).get("risk_cap_usdc",risk_budget)))
+    if actual_risk>cap+1e-9 or open_risk+actual_risk>account_basis*total_limit+1e-9:
+        state["last_signal"]={"id":signal["id"],"side":side,"rejected":"actual stop risk exceeds limit; quantity preserved","stop_loss_risk_net":actual_risk,"risk_cap_usdc":cap,"open_stop_risk_net":open_risk,"seen_at":utcnow().isoformat()}
+        return False
+    position["actual_risk_rate"]=actual_risk/account_basis
+    position["initial_stop_risk_net"]=actual_risk
+    state["balance"]-=entry_fee
     state["open_positions"].append(position)
     _sync_legacy_open_position()
     state["last_signal"]={"symbol":signal.get("symbol",SYMBOL),"strategy":signal.get("strategy"),"id":signal["id"],"side":side,"stop_raw":signal["stop"]["raw"],"accepted_at":utcnow().isoformat()}

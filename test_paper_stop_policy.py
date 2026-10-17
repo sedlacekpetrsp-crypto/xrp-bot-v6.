@@ -66,12 +66,12 @@ class StopOverlay(unittest.TestCase):
         def enter(side,strategy):
             stop,tp=(96,110) if side=='LONG' else (104,90)
             state=copy.deepcopy(w.state)
-            state.update(balance=10000.,open_positions=[],open_position=None,trades=[],seen_signal_ids=[],market_prices={'XRPUSDT':100})
+            state.update(balance=10000.,open_positions=[dict(symbol='ETHUSDT',side='LONG',entry=100,stop=102,qty=99,entry_fee=0,notional=9900,risk_dollars=0)],open_position=None,trades=[],seen_signal_ids=[],market_prices={'XRPUSDT':100})
             with patch.object(w,'state',state),patch.object(w,'save_state',lambda:None):
                 with patch.object(w,'portfolio_entry_allowed',return_value=(True,'ok'),create=True):
                     ok=w.open_paper(dict(id=42,text=side,symbol='XRPUSDT',strategy=strategy,entry=100,tp=tp,stop=dict(low=stop,high=stop,raw=str(stop),masked=False)),side,100)
                     self.assertTrue(ok)
-                    return copy.deepcopy(w.state['open_positions'][0])
+                    return copy.deepcopy(w.state['open_positions'][-1])
         self.compare(lambda:enter('LONG',w.whale_trendline.STRATEGY))
         # FIB quality band is narrower than the 4h trendline band.
         with patch.object(w,'WHALE_MAX_STOP_RATE',.05):

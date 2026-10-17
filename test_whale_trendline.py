@@ -44,7 +44,8 @@ class TrendlineTests(unittest.TestCase):
         self.assertTrue(w.open_paper(self.signal(),'LONG',100))
         p=w.state['open_positions'][0]
         self.assertAlmostEqual(p['risk_dollars'],300)
-        self.assertAlmostEqual(p['actual_risk_rate'],.03)
+        self.assertAlmostEqual(p['actual_risk_rate'],w.paper_stop_policy.net_stop_risk(p,w.FEE_RATE,w.SLIPPAGE_RATE)/10000)
+        self.assertLessEqual(p['actual_risk_rate'],.03)
         self.assertAlmostEqual(p['tp']-p['entry'],2*(p['entry']-p['stop']))
         w.close_paper(p,p['stop'],'SL')
         self.assertLessEqual(-w.state['trades'][0]['net_pnl'],300)

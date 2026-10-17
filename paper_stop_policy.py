@@ -14,6 +14,21 @@ if not math.isfinite(MULTIPLIER) or not 1.0 <= MULTIPLIER <= 1.15:
 POLICY = "PAPER-SL-20261013-KEEP-QTY"
 
 
+def net_stop_risk(position, fee=0.0, slip=0.0):
+    """Estimated net loss at the current stop, including both fees and exit slip.
+
+    Entry already includes entry slippage. A gap can cause a larger loss.
+    """
+    entry = float(position.get("entry_price", position.get("entry")))
+    stop = float(position.get("stop_loss", position.get("stop")))
+    qty = float(position["qty"])
+    side = {"LONG": 1, "SHORT": -1}.get(position.get("side"))
+    if not side or not all(math.isfinite(x) for x in (entry, stop, qty, fee, slip)) or min(entry, stop, qty) <= 0 or fee < 0 or not 0 <= slip < 1:
+        raise ValueError("Invalid PAPER risk inputs")
+    fill = stop * (1 - side * slip)
+    return max(0.0, qty * (side * (entry - fill) + fee * (entry + fill)))
+
+
 def apply(position, fee=0.0, slip=0.0):
     """Widen a newly created loss-side stop once; never change quantity or TP."""
     if MULTIPLIER == 1.0 or position.get("stop_loss_policy") == POLICY:
