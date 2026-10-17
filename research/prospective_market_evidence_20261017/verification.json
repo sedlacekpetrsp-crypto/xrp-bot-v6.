@@ -1,0 +1,41 @@
+{
+  "production_commit": "218a63f2d01842de3308adeb14d37afab88120c0",
+  "deploy_id": "dep-db9gj3m1egvs73f72510",
+  "mode": "OBSERVATION_ONLY",
+  "tests": {
+    "focused_passed": 61,
+    "full_historical_suite_not_claimed": true
+  },
+  "archive": {
+    "interval_seconds": 60,
+    "max_bytes": 134217728,
+    "observed_samples_at_20261017T054057Z": 9,
+    "observed_complete_samples": 9,
+    "source": "binance",
+    "full_checkpoint_bucket": 29870259,
+    "full_sample_sha256": "17fe5282a581c094e132ccce1756d0751b01a43b998af33063d7220c58fd9a84",
+    "delta_bucket": 29870260,
+    "delta_sha256": "4352911b9f7dc564cb95841527be787adaf9e67bd6f57b1c9ec38462745dd9f0",
+    "delta_compressed_bytes": 4538,
+    "delta_observed_at": "2026-10-17T05:40:56.530724Z",
+    "exact_restore_verified": true,
+    "offline_signal_replay_matches": true,
+    "overlapping_deploy_duplicate_bucket_prevented": true
+  },
+  "trading": {
+    "FLY": "paused",
+    "FAST": "paused",
+    "LEADLAG": "paused",
+    "TV": "paused",
+    "VWAP_REVERSION": "paused",
+    "LH_WHALE": "healthy",
+    "WHALE": "running",
+    "no_entry_or_exit_callbacks_in_observer": true
+  },
+  "limits": [
+    "Minute snapshots are not a tick stream.",
+    "Signal filters only; no simulated execution, portfolio or profit validation.",
+    "Only a short initial sample has been collected.",
+    "No paused strategy was resumed."
+  ]
+}
