@@ -1,0 +1,92 @@
+{
+  "original_reproduced": {
+    "strategy": "v4",
+    "total_bars": 105120,
+    "periods": {
+      "development": {
+        "bars": 63072,
+        "trades": 228,
+        "net_pnl": -1242.88,
+        "win_rate": 0.3553,
+        "profit_factor": 0.6456,
+        "max_drawdown_pct": 13.11,
+        "first_timestamp_ms": 1759276800000,
+        "last_timestamp_ms": 1778198100000
+      },
+      "validation": {
+        "bars": 21024,
+        "trades": 70,
+        "net_pnl": -594.84,
+        "win_rate": 0.3143,
+        "profit_factor": 0.4702,
+        "max_drawdown_pct": 6.997,
+        "first_timestamp_ms": 1778198400000,
+        "last_timestamp_ms": 1784505300000
+      },
+      "holdout": {
+        "bars": 21024,
+        "trades": 70,
+        "net_pnl": -198.77,
+        "win_rate": 0.3571,
+        "profit_factor": 0.8224,
+        "max_drawdown_pct": 3.851,
+        "first_timestamp_ms": 1784505600000,
+        "last_timestamp_ms": 1790812500000
+      }
+    }
+  },
+  "diagnostics": {
+    "development": {
+      "original_exit_reasons": {
+        "TIME": 133,
+        "STOP": 85,
+        "TARGET": 10
+      },
+      "original_zero_cost_pnl": -238.12273263997304,
+      "audited_engine": {
+        "net_pnl": -1235.8530595402335,
+        "return_pct": -12.358530595402339,
+        "trades": 228,
+        "profit_factor": 0.6444444014917313,
+        "close_mtm_drawdown_pct": 13.075769687500069,
+        "intrabar_drawdown_bound_pct": 13.0978185449941,
+        "costs": 1026.1080675861017
+      }
+    },
+    "validation": {
+      "original_exit_reasons": {
+        "STOP": 30,
+        "TIME": 37,
+        "TARGET": 3
+      },
+      "original_zero_cost_pnl": -256.8710419953186,
+      "audited_engine": {
+        "net_pnl": -586.7801920487782,
+        "return_pct": -5.86780192048778,
+        "trades": 70,
+        "profit_factor": 0.4722269093132914,
+        "close_mtm_drawdown_pct": 6.987477238222595,
+        "intrabar_drawdown_bound_pct": 7.017078675082478,
+        "costs": 332.0316200318827
+      }
+    },
+    "reused_holdout": {
+      "original_exit_reasons": {
+        "STOP": 25,
+        "TIME": 40,
+        "TARGET": 5
+      },
+      "original_zero_cost_pnl": 115.98437158891102,
+      "audited_engine": {
+        "net_pnl": -180.60695079285688,
+        "return_pct": -1.806069507928565,
+        "trades": 70,
+        "profit_factor": 0.8355278139785346,
+        "close_mtm_drawdown_pct": 4.030016200716154,
+        "intrabar_drawdown_bound_pct": 4.112362985967898,
+        "costs": 328.038751966332
+      }
+    }
+  },
+  "note": "Audited engine includes costs in risk sizing; original kept for exact reproduction. Not an independent holdout."
+}

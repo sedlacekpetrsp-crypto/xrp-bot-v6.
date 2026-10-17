@@ -1,0 +1,82 @@
+{
+  "v5": {
+    "base": {
+      "net_pnl": 5882.283200709262,
+      "return_pct": 58.822832007092615,
+      "trades": 149,
+      "profit_factor": 2.168220856870402,
+      "close_mtm_drawdown_pct": 12.405263194585189,
+      "intrabar_drawdown_bound_pct": 12.486369793850352,
+      "costs": 881.1649705338665
+    },
+    "stress": {
+      "net_pnl": 4261.061631613893,
+      "return_pct": 42.61061631613894,
+      "trades": 149,
+      "profit_factor": 1.8622443076073567,
+      "close_mtm_drawdown_pct": 12.885397551465832,
+      "intrabar_drawdown_bound_pct": 12.949979722413424,
+      "costs": 1538.024106242359
+    }
+  },
+  "v8": {
+    "base": {
+      "net_pnl": 199.90552995577673,
+      "return_pct": 1.9990552995577726,
+      "trades": 36,
+      "profit_factor": 1.4879284388742269,
+      "close_mtm_drawdown_pct": 1.9086427694705144,
+      "intrabar_drawdown_bound_pct": 1.94780186414884,
+      "costs": 101.49066063372044
+    },
+    "stress": {
+      "net_pnl": 101.36550417018225,
+      "return_pct": 1.013655041701833,
+      "trades": 36,
+      "profit_factor": 1.236920118145174,
+      "close_mtm_drawdown_pct": 2.005142235860565,
+      "intrabar_drawdown_bound_pct": 2.042307097316948,
+      "costs": 191.78322186624854
+    }
+  },
+  "v10": {
+    "base": {
+      "net_pnl": 925.7975376612212,
+      "return_pct": 9.257975376612215,
+      "trades": 98,
+      "profit_factor": 1.6124708276396635,
+      "close_mtm_drawdown_pct": 4.55963143379676,
+      "intrabar_drawdown_bound_pct": 4.591012467952658,
+      "costs": 253.5170916332609
+    },
+    "stress": {
+      "net_pnl": 647.9319926234784,
+      "return_pct": 6.479319926234783,
+      "trades": 98,
+      "profit_factor": 1.400197620778128,
+      "close_mtm_drawdown_pct": 5.333036108935292,
+      "intrabar_drawdown_bound_pct": 5.369827184204666,
+      "costs": 477.4197852083227
+    }
+  },
+  "v11": {
+    "base": {
+      "net_pnl": 660.4659759427068,
+      "return_pct": 6.604659759427078,
+      "trades": 22,
+      "profit_factor": 2.1673862716317958,
+      "close_mtm_drawdown_pct": 3.4456151623468254,
+      "intrabar_drawdown_bound_pct": 3.610438118704514,
+      "costs": 58.71812714252069
+    },
+    "stress": {
+      "net_pnl": 581.0987393395444,
+      "return_pct": 5.81098739339545,
+      "trades": 22,
+      "profit_factor": 2.0157607611127792,
+      "close_mtm_drawdown_pct": 3.656405013683332,
+      "intrabar_drawdown_bound_pct": 3.816856899856452,
+      "costs": 111.57708836330538
+    }
+  }
+}

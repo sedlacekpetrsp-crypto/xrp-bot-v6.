@@ -1,0 +1,35 @@
+{
+  "note": "Arithmetic sensitivity, not a causal rerun; no changes to gates.",
+  "results": {
+    "v18": {
+      "stress_pnl": 3562.608225765878,
+      "ci": [
+        -0.11091370680600146,
+        8.66742254211665
+      ],
+      "largest_win": 2668.917760985094,
+      "pnl_minus_largest_win": 2049.0403143577714,
+      "pnl_minus_top3": -518.2550293502809
+    },
+    "v19": {
+      "stress_pnl": -381.1491181527181,
+      "ci": [
+        -0.9101396480990622,
+        0.8597815731924346
+      ],
+      "largest_win": 583.5340706956158,
+      "pnl_minus_largest_win": -828.9476626431606,
+      "pnl_minus_top3": -1044.4875465996938
+    },
+    "v20": {
+      "stress_pnl": 181.74416208838375,
+      "ci": [
+        -0.2865949810081138,
+        0.813935249156094
+      ],
+      "largest_win": 98.35999355898275,
+      "pnl_minus_largest_win": 193.50028496898813,
+      "pnl_minus_top3": 1.7370373507983459
+    }
+  }
+}

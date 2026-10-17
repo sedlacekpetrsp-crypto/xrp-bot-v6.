@@ -1,0 +1,20 @@
+{
+  "tests": 8,
+  "failures": 12,
+  "errors": 0,
+  "failed_cases": [
+    "test_rejects_nonfinite_negative_and_fractional_instructions (elite.test_engine_audit.EngineAuditTests.test_rejects_nonfinite_negative_and_fractional_instructions) (decision=Decision(stop_distance=nan, target_distance=0.0, exit=False, max_bars=0))",
+    "test_rejects_nonfinite_negative_and_fractional_instructions (elite.test_engine_audit.EngineAuditTests.test_rejects_nonfinite_negative_and_fractional_instructions) (decision=Decision(stop_distance=inf, target_distance=0.0, exit=False, max_bars=0))",
+    "test_rejects_nonfinite_negative_and_fractional_instructions (elite.test_engine_audit.EngineAuditTests.test_rejects_nonfinite_negative_and_fractional_instructions) (decision=Decision(stop_distance=-1, target_distance=0.0, exit=False, max_bars=0))",
+    "test_rejects_nonfinite_negative_and_fractional_instructions (elite.test_engine_audit.EngineAuditTests.test_rejects_nonfinite_negative_and_fractional_instructions) (decision=Decision(stop_distance=1, target_distance=nan, exit=False, max_bars=0))",
+    "test_rejects_nonfinite_negative_and_fractional_instructions (elite.test_engine_audit.EngineAuditTests.test_rejects_nonfinite_negative_and_fractional_instructions) (decision=Decision(stop_distance=1, target_distance=-2, exit=False, max_bars=0))",
+    "test_rejects_nonfinite_negative_and_fractional_instructions (elite.test_engine_audit.EngineAuditTests.test_rejects_nonfinite_negative_and_fractional_instructions) (decision=Decision(stop_distance=1, target_distance=0.0, exit=False, max_bars=-1))",
+    "test_rejects_nonfinite_negative_and_fractional_instructions (elite.test_engine_audit.EngineAuditTests.test_rejects_nonfinite_negative_and_fractional_instructions) (decision=Decision(stop_distance=1, target_distance=0.0, exit=False, max_bars=0.5))",
+    "test_rejects_nonfinite_negative_and_fractional_instructions (elite.test_engine_audit.EngineAuditTests.test_rejects_nonfinite_negative_and_fractional_instructions) (decision=Decision(stop_distance=1, target_distance=0.0, exit='yes', max_bars=0))",
+    "test_rejects_nonfinite_negative_and_fractional_instructions (elite.test_engine_audit.EngineAuditTests.test_rejects_nonfinite_negative_and_fractional_instructions) (decision=namespace(stop_distance=1, target_distance=0, exit=False, max_bars=0, trail_distance=-1))",
+    "test_simulator_rejects_invalid_market_data_directly (elite.test_engine_audit.EngineAuditTests.test_simulator_rejects_invalid_market_data_directly) (rows=[(0, 100.0, 99.0, 98.0, 100.0)])",
+    "test_simulator_rejects_invalid_market_data_directly (elite.test_engine_audit.EngineAuditTests.test_simulator_rejects_invalid_market_data_directly) (rows=[(0, 100.0, nan, 99.0, 100.0)])",
+    "test_simulator_rejects_invalid_market_data_directly (elite.test_engine_audit.EngineAuditTests.test_simulator_rejects_invalid_market_data_directly) (rows=[(0, 100.0, 100.0, 100.0, 100.0), (600000, 100.0, 100.0, 100.0, 100.0)])"
+  ],
+  "note": "Six cashbook fixtures passed; twelve invalid-input subcases were not rejected."
+}

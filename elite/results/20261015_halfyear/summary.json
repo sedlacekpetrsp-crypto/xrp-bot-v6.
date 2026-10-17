@@ -1,0 +1,1522 @@
+{
+  "purpose": "DEVELOPMENT_DIAGNOSTIC_ONLY_NO_PROMOTION",
+  "code_sha256": {
+    "elite/halfyear_audit.py": "893e707a47284493818d95533012de9e882dddaf244cc198bb2d8110a28c6c93",
+    "elite/research_engine.py": "4dba5dbc30b338d9d5340f9f60b26b01178e907a8111c81f27de4d76a81c50f5",
+    "elite/research_data.py": "09cad603aa1dd04e698bad4b6caae6df316f7b5e1742a369cd8a1582847bdd20",
+    "elite/cross_market_v18.py": "640deeccc7c61b72e0c6b489729377d2512d4241b091d30233b46c3b7105dfa4",
+    "elite/exit_v21.py": "e567e443385e7526a6ef7b3e8e50b0216d0179e4519ba340d47839e2efd7a583",
+    "elite/candidates_v28.py": "1c483e5d456c742f548e5d09b0395b287ceed5f183ec34947069736435ceb741",
+    "elite/flow_v28.py": "f467fd7806fb7ad730451aa9ee9e2501ff90bd23bf1973542a4521db48f3ee92",
+    "elite/selector_v30.py": "58d312374e9e5d840d80a38a051ec12f7bf34c8eb9b4ad9f292c2474c32ac060",
+    "elite/portfolio_v15.py": "5ec475c14d86b21313aae7ad97acf7e316b7e339a3cdb4083fdb33e0707af4ed",
+    "elite/candidates_v8.py": "a501ea91f02882398f116f3809b9892e934ca3362b58a94691ff25cd906a7990",
+    "elite/candidates_v24.py": "13a91e94cc99354bf0a800aae1b66cd05f8e6de5e67179072000fa1f1987d0b3",
+    "elite/batch_v24.py": "b3c36f30725aeca9bfb36c0c63eb29e13f5685a6502aaeb47987af8772f35ead",
+    "elite/research_run.py": "b59dec83842c18977004581779643524bf2df3b9736b9ec161633c609bfbf366",
+    "elite/PROTOCOL_HALFYEAR_AUDIT.md": "2316a7471f5e8e263e07977e8879d785ee2ed04ff3ef188e104a9153e8119913"
+  },
+  "data_manifest": {
+    "XRPUSDT": [
+      {
+        "month": "2023-04",
+        "sha256": "c0192dd3aa89ab71f4d09fe6c7fbe72c0afbc6d84f8e3bf0a4d085914081c752",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2023-04.zip"
+      },
+      {
+        "month": "2023-05",
+        "sha256": "da87161a27fcf8d7c98cafdcf0d1cef2d7f5294b01217fec205612fb7597c3bf",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2023-05.zip"
+      },
+      {
+        "month": "2023-06",
+        "sha256": "dc51e73c7f4e1c373208d74d10008abef1cc6ad9f1443c795e922c01e0d4e583",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2023-06.zip"
+      },
+      {
+        "month": "2023-07",
+        "sha256": "8021464fb3cd8a659309da1cd318eb125dcae43be956f90b1eed8cc049fa0697",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2023-07.zip"
+      },
+      {
+        "month": "2023-08",
+        "sha256": "aa775e7c290553515c4c09638ac06876d79d6de69efcd2cf2f0dad3a197808cd",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2023-08.zip"
+      },
+      {
+        "month": "2023-09",
+        "sha256": "16314f4f75db0eed4b4b6b199f700feaa3e06cb0dbc9809e03282d057cb224b8",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2023-09.zip"
+      },
+      {
+        "month": "2023-10",
+        "sha256": "e4c6df648a3033825883bad63b5fbfd81aceaf29381e824d5dd104d83d2c6133",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2023-10.zip"
+      },
+      {
+        "month": "2023-11",
+        "sha256": "267680c7ae0d91c77f924e89a115bb71671b95b40acdba7e69b1330e4c5e87f7",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2023-11.zip"
+      },
+      {
+        "month": "2023-12",
+        "sha256": "b84b9f451d52db23699acba4f90b71625448c3c048b89d0d4707bfe1d5c369f9",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2023-12.zip"
+      },
+      {
+        "month": "2024-01",
+        "sha256": "5fcdf6e51ded909d3013c4d45546c1a693e6b96271bcc779bbedfc97aa1625fd",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2024-01.zip"
+      },
+      {
+        "month": "2024-02",
+        "sha256": "c871aa4432587a23660eb9e9771db01ff9758db316938c5c91e46f15ba9fa42d",
+        "bars": 8352,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2024-02.zip"
+      },
+      {
+        "month": "2024-03",
+        "sha256": "dd30e4755fe13f2af3c3ea26ee561630f316e636d23c7c5745387cb8c95b6409",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2024-03.zip"
+      },
+      {
+        "month": "2024-04",
+        "sha256": "001fb84c490e2d3db62085334efb1f20b61a262e1b678366889592c453e75daa",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2024-04.zip"
+      },
+      {
+        "month": "2024-05",
+        "sha256": "0e7a73bb40b033025b0104dd71511f2c20c5f067ceceb2a287758cb610f08c32",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2024-05.zip"
+      },
+      {
+        "month": "2024-06",
+        "sha256": "0012bbcfd49e32b0c057ee0f65bcecfbc0837fa6f31354934d9884fa77257cfe",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2024-06.zip"
+      },
+      {
+        "month": "2024-07",
+        "sha256": "73d78a8f255a34ec8064d0ab30af3737439a62cb329aa45018afc887f172301f",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2024-07.zip"
+      },
+      {
+        "month": "2024-08",
+        "sha256": "5622758a94706d6296013d2c27d9cc221c86eb65037e0aac257782c266a0cde7",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2024-08.zip"
+      },
+      {
+        "month": "2024-09",
+        "sha256": "ee9d6d128679dabe692d80e15143786b07b8556c0ae3ce98fab794706999243b",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2024-09.zip"
+      },
+      {
+        "month": "2024-10",
+        "sha256": "65247afb8fa2b84bc8d111145396725f0b1f28c2f921975fc4227ea215fb521c",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2024-10.zip"
+      },
+      {
+        "month": "2024-11",
+        "sha256": "6558d53ec9a2b70243fb3b2390933cb2f87e9a3e1a8c6613c80779df333c1db6",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2024-11.zip"
+      },
+      {
+        "month": "2024-12",
+        "sha256": "358832c4a1d64aaee3974713c8e91d78b11724e53e39ed58239d7802c538215a",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2024-12.zip"
+      },
+      {
+        "month": "2025-01",
+        "sha256": "2b65b80f5b8f655af6321f72c36893cdb0eb18a75b19a5c1550a6fa1ba653502",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2025-01.zip"
+      },
+      {
+        "month": "2025-02",
+        "sha256": "7439b49585005e773a0e5aa8520dd593b8c7adc3d5d27e5a9b146669cad565e5",
+        "bars": 8064,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2025-02.zip"
+      },
+      {
+        "month": "2025-03",
+        "sha256": "8b541262cf5065e688dddf9a343534d03a90b9b7bd920b30ddc7fcabb9e88ffd",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2025-03.zip"
+      },
+      {
+        "month": "2025-04",
+        "sha256": "81dd1f83041e62d38d8d382a9b0f514130ace1ff66d31631d72819f8dc3402bc",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2025-04.zip"
+      },
+      {
+        "month": "2025-05",
+        "sha256": "a8103c653cff3d5d1dba5b096480f447b1735c74a99c7aa60d89d3fbdd53a8e6",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2025-05.zip"
+      },
+      {
+        "month": "2025-06",
+        "sha256": "306777434b9115bf763c82fb673d46a86e718626ac37607e67cde6964a9a97f8",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2025-06.zip"
+      },
+      {
+        "month": "2025-07",
+        "sha256": "7f8e12256b524534d460c1a2aa6fcb4a8c070bdb68c24323d4d28aa0a5a1ee58",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2025-07.zip"
+      },
+      {
+        "month": "2025-08",
+        "sha256": "f8554162687cbdc47afa55a46e812412028e09d724312c7e4f6e05ea7aeb7c1b",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2025-08.zip"
+      },
+      {
+        "month": "2025-09",
+        "sha256": "29a170dbf0e2fe873c7bedfca1a6c72febb62ca4b33492bfc105077d908b442b",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2025-09.zip"
+      },
+      {
+        "month": "2025-10",
+        "sha256": "a3c4ade5a0f100a2069b08d0515738c99a55d43a75b91c100b4a5b130d99af27",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2025-10.zip"
+      },
+      {
+        "month": "2025-11",
+        "sha256": "8fc8f496dea6d7ed390354aa69885d7d8d3b22bcbbf216fde3fb6b3123f0d867",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2025-11.zip"
+      },
+      {
+        "month": "2025-12",
+        "sha256": "ab021c68ff5a04ab69b27ab2bd1de10bc10b3810d75671a113bbb63f0a98741c",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2025-12.zip"
+      },
+      {
+        "month": "2026-01",
+        "sha256": "eac24852ee7b78952263b301933ab1378537724ee8cb7bae5f1a3ef723ccb1b8",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2026-01.zip"
+      },
+      {
+        "month": "2026-02",
+        "sha256": "b29837ca5a59a44e340b8740cab3e8e862325c6e1beef7d9343838c8a8af12d4",
+        "bars": 8064,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2026-02.zip"
+      },
+      {
+        "month": "2026-03",
+        "sha256": "54c1339489c8376c93eb2ac934b7237e313c03318554405876319608eed088e6",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2026-03.zip"
+      },
+      {
+        "month": "2026-04",
+        "sha256": "31725ffd075a1343ed9e31cd2acca7e704d693eb4b07b3cf35bf97d6e3a2f966",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2026-04.zip"
+      },
+      {
+        "month": "2026-05",
+        "sha256": "4896a251aa357ce79a0aa93f7a89f43c8617dc0e425acd7ae3d6c6a0fb0a837b",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2026-05.zip"
+      },
+      {
+        "month": "2026-06",
+        "sha256": "ffb40844341e7917b0488e48bbcbfef7d154f11cd7da367b605d9c3dbad796f3",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2026-06.zip"
+      },
+      {
+        "month": "2026-07",
+        "sha256": "cf093b1bc96b7577b04ee69975f8195e2d22b3bc96397fcf379d155a648444ec",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2026-07.zip"
+      },
+      {
+        "month": "2026-08",
+        "sha256": "55f59bf08ce46e8bcfbf2fb5cf8f5e824747cd821afa0a207843a5bb3fa06a9a",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2026-08.zip"
+      },
+      {
+        "month": "2026-09",
+        "sha256": "add39009200a3f3a306b9312852c691bd1b5cb2c67a4a1c202a881dd5b1d2a93",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2026-09.zip"
+      }
+    ],
+    "BTCUSDT": [
+      {
+        "month": "2023-04",
+        "sha256": "0ce744f9e9712a818b0090572d5541b83c2acec7d67de808ee5a66ff4299b008",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2023-04.zip"
+      },
+      {
+        "month": "2023-05",
+        "sha256": "d288014d0cde16c31d524dc63a9ed779de6c1a65e08df6b069ced8b688da21e4",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2023-05.zip"
+      },
+      {
+        "month": "2023-06",
+        "sha256": "781415877a1eaf4b376351bb3dc3cc31bc941b009a7b89a6a833cb6fb757279f",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2023-06.zip"
+      },
+      {
+        "month": "2023-07",
+        "sha256": "88859cd91277f3e0c9df85bb66f5c2d91273612a7ccd60e2a4be86ea3cc4b84c",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2023-07.zip"
+      },
+      {
+        "month": "2023-08",
+        "sha256": "a36e0b195d907bf100788f48ebae360ade5a31066bdee8469f610b802ff8e8f0",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2023-08.zip"
+      },
+      {
+        "month": "2023-09",
+        "sha256": "4058d18e256eb96841c67cb6e27375f0dcee6d2d425b4ad5907f055890ca5761",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2023-09.zip"
+      },
+      {
+        "month": "2023-10",
+        "sha256": "6a14d2b75ad5020d56c12cd17e90e6661023f34a12fa4173364fd26a9879ae56",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2023-10.zip"
+      },
+      {
+        "month": "2023-11",
+        "sha256": "dcf1c619885ca4fc351b4c990afe850141563f09e61b386a8d9151ea402575e2",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2023-11.zip"
+      },
+      {
+        "month": "2023-12",
+        "sha256": "8e3b780eddcff7f19f24f25d799b2affe03113b90457b8caa22a454f065fbf56",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2023-12.zip"
+      },
+      {
+        "month": "2024-01",
+        "sha256": "a375f811f672ad70de97af533f6e70181647a9e978838b451ac17d5c17313ad8",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2024-01.zip"
+      },
+      {
+        "month": "2024-02",
+        "sha256": "4bbed105653be96229f6678b3ce3df7366a6ced5aea32285da2bf62ac5f890ed",
+        "bars": 8352,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2024-02.zip"
+      },
+      {
+        "month": "2024-03",
+        "sha256": "fd3670210b38640ee9562b7761879fae8cfed3beec7d7313b868cf618ca4c72a",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2024-03.zip"
+      },
+      {
+        "month": "2024-04",
+        "sha256": "b41c6d2703ee9e4c8167de082dcd363fac39ed176ebe9eacf7f0109e284a5948",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2024-04.zip"
+      },
+      {
+        "month": "2024-05",
+        "sha256": "3a9c810274f38b18abda912c3446df51cb160c4c0e376655fb7defb1cacf5de2",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2024-05.zip"
+      },
+      {
+        "month": "2024-06",
+        "sha256": "627dd48125d89759e498d2db2e523166787bda4dd9a64ca56abf9fba235ba71e",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2024-06.zip"
+      },
+      {
+        "month": "2024-07",
+        "sha256": "7fcfb7aa22c344f0c6bb0a7d2ae2dbfd1a1e597fc80806daa341068dfdab6586",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2024-07.zip"
+      },
+      {
+        "month": "2024-08",
+        "sha256": "4ead243e5f862df551e12815d8ddc4c67da711fda253325c36f83a1ff3ef36d7",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2024-08.zip"
+      },
+      {
+        "month": "2024-09",
+        "sha256": "a9989fa72ee8eba72cdd79b0e251652fcd456a31548a3014a8660b65405bc67a",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2024-09.zip"
+      },
+      {
+        "month": "2024-10",
+        "sha256": "5cd2d0dcc2dc193fc7b31be69166021fca41b9fce61ab6a0771ce00db864c327",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2024-10.zip"
+      },
+      {
+        "month": "2024-11",
+        "sha256": "72851d323b0d43f7c8cdf177ca85ded66ec511ed3b1a53e63cca0d2501c75bc0",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2024-11.zip"
+      },
+      {
+        "month": "2024-12",
+        "sha256": "0a2f70744f9244a066ab4ced934a725d85b247e917cfe22ada218435c1573301",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2024-12.zip"
+      },
+      {
+        "month": "2025-01",
+        "sha256": "4ed2edba26630a98b6ac6102b41dad00e1542640336f0d571c5a7394b39df983",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2025-01.zip"
+      },
+      {
+        "month": "2025-02",
+        "sha256": "a4859a5b4ad31f41f3ffad1d9a044154ff529c41983b76432ef3f10981b32415",
+        "bars": 8064,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2025-02.zip"
+      },
+      {
+        "month": "2025-03",
+        "sha256": "1eb1fb0c76a0e8302abdec42d54b844bd3c3d6d7e6e69ae434aaa1dea445d54d",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2025-03.zip"
+      },
+      {
+        "month": "2025-04",
+        "sha256": "3ba9f1fd519bad5f190dfe0acda0dd57f904ad5eb848378be329b43cf69b5041",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2025-04.zip"
+      },
+      {
+        "month": "2025-05",
+        "sha256": "a1f4381240c422cda18464a054b34f75bb32bc5bb9137306e6c9d412e1b160aa",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2025-05.zip"
+      },
+      {
+        "month": "2025-06",
+        "sha256": "7c005bb32458cc9c797244c49d2be734f626561fb40031fba4b86831e95f06d9",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2025-06.zip"
+      },
+      {
+        "month": "2025-07",
+        "sha256": "8e4890be772dee102d3f5051fc9da5786f1f5203fd5bf251f47d5d8abcf79209",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2025-07.zip"
+      },
+      {
+        "month": "2025-08",
+        "sha256": "532cd96e6dad9950b359f43bd308dc7e72b36c236875002b594d1eb5dc4d7639",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2025-08.zip"
+      },
+      {
+        "month": "2025-09",
+        "sha256": "5ff19de79c102825f41d85810660c2ea339c6c6ef407bae5991870741b975fd8",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2025-09.zip"
+      },
+      {
+        "month": "2025-10",
+        "sha256": "079e33529c01dfd219ce79428d3c5ff5ef9814005be6ccd091ffe73580607fd2",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2025-10.zip"
+      },
+      {
+        "month": "2025-11",
+        "sha256": "470e5eecf5c2fb18390f5234897f71d9cec61e2bf31d0152948ce985e0ae583d",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2025-11.zip"
+      },
+      {
+        "month": "2025-12",
+        "sha256": "5f1f3ad19c8f79fe1f5f8e009bf55fcef306c60990a18d0a75d3b568628c2083",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2025-12.zip"
+      },
+      {
+        "month": "2026-01",
+        "sha256": "0b95c0dd7a22e374604527581a896930058e6d5426e55d34c9ec3e118a6b979e",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2026-01.zip"
+      },
+      {
+        "month": "2026-02",
+        "sha256": "329314be85423f40b4ddcc77bde1c78c71bd8a7ff5915f342bf972b949e71e34",
+        "bars": 8064,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2026-02.zip"
+      },
+      {
+        "month": "2026-03",
+        "sha256": "e4a615e1558cd80acff53593a4659d3addc933bdbed1149ed252b8588aaccb3c",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2026-03.zip"
+      },
+      {
+        "month": "2026-04",
+        "sha256": "396a694802d5ce56b78e770d534182ba2b0931932fdd0ced5d5ebbf18fa6398a",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2026-04.zip"
+      },
+      {
+        "month": "2026-05",
+        "sha256": "06525e8a806eb976d9a9e1e71ccd324033e7cb95f69c8c9b8adf8265ac1e0194",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2026-05.zip"
+      },
+      {
+        "month": "2026-06",
+        "sha256": "963dd95de6dc9c49727d1c3fb8c4746a22709b2f2abc014f088cdf4571be3b3b",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2026-06.zip"
+      },
+      {
+        "month": "2026-07",
+        "sha256": "425f6e1a0de85dc99d8a7f17924bcb210c8f92100fb71e5993e1d197577b7053",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2026-07.zip"
+      },
+      {
+        "month": "2026-08",
+        "sha256": "85b174d0c091ab904341f1cce2f31fd88ebd0f10631678238756aa72d5d9897a",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2026-08.zip"
+      },
+      {
+        "month": "2026-09",
+        "sha256": "4106fc73698fd1851b1821cd0293adc6304f86f0c2e72244e15c41f63c2bde08",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2026-09.zip"
+      }
+    ]
+  },
+  "candidates": {
+    "v5": {
+      "blocks": {
+        "2023-04-01": {
+          "end_exclusive": "2023-10-01",
+          "base": {
+            "net_pnl": -245.68678382027792,
+            "return_pct": -2.456867838202781,
+            "trades": 19,
+            "profit_factor": 0.5989358003963637,
+            "close_mtm_drawdown_pct": 4.6634444481430695,
+            "intrabar_drawdown_bound_pct": 4.79407424002756,
+            "costs": 96.87743156840413
+          },
+          "stress": {
+            "net_pnl": -303.84434662530475,
+            "return_pct": -3.038443466253049,
+            "trades": 19,
+            "profit_factor": 0.5129788350492966,
+            "close_mtm_drawdown_pct": 4.699487255897698,
+            "intrabar_drawdown_bound_pct": 4.817115445809655,
+            "costs": 176.65676797807197
+          },
+          "selector_initialization": false
+        },
+        "2023-10-01": {
+          "end_exclusive": "2024-04-01",
+          "base": {
+            "net_pnl": -214.5552588015271,
+            "return_pct": -2.145552588015276,
+            "trades": 24,
+            "profit_factor": 0.7288487791391947,
+            "close_mtm_drawdown_pct": 8.89409849040333,
+            "intrabar_drawdown_bound_pct": 8.9446033605129,
+            "costs": 127.73529890944604
+          },
+          "stress": {
+            "net_pnl": -310.35868678235965,
+            "return_pct": -3.1035868678235934,
+            "trades": 24,
+            "profit_factor": 0.6138002288736244,
+            "close_mtm_drawdown_pct": 9.003055724943753,
+            "intrabar_drawdown_bound_pct": 9.048926550301637,
+            "costs": 232.39974876007918
+          },
+          "selector_initialization": false
+        },
+        "2024-04-01": {
+          "end_exclusive": "2024-10-01",
+          "base": {
+            "net_pnl": -60.93184080537321,
+            "return_pct": -0.6093184080537273,
+            "trades": 25,
+            "profit_factor": 0.9269431161927048,
+            "close_mtm_drawdown_pct": 6.809168044495049,
+            "intrabar_drawdown_bound_pct": 6.848058963020251,
+            "costs": 130.01940742255496
+          },
+          "stress": {
+            "net_pnl": -172.2246584753011,
+            "return_pct": -1.7222465847530066,
+            "trades": 25,
+            "profit_factor": 0.7984645647150045,
+            "close_mtm_drawdown_pct": 6.69557711730466,
+            "intrabar_drawdown_bound_pct": 6.731396381293865,
+            "costs": 235.73219928153497
+          },
+          "selector_initialization": false
+        },
+        "2024-10-01": {
+          "end_exclusive": "2025-04-01",
+          "base": {
+            "net_pnl": 3701.475537550308,
+            "return_pct": 37.01475537550307,
+            "trades": 22,
+            "profit_factor": 5.343968721477405,
+            "close_mtm_drawdown_pct": 6.454912959715943,
+            "intrabar_drawdown_bound_pct": 7.710620176786476,
+            "costs": 114.92224999370433
+          },
+          "stress": {
+            "net_pnl": 3307.0526345840753,
+            "return_pct": 33.070526345840754,
+            "trades": 22,
+            "profit_factor": 4.9190982230793905,
+            "close_mtm_drawdown_pct": 6.020415815162332,
+            "intrabar_drawdown_bound_pct": 7.197847787261057,
+            "costs": 210.31995424286433
+          },
+          "selector_initialization": false
+        },
+        "2025-04-01": {
+          "end_exclusive": "2025-10-01",
+          "base": {
+            "net_pnl": 627.0294030526638,
+            "return_pct": 6.270294030526635,
+            "trades": 23,
+            "profit_factor": 2.1694784632740536,
+            "close_mtm_drawdown_pct": 3.5349082635291906,
+            "intrabar_drawdown_bound_pct": 3.6335475635506915,
+            "costs": 119.70113976644791
+          },
+          "stress": {
+            "net_pnl": 446.66784937635566,
+            "return_pct": 4.466678493763565,
+            "trades": 23,
+            "profit_factor": 1.8098391694653546,
+            "close_mtm_drawdown_pct": 3.699354772380096,
+            "intrabar_drawdown_bound_pct": 3.7892552800607056,
+            "costs": 217.01623381236206
+          },
+          "selector_initialization": false
+        },
+        "2025-10-01": {
+          "end_exclusive": "2026-04-01",
+          "base": {
+            "net_pnl": 440.7433679607875,
+            "return_pct": 4.407433679607875,
+            "trades": 14,
+            "profit_factor": 2.508056450831256,
+            "close_mtm_drawdown_pct": 4.259722991605072,
+            "intrabar_drawdown_bound_pct": 4.473461681488242,
+            "costs": 66.5468010560805
+          },
+          "stress": {
+            "net_pnl": 324.78058628672807,
+            "return_pct": 3.2478058628672812,
+            "trades": 14,
+            "profit_factor": 2.0932582586691826,
+            "close_mtm_drawdown_pct": 4.0330647734025105,
+            "intrabar_drawdown_bound_pct": 4.2236038034802075,
+            "costs": 121.96424516957781
+          },
+          "selector_initialization": false
+        },
+        "2026-04-01": {
+          "end_exclusive": "2026-10-01",
+          "base": {
+            "net_pnl": 1028.7382700860362,
+            "return_pct": 10.287382700860359,
+            "trades": 22,
+            "profit_factor": 2.5579549148639806,
+            "close_mtm_drawdown_pct": 7.982116570308487,
+            "intrabar_drawdown_bound_pct": 8.983352662254847,
+            "costs": 124.96891030810622
+          },
+          "stress": {
+            "net_pnl": 775.2575191647502,
+            "return_pct": 7.752575191647493,
+            "trades": 22,
+            "profit_factor": 2.1372035774441756,
+            "close_mtm_drawdown_pct": 7.43531635814961,
+            "intrabar_drawdown_bound_pct": 8.114551867343845,
+            "costs": 225.6228630662303
+          },
+          "selector_initialization": false
+        }
+      },
+      "common_six": {
+        "positive_base": 4,
+        "positive_stress": 4,
+        "worst_base_pct": -2.145552588015276,
+        "best_base_pct": 37.01475537550307,
+        "worst_close_drawdown_pct": 8.89409849040333
+      }
+    },
+    "v18": {
+      "blocks": {
+        "2023-04-01": {
+          "end_exclusive": "2023-10-01",
+          "base": {
+            "net_pnl": -232.0408835846556,
+            "return_pct": -2.3204088358465547,
+            "trades": 10,
+            "profit_factor": 0.3431704098611999,
+            "close_mtm_drawdown_pct": 4.757690476565129,
+            "intrabar_drawdown_bound_pct": 4.859209340807005,
+            "costs": 56.8118774888044
+          },
+          "stress": {
+            "net_pnl": -263.73140427351245,
+            "return_pct": -2.6373140427351283,
+            "trades": 10,
+            "profit_factor": 0.27475451707282467,
+            "close_mtm_drawdown_pct": 4.608605926238005,
+            "intrabar_drawdown_bound_pct": 4.698612510147706,
+            "costs": 103.02680016095233
+          },
+          "selector_initialization": false
+        },
+        "2023-10-01": {
+          "end_exclusive": "2024-04-01",
+          "base": {
+            "net_pnl": 14.76630895161361,
+            "return_pct": 0.14766308951612572,
+            "trades": 18,
+            "profit_factor": 1.0270261918451884,
+            "close_mtm_drawdown_pct": 7.275945646904355,
+            "intrabar_drawdown_bound_pct": 7.391622022513091,
+            "costs": 93.780436169836
+          },
+          "stress": {
+            "net_pnl": -74.81095223778175,
+            "return_pct": -0.7481095223778156,
+            "trades": 18,
+            "profit_factor": 0.8665458772715203,
+            "close_mtm_drawdown_pct": 7.305572495055901,
+            "intrabar_drawdown_bound_pct": 7.413827745798858,
+            "costs": 171.6011840057295
+          },
+          "selector_initialization": false
+        },
+        "2024-04-01": {
+          "end_exclusive": "2024-10-01",
+          "base": {
+            "net_pnl": -233.70165526049095,
+            "return_pct": -2.337016552604909,
+            "trades": 17,
+            "profit_factor": 0.6212619241066095,
+            "close_mtm_drawdown_pct": 5.169113162328912,
+            "intrabar_drawdown_bound_pct": 5.202425468237904,
+            "costs": 86.07828164724067
+          },
+          "stress": {
+            "net_pnl": -281.61229532638754,
+            "return_pct": -2.8161229532638776,
+            "trades": 17,
+            "profit_factor": 0.552932734358085,
+            "close_mtm_drawdown_pct": 5.105303212197367,
+            "intrabar_drawdown_bound_pct": 5.136372096870816,
+            "costs": 157.0601989110381
+          },
+          "selector_initialization": false
+        },
+        "2024-10-01": {
+          "end_exclusive": "2025-04-01",
+          "base": {
+            "net_pnl": 2251.029984228966,
+            "return_pct": 22.510299842289648,
+            "trades": 13,
+            "profit_factor": 4.924425358668808,
+            "close_mtm_drawdown_pct": 8.518066456514903,
+            "intrabar_drawdown_bound_pct": 8.93123399616875,
+            "costs": 61.86587150832713
+          },
+          "stress": {
+            "net_pnl": 2014.13709686963,
+            "return_pct": 20.141370968696304,
+            "trades": 13,
+            "profit_factor": 4.515701467646796,
+            "close_mtm_drawdown_pct": 8.22525580004067,
+            "intrabar_drawdown_bound_pct": 8.614294258491343,
+            "costs": 113.73356132642915
+          },
+          "selector_initialization": false
+        },
+        "2025-04-01": {
+          "end_exclusive": "2025-10-01",
+          "base": {
+            "net_pnl": 581.8892449535979,
+            "return_pct": 5.818892449535973,
+            "trades": 17,
+            "profit_factor": 2.1667672119157593,
+            "close_mtm_drawdown_pct": 3.7318504397126433,
+            "intrabar_drawdown_bound_pct": 3.8302883587158574,
+            "costs": 92.49743337549353
+          },
+          "stress": {
+            "net_pnl": 430.6807295630206,
+            "return_pct": 4.3068072956301995,
+            "trades": 17,
+            "profit_factor": 1.8590586858371518,
+            "close_mtm_drawdown_pct": 3.7944139601787157,
+            "intrabar_drawdown_bound_pct": 3.88422572630184,
+            "costs": 167.63991049137894
+          },
+          "selector_initialization": false
+        },
+        "2025-10-01": {
+          "end_exclusive": "2026-04-01",
+          "base": {
+            "net_pnl": 506.6333221329787,
+            "return_pct": 5.0663332213297885,
+            "trades": 7,
+            "profit_factor": 4.4618392222495515,
+            "close_mtm_drawdown_pct": 4.181479724536167,
+            "intrabar_drawdown_bound_pct": 4.395393091304721,
+            "costs": 34.03945531719183
+          },
+          "stress": {
+            "net_pnl": 413.34849790230874,
+            "return_pct": 4.133484979023083,
+            "trades": 7,
+            "profit_factor": 3.81864227571555,
+            "close_mtm_drawdown_pct": 3.8636772629389333,
+            "intrabar_drawdown_bound_pct": 4.054552606058973,
+            "costs": 62.390911135746116
+          },
+          "selector_initialization": false
+        },
+        "2026-04-01": {
+          "end_exclusive": "2026-10-01",
+          "base": {
+            "net_pnl": 1310.2845484514237,
+            "return_pct": 13.102845484514237,
+            "trades": 15,
+            "profit_factor": 4.8355720793278705,
+            "close_mtm_drawdown_pct": 7.047442418754127,
+            "intrabar_drawdown_bound_pct": 8.983352662254832,
+            "costs": 95.04151434571675
+          },
+          "stress": {
+            "net_pnl": 1066.7990258019,
+            "return_pct": 10.667990258018989,
+            "trades": 15,
+            "profit_factor": 3.995202095355524,
+            "close_mtm_drawdown_pct": 6.362362226474065,
+            "intrabar_drawdown_bound_pct": 8.114551867343838,
+            "costs": 170.56343814258724
+          },
+          "selector_initialization": false
+        }
+      },
+      "common_six": {
+        "positive_base": 5,
+        "positive_stress": 4,
+        "worst_base_pct": -2.337016552604909,
+        "best_base_pct": 22.510299842289648,
+        "worst_close_drawdown_pct": 8.518066456514903
+      }
+    },
+    "v22": {
+      "blocks": {
+        "2023-04-01": {
+          "end_exclusive": "2023-10-01",
+          "base": {
+            "net_pnl": -169.5044579004898,
+            "return_pct": -1.6950445790049007,
+            "trades": 10,
+            "profit_factor": 0.48995715642218646,
+            "close_mtm_drawdown_pct": 3.185565286393584,
+            "intrabar_drawdown_bound_pct": 3.289794849478458,
+            "costs": 57.058992076142225
+          },
+          "stress": {
+            "net_pnl": -208.02877960080696,
+            "return_pct": -2.0802877960080735,
+            "trades": 10,
+            "profit_factor": 0.39520067544376886,
+            "close_mtm_drawdown_pct": 3.2112895516821145,
+            "intrabar_drawdown_bound_pct": 3.303424431857269,
+            "costs": 103.44169162671125
+          },
+          "selector_initialization": false
+        },
+        "2023-10-01": {
+          "end_exclusive": "2024-04-01",
+          "base": {
+            "net_pnl": -239.8986242396404,
+            "return_pct": -2.398986242396406,
+            "trades": 21,
+            "profit_factor": 0.5509334679812375,
+            "close_mtm_drawdown_pct": 5.239968667243924,
+            "intrabar_drawdown_bound_pct": 5.4087047391222205,
+            "costs": 103.10526388358583
+          },
+          "stress": {
+            "net_pnl": -313.3855309820574,
+            "return_pct": -3.133855309820577,
+            "trades": 21,
+            "profit_factor": 0.4341684803570686,
+            "close_mtm_drawdown_pct": 5.61838944137365,
+            "intrabar_drawdown_bound_pct": 5.774878589916033,
+            "costs": 189.32130539165902
+          },
+          "selector_initialization": false
+        },
+        "2024-04-01": {
+          "end_exclusive": "2024-10-01",
+          "base": {
+            "net_pnl": -196.4649014274437,
+            "return_pct": -1.9646490142744333,
+            "trades": 18,
+            "profit_factor": 0.6622470462561625,
+            "close_mtm_drawdown_pct": 4.909424191028502,
+            "intrabar_drawdown_bound_pct": 4.943086074844471,
+            "costs": 90.5549426036513
+          },
+          "stress": {
+            "net_pnl": -254.48555427303836,
+            "return_pct": -2.5448555427303843,
+            "trades": 18,
+            "profit_factor": 0.57795017820987,
+            "close_mtm_drawdown_pct": 4.858288618261969,
+            "intrabar_drawdown_bound_pct": 4.889641909235361,
+            "costs": 165.2943019455921
+          },
+          "selector_initialization": false
+        },
+        "2024-10-01": {
+          "end_exclusive": "2025-04-01",
+          "base": {
+            "net_pnl": 2251.029984228966,
+            "return_pct": 22.510299842289648,
+            "trades": 13,
+            "profit_factor": 4.924425358668808,
+            "close_mtm_drawdown_pct": 8.518066456514903,
+            "intrabar_drawdown_bound_pct": 8.93123399616875,
+            "costs": 61.86587150832713
+          },
+          "stress": {
+            "net_pnl": 2014.13709686963,
+            "return_pct": 20.141370968696304,
+            "trades": 13,
+            "profit_factor": 4.515701467646796,
+            "close_mtm_drawdown_pct": 8.22525580004067,
+            "intrabar_drawdown_bound_pct": 8.614294258491343,
+            "costs": 113.73356132642915
+          },
+          "selector_initialization": false
+        },
+        "2025-04-01": {
+          "end_exclusive": "2025-10-01",
+          "base": {
+            "net_pnl": 484.7635609137469,
+            "return_pct": 4.8476356091374795,
+            "trades": 19,
+            "profit_factor": 2.1047707734925694,
+            "close_mtm_drawdown_pct": 3.145252956153814,
+            "intrabar_drawdown_bound_pct": 3.2554361624317796,
+            "costs": 100.45939621412465
+          },
+          "stress": {
+            "net_pnl": 339.04957147634195,
+            "return_pct": 3.3904957147634196,
+            "trades": 19,
+            "profit_factor": 1.756250086547436,
+            "close_mtm_drawdown_pct": 3.274805611708362,
+            "intrabar_drawdown_bound_pct": 3.365102453027121,
+            "costs": 182.27860671909752
+          },
+          "selector_initialization": false
+        },
+        "2025-10-01": {
+          "end_exclusive": "2026-04-01",
+          "base": {
+            "net_pnl": 383.4873049198832,
+            "return_pct": 3.834873049198828,
+            "trades": 9,
+            "profit_factor": 2.9739376067793937,
+            "close_mtm_drawdown_pct": 4.634352265658794,
+            "intrabar_drawdown_bound_pct": 4.834697515942623,
+            "costs": 43.279853497405945
+          },
+          "stress": {
+            "net_pnl": 290.93680927456444,
+            "return_pct": 2.9093680927456456,
+            "trades": 9,
+            "profit_factor": 2.465387080059107,
+            "close_mtm_drawdown_pct": 4.360950480792109,
+            "intrabar_drawdown_bound_pct": 4.53897322597452,
+            "costs": 79.39570138527199
+          },
+          "selector_initialization": false
+        },
+        "2026-04-01": {
+          "end_exclusive": "2026-10-01",
+          "base": {
+            "net_pnl": 1383.4834738746285,
+            "return_pct": 13.834834738746293,
+            "trades": 15,
+            "profit_factor": 5.168606833691977,
+            "close_mtm_drawdown_pct": 7.047442418754124,
+            "intrabar_drawdown_bound_pct": 8.983352662254841,
+            "costs": 95.40998984047184
+          },
+          "stress": {
+            "net_pnl": 1128.712352244942,
+            "return_pct": 11.287123522449427,
+            "trades": 15,
+            "profit_factor": 4.319593453129382,
+            "close_mtm_drawdown_pct": 6.362362226474068,
+            "intrabar_drawdown_bound_pct": 8.114551867343845,
+            "costs": 171.1521388612741
+          },
+          "selector_initialization": false
+        }
+      },
+      "common_six": {
+        "positive_base": 4,
+        "positive_stress": 4,
+        "worst_base_pct": -2.398986242396406,
+        "best_base_pct": 22.510299842289648,
+        "worst_close_drawdown_pct": 8.518066456514903
+      }
+    },
+    "v28": {
+      "blocks": {
+        "2023-04-01": {
+          "end_exclusive": "2023-10-01",
+          "base": {
+            "net_pnl": -100.48517971784895,
+            "return_pct": -1.0048517971784854,
+            "trades": 9,
+            "profit_factor": 0.6877027650880853,
+            "close_mtm_drawdown_pct": 4.068472185155687,
+            "intrabar_drawdown_bound_pct": 4.193283939130092,
+            "costs": 51.91029504298939
+          },
+          "stress": {
+            "net_pnl": -137.5216418886066,
+            "return_pct": -1.3752164188860716,
+            "trades": 9,
+            "profit_factor": 0.575896274952765,
+            "close_mtm_drawdown_pct": 3.8313208534245815,
+            "intrabar_drawdown_bound_pct": 3.9427123822325294,
+            "costs": 94.20608706783376
+          },
+          "selector_initialization": false
+        },
+        "2023-10-01": {
+          "end_exclusive": "2024-04-01",
+          "base": {
+            "net_pnl": -197.33902399442377,
+            "return_pct": -1.9733902399442393,
+            "trades": 6,
+            "profit_factor": 0.0075898810101476324,
+            "close_mtm_drawdown_pct": 2.507176639241042,
+            "intrabar_drawdown_bound_pct": 2.802483398062127,
+            "costs": 37.712555199944894
+          },
+          "stress": {
+            "net_pnl": -209.36792949674054,
+            "return_pct": -2.09367929496741,
+            "trades": 6,
+            "profit_factor": 0.0,
+            "close_mtm_drawdown_pct": 2.5027678552171526,
+            "intrabar_drawdown_bound_pct": 2.765091392479021,
+            "costs": 67.56240532973578
+          },
+          "selector_initialization": false
+        },
+        "2024-04-01": {
+          "end_exclusive": "2024-10-01",
+          "base": {
+            "net_pnl": 306.28333530873533,
+            "return_pct": 3.0628333530873464,
+            "trades": 4,
+            "profit_factor": 3.7528834994346045,
+            "close_mtm_drawdown_pct": 1.7738635435088783,
+            "intrabar_drawdown_bound_pct": 1.872714621157898,
+            "costs": 22.726121976627123
+          },
+          "stress": {
+            "net_pnl": 266.8541278572484,
+            "return_pct": 2.6685412785724782,
+            "trades": 4,
+            "profit_factor": 3.2997353538945164,
+            "close_mtm_drawdown_pct": 1.6527264943432711,
+            "intrabar_drawdown_bound_pct": 1.7448427791006547,
+            "costs": 41.46334653862027
+          },
+          "selector_initialization": false
+        },
+        "2024-10-01": {
+          "end_exclusive": "2025-04-01",
+          "base": {
+            "net_pnl": 550.7495985844289,
+            "return_pct": 5.50749598584428,
+            "trades": 8,
+            "profit_factor": 3.733193348733539,
+            "close_mtm_drawdown_pct": 4.263622751665558,
+            "intrabar_drawdown_bound_pct": 4.622393027413103,
+            "costs": 30.353539625780222
+          },
+          "stress": {
+            "net_pnl": 498.4798726216395,
+            "return_pct": 4.9847987262163995,
+            "trades": 8,
+            "profit_factor": 3.4008393467034694,
+            "close_mtm_drawdown_pct": 4.203967182929071,
+            "intrabar_drawdown_bound_pct": 4.547302610817834,
+            "costs": 56.67140297267352
+          },
+          "selector_initialization": false
+        },
+        "2025-04-01": {
+          "end_exclusive": "2025-10-01",
+          "base": {
+            "net_pnl": 302.79065936078405,
+            "return_pct": 3.027906593607832,
+            "trades": 15,
+            "profit_factor": 1.9284784510913744,
+            "close_mtm_drawdown_pct": 3.1370610947088693,
+            "intrabar_drawdown_bound_pct": 3.249118116530203,
+            "costs": 77.28556504862672
+          },
+          "stress": {
+            "net_pnl": 197.90170363780817,
+            "return_pct": 1.9790170363780835,
+            "trades": 15,
+            "profit_factor": 1.5832496026873808,
+            "close_mtm_drawdown_pct": 2.809716827565681,
+            "intrabar_drawdown_bound_pct": 2.9102029908276434,
+            "costs": 141.0024740238563
+          },
+          "selector_initialization": false
+        },
+        "2025-10-01": {
+          "end_exclusive": "2026-04-01",
+          "base": {
+            "net_pnl": 333.22176434091125,
+            "return_pct": 3.332217643409119,
+            "trades": 6,
+            "profit_factor": 3.6980412939702374,
+            "close_mtm_drawdown_pct": 3.8052483147404734,
+            "intrabar_drawdown_bound_pct": 3.9817343591813277,
+            "costs": 28.05361536343049
+          },
+          "stress": {
+            "net_pnl": 262.6049260989075,
+            "return_pct": 2.626049260989083,
+            "trades": 6,
+            "profit_factor": 3.021661113219439,
+            "close_mtm_drawdown_pct": 3.495785477899199,
+            "intrabar_drawdown_bound_pct": 3.65335673104673,
+            "costs": 51.519874076910185
+          },
+          "selector_initialization": false
+        },
+        "2026-04-01": {
+          "end_exclusive": "2026-10-01",
+          "base": {
+            "net_pnl": 178.01362229579172,
+            "return_pct": 1.7801362229579176,
+            "trades": 6,
+            "profit_factor": 2.6650932564754015,
+            "close_mtm_drawdown_pct": 2.2400712181495503,
+            "intrabar_drawdown_bound_pct": 2.662374099671598,
+            "costs": 33.48186262472194
+          },
+          "stress": {
+            "net_pnl": 146.3076958886304,
+            "return_pct": 1.4630769588863002,
+            "trades": 6,
+            "profit_factor": 2.2281483242447986,
+            "close_mtm_drawdown_pct": 2.102678065457817,
+            "intrabar_drawdown_bound_pct": 2.5459171935421803,
+            "costs": 60.47570725135695
+          },
+          "selector_initialization": false
+        }
+      },
+      "common_six": {
+        "positive_base": 5,
+        "positive_stress": 5,
+        "worst_base_pct": -1.9733902399442393,
+        "best_base_pct": 5.50749598584428,
+        "worst_close_drawdown_pct": 4.263622751665558
+      }
+    },
+    "v30": {
+      "blocks": {
+        "2023-04-01": {
+          "end_exclusive": "2023-10-01",
+          "base": {
+            "net_pnl": 0.0,
+            "return_pct": 0.0,
+            "trades": 0,
+            "profit_factor": null,
+            "close_mtm_drawdown_pct": 0.0,
+            "intrabar_drawdown_bound_pct": 0.0,
+            "costs": 0.0
+          },
+          "stress": {
+            "net_pnl": 0.0,
+            "return_pct": 0.0,
+            "trades": 0,
+            "profit_factor": null,
+            "close_mtm_drawdown_pct": 0.0,
+            "intrabar_drawdown_bound_pct": 0.0,
+            "costs": 0.0
+          },
+          "selector_initialization": true
+        },
+        "2023-10-01": {
+          "end_exclusive": "2024-04-01",
+          "base": {
+            "net_pnl": 36.43613604705206,
+            "return_pct": 0.36436136047051093,
+            "trades": 7,
+            "profit_factor": 1.2425001464175094,
+            "close_mtm_drawdown_pct": 3.1243075690654147,
+            "intrabar_drawdown_bound_pct": 3.176236590073972,
+            "costs": 27.24779885934043
+          },
+          "stress": {
+            "net_pnl": 14.562581957445218,
+            "return_pct": 0.14562581957444642,
+            "trades": 7,
+            "profit_factor": 1.0970218534526015,
+            "close_mtm_drawdown_pct": 3.006783658632203,
+            "intrabar_drawdown_bound_pct": 3.055013460632238,
+            "costs": 50.221252253630894
+          },
+          "selector_initialization": false
+        },
+        "2024-04-01": {
+          "end_exclusive": "2024-10-01",
+          "base": {
+            "net_pnl": -170.87168680571085,
+            "return_pct": -1.708716868057103,
+            "trades": 9,
+            "profit_factor": 0.0,
+            "close_mtm_drawdown_pct": 1.965764750541527,
+            "intrabar_drawdown_bound_pct": 1.9938697473890445,
+            "costs": 22.394268893923424
+          },
+          "stress": {
+            "net_pnl": -184.16004686907218,
+            "return_pct": -1.8416004686907184,
+            "trades": 9,
+            "profit_factor": 0.0,
+            "close_mtm_drawdown_pct": 2.022544827494656,
+            "intrabar_drawdown_bound_pct": 2.0493372050532166,
+            "costs": 42.85405654520984
+          },
+          "selector_initialization": false
+        },
+        "2024-10-01": {
+          "end_exclusive": "2025-04-01",
+          "base": {
+            "net_pnl": 246.5303548310094,
+            "return_pct": 2.465303548310094,
+            "trades": 16,
+            "profit_factor": 1.5199063926960874,
+            "close_mtm_drawdown_pct": 4.1615104712510576,
+            "intrabar_drawdown_bound_pct": 4.437508679818832,
+            "costs": 55.009467918330444
+          },
+          "stress": {
+            "net_pnl": 183.20179812017523,
+            "return_pct": 1.8320179812017612,
+            "trades": 16,
+            "profit_factor": 1.3849411099784572,
+            "close_mtm_drawdown_pct": 4.105845837677296,
+            "intrabar_drawdown_bound_pct": 4.370219115469058,
+            "costs": 103.53722052811928
+          },
+          "selector_initialization": false
+        },
+        "2025-04-01": {
+          "end_exclusive": "2025-10-01",
+          "base": {
+            "net_pnl": 605.3639160900493,
+            "return_pct": 6.0536391609004925,
+            "trades": 15,
+            "profit_factor": 3.196843292543875,
+            "close_mtm_drawdown_pct": 2.895236017303462,
+            "intrabar_drawdown_bound_pct": 3.0107620404070436,
+            "costs": 72.086842537553
+          },
+          "stress": {
+            "net_pnl": 482.49147859762525,
+            "return_pct": 4.824914785976242,
+            "trades": 15,
+            "profit_factor": 2.6581243982208456,
+            "close_mtm_drawdown_pct": 2.87975291869395,
+            "intrabar_drawdown_bound_pct": 2.9852747988476542,
+            "costs": 131.87777774654108
+          },
+          "selector_initialization": false
+        },
+        "2025-10-01": {
+          "end_exclusive": "2026-04-01",
+          "base": {
+            "net_pnl": 595.2684904455236,
+            "return_pct": 5.952684904455241,
+            "trades": 7,
+            "profit_factor": 7.146844577238608,
+            "close_mtm_drawdown_pct": 4.1814797245361275,
+            "intrabar_drawdown_bound_pct": 4.395393091304696,
+            "costs": 32.25796819800526
+          },
+          "stress": {
+            "net_pnl": 497.6159984010046,
+            "return_pct": 4.976159984010042,
+            "trades": 7,
+            "profit_factor": 6.120868299257964,
+            "close_mtm_drawdown_pct": 3.8636772629388894,
+            "intrabar_drawdown_bound_pct": 4.0545526060589525,
+            "costs": 59.25043747312266
+          },
+          "selector_initialization": false
+        },
+        "2026-04-01": {
+          "end_exclusive": "2026-10-01",
+          "base": {
+            "net_pnl": -255.00981170114937,
+            "return_pct": -2.55009811701149,
+            "trades": 15,
+            "profit_factor": 0.3572734231452698,
+            "close_mtm_drawdown_pct": 3.5282054052642273,
+            "intrabar_drawdown_bound_pct": 3.6378615729858454,
+            "costs": 81.94331287509274
+          },
+          "stress": {
+            "net_pnl": -299.6427764222044,
+            "return_pct": -2.9964277642220427,
+            "trades": 15,
+            "profit_factor": 0.2635921326766903,
+            "close_mtm_drawdown_pct": 3.770282379040646,
+            "intrabar_drawdown_bound_pct": 3.871397293103379,
+            "costs": 148.56991218081856
+          },
+          "selector_initialization": false
+        }
+      },
+      "common_six": {
+        "positive_base": 4,
+        "positive_stress": 4,
+        "worst_base_pct": -2.55009811701149,
+        "best_base_pct": 6.0536391609004925,
+        "worst_close_drawdown_pct": 4.1814797245361275
+      }
+    },
+    "v31": {
+      "blocks": {
+        "2023-04-01": {
+          "end_exclusive": "2023-10-01",
+          "base": {
+            "net_pnl": 0.0,
+            "return_pct": 0.0,
+            "trades": 0,
+            "profit_factor": null,
+            "close_mtm_drawdown_pct": 0.0,
+            "intrabar_drawdown_bound_pct": 0.0,
+            "costs": 0.0
+          },
+          "stress": {
+            "net_pnl": 0.0,
+            "return_pct": 0.0,
+            "trades": 0,
+            "profit_factor": null,
+            "close_mtm_drawdown_pct": 0.0,
+            "intrabar_drawdown_bound_pct": 0.0,
+            "costs": 0.0
+          },
+          "selector_initialization": true
+        },
+        "2023-10-01": {
+          "end_exclusive": "2024-04-01",
+          "base": {
+            "net_pnl": 36.43613604705206,
+            "return_pct": 0.36436136047051093,
+            "trades": 7,
+            "profit_factor": 1.2425001464175094,
+            "close_mtm_drawdown_pct": 3.1243075690654147,
+            "intrabar_drawdown_bound_pct": 3.176236590073972,
+            "costs": 27.24779885934043
+          },
+          "stress": {
+            "net_pnl": 14.562581957445218,
+            "return_pct": 0.14562581957444642,
+            "trades": 7,
+            "profit_factor": 1.0970218534526015,
+            "close_mtm_drawdown_pct": 3.006783658632203,
+            "intrabar_drawdown_bound_pct": 3.055013460632238,
+            "costs": 50.221252253630894
+          },
+          "selector_initialization": false
+        },
+        "2024-04-01": {
+          "end_exclusive": "2024-10-01",
+          "base": {
+            "net_pnl": -79.4196453524637,
+            "return_pct": -0.7941964535246315,
+            "trades": 2,
+            "profit_factor": 0.0,
+            "close_mtm_drawdown_pct": 1.0222527399661072,
+            "intrabar_drawdown_bound_pct": 1.0270844988998142,
+            "costs": 5.71101599697292
+          },
+          "stress": {
+            "net_pnl": -80.43980672160797,
+            "return_pct": -0.8043980672160833,
+            "trades": 2,
+            "profit_factor": 0.0,
+            "close_mtm_drawdown_pct": 0.9572179431973005,
+            "intrabar_drawdown_bound_pct": 0.9617685009819065,
+            "costs": 10.8594356216924
+          },
+          "selector_initialization": false
+        },
+        "2024-10-01": {
+          "end_exclusive": "2025-04-01",
+          "base": {
+            "net_pnl": 246.5303548310094,
+            "return_pct": 2.465303548310094,
+            "trades": 16,
+            "profit_factor": 1.5199063926960874,
+            "close_mtm_drawdown_pct": 4.1615104712510576,
+            "intrabar_drawdown_bound_pct": 4.437508679818832,
+            "costs": 55.009467918330444
+          },
+          "stress": {
+            "net_pnl": 183.20179812017523,
+            "return_pct": 1.8320179812017612,
+            "trades": 16,
+            "profit_factor": 1.3849411099784572,
+            "close_mtm_drawdown_pct": 4.105845837677296,
+            "intrabar_drawdown_bound_pct": 4.370219115469058,
+            "costs": 103.53722052811928
+          },
+          "selector_initialization": false
+        },
+        "2025-04-01": {
+          "end_exclusive": "2025-10-01",
+          "base": {
+            "net_pnl": 605.3639160900493,
+            "return_pct": 6.0536391609004925,
+            "trades": 15,
+            "profit_factor": 3.196843292543875,
+            "close_mtm_drawdown_pct": 2.895236017303462,
+            "intrabar_drawdown_bound_pct": 3.0107620404070436,
+            "costs": 72.086842537553
+          },
+          "stress": {
+            "net_pnl": 482.49147859762525,
+            "return_pct": 4.824914785976242,
+            "trades": 15,
+            "profit_factor": 2.6581243982208456,
+            "close_mtm_drawdown_pct": 2.87975291869395,
+            "intrabar_drawdown_bound_pct": 2.9852747988476542,
+            "costs": 131.87777774654108
+          },
+          "selector_initialization": false
+        },
+        "2025-10-01": {
+          "end_exclusive": "2026-04-01",
+          "base": {
+            "net_pnl": 10.088561392469273,
+            "return_pct": 0.10088561392469497,
+            "trades": 5,
+            "profit_factor": 1.0754687331910586,
+            "close_mtm_drawdown_pct": 2.112620929222899,
+            "intrabar_drawdown_bound_pct": 2.1550859593394867,
+            "costs": 16.902752367431432
+          },
+          "stress": {
+            "net_pnl": -9.373224095759724,
+            "return_pct": -0.09373224095760024,
+            "trades": 5,
+            "profit_factor": 0.9304114590376689,
+            "close_mtm_drawdown_pct": 2.1088194419445165,
+            "intrabar_drawdown_bound_pct": 2.148303042379218,
+            "costs": 31.845357507190126
+          },
+          "selector_initialization": false
+        },
+        "2026-04-01": {
+          "end_exclusive": "2026-10-01",
+          "base": {
+            "net_pnl": -87.51337782449446,
+            "return_pct": -0.8751337782449409,
+            "trades": 6,
+            "profit_factor": 0.47959216001771593,
+            "close_mtm_drawdown_pct": 1.8700527286507709,
+            "intrabar_drawdown_bound_pct": 1.9815936614353828,
+            "costs": 28.90155482917848
+          },
+          "stress": {
+            "net_pnl": -104.44974555050612,
+            "return_pct": -1.0444974555050557,
+            "trades": 6,
+            "profit_factor": 0.39049471554372933,
+            "close_mtm_drawdown_pct": 1.833923767761079,
+            "intrabar_drawdown_bound_pct": 1.9370733415881174,
+            "costs": 53.19888731753589
+          },
+          "selector_initialization": false
+        }
+      },
+      "common_six": {
+        "positive_base": 4,
+        "positive_stress": 3,
+        "worst_base_pct": -0.8751337782449409,
+        "best_base_pct": 6.0536391609004925,
+        "worst_close_drawdown_pct": 4.1615104712510576
+      }
+    }
+  },
+  "paper_eligible": []
+}
