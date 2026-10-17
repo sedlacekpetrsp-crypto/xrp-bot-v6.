@@ -18,6 +18,7 @@ import lh_whale_dashboard
 import liquidity_monitor
 import legacy_fly_recovery
 import fly_accounting_reconcile
+import research_market_evidence
 from v8_fly_layer import install
 
 install(base)
@@ -1011,6 +1012,7 @@ async def liquidity_hunter_status():
 # Independent PAPER portfolios; deliberately separate from BEST balances and risk hooks.
 swing_paper.install(app, bestof.core)
 lh_whale.install(app, bestof.core)
+research_market_evidence.install(app, base)
 liquidity_monitor.install(app)
 
 # News refresh and trading stay active independently of paused FLY.
