@@ -1,0 +1,74 @@
+{
+  "phase": "POST_RESULT_DIAGNOSTICS_NOT_SELECTION",
+  "control_summary_exact": true,
+  "ledgers_reconciled": 30,
+  "dataset_days": 1279.0,
+  "candidates": {
+    "v57": {
+      "trades_per_week": 1.7787333854573886,
+      "trades_per_month": 7.738095238095238,
+      "period_trades_per_week": {
+        "2023": 1.8836363636363636,
+        "2024_H1": 1.6153846153846154,
+        "2024_H2": 1.9021739130434783,
+        "2025_2026": 1.744514106583072
+      },
+      "active_entry_months": 42,
+      "total_months": 42,
+      "max_between_entries_days": 23.125,
+      "max_entry_gap_including_boundaries_days": 23.125,
+      "median_holding_hours": 6.0,
+      "net_minus_top3": -433.185297764443,
+      "zero_cost_continuous": {
+        "net_pnl": 2650.9698380228783,
+        "return_pct": 26.509698380228784,
+        "trades": 325,
+        "profit_factor": 1.5889490775655004,
+        "close_mtm_drawdown_pct": 6.808904790278844,
+        "intrabar_drawdown_bound_pct": 6.965127182312508,
+        "costs": 0.0
+      }
+    },
+    "v58": {
+      "trades_per_week": 7.766223612197029,
+      "trades_per_month": 33.785714285714285,
+      "period_trades_per_week": {
+        "2023": 8.756363636363636,
+        "2024_H1": 7.884615384615385,
+        "2024_H2": 7.836956521739131,
+        "2025_2026": 7.285266457680251
+      },
+      "active_entry_months": 42,
+      "total_months": 42,
+      "max_between_entries_days": 6.21875,
+      "max_entry_gap_including_boundaries_days": 6.21875,
+      "median_holding_hours": 1.75,
+      "net_minus_top3": -7681.371634516124,
+      "zero_cost_continuous": {
+        "net_pnl": -687.8803316404992,
+        "return_pct": -6.878803316404991,
+        "trades": 1419,
+        "profit_factor": 0.9501432723233588,
+        "close_mtm_drawdown_pct": 22.969880022309198,
+        "intrabar_drawdown_bound_pct": 23.14198720117066,
+        "costs": 0.0
+      }
+    },
+    "v56_control": {
+      "trades_per_week": 0.4214229867083659,
+      "trades_per_month": 1.8333333333333333,
+      "period_trades_per_week": {
+        "2023": 0.4581818181818182,
+        "2024_H1": 0.5769230769230769,
+        "2024_H2": 0.5706521739130435,
+        "2025_2026": 0.3181818181818182
+      },
+      "active_entry_months": 35,
+      "total_months": 42,
+      "max_between_entries_days": 137.66666666666666,
+      "max_entry_gap_including_boundaries_days": 137.66666666666666,
+      "median_holding_hours": 28.0,
+      "net_minus_top3": 61.792273052338714
+    }
+  }
+}
