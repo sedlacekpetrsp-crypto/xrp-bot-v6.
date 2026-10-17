@@ -12,10 +12,13 @@
 - Úplný vzorek vyžaduje všechny vstupy, jeden zdroj, sběr do 20 sekund, dostupný stav zpráv a výpočet všech signálových filtrů bez chyby. I neúplné vzorky se uchovávají s příznaky a chybami.
 - FLY/FAST/Lead-Lag se počítají v oddělených instancích modulů se stejným zdrojovým kódem. Dostanou pouze zachycená data a čisté indikátory. Nemají přístup k databázovému URL, obchodním callbackům, živým cenám ani sdíleným stavům. Archivují se LONG/SHORT i WAIT a důvody odmítnutí.
 - Jde o **signálové filtry**, nikoli simulované obchody. Nevyhodnocuje se exekuce, velikost pozice, recovery režim, portfolio ani PnL. FLY setup-health kontext je kopie produkční historie zmrazená na začátku běhu; je součástí archivu. Nejde o nový nezávislý PAPER účet.
-- Samostatné tabulky `research_market_runs` a `research_market_samples`, gzip a SHA-256 pro každý vzorek; hash zdrojů a přesná konfigurace pro každý běh. Jeden záznam na minutový bucket i při překryvu deployů. Produkční obchodní tabulky se nepřepisují.
+- Samostatné tabulky `research_market_runs` a `research_market_samples`, gzip a SHA-256 původního rozbaleného vzorku; hash zdrojů a přesná konfigurace pro každý běh. Jeden záznam na minutový bucket i při překryvu deployů. Produkční obchodní tabulky se nepřepisují.
+- Změny svíček se ukládají bezztrátově proti předchozímu skutečně uloženému vzorku stejného běhu. Nejméně jednou za hodinu a po restartu je plný checkpoint. Zachovávají se i opravy starých svíček a změny neuzavřené svíčky. Knihy, ceny, zprávy, metadata a rozhodnutí jsou pokaždé celé. Ověření na dvou skutečných prvních vzorcích: 74 224 proti 5 046 komprimovaným bajtům (úspora 93,2 %), obnova přesně shodná; poměr se může v čase měnit.
 - Pevný strop 128 MiB fyzické velikosti tabulky vzorků, nejvýše 256 KiB na jeden komprimovaný vzorek. Po dosažení stropu se sběr zastaví a status hlásí `archive_full`. Historie se automaticky nemaže. Žádná nová placená služba. Rozsah archivu lze později vyexportovat přes oprávněný přístup k databázi.
 
 Stav: `/research/market-evidence/status`. Zobrazuje čas posledního uložení, počet a velikost vzorků, jejich kvalitu a poslední signálové filtry; neoznačuje bota za ziskového.
+
+Read-only export `read_archived_sample(url,bucket)` obnoví řetězec nejvýše jedné hodiny, ověří všechny kontrolní součty a vrátí původní vzorek i zmrazený kontext. Starší plné vzorky z prvního nasazení jsou čitelné. Samotné rozbalení gzip u rozdílového vzorku nestačí. Offline `verify_sample.py` porovná zdrojové hashe a znovu vypočítá uložené filtry z obnovených JSON vstupů bez sítě a databáze. Je nutné použít odpovídající původní checkout.
 
 ## Limity dalšího testu
 

@@ -22,7 +22,7 @@ import news_signal
 from market_data import market
 from swing_paper import connect
 
-BUILD = 'research-market-evidence-20261017-1'
+BUILD = 'research-market-evidence-20261017-2'
 SYMBOLS = ('XRPUSDC', 'ETHUSDC', 'SOLUSDC')
 FRAMES = tuple((s, i, 250) for s in SYMBOLS for i in ('1m', '5m')) + (
     ('BTCUSDC', '1m', 10), ('BTCUSDT', '1m', 90), ('ETHUSDT', '1m', 90))
@@ -229,12 +229,96 @@ def capacity(url):
                 last_observed_at=row[4].isoformat() if row[4] else None)
 
 
-def store_sample(url, run_id, context, sample):
+def archive_encoding(sample, bucket, previous=None):
+    """Lossless candle patches, with a full checkpoint at least once per hour.
+
+    Metadata, books, prices, news and decisions are always stored in full.
+    Existing rows remain immutable and every patch points to a committed bucket.
+    """
+    if previous is None or bucket//60 != previous[0]//60:
+        return sample
+    base_bucket, base = previous
+    if base_bucket >= bucket:
+        raise ValueError('Archive base must precede sample')
+    packed = copy.deepcopy(sample)
+    packed['_archive_base_bucket'] = base_bucket
+    for key, frame in packed['frames'].items():
+        old = base['frames'].get(key)
+        rows = frame['data']
+        if not old or frame.get('provider') != old.get('provider') or not rows:
+            continue
+        old_rows = {int(row[0]):row for row in old['data']}
+        changes = [row for row in rows if old_rows.get(int(row[0])) != row]
+        frame['candle_patch'] = dict(first=int(rows[0][0]), last=int(rows[-1][0]),data_position=list(frame).index('data'),
+            changes=changes, sha256=hashlib.sha256(json_bytes(rows)).hexdigest())
+        del frame['data']
+    return packed
+
+
+def expand_sample(packed, base=None):
+    """Restore exact original arrays, including partial bars and later revisions."""
+    sample = copy.deepcopy(packed)
+    if '_archive_base_bucket' not in sample:
+        return sample
+    if base is None:
+        raise ValueError('Missing preceding committed research sample')
+    del sample['_archive_base_bucket']
+    for key, frame in sample['frames'].items():
+        patch = frame.pop('candle_patch',None)
+        if patch is None:
+            continue
+        old = base['frames'][key]
+        if old.get('provider') != frame.get('provider'):
+            raise ValueError('Research provider mismatch')
+        rows = {int(row[0]):copy.deepcopy(row) for row in old['data']
+                if patch['first']<=int(row[0])<=patch['last']}
+        rows.update({int(row[0]):row for row in patch['changes']})
+        restored = [rows[stamp] for stamp in sorted(rows)]
+        if hashlib.sha256(json_bytes(restored)).hexdigest() != patch['sha256']:
+            raise ValueError('Research candle reconstruction checksum mismatch')
+        items = list(frame.items())
+        items.insert(patch['data_position'],('data',restored))
+        sample['frames'][key] = dict(items)
+    return sample
+
+
+def read_archived_sample(url, bucket):
+    """Read-only export of a restored sample, checksum and its frozen context."""
+    chain = []
+    current = int(bucket)
+    with connect(url) as conn:
+        conn.execute('SET TRANSACTION READ ONLY')
+        for _ in range(61):
+            row = conn.execute('SELECT payload,sha256,run_id FROM research_market_samples WHERE bucket=%s',(current,)).fetchone()
+            if row is None:
+                raise ValueError('Missing archived research bucket')
+            packed = json.loads(gzip.decompress(row[0]))
+            if chain and row[2] != chain[0][2]:
+                raise ValueError('Archive chain crosses frozen run contexts')
+            chain.append((packed,row[1],row[2]))
+            preceding = packed.get('_archive_base_bucket')
+            if preceding is None:
+                break
+            if preceding >= current:
+                raise ValueError('Invalid research archive chain')
+            current = preceding
+        else:
+            raise ValueError('Research checkpoint chain too long')
+        context_row = conn.execute('SELECT context FROM research_market_runs WHERE id=%s',(chain[0][2],)).fetchone()
+    decoded = None
+    for packed,checksum,run_id in reversed(chain):
+        decoded = expand_sample(packed,decoded)
+        if hashlib.sha256(json_bytes(decoded)).hexdigest() != checksum:
+            raise ValueError('Research sample checksum mismatch')
+    return decoded,chain[0][1],json.loads(gzip.decompress(context_row[0]))
+
+
+def store_sample(url, run_id, context, sample, previous=None):
     raw = json_bytes(sample)
-    compressed = gzip.compress(raw, mtime=0)
+    bucket = int(datetime.fromisoformat(sample['started_at']).timestamp())//INTERVAL_SECONDS
+    compressed = gzip.compress(json_bytes(archive_encoding(sample,bucket,previous)), mtime=0)
     if len(compressed)>MAX_SAMPLE_BYTES:
         raise ValueError('Research sample exceeds byte budget')
-    bucket = int(datetime.fromisoformat(sample['started_at']).timestamp())//INTERVAL_SECONDS
     quality = sample['quality']
     complete = quality['inputs_complete'] and quality['synchronized'] and quality['news_ready'] and not sample['signals']['errors']
     with connect(url) as conn:
@@ -261,6 +345,7 @@ def compact(sample):
 async def worker(core):
     initialized = False
     observer = None
+    previous = None
     run_id = str(uuid.uuid4())
     async with httpx.AsyncClient(timeout=8,limits=httpx.Limits(max_connections=2)) as client:
         while True:
@@ -279,11 +364,12 @@ async def worker(core):
                         context = observer.context()
                     sample = await capture(client,core.BINANCE_API)
                     sample['signals'] = await observer.evaluate(sample)
-                    result = await asyncio.to_thread(store_sample,core.DATABASE_URL,run_id,context,sample)
+                    result = await asyncio.to_thread(store_sample,core.DATABASE_URL,run_id,context,sample,previous)
                     runtime.update(status='collecting' if result['saved'] else result['reason'],
                         last_error=None,last_sample=compact(sample),last_store=result,run_id=run_id)
                     if result['saved']:
                         runtime['last_saved_at'] = sample['finished_at']
+                        previous = (result['bucket'],sample)
                     runtime.update(await asyncio.to_thread(capacity,core.DATABASE_URL))
                     print('RESEARCH_EVIDENCE',BUILD,result['reason'],'complete='+str(result.get('complete')),flush=True)
             except asyncio.CancelledError:

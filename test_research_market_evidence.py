@@ -156,5 +156,53 @@ class PersistenceTests(unittest.TestCase):
             self.assertIn('ON CONFLICT DO NOTHING',q)
             self.assertFalse(any('trades' in q or 'bot_state' in q for q,a in conn.calls))
 
+    def test_lossless_candle_delta_preserves_revisions_and_reduces_size(self):
+        previous=self.sample();current=copy.deepcopy(previous)
+        current['started_at']='2026-10-17T05:31:00+00:00'
+        for frame in current['frames'].values():
+            frame['provider']='binance'
+        for frame in previous['frames'].values():
+            frame['provider']='binance'
+        for frame in current['frames'].values():
+            frame['data']=frame['data'][1:]
+            frame['data'][2][5]=11 # A correction to a previously closed bar.
+            frame['data'][-1][5]=13 # Changed intrabar data must not be lost.
+        encoded=r.archive_encoding(current,91,(90,previous))
+        self.assertIn('_archive_base_bucket',encoded)
+        self.assertEqual(r.expand_sample(encoded,previous),current)
+        self.assertEqual(r.json_bytes(r.expand_sample(encoded,previous)),r.json_bytes(current))
+        self.assertLess(len(gzip.compress(r.json_bytes(encoded))),len(gzip.compress(r.json_bytes(current))))
+        bad=copy.deepcopy(encoded);bad['frames']['XRPUSDC:1m']['candle_patch']['changes'][0][5]=99
+        with self.assertRaises(ValueError):r.expand_sample(bad,previous)
+        with self.assertRaises(ValueError):r.expand_sample(encoded)
+
+    def test_full_checkpoint_on_restart_and_hour_boundary(self):
+        previous=self.sample();sample=self.sample()
+        self.assertIs(r.archive_encoding(sample,100,None),sample)
+        self.assertIs(r.archive_encoding(sample,120,(119,previous)),sample)
+        with self.assertRaises(ValueError):r.archive_encoding(sample,121,(121,previous))
+
+    def test_readonly_export_restores_chain_and_rejects_corruption(self):
+        previous=self.sample();current=copy.deepcopy(previous)
+        current['started_at']='2026-10-17T05:31:00+00:00'
+        packed=r.archive_encoding(current,91,(90,previous))
+        import hashlib
+        records={90:(gzip.compress(r.json_bytes(previous)),hashlib.sha256(r.json_bytes(previous)).hexdigest(),'run'),
+                 91:(gzip.compress(r.json_bytes(packed)),hashlib.sha256(r.json_bytes(current)).hexdigest(),'run')}
+        context={'constants':{},'scope':'test'}
+        conn=FakeConnection()
+        def execute(query,args=()):
+            conn.calls.append((query,args))
+            if 'SELECT payload' in query:return FakeCursor(records.get(args[0]))
+            if 'SELECT context' in query:return FakeCursor((gzip.compress(r.json_bytes(context)),))
+            return FakeCursor(None)
+        conn.execute=execute
+        with patch.object(r,'connect',return_value=conn):
+            restored,checksum,restored_context=r.read_archived_sample('test',91)
+            self.assertEqual(restored,current);self.assertEqual(restored_context,context)
+            self.assertEqual(conn.calls[0][0],'SET TRANSACTION READ ONLY')
+            records[90]=(records[90][0],'wrong','run')
+            with self.assertRaises(ValueError):r.read_archived_sample('test',91)
+
 
 if __name__=='__main__':unittest.main()
