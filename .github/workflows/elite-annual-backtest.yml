@@ -1,16 +1,16 @@
-name: ELITE V56 adaptive trend reclaim discovery
+name: ELITE V57 V58 faster trading discovery discovery
 on:
   workflow_dispatch:
   push:
     branches: [elite-research-v1]
     paths:
       - 'elite/**.py'
-      - 'elite/PROTOCOL_V56.md'
+      - 'elite/PROTOCOL_V57_V58.md'
       - '.github/workflows/elite-annual-backtest.yml'
 permissions:
   contents: read
 concurrency:
-  group: elite-v56-discovery
+  group: elite-v57-discovery
   cancel-in-progress: false
 jobs:
   research:
@@ -23,12 +23,12 @@ jobs:
           python-version: '3.12'
       - name: Verify accounting, causality and strategy tests
         run: python -m unittest discover -s elite -p 'test_*.py' -v
-      - name: Fixed V56 discovery with unchanged V18 control
-        run: python -u -m elite.batch_v56 --cache /tmp/elite-data --out elite-ci-results
+      - name: Fixed V57 V58 discovery with unchanged V56 control
+        run: python -u -m elite.batch_v57 --cache /tmp/elite-data --out elite-ci-results
       - name: Archive full evidence (success is execution, not strategy acceptance)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: elite-v56-discovery
+          name: elite-v57-discovery
           path: elite-ci-results/
           if-no-files-found: error
