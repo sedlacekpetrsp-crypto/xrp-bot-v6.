@@ -1,0 +1,34 @@
+{
+  "source": "85336ecfd724b8b9ca5105c2631f5c74692f8ced",
+  "symbol": "XRPUSDC",
+  "data_start": "2026-10-11T00:00:00Z",
+  "data_end_exclusive": "2026-10-17T05:00:00Z",
+  "development": [
+    "2026-10-13T00:00:00Z",
+    "2026-10-15T00:00:00Z"
+  ],
+  "chronological_check": [
+    "2026-10-15T00:00:00Z",
+    "2026-10-17T05:00:00Z"
+  ],
+  "variants": {
+    "min_adx": [
+      22
+    ],
+    "atr_stop_mult": [
+      1.5
+    ]
+  },
+  "risk_rate": 0.0008,
+  "fee_per_side": 0.00095,
+  "slippage_per_side": 0.0002,
+  "intrabar": "Stop before target; gap stop fills at open; profit protection updated only at close",
+  "gate": {
+    "net_pnl_positive": true,
+    "minimum_trades": 30,
+    "profit_factor": 1.1,
+    "double_slippage_positive": true
+  },
+  "limitations": "Fixed production baseline, no parameter search. Both windows are evaluation only; development is a legacy output key. Later period than original Oct12 TV report; market has already been observed in live reports, so not a pristine unseen holdout. One-minute execution approximation and small sample cannot establish profitability. FLY/FAST full replay blocked by missing historical book/news/ticks. Lead-Lag ledger review is not a predictive lead-lag test.",
+  "stop_distance_multiplier": 1.15
+}
