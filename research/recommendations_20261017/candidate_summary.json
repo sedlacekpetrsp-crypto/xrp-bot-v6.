@@ -1,0 +1,110 @@
+{
+  "scope": "Unique overlapping scan candidates; sampled future marks, not fills or strategy PnL. No profitability claim.",
+  "candidates": 597,
+  "counts": {
+    "VWAP_REVERSION": 520,
+    "FIB_618_786": 76,
+    "VWAP_TREND_RECLAIM": 1
+  },
+  "groups": [
+    {
+      "strategy": "FIB_618_786",
+      "horizon_minutes": 15,
+      "total": 76,
+      "timely_marks": 76,
+      "missed": 0,
+      "pending": 0,
+      "mean_directional_less_estimated_cost_pct": -0.23998065994725626,
+      "median_directional_less_estimated_cost_pct": -0.21594359615127767,
+      "cost_cleared": 10
+    },
+    {
+      "strategy": "FIB_618_786",
+      "horizon_minutes": 60,
+      "total": 76,
+      "timely_marks": 75,
+      "missed": 0,
+      "pending": 1,
+      "mean_directional_less_estimated_cost_pct": -0.18792547484189534,
+      "median_directional_less_estimated_cost_pct": -0.1740941008095107,
+      "cost_cleared": 23
+    },
+    {
+      "strategy": "FIB_618_786",
+      "horizon_minutes": 240,
+      "total": 76,
+      "timely_marks": 73,
+      "missed": 0,
+      "pending": 3,
+      "mean_directional_less_estimated_cost_pct": -0.20421084691132846,
+      "median_directional_less_estimated_cost_pct": -0.13810814849124808,
+      "cost_cleared": 27
+    },
+    {
+      "strategy": "VWAP_REVERSION",
+      "horizon_minutes": 15,
+      "total": 520,
+      "timely_marks": 514,
+      "missed": 6,
+      "pending": 0,
+      "mean_directional_less_estimated_cost_pct": -0.1981059496418016,
+      "median_directional_less_estimated_cost_pct": -0.21305769611926517,
+      "cost_cleared": 98
+    },
+    {
+      "strategy": "VWAP_REVERSION",
+      "horizon_minutes": 60,
+      "total": 520,
+      "timely_marks": 520,
+      "missed": 0,
+      "pending": 0,
+      "mean_directional_less_estimated_cost_pct": -0.22458753392437059,
+      "median_directional_less_estimated_cost_pct": -0.22809107623721658,
+      "cost_cleared": 156
+    },
+    {
+      "strategy": "VWAP_REVERSION",
+      "horizon_minutes": 240,
+      "total": 520,
+      "timely_marks": 519,
+      "missed": 0,
+      "pending": 1,
+      "mean_directional_less_estimated_cost_pct": 0.04578765926377964,
+      "median_directional_less_estimated_cost_pct": -0.05975503641351443,
+      "cost_cleared": 235
+    },
+    {
+      "strategy": "VWAP_TREND_RECLAIM",
+      "horizon_minutes": 15,
+      "total": 1,
+      "timely_marks": 1,
+      "missed": 0,
+      "pending": 0,
+      "mean_directional_less_estimated_cost_pct": -0.3493087788169178,
+      "median_directional_less_estimated_cost_pct": -0.3493087788169178,
+      "cost_cleared": 0
+    },
+    {
+      "strategy": "VWAP_TREND_RECLAIM",
+      "horizon_minutes": 60,
+      "total": 1,
+      "timely_marks": 1,
+      "missed": 0,
+      "pending": 0,
+      "mean_directional_less_estimated_cost_pct": 0.36346495785707056,
+      "median_directional_less_estimated_cost_pct": 0.36346495785707056,
+      "cost_cleared": 1
+    },
+    {
+      "strategy": "VWAP_TREND_RECLAIM",
+      "horizon_minutes": 240,
+      "total": 1,
+      "timely_marks": 1,
+      "missed": 0,
+      "pending": 0,
+      "mean_directional_less_estimated_cost_pct": -1.0020432590540005,
+      "median_directional_less_estimated_cost_pct": -1.0020432590540005,
+      "cost_cleared": 0
+    }
+  ]
+}

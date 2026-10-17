@@ -1,0 +1,104 @@
+{
+  "scope": "Historical PAPER executions, mixed versions and selected trades; not an independent backtest. FLY canonical exclusions applied. Fees included; recorded fills include prior slippage assumptions.",
+  "rows": [
+    {
+      "bot": "FAST",
+      "cohort": "ETHUSDC",
+      "fees": 51.384949019661434,
+      "first_open": "2026-09-27T13:15:15.473261Z",
+      "gross_pnl": -9.768438052155492,
+      "last_close": "2026-10-05T14:19:19.075764Z",
+      "net_pnl": -61.153387071816915,
+      "profit_factor": 0.008251731621998996,
+      "trades": 18
+    },
+    {
+      "bot": "FAST",
+      "cohort": "SOLUSDC",
+      "fees": 77.13420716989488,
+      "first_open": "2026-09-23T14:21:28.285176Z",
+      "gross_pnl": -6.348974314448311,
+      "last_close": "2026-10-02T14:54:24.06434Z",
+      "net_pnl": -83.4831814843432,
+      "profit_factor": 0.09044370495949579,
+      "trades": 26
+    },
+    {
+      "bot": "FAST",
+      "cohort": "XRPUSDC",
+      "fees": 233.0387811614115,
+      "first_open": "2026-09-22T01:04:29.993714Z",
+      "gross_pnl": -35.782845171098266,
+      "last_close": "2026-10-05T14:47:39.759189Z",
+      "net_pnl": -268.8216263325098,
+      "profit_factor": 0.15878346746378597,
+      "trades": 60
+    },
+    {
+      "bot": "FLY",
+      "cohort": "BREAKOUT",
+      "fees": 97.47727116437757,
+      "first_open": "2026-09-20T00:32:07.648672Z",
+      "gross_pnl": -3.8735365519014886,
+      "last_close": "2026-09-21T11:03:24.811224Z",
+      "net_pnl": -101.35080771627906,
+      "profit_factor": 0.4566709923830604,
+      "trades": 21
+    },
+    {
+      "bot": "FLY",
+      "cohort": "RAPID_MOMENTUM",
+      "fees": 773.5637308096937,
+      "first_open": "2026-09-17T19:27:59.954573Z",
+      "gross_pnl": 53.119486756934364,
+      "last_close": "2026-10-11T07:46:04.851746Z",
+      "net_pnl": -720.4442440527598,
+      "profit_factor": 0.5688497885432057,
+      "trades": 266
+    },
+    {
+      "bot": "LEADLAG",
+      "cohort": "LONG",
+      "fees": 31.597524874516438,
+      "first_open": "2026-09-21T20:20:43.643533Z",
+      "gross_pnl": -12.62845383513984,
+      "last_close": "2026-09-25T00:11:10.675018Z",
+      "net_pnl": -44.225978709656275,
+      "profit_factor": 0,
+      "trades": 5
+    },
+    {
+      "bot": "LEADLAG",
+      "cohort": "SHORT",
+      "fees": 19.914156966661725,
+      "first_open": "2026-09-21T21:04:14.378868Z",
+      "gross_pnl": 13.699256768383998,
+      "last_close": "2026-09-23T05:05:17.782024Z",
+      "net_pnl": -6.214900198277725,
+      "profit_factor": 0.32031679579278327,
+      "trades": 3
+    },
+    {
+      "bot": "TV",
+      "cohort": "countertrend",
+      "fees": 18.781761410163575,
+      "first_open": "2026-09-23T01:58:30.291207Z",
+      "gross_pnl": -10.728284715738702,
+      "last_close": "2026-09-25T02:02:36.60047Z",
+      "net_pnl": -29.510046125902278,
+      "profit_factor": 0.2454243388552601,
+      "trades": 8
+    },
+    {
+      "bot": "TV",
+      "cohort": "trend",
+      "fees": 408.5889190541482,
+      "first_open": "2026-09-22T20:47:18.20875Z",
+      "gross_pnl": 1.231529955764235,
+      "last_close": "2026-10-11T11:49:45.498952Z",
+      "net_pnl": -407.357389098384,
+      "profit_factor": 0.46389002782271355,
+      "trades": 104
+    }
+  ]
+}

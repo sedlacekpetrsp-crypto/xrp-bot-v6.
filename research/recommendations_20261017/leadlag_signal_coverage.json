@@ -1,0 +1,10 @@
+[
+  {
+    "directional_rows": 8,
+    "distinct_candles": 8,
+    "first_at": "2026-09-21T20:20:43.656753Z",
+    "last_at": "2026-09-25T00:10:07.678719Z",
+    "missing_book_rows": 0,
+    "observations": 8
+  }
+]
