@@ -1,0 +1,459 @@
+{
+  "protocol_sha256": "fc5aaacc3b96110195a5a0ee5e3f25c6b1a49807317b856eaa9e20374bd6b696",
+  "dataset_bars": 368352,
+  "costs_per_side": {
+    "fee": 0.001,
+    "slippage": 0.0003,
+    "half_spread": 0.0001
+  },
+  "warning": "Historical screening only; diagnostic period already reused; no profitability guarantee.",
+  "candidates": {
+    "v5": {
+      "periods": {
+        "development": {
+          "start": "2023-04-01",
+          "end_exclusive": "2024-01-01",
+          "base": {
+            "net_pnl": -184.8352123563218,
+            "return_pct": -1.8483521235632128,
+            "trades": 31,
+            "profit_factor": 0.8213134485348672,
+            "close_mtm_drawdown_pct": 6.176136684094083,
+            "intrabar_drawdown_bound_pct": 6.228148265686836,
+            "costs": 163.37322272902182
+          },
+          "stress": {
+            "net_pnl": -310.2366383004901,
+            "return_pct": -3.1023663830048953,
+            "trades": 31,
+            "profit_factor": 0.7056249581881163,
+            "close_mtm_drawdown_pct": 6.025181885478635,
+            "intrabar_drawdown_bound_pct": 6.072553833010642,
+            "costs": 297.639427727065
+          },
+          "mean_daily_pnl_95pct_block_bootstrap": [
+            -4.264250813437605,
+            3.3924047911931847
+          ],
+          "failed_gates": [
+            "nonpositive_net_pnl",
+            "profit_factor_below_1.2",
+            "nonpositive_stress_pnl",
+            "uncertain_daily_expectancy"
+          ]
+        },
+        "validation": {
+          "start": "2024-01-01",
+          "end_exclusive": "2024-07-01",
+          "base": {
+            "net_pnl": -583.37761961656,
+            "return_pct": -5.833776196165596,
+            "trades": 23,
+            "profit_factor": 0.17557025296777756,
+            "close_mtm_drawdown_pct": 6.700758285879605,
+            "intrabar_drawdown_bound_pct": 6.713962488031576,
+            "costs": 115.8503133639416
+          },
+          "stress": {
+            "net_pnl": -630.9420507492941,
+            "return_pct": -6.309420507492947,
+            "trades": 23,
+            "profit_factor": 0.12955303908772636,
+            "close_mtm_drawdown_pct": 6.735003466118772,
+            "intrabar_drawdown_bound_pct": 6.7470777112674964,
+            "costs": 210.49026320496435
+          },
+          "mean_daily_pnl_95pct_block_bootstrap": [
+            -5.584059239619889,
+            -0.733000453666826
+          ],
+          "failed_gates": [
+            "fewer_than_30_trades",
+            "nonpositive_net_pnl",
+            "profit_factor_below_1.2",
+            "nonpositive_stress_pnl",
+            "uncertain_daily_expectancy"
+          ]
+        },
+        "holdout": {
+          "start": "2024-07-01",
+          "end_exclusive": "2025-01-01",
+          "base": {
+            "net_pnl": 3708.8554036824844,
+            "return_pct": 37.08855403682485,
+            "trades": 25,
+            "profit_factor": 4.803580693970284,
+            "close_mtm_drawdown_pct": 8.834440604892816,
+            "intrabar_drawdown_bound_pct": 8.875574364413714,
+            "costs": 137.09588574037912
+          },
+          "stress": {
+            "net_pnl": 3260.9862756486164,
+            "return_pct": 32.609862756486166,
+            "trades": 25,
+            "profit_factor": 4.338682366487111,
+            "close_mtm_drawdown_pct": 8.79986018221357,
+            "intrabar_drawdown_bound_pct": 8.837403104336412,
+            "costs": 248.43096688988823
+          },
+          "mean_daily_pnl_95pct_block_bootstrap": [
+            -0.6242076713233078,
+            48.8888439855252
+          ],
+          "failed_gates": [
+            "fewer_than_30_trades",
+            "uncertain_daily_expectancy"
+          ]
+        },
+        "diagnostic": {
+          "start": "2025-01-01",
+          "end_exclusive": "2026-10-01",
+          "base": {
+            "net_pnl": 2534.84562598497,
+            "return_pct": 25.348456259849694,
+            "trades": 70,
+            "profit_factor": 2.3354220578985903,
+            "close_mtm_drawdown_pct": 7.982116570308466,
+            "intrabar_drawdown_bound_pct": 8.983352662254832,
+            "costs": 376.75759570211534
+          },
+          "stress": {
+            "net_pnl": 1845.8692554603203,
+            "return_pct": 18.458692554603196,
+            "trades": 70,
+            "profit_factor": 1.9666547109514265,
+            "close_mtm_drawdown_pct": 7.435316358149638,
+            "intrabar_drawdown_bound_pct": 8.114551867343831,
+            "costs": 673.560423851724
+          },
+          "mean_daily_pnl_95pct_block_bootstrap": [
+            -0.8451137854584669,
+            10.766433642312839
+          ],
+          "failed_gates": [
+            "uncertain_daily_expectancy"
+          ]
+        }
+      },
+      "quarterly_mtm_pnl": {
+        "2023-Q2": -134.75468264606752,
+        "2023-Q3": -110.9321011742104,
+        "2023-Q4": 60.851571463956134,
+        "2024-Q1": -289.6876882118813,
+        "2024-Q2": -293.68993140467865,
+        "2024-Q3": 249.05236881750716,
+        "2024-Q4": 3459.803034864979,
+        "2025-Q1": 243.53501290147506,
+        "2025-Q2": 6.16523684882668,
+        "2025-Q3": 636.1345275800468,
+        "2025-Q4": 5.45296950561351,
+        "2026-Q1": 474.33297877691075,
+        "2026-Q2": -368.45903027841086,
+        "2026-Q3": 1537.683930650508
+      },
+      "paper_eligible": false
+    },
+    "v6": {
+      "periods": {
+        "development": {
+          "start": "2023-04-01",
+          "end_exclusive": "2024-01-01",
+          "base": {
+            "net_pnl": 385.56319599890594,
+            "return_pct": 3.8556319599890587,
+            "trades": 13,
+            "profit_factor": 2.3137304595732564,
+            "close_mtm_drawdown_pct": 3.034602610308417,
+            "intrabar_drawdown_bound_pct": 3.18292355359179,
+            "costs": 40.749782171301575
+          },
+          "stress": {
+            "net_pnl": 330.54486729941345,
+            "return_pct": 3.305448672994138,
+            "trades": 13,
+            "profit_factor": 2.102491182736417,
+            "close_mtm_drawdown_pct": 2.9551217586673126,
+            "intrabar_drawdown_bound_pct": 3.1572144538767986,
+            "costs": 77.15143305179187
+          },
+          "mean_daily_pnl_95pct_block_bootstrap": [
+            -1.104350268790308,
+            4.417248084705035
+          ],
+          "failed_gates": [
+            "fewer_than_30_trades",
+            "uncertain_daily_expectancy"
+          ]
+        },
+        "validation": {
+          "start": "2024-01-01",
+          "end_exclusive": "2024-07-01",
+          "base": {
+            "net_pnl": -397.88195876869577,
+            "return_pct": -3.9788195876869548,
+            "trades": 13,
+            "profit_factor": 0.11230755149373027,
+            "close_mtm_drawdown_pct": 4.843335884905754,
+            "intrabar_drawdown_bound_pct": 4.848427986353068,
+            "costs": 35.01881149861997
+          },
+          "stress": {
+            "net_pnl": -410.0806983095117,
+            "return_pct": -4.100806983095118,
+            "trades": 13,
+            "profit_factor": 0.09229436524885638,
+            "close_mtm_drawdown_pct": 4.8240104684510445,
+            "intrabar_drawdown_bound_pct": 4.8287863616783895,
+            "costs": 66.5001552281301
+          },
+          "mean_daily_pnl_95pct_block_bootstrap": [
+            -3.883408160095334,
+            -0.2265924856136645
+          ],
+          "failed_gates": [
+            "fewer_than_30_trades",
+            "nonpositive_net_pnl",
+            "profit_factor_below_1.2",
+            "nonpositive_stress_pnl",
+            "uncertain_daily_expectancy"
+          ]
+        },
+        "holdout": {
+          "start": "2024-07-01",
+          "end_exclusive": "2025-01-01",
+          "base": {
+            "net_pnl": 2226.636234492031,
+            "return_pct": 22.2663623449203,
+            "trades": 9,
+            "profit_factor": 8.740969360416237,
+            "close_mtm_drawdown_pct": 9.238635502351109,
+            "intrabar_drawdown_bound_pct": 9.870678659155717,
+            "costs": 25.715040992208845
+          },
+          "stress": {
+            "net_pnl": 2132.866545543613,
+            "return_pct": 21.328665455436123,
+            "trades": 9,
+            "profit_factor": 8.353280486639937,
+            "close_mtm_drawdown_pct": 9.001008681403503,
+            "intrabar_drawdown_bound_pct": 9.61822991702647,
+            "costs": 49.12430642233896
+          },
+          "mean_daily_pnl_95pct_block_bootstrap": [
+            -0.505999854568126,
+            29.860855968998226
+          ],
+          "failed_gates": [
+            "fewer_than_30_trades",
+            "uncertain_daily_expectancy"
+          ]
+        },
+        "diagnostic": {
+          "start": "2025-01-01",
+          "end_exclusive": "2026-10-01",
+          "base": {
+            "net_pnl": 76.22780814236103,
+            "return_pct": 0.7622780814236174,
+            "trades": 32,
+            "profit_factor": 1.1154358296361901,
+            "close_mtm_drawdown_pct": 4.025137024646665,
+            "intrabar_drawdown_bound_pct": 4.063679053328806,
+            "costs": 77.21181365270834
+          },
+          "stress": {
+            "net_pnl": -4.118039744338603,
+            "return_pct": -0.04118039744338553,
+            "trades": 32,
+            "profit_factor": 0.9939505579600508,
+            "close_mtm_drawdown_pct": 4.397457974980705,
+            "intrabar_drawdown_bound_pct": 4.43757221556632,
+            "costs": 147.3666460757095
+          },
+          "mean_daily_pnl_95pct_block_bootstrap": [
+            -1.2702463710027696,
+            1.761484440701046
+          ],
+          "failed_gates": [
+            "profit_factor_below_1.2",
+            "nonpositive_stress_pnl",
+            "uncertain_daily_expectancy"
+          ]
+        }
+      },
+      "quarterly_mtm_pnl": {
+        "2023-Q2": 53.51004965860193,
+        "2023-Q3": 6.668227868833128,
+        "2023-Q4": 325.3849184714709,
+        "2024-Q1": -140.7565564209999,
+        "2024-Q2": -257.12540234769585,
+        "2024-Q3": 139.86002520517286,
+        "2024-Q4": 2086.776209286858,
+        "2025-Q1": 23.596901748520395,
+        "2025-Q2": -130.51583452689556,
+        "2025-Q3": -62.13638248591087,
+        "2025-Q4": -53.11456064273261,
+        "2026-Q1": 56.93482957372362,
+        "2026-Q2": -3.464452558742778,
+        "2026-Q3": 244.92730703439884
+      },
+      "paper_eligible": false
+    },
+    "v7": {
+      "periods": {
+        "development": {
+          "start": "2023-04-01",
+          "end_exclusive": "2024-01-01",
+          "base": {
+            "net_pnl": -1730.6545569630744,
+            "return_pct": -17.30654556963075,
+            "trades": 391,
+            "profit_factor": 0.4780982389829316,
+            "close_mtm_drawdown_pct": 17.48680255847106,
+            "intrabar_drawdown_bound_pct": 17.540246441817388,
+            "costs": 2515.944652053603
+          },
+          "stress": {
+            "net_pnl": -3519.2617841496276,
+            "return_pct": -35.19261784149628,
+            "trades": 392,
+            "profit_factor": 0.16826666914758007,
+            "close_mtm_drawdown_pct": 35.253351822423895,
+            "intrabar_drawdown_bound_pct": 35.27572749960775,
+            "costs": 4123.008921383982
+          },
+          "mean_daily_pnl_95pct_block_bootstrap": [
+            -8.969694127459674,
+            -3.8177232556164515
+          ],
+          "failed_gates": [
+            "nonpositive_net_pnl",
+            "profit_factor_below_1.2",
+            "close_drawdown_above_10pct",
+            "intrabar_bound_above_12pct",
+            "nonpositive_stress_pnl",
+            "uncertain_daily_expectancy"
+          ]
+        },
+        "validation": {
+          "start": "2024-01-01",
+          "end_exclusive": "2024-07-01",
+          "base": {
+            "net_pnl": -2063.0148793519675,
+            "return_pct": -20.630148793519677,
+            "trades": 249,
+            "profit_factor": 0.3092588194561717,
+            "close_mtm_drawdown_pct": 20.751987406167753,
+            "intrabar_drawdown_bound_pct": 20.771638795304543,
+            "costs": 1629.3710552205364
+          },
+          "stress": {
+            "net_pnl": -3167.649562013202,
+            "return_pct": -31.676495620132016,
+            "trades": 251,
+            "profit_factor": 0.12052544138193291,
+            "close_mtm_drawdown_pct": 31.770419525938614,
+            "intrabar_drawdown_bound_pct": 31.785568543004196,
+            "costs": 2790.357972891112
+          },
+          "mean_daily_pnl_95pct_block_bootstrap": [
+            -15.749309959210832,
+            -6.969296845848261
+          ],
+          "failed_gates": [
+            "nonpositive_net_pnl",
+            "profit_factor_below_1.2",
+            "close_drawdown_above_10pct",
+            "intrabar_bound_above_12pct",
+            "nonpositive_stress_pnl",
+            "uncertain_daily_expectancy"
+          ]
+        },
+        "holdout": {
+          "start": "2024-07-01",
+          "end_exclusive": "2025-01-01",
+          "base": {
+            "net_pnl": -923.6094831152241,
+            "return_pct": -9.236094831152242,
+            "trades": 326,
+            "profit_factor": 0.6882098049886229,
+            "close_mtm_drawdown_pct": 10.034295459208042,
+            "intrabar_drawdown_bound_pct": 10.059466405766129,
+            "costs": 1691.9795576929182
+          },
+          "stress": {
+            "net_pnl": -2172.2566639474853,
+            "return_pct": -21.72256663947485,
+            "trades": 327,
+            "profit_factor": 0.35909340044495025,
+            "close_mtm_drawdown_pct": 22.079157297565615,
+            "intrabar_drawdown_bound_pct": 22.132941253452522,
+            "costs": 2892.510787056312
+          },
+          "mean_daily_pnl_95pct_block_bootstrap": [
+            -9.716006699987513,
+            -0.38960818973901434
+          ],
+          "failed_gates": [
+            "nonpositive_net_pnl",
+            "profit_factor_below_1.2",
+            "close_drawdown_above_10pct",
+            "nonpositive_stress_pnl",
+            "uncertain_daily_expectancy"
+          ]
+        },
+        "diagnostic": {
+          "start": "2025-01-01",
+          "end_exclusive": "2026-10-01",
+          "base": {
+            "net_pnl": -4163.1840589949425,
+            "return_pct": -41.63184058994942,
+            "trades": 815,
+            "profit_factor": 0.450548485135119,
+            "close_mtm_drawdown_pct": 42.099005001455275,
+            "intrabar_drawdown_bound_pct": 42.133464149500035,
+            "costs": 4084.7533482895346
+          },
+          "stress": {
+            "net_pnl": -6176.836882307969,
+            "return_pct": -61.7683688230797,
+            "trades": 818,
+            "profit_factor": 0.20547832774989497,
+            "close_mtm_drawdown_pct": 61.90515047280031,
+            "intrabar_drawdown_bound_pct": 61.92801263490956,
+            "costs": 6165.938050691013
+          },
+          "mean_daily_pnl_95pct_block_bootstrap": [
+            -8.444333562990579,
+            -4.731262376228856
+          ],
+          "failed_gates": [
+            "nonpositive_net_pnl",
+            "profit_factor_below_1.2",
+            "close_drawdown_above_10pct",
+            "intrabar_bound_above_12pct",
+            "nonpositive_stress_pnl",
+            "uncertain_daily_expectancy"
+          ]
+        }
+      },
+      "quarterly_mtm_pnl": {
+        "2023-Q2": -726.591330547064,
+        "2023-Q3": -447.1987867773023,
+        "2023-Q4": -556.8644396387081,
+        "2024-Q1": -896.0179235300766,
+        "2024-Q2": -1166.9969558218909,
+        "2024-Q3": -645.0422287672482,
+        "2024-Q4": -278.5672543479759,
+        "2025-Q1": -584.3318514278471,
+        "2025-Q2": -766.0212555261678,
+        "2025-Q3": -666.1515080540403,
+        "2025-Q4": -446.67670815876227,
+        "2026-Q1": -530.607019641121,
+        "2026-Q2": -646.6079765665063,
+        "2026-Q3": -522.7877396204976
+      },
+      "paper_eligible": false
+    }
+  },
+  "paper_eligible": []
+}

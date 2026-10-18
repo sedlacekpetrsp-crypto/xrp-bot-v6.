@@ -1,0 +1,8 @@
+{
+  "candidate": "v49",
+  "mode": "stress",
+  "reference_profit_factor": 0.6442399315550604,
+  "sequential_sum_profit_factor": 0.6442399315550612,
+  "absolute_difference": 7.771561172376096e-16,
+  "trade_log_changed": false
+}

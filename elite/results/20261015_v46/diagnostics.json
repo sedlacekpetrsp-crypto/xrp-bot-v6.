@@ -1,0 +1,52 @@
+{
+  "phase": "POST_RESULT_DIAGNOSTICS_NOT_SELECTION",
+  "ledgers_reconciled": 20,
+  "candidates": {
+    "v46": {
+      "zero_cost_continuous": {
+        "net_pnl": -50.0,
+        "return_pct": -0.5000000000000004,
+        "trades": 1,
+        "profit_factor": 0.0,
+        "close_mtm_drawdown_pct": 1.0126213083413529,
+        "intrabar_drawdown_bound_pct": 1.046818694676996,
+        "costs": 0.0
+      },
+      "net_minus_top_3_trade_pnl": 0.0,
+      "exit_reasons": {
+        "STOP": {
+          "trades": 1,
+          "net_pnl": -50.0
+        }
+      },
+      "median_holding_hours": 112.25
+    },
+    "v47": {
+      "zero_cost_continuous": {
+        "net_pnl": -1695.5824351601004,
+        "return_pct": -16.955824351601002,
+        "trades": 634,
+        "profit_factor": 0.864244667487549,
+        "close_mtm_drawdown_pct": 20.545190221586786,
+        "intrabar_drawdown_bound_pct": 20.56985524942406,
+        "costs": 0.0
+      },
+      "net_minus_top_3_trade_pnl": -4629.344314812433,
+      "exit_reasons": {
+        "SIGNAL": {
+          "trades": 351,
+          "net_pnl": 5341.665666917876
+        },
+        "STOP": {
+          "trades": 271,
+          "net_pnl": -10604.186043444866
+        },
+        "TARGET": {
+          "trades": 13,
+          "net_pnl": 872.9641789166271
+        }
+      },
+      "median_holding_hours": 6.0
+    }
+  }
+}

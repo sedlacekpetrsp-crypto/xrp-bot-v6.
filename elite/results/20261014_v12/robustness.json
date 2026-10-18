@@ -1,0 +1,77 @@
+{
+  "warning": "Diagnostic scenarios only, not new strategies or acceptance gates. Zero costs change risk sizing and fills; winner subtraction is arithmetic, not a causal rerun.",
+  "results": {
+    "v12": {
+      "zero_cost_counterfactual": {
+        "net_pnl": -674.9924722039123,
+        "return_pct": -6.7499247220391245,
+        "trades": 161,
+        "profit_factor": 0.7818895757574598,
+        "close_mtm_drawdown_pct": 7.80110526032968,
+        "intrabar_drawdown_bound_pct": 7.812572540046127,
+        "costs": 0.0
+      },
+      "one_5m_bar_delayed_signals": {
+        "net_pnl": -1405.3466230463273,
+        "return_pct": -14.053466230463274,
+        "trades": 161,
+        "profit_factor": 0.5730813004014268,
+        "close_mtm_drawdown_pct": 14.053466230463274,
+        "intrabar_drawdown_bound_pct": 14.053466230463274,
+        "costs": 891.3037007899035
+      },
+      "largest_win": 89.31123564594236,
+      "largest_three_wins": 258.1246642088863,
+      "pnl_minus_largest_win": -1541.079086112275,
+      "pnl_minus_largest_three_wins": -1709.892514675219
+    },
+    "v13": {
+      "zero_cost_counterfactual": {
+        "net_pnl": -747.0092953976673,
+        "return_pct": -7.47009295397667,
+        "trades": 126,
+        "profit_factor": 0.7561002963825447,
+        "close_mtm_drawdown_pct": 12.687399345588654,
+        "intrabar_drawdown_bound_pct": 12.697455041064732,
+        "costs": 0.0
+      },
+      "one_5m_bar_delayed_signals": {
+        "net_pnl": -1007.2960724280583,
+        "return_pct": -10.072960724280588,
+        "trades": 126,
+        "profit_factor": 0.6744034343642611,
+        "close_mtm_drawdown_pct": 13.679084504414124,
+        "intrabar_drawdown_bound_pct": 13.73513174365244,
+        "costs": 281.9734096278286
+      },
+      "largest_win": 98.50969540063124,
+      "largest_three_wins": 291.1730853071658,
+      "pnl_minus_largest_win": -1035.7043075117545,
+      "pnl_minus_largest_three_wins": -1228.367697418289
+    },
+    "v14": {
+      "zero_cost_counterfactual": {
+        "net_pnl": 827.9538544640309,
+        "return_pct": 8.27953854464032,
+        "trades": 213,
+        "profit_factor": 1.1366956123164533,
+        "close_mtm_drawdown_pct": 9.869787300058508,
+        "intrabar_drawdown_bound_pct": 9.913628839921587,
+        "costs": 0.0
+      },
+      "one_5m_bar_delayed_signals": {
+        "net_pnl": -989.5262736718487,
+        "return_pct": -9.895262736718491,
+        "trades": 210,
+        "profit_factor": 0.8321373948298001,
+        "close_mtm_drawdown_pct": 15.487703000848867,
+        "intrabar_drawdown_bound_pct": 15.602141149314185,
+        "costs": 1442.6659847462986
+      },
+      "largest_win": 129.38861513600568,
+      "largest_three_wins": 382.37233246344294,
+      "pnl_minus_largest_win": -853.4609064631804,
+      "pnl_minus_largest_three_wins": -1106.4446237906177
+    }
+  }
+}

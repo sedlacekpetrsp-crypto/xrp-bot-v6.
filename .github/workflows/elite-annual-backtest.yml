@@ -1,0 +1,34 @@
+name: ELITE V60 higher activity discovery
+on:
+  workflow_dispatch:
+  push:
+    branches: [elite-research-v1]
+    paths:
+      - 'elite/**.py'
+      - 'elite/PROTOCOL_V60.md'
+      - '.github/workflows/elite-annual-backtest.yml'
+permissions:
+  contents: read
+concurrency:
+  group: elite-v60-discovery
+  cancel-in-progress: false
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify accounting, causality and strategy tests
+        run: python -m unittest discover -s elite -p 'test_*.py' -v
+      - name: Fixed V60 discovery with unchanged V57 control
+        run: python -u -m elite.batch_v60 --cache /tmp/elite-data --out elite-ci-results
+      - name: Archive full evidence (success is execution, not strategy acceptance)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: elite-v60-discovery
+          path: elite-ci-results/
+          if-no-files-found: error

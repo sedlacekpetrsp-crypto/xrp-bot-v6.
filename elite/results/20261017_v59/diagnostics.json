@@ -1,0 +1,73 @@
+{
+  "phase": "POST_RESULT_DIAGNOSTICS_NOT_SELECTION",
+  "control_summary_exact": true,
+  "ledgers_reconciled": 20,
+  "dataset_days": 1279.0,
+  "candidates": {
+    "v59": {
+      "exit_reasons": {
+        "SIGNAL": {
+          "trades": 147,
+          "net_pnl": 271.39610380770137
+        },
+        "STOP": {
+          "trades": 56,
+          "net_pnl": -2706.2857985029477
+        },
+        "TIME": {
+          "trades": 18,
+          "net_pnl": 3192.2294378545157
+        }
+      },
+      "trades_per_week": 1.2095387021110242,
+      "trades_per_month": 5.261904761904762,
+      "period_trades_per_week": {
+        "2023": 1.298181818181818,
+        "2024_H1": 1.2692307692307692,
+        "2024_H2": 1.141304347826087,
+        "2025_2026": 1.1739811912225706
+      },
+      "active_entry_months": 42,
+      "total_months": 42,
+      "max_between_entries_days": 26.625,
+      "max_entry_gap_including_boundaries_days": 26.625,
+      "median_holding_hours": 23.416666666666668,
+      "net_minus_top3": -557.9058956181216,
+      "zero_cost_continuous": {
+        "net_pnl": 2174.0732585328915,
+        "return_pct": 21.740732585328914,
+        "trades": 221,
+        "profit_factor": 1.4272908486912759,
+        "close_mtm_drawdown_pct": 10.803836743434378,
+        "intrabar_drawdown_bound_pct": 10.880965954614062,
+        "costs": 0.0
+      }
+    },
+    "v57_control": {
+      "exit_reasons": {
+        "SIGNAL": {
+          "trades": 302,
+          "net_pnl": 1644.9672934702994
+        },
+        "STOP": {
+          "trades": 23,
+          "net_pnl": -1125.3593657303227
+        }
+      },
+      "trades_per_week": 1.7787333854573886,
+      "trades_per_month": 7.738095238095238,
+      "period_trades_per_week": {
+        "2023": 1.8836363636363636,
+        "2024_H1": 1.6153846153846154,
+        "2024_H2": 1.9021739130434783,
+        "2025_2026": 1.744514106583072
+      },
+      "active_entry_months": 42,
+      "total_months": 42,
+      "max_between_entries_days": 23.125,
+      "max_entry_gap_including_boundaries_days": 23.125,
+      "median_holding_hours": 6.0,
+      "net_minus_top3": -433.185297764443
+    }
+  }
+}

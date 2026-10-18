@@ -1,0 +1,29 @@
+{
+  "ledgers_reconciled": 20,
+  "results": {
+    "v34": {
+      "stress": -2190.3584506938505,
+      "exit_reasons": {
+        "SIGNAL": 291,
+        "STOP": 25
+      },
+      "daily_mean_ci": [
+        -2.3319194082878947,
+        0.708779981500297
+      ]
+    },
+    "v35": {
+      "stress": -5690.006056512358,
+      "exit_reasons": {
+        "SIGNAL": 93,
+        "STOP": 271,
+        "TARGET": 36,
+        "TIME": 50
+      },
+      "daily_mean_ci": [
+        -4.856398182778336,
+        -2.263869407427522
+      ]
+    }
+  }
+}

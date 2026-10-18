@@ -1,0 +1,349 @@
+{
+  "candidate": "v38",
+  "phase": "RESERVED_2022_BACKWARD_CHALLENGE",
+  "paper_eligible": [],
+  "discovery_sha256": "0f208f7ecc796ba6b8b57ecf5252e0a965bb0bf41c2df553d799bf1ef1b23cfd",
+  "frozen_code_sha256": {
+    "elite/loss_overlay_v38.py": "f4b6ad14766d5f0350d050bc3ad6467a8e59568865d99e44fdbdf569b84d2d8f",
+    "elite/combine_v36.py": "b0d667f1eb227b24a3bd320bf24f1f9d4bc3409e6c739e6fe7563b490af2e30f",
+    "elite/candidates_v28.py": "1c483e5d456c742f548e5d09b0395b287ceed5f183ec34947069736435ceb741",
+    "elite/flow_v28.py": "f467fd7806fb7ad730451aa9ee9e2501ff90bd23bf1973542a4521db48f3ee92",
+    "elite/cross_market_v18.py": "640deeccc7c61b72e0c6b489729377d2512d4241b091d30233b46c3b7105dfa4",
+    "elite/research_engine.py": "f40ca5e0fca157d2cca792a6750c36a77bc79364af88a1fb7582ea7711e0d41d",
+    "elite/research_data.py": "09cad603aa1dd04e698bad4b6caae6df316f7b5e1742a369cd8a1582847bdd20",
+    "elite/research_run.py": "b59dec83842c18977004581779643524bf2df3b9736b9ec161633c609bfbf366",
+    "elite/batch_v38.py": "92ab9d2654ac54e1eae218bb2626a64460ed4ad262043058dc5ac2f14bf6a5fb"
+  },
+  "protocol_sha256": "31913839c785d2cb4333d93699af164244a4d324bb05e99b552e3a40e5c346d2",
+  "status": "FAIL",
+  "failed_gates": [
+    "H2_nonpositive_net",
+    "H2_nonpositive_stress",
+    "H2_PF_below_1.2",
+    "fewer_than_30_combined_trades",
+    "uncertain_continuous_daily_mean"
+  ],
+  "data_manifest": {
+    "XRPUSDT": [
+      {
+        "month": "2022-01",
+        "sha256": "f30ffa71382abd6d6d6bf249cdd9af4d3ebb2bbb73f281c258e020a0ab8b3dcb",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2022-01.zip"
+      },
+      {
+        "month": "2022-02",
+        "sha256": "11ebcfededbaa7a23476e4a383f1ea5e09e4f413f022465e38431b3ec3aa7b7c",
+        "bars": 8064,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2022-02.zip"
+      },
+      {
+        "month": "2022-03",
+        "sha256": "b4fc4b3a5f5ee2431c999895af49f80260794be6f8f3c8fb48bbbf5e8c8486e6",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2022-03.zip"
+      },
+      {
+        "month": "2022-04",
+        "sha256": "e18e0be083fc7b43158f322c3241a8ed47225cb1f0a97162af703b9a4dc721e3",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2022-04.zip"
+      },
+      {
+        "month": "2022-05",
+        "sha256": "a3cf8cdfd7dd823e53b1fd488b0382409907e39746d867c920c8a551cdf2a6b6",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2022-05.zip"
+      },
+      {
+        "month": "2022-06",
+        "sha256": "7d05052881e3c98852b660c545224b0f23f42ce8dbfe01c4ba49af86c378e0e9",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2022-06.zip"
+      },
+      {
+        "month": "2022-07",
+        "sha256": "3987c48dd7ccad5ea8ceb652701f649a5d06418c5cc23519e86fce9dbaaffbf2",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2022-07.zip"
+      },
+      {
+        "month": "2022-08",
+        "sha256": "b8665b4b31241e27e76094396f0e3994c36171ecdc6d4f846a34cb3d16ca9a19",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2022-08.zip"
+      },
+      {
+        "month": "2022-09",
+        "sha256": "c43207952ec49aa7ce756ab2dbf80e79ba65e57bdcfaf65a8ea0f8ff2fe86130",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2022-09.zip"
+      },
+      {
+        "month": "2022-10",
+        "sha256": "e490f093566d063a2248c6806ace7b98db4ba3c7497830041ae12360341612d4",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2022-10.zip"
+      },
+      {
+        "month": "2022-11",
+        "sha256": "5e30358b2368bc0ffe2acb23a203b2b84d9ad9ad9735fb5f5bf73caae73584a7",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2022-11.zip"
+      },
+      {
+        "month": "2022-12",
+        "sha256": "1812ef5499edabc62b5fcc11998654767c713e1cb62b702d85b61e8a2fc4fd21",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/XRPUSDT-5m-2022-12.zip"
+      }
+    ],
+    "BTCUSDT": [
+      {
+        "month": "2022-01",
+        "sha256": "be1f2f943b365b9b00c1be4cbcb7c631990318baf36e7a4d8410ea9dc7bc1cda",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2022-01.zip"
+      },
+      {
+        "month": "2022-02",
+        "sha256": "3cdb10f37876bb53487a5f68bdb00f87a2fa0dba0706133264bfcb5170d35cdd",
+        "bars": 8064,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2022-02.zip"
+      },
+      {
+        "month": "2022-03",
+        "sha256": "e980799352cf0447752d97a20704ffdcce18544525743a4d3ec9dc076cc25765",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2022-03.zip"
+      },
+      {
+        "month": "2022-04",
+        "sha256": "a738199ee22e198fd9e51a7ecbcbd656c11603a530750ba26efa4c13d891ecd6",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2022-04.zip"
+      },
+      {
+        "month": "2022-05",
+        "sha256": "9e342e114551ef3598fb1bf9d385878861878b9c9c42714eca82e867a9feda81",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2022-05.zip"
+      },
+      {
+        "month": "2022-06",
+        "sha256": "5d4ef9d9fd134a239daebe1cd9261da7379991503d3093a0848d85c6172c9ab0",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2022-06.zip"
+      },
+      {
+        "month": "2022-07",
+        "sha256": "f55cca50df856fdf179a2193e1bcf4507bc27a296042486e023814c3b21c62c7",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2022-07.zip"
+      },
+      {
+        "month": "2022-08",
+        "sha256": "d65ea001b11191e31f6637f5893155273fcd02da3b269b9296007fbc1d49513e",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2022-08.zip"
+      },
+      {
+        "month": "2022-09",
+        "sha256": "87208eb2b3b67f105b40ebff1a5eb81ca1d377ddd70936eecf224bafcee4e5b9",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2022-09.zip"
+      },
+      {
+        "month": "2022-10",
+        "sha256": "b94e591ff353f2001d801ffcd2d7e2e2649f9efed49ac636f19a241ead90e19e",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2022-10.zip"
+      },
+      {
+        "month": "2022-11",
+        "sha256": "928433fc8313bc1616a2c5ca79b78525bb09ea2ca84a81c66500cdfb6bcccc40",
+        "bars": 8640,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2022-11.zip"
+      },
+      {
+        "month": "2022-12",
+        "sha256": "3e1195cefa671991251ab5e1f606b9d7f7b7279dfd7efd033ae1aca2190ff698",
+        "bars": 8928,
+        "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2022-12.zip"
+      }
+    ]
+  },
+  "dataset_bars": 105120,
+  "periods": {
+    "H1": {
+      "base": {
+        "net_pnl": 142.97733740713738,
+        "return_pct": 1.4297733740713747,
+        "trades": 8,
+        "profit_factor": 1.4549299001699516,
+        "close_mtm_drawdown_pct": 3.8512282292163365,
+        "intrabar_drawdown_bound_pct": 3.9324906076098594,
+        "costs": 40.183109527956326,
+        "overlay_events": [
+          {
+            "trigger_exit_index": 22650,
+            "known_at": 1647790500000,
+            "until": 1648395300000
+          },
+          {
+            "trigger_exit_index": 45112,
+            "known_at": 1654529100000,
+            "until": 1655133900000
+          }
+        ]
+      },
+      "stress": {
+        "net_pnl": 107.70039915796588,
+        "return_pct": 1.0770039915796614,
+        "trades": 8,
+        "profit_factor": 1.3388043640248417,
+        "close_mtm_drawdown_pct": 3.8113688072852083,
+        "intrabar_drawdown_bound_pct": 3.88796810608968,
+        "costs": 73.94731227235592,
+        "overlay_events": [
+          {
+            "trigger_exit_index": 22640,
+            "known_at": 1647787500000,
+            "until": 1648392300000
+          },
+          {
+            "trigger_exit_index": 45112,
+            "known_at": 1654529100000,
+            "until": 1655133900000
+          }
+        ]
+      },
+      "mean_daily_pnl_95pct_block_bootstrap": [
+        -2.784631701915021,
+        6.21329955298503
+      ],
+      "quarterly_mtm_pnl": {
+        "2022-Q1": 214.4808069873652,
+        "2022-Q2": -71.50346958022783
+      }
+    },
+    "H2": {
+      "base": {
+        "net_pnl": -176.51405394862013,
+        "return_pct": -1.7651405394861985,
+        "trades": 10,
+        "profit_factor": 0.25342455026065586,
+        "close_mtm_drawdown_pct": 3.0485040367733958,
+        "intrabar_drawdown_bound_pct": 3.129981363502918,
+        "costs": 41.5964554816933,
+        "overlay_events": [
+          {
+            "trigger_exit_index": 78486,
+            "known_at": 1664541300000,
+            "until": 1665146100000
+          }
+        ]
+      },
+      "stress": {
+        "net_pnl": -201.1761972967215,
+        "return_pct": -2.0117619729672187,
+        "trades": 10,
+        "profit_factor": 0.18431792936852828,
+        "close_mtm_drawdown_pct": 3.155931843282637,
+        "intrabar_drawdown_bound_pct": 3.229505241269863,
+        "costs": 76.9369601072898,
+        "overlay_events": [
+          {
+            "trigger_exit_index": 78486,
+            "known_at": 1664541300000,
+            "until": 1665146100000
+          }
+        ]
+      },
+      "mean_daily_pnl_95pct_block_bootstrap": [
+        -2.3674506025006194,
+        0.3580521625221793
+      ],
+      "quarterly_mtm_pnl": {
+        "2022-Q3": -89.85317424424284,
+        "2022-Q4": -86.6608797043773
+      }
+    }
+  },
+  "continuous": {
+    "base": {
+      "net_pnl": -36.060467486338894,
+      "return_pct": -0.3606046748633851,
+      "trades": 18,
+      "profit_factor": 0.9349202275648424,
+      "close_mtm_drawdown_pct": 5.633255345787985,
+      "intrabar_drawdown_bound_pct": 5.7515545301952695,
+      "costs": 82.37430005468433,
+      "overlay_events": [
+        {
+          "trigger_exit_index": 22650,
+          "known_at": 1647790500000,
+          "until": 1648395300000
+        },
+        {
+          "trigger_exit_index": 45112,
+          "known_at": 1654529100000,
+          "until": 1655133900000
+        },
+        {
+          "trigger_exit_index": 78486,
+          "known_at": 1664541300000,
+          "until": 1665146100000
+        }
+      ]
+    },
+    "stress": {
+      "net_pnl": -95.6424738137539,
+      "return_pct": -0.9564247381375401,
+      "trades": 18,
+      "profit_factor": 0.8313706035281814,
+      "close_mtm_drawdown_pct": 5.820773870420311,
+      "intrabar_drawdown_bound_pct": 5.92952734265242,
+      "costs": 151.71288651100133,
+      "overlay_events": [
+        {
+          "trigger_exit_index": 22640,
+          "known_at": 1647787500000,
+          "until": 1648392300000
+        },
+        {
+          "trigger_exit_index": 45112,
+          "known_at": 1654529100000,
+          "until": 1655133900000
+        },
+        {
+          "trigger_exit_index": 78486,
+          "known_at": 1664541300000,
+          "until": 1665146100000
+        }
+      ]
+    },
+    "mean_daily_pnl_95pct_block_bootstrap": [
+      -2.117989161721133,
+      2.9908969858256533
+    ],
+    "quarterly_mtm_pnl": {
+      "2022-Q1": 214.4808069873652,
+      "2022-Q2": -71.50346958022783,
+      "2022-Q3": -91.13787100535046,
+      "2022-Q4": -87.89993388812582
+    }
+  },
+  "benchmarks": {
+    "H1": {
+      "cash": 0,
+      "buy_hold_35pct": -2103.1574218605256,
+      "buy_hold_100pct": -6009.021205315788
+    },
+    "H2": {
+      "cash": 0,
+      "buy_hold_35pct": 62.75127871170298,
+      "buy_hold_100pct": 179.28936774772228
+    }
+  }
+}

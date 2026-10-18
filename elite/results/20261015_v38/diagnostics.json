@@ -1,0 +1,25 @@
+{
+  "ledgers_reconciled": 22,
+  "unchanged_v18_exact": true,
+  "events_recomputed": true,
+  "results": {
+    "v38": {
+      "stress": 4002.2656632553644,
+      "overlay_events": 15,
+      "daily_ci": [
+        0.10173397216854393,
+        9.186941907525497
+      ],
+      "pnl_minus_top3": -212.97936435293013
+    },
+    "v39": {
+      "stress": 3932.254334939087,
+      "overlay_events": 15,
+      "daily_ci": [
+        0.06261207039216524,
+        9.090110692602979
+      ],
+      "pnl_minus_top3": -275.5881932867196
+    }
+  }
+}
