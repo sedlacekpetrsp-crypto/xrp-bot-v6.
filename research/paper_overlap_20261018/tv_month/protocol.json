@@ -1,0 +1,36 @@
+{
+  "source": "218a63f2d01842de3308adeb14d37afab88120c0",
+  "symbol": "XRPUSDC",
+  "data_start": "2026-09-14T00:00:00Z",
+  "data_end_exclusive": "2026-10-18T05:00:00Z",
+  "development": [
+    "2026-09-17T00:00:00Z",
+    "2026-10-10T00:00:00Z"
+  ],
+  "chronological_check": [
+    "2026-10-10T00:00:00Z",
+    "2026-10-18T05:00:00Z"
+  ],
+  "variants": {
+    "min_adx": [
+      22
+    ],
+    "atr_stop_mult": [
+      1.5
+    ]
+  },
+  "risk_rate": 0.0008,
+  "fee_per_side": 0.00095,
+  "slippage_per_side": 0.0002,
+  "intrabar": "Stop before target; gap stop fills at open; profit protection updated only at close",
+  "gate": {
+    "net_pnl_positive": true,
+    "minimum_trades": 30,
+    "profit_factor": 1.1,
+    "double_slippage_positive": true
+  },
+  "limitations": "Descriptive replay on already observed history, not pristine holdout. Fixed candidate, no parameter search. One-minute OHLC approximation; realized-balance drawdown, no tick ordering or shared-capital portfolio.",
+  "stop_distance_multiplier": 1.15,
+  "engineering_note": "Initial 2-day warmup rejected by production minimum 200 closed 15m bars before any results. Extended warmup only to 3 days; evaluation windows and strategy unchanged.",
+  "candidate": "TV existing 5m/15m gates plus closed 1h EMA20/EMA50 alignment; one fixed variant, no search"
+}
