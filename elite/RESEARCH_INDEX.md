@@ -86,11 +86,13 @@ oddělený od ostatních botů na větvi `elite-research-v1`.
 | V57 | Hodinová V56:325 obchodů,+5,20 %,DD11,94 %,stress −9,39 % | REPORT_V57_V58_20261017.md |
 | V58 | 15m V56:1419 obchodů,−70,74 %,ztráta i bez nákladů | REPORT_V57_V58_20261017.md |
 
+| V59 | Buffer výstupu V57:221 obchodů,+7,57 %,DD13,74 %,stress −3,37 % | REPORT_V59_20261017.md |
+
 ## Datový registr
 
-- Říjen 2025–září 2026: opakovaně použito V1–V58. Nikdy znovu neoznačovat
+- Říjen 2025–září 2026: opakovaně použito V1–V59. Nikdy znovu neoznačovat
   jako nedotčený závěrečný test.
-- Duben 2023–září 2026: prohlédnuto při V5–V58; všechna tato data jsou vývojová.
+- Duben 2023–září 2026: prohlédnuto při V5–V59; všechna tato data jsou vývojová.
 - Březen 2023: kontrola kvality našla mezeru 16 svíček. Data nebyla imputována;
   posun počátku na duben byl zaznamenán před prvními výsledky V5–V7.
 - Rok 2022: otevřen 15.10.2026 pouze pro předem zmrazenou V38. Kandidát selhal.
@@ -107,7 +109,7 @@ oddělený od ostatních botů na větvi `elite-research-v1`.
    nevyhovujícímu výsledku. Levnější skutečné provedení je nutné doložit.
 4. Nedávat novému názvu strategie význam nové nezávislé hypotézy; V12 je
    například přenos V8 na jiný časový rámec a V11 odvozenina V5.
-5. Pamatovat na selekční zkreslení po nejméně padesáti osmi zkoušených verzích.
+5. Pamatovat na selekční zkreslení po nejméně padesáti devíti zkoušených verzích.
    Uváděné intervaly nejsou opravené na mnohonásobné hledání.
 6. Další vstupní pravidla formulovat jako ověřitelnou hypotézu, předem uložit
    parametry a ukázat i neúspěšné pokusy. Neměnit běžící boty.
@@ -220,3 +222,6 @@ V57/V58: uživatel požaduje vyšší frekvenci. Nová výzkumná brána alespo�
 1 obchod týdně v průměru každého bloku, vedle nezměněných finančních bran.
 Obě rychlejší varianty aktivitu splnily, ekonomicky selhaly; evidence
 `results/20261017_v57`.162 testů, původní V56 přesně reprodukována.
+
+V59: evidence `results/20261017_v59`; delší držení snížilo náklady, ale zvýšilo
+počet stopů a propad. Minimum aktivity splněno; finanční brány ne.166 testů.
