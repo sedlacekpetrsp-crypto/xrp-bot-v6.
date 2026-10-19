@@ -42,7 +42,7 @@ WHALE_BREAKEVEN_R=float(os.getenv("WHALE_BREAKEVEN_R","1.2"))
 WHALE_PROFIT_LOCK_R=float(os.getenv("WHALE_PROFIT_LOCK_R","1.8"))
 KLINES_URL="https://data-api.binance.vision/api/v3/klines"
 
-SIGNAL_POLICY_VERSION="fib-vwap-trendline4h-v12-actual-stop-risk-20261017"
+SIGNAL_POLICY_VERSION="fib-vwap-trendline4h-v13-stop-aware-sizing-20261019"
 PAUSED_STRATEGIES=frozenset({"VWAP_REVERSION"})
 WHALE_ENTRY_TOLERANCE=float(os.getenv("WHALE_ENTRY_TOLERANCE","0.0035"))
 WHALE_MIN_NET_RR=float(os.getenv("WHALE_MIN_NET_RR","1.6"))
@@ -52,7 +52,7 @@ WHALE_TREND_VWAP_BARS=int(os.getenv("WHALE_TREND_VWAP_BARS","15"))
 app=FastAPI(title=APP_NAME)
 state={"balance":START_BALANCE,"equity":START_BALANCE,"open_positions":[],"open_position":None,"trades":[],"seen_signal_ids":[],"last_scan":None,"last_signal":None,"status":"starting","error":None,"persistence":"memory","persistence_error":None}
 
-state.update({"mode":"PAPER","build":SIGNAL_POLICY_VERSION,"signal_policy":SIGNAL_POLICY_VERSION,"strategies":["FIB_618_786","VWAP_REVERSION","VWAP_TREND_RECLAIM",whale_trendline.STRATEGY],"paused_strategies":sorted(PAUSED_STRATEGIES),"entry_risk_policy":"Reject actual widened stop loss above existing cash caps; preserve quantity and target; gaps may exceed estimate","entry_status":"Čekám na kontrolu signálů","signal_checks":[],"last_source_scan":None})
+state.update({"mode":"PAPER","build":SIGNAL_POLICY_VERSION,"signal_policy":SIGNAL_POLICY_VERSION,"strategies":["FIB_618_786","VWAP_REVERSION","VWAP_TREND_RECLAIM",whale_trendline.STRATEGY],"paused_strategies":sorted(PAUSED_STRATEGIES),"entry_risk_policy":"Size new positions to actual widened stop including costs; preserve cash caps and target; gaps may exceed estimate","entry_status":"Čekám na kontrolu signálů","signal_checks":[],"last_source_scan":None})
 
 def utcnow(): return datetime.now(timezone.utc)
 
@@ -408,9 +408,35 @@ def open_paper(signal,side,market_price):
     paper_stop_policy.apply(position, FEE_RATE, SLIPPAGE_RATE)
     actual_risk=paper_stop_policy.net_stop_risk(position,FEE_RATE,SLIPPAGE_RATE)
     cap=min(account_basis*(0.03 if trendline else RISK_PER_TRADE),float((risk_meta or {}).get("risk_cap_usdc",risk_budget)))
-    if actual_risk>cap+1e-9 or open_risk+actual_risk>account_basis*total_limit+1e-9:
-        state["last_signal"]={"id":signal["id"],"side":side,"rejected":"actual stop risk exceeds limit; quantity preserved","stop_loss_risk_net":actual_risk,"risk_cap_usdc":cap,"open_stop_risk_net":open_risk,"seen_at":utcnow().isoformat()}
+    remaining=account_basis*total_limit-open_risk
+    budget=min(cap,remaining)
+    if not math.isfinite(budget) or budget<=0 or actual_risk<=0:
+        state["last_signal"]={"id":signal["id"],"rejected":"No finite positive stop-risk budget"}
         return False
+    # Widening the stop must reduce new quantity, never increase the cash cap.
+    # Scale the R-multiple reference too, preserving price-based exit thresholds.
+    if actual_risk>budget:
+        scale=budget/actual_risk
+        position["sizing_policy"]="actual-stop-risk-budget-v1"
+        position["sizing_scale"]=scale
+        for key in ("qty","notional","entry_fee","risk_dollars"):
+            position[key]*=scale
+        position["risk_reference"]="new quantity reduced to cash cap; proportional R reference preserves exit price thresholds"
+        actual_risk=paper_stop_policy.net_stop_risk(position,FEE_RATE,SLIPPAGE_RATE)
+        if "stop_loss_risk_net" in position:
+            position["stop_loss_risk_net"]=actual_risk
+    direction=1 if side=="LONG" else -1
+    target_fill=tp*(1-direction*SLIPPAGE_RATE)
+    target_net=position["qty"]*(direction*(target_fill-entry)-FEE_RATE*(entry+target_fill))
+    if target_net<=0 or (not trendline and target_net<WHALE_MIN_NET_RR*actual_risk):
+        state["last_signal"]={"id":signal["id"],"rejected":"Insufficient net reward for actual widened stop",
+                              "target_net":target_net,"stop_loss_risk_net":actual_risk}
+        return False
+    if actual_risk>budget+1e-9:
+        return False
+    position["target_net_pnl"]=target_net
+    position["initial_net_rr"]=target_net/actual_risk
+    entry_fee=position["entry_fee"]
     position["actual_risk_rate"]=actual_risk/account_basis
     position["initial_stop_risk_net"]=actual_risk
     state["balance"]-=entry_fee

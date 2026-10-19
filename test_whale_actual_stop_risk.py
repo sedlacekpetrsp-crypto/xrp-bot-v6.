@@ -17,13 +17,49 @@ class ActualStopRiskTests(unittest.TestCase):
         return dict(id=123,symbol='BTCUSDT',strategy='FIB_618_786',text='LONG',entry=100,tp=105,
                     stop=dict(low=stop,high=stop,raw=str(stop),masked=False))
 
-    def test_widened_cap_sized_entry_rejected_without_account_mutation(self):
+    def test_widened_cap_sized_entry_reduces_quantity_to_cash_cap(self):
+        for side,stop,target in [('LONG',99,105),('SHORT',101,95)]:
+            w.state.update(balance=10000.,equity=10000.,open_positions=[],trades=[],seen_signal_ids=[])
+            signal=self.signal(stop);signal.update(text=side,tp=target)
+            with patch.object(policy,'MULTIPLIER',1.15),patch.object(w,'save_state'),patch.object(w,'save_trade'),patch.object(w,'portfolio_risk_allowance',create=True,return_value=(9.18,{'risk_cap_usdc':9.18})):
+                self.assertTrue(w.open_paper(signal,side,100))
+                p=w.state['open_positions'][0]
+                self.assertLess(p['sizing_scale'],1)
+                self.assertAlmostEqual(policy.net_stop_risk(p,w.FEE_RATE,w.SLIPPAGE_RATE),9.18)
+                self.assertEqual(p['tp'],target)
+                self.assertAlmostEqual(w.state['balance'],10000-p['entry_fee'])
+                self.assertGreaterEqual(p['initial_net_rr'],w.WHALE_MIN_NET_RR)
+                w.close_paper(p,p['stop'],'SL')
+                self.assertAlmostEqual(w.state['balance'],10000-9.18)
+                self.assertAlmostEqual(w.state['trades'][-1]['net_pnl'],-9.18)
+
+    def test_widened_stop_must_pass_real_net_reward_gate(self):
+        signal=self.signal();signal['tp']=102.3
         before=copy.deepcopy(w.state)
-        with patch.object(policy,'MULTIPLIER',1.15),patch.object(w,'save_state'),patch.object(w,'portfolio_risk_allowance',create=True,return_value=(9.18,{'risk_cap_usdc':9.18})):
-            self.assertFalse(w.open_paper(self.signal(),'LONG',100))
-        for key in ('balance','equity','open_positions','trades','seen_signal_ids'):
+        with patch.object(policy,'MULTIPLIER',1.15),patch.object(w,'save_state'):
+            self.assertFalse(w.open_paper(signal,'LONG',100))
+        for key in ('balance','open_positions','trades','seen_signal_ids'):
             self.assertEqual(w.state[key],before[key])
-        self.assertGreater(w.state['last_signal']['stop_loss_risk_net'],9.18)
+
+    def test_entry_exit_accounting_matrix_includes_costs(self):
+        for side in ('LONG','SHORT'):
+            for multiplier in (1.,1.15):
+                for distance in (.3,1.,2.):
+                    for outcome in ('SL','TP'):
+                        with self.subTest(side=side,multiplier=multiplier,distance=distance,outcome=outcome):
+                            w.state.update(balance=10000.,equity=10000.,open_positions=[],trades=[],seen_signal_ids=[])
+                            sign=1 if side=='LONG' else -1
+                            signal=self.signal(100-sign*distance)
+                            signal.update(text=side,tp=100+sign*10)
+                            with patch.object(policy,'MULTIPLIER',multiplier),patch.object(w,'save_state'),patch.object(w,'save_trade'),patch.object(w,'portfolio_risk_allowance',create=True,return_value=(9.18,{'risk_cap_usdc':9.18})):
+                                self.assertTrue(w.open_paper(signal,side,100))
+                                p=w.state['open_positions'][0]
+                                risk=policy.net_stop_risk(p,w.FEE_RATE,w.SLIPPAGE_RATE)
+                                self.assertLessEqual(risk,9.18+1e-9)
+                                expected=-risk if outcome=='SL' else p['target_net_pnl']
+                                w.close_paper(p,p['stop'] if outcome=='SL' else p['tp'],outcome)
+                                self.assertAlmostEqual(w.state['balance']-10000,expected)
+                                self.assertAlmostEqual(w.state['trades'][-1]['net_pnl'],expected)
 
     def test_notional_limited_entry_keeps_quantity_and_target(self):
         quantities=[]
