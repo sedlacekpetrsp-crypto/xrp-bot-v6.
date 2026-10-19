@@ -1,0 +1,40 @@
+{
+  "symbol": "XRPUSDC",
+  "interval": "15m",
+  "data_start": "2025-04-04T00:00:00Z",
+  "data_end": "2025-10-18T00:00:00Z",
+  "fee_per_side": 0.00095,
+  "slippage_per_side": 0.0002,
+  "notional": 1000,
+  "starting_balance": 10000,
+  "stop_atr": 1.5,
+  "stop_multiplier": 1.15,
+  "gross_reward_multiple": 2,
+  "lookback": 20,
+  "retest_expiry_bars": 4,
+  "retest_tolerance_atr": 0.25,
+  "hourly_trend": "Confirmed hourly EMA20/50, same timeframe as candidate signals. 200-hour signal warmup.",
+  "gate": {
+    "holdout_min_trades": 30,
+    "holdout_profit_factor": 1.2,
+    "holdout_positive": true,
+    "double_slippage_positive": true,
+    "max_marked_drawdown_pct": 5
+  },
+  "execution": "Hourly signals mapped to last 15m bar of the hour; enter next 15m open. Exits and mark-to-market on 15m bars. Reference uses original 15m retest with hourly trend. Identical fixed notional, costs, stop rules and gross target. One position. Synthetic shorts, no borrow/funding.",
+  "selection": "One fixed horizon change from 15m to 1h retest; lookback 20, expiry 4 now measured in hours. No cost-target modification. No grid search. All three periods must meet original economic gates and candidate must improve total net over matched original. Older new period has not been used in this study; prior unrelated exposure unknown; not prospective OOS. No automatic deployment even on pass.",
+  "periods": {
+    "new_older": [
+      "2025-04-18T00:00:00Z",
+      "2025-10-18T00:00:00Z"
+    ],
+    "seen_older": [
+      "2025-10-18T00:00:00Z",
+      "2026-04-18T00:00:00Z"
+    ],
+    "seen_recent": [
+      "2026-04-18T00:00:00Z",
+      "2026-10-19T00:00:00Z"
+    ]
+  }
+}
