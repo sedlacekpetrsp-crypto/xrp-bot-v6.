@@ -1,0 +1,15 @@
+{
+  "symbol":"XRPUSDC", "interval":"15m",
+  "data_start":"2026-04-11T00:00:00Z", "data_end":"2026-10-19T00:00:00Z",
+  "development":["2026-04-18T00:00:00Z","2026-08-18T00:00:00Z"],
+  "holdout":["2026-08-18T00:00:00Z","2026-10-19T00:00:00Z"],
+  "strategies":["breakout_reference","breakout_retest","ema_cross_reference","ema_pullback"],
+  "fee_per_side":0.00095, "slippage_per_side":0.0002,
+  "notional":1000, "starting_balance":10000,
+  "stop_atr":1.5,"stop_multiplier":1.15,"gross_reward_multiple":2,
+  "lookback":20,"retest_expiry_bars":4,"retest_tolerance_atr":0.25,
+  "hourly_trend":"closed 1h EMA20/50; 50-hour warmup",
+  "gate":{"holdout_min_trades":30,"holdout_profit_factor":1.2,"holdout_positive":true,"double_slippage_positive":true,"max_marked_drawdown_pct":5},
+  "execution":"Signal on closed 15m candle, enter next open. One position. Fixed notional, no leverage. Stop before target on intrabar collision, adverse stop gap at open, favorable target gap at target. SL widened 15 percent without changing quantity or target. No time exit except period end. SHORT is synthetic PAPER, not a spot executable short; borrow/funding excluded and needs separate validation.",
+  "selection":"Two fixed candidates and two simple candle references; no tuning after results. Holdout opened once after engineering tests. Historical period is not guaranteed unseen in prior unrelated research. These references are not full FLY/FAST/TV strategies. No automatic deployment."
+}
