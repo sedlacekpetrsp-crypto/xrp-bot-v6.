@@ -1,0 +1,56 @@
+{
+  "original": {
+    "base": {
+      "trades": 185,
+      "net_pnl": -214.22460991852313,
+      "fees": 351.36468114394216,
+      "profit_factor": 0.8316282090775743,
+      "win_rate": 0.3837837837837838,
+      "max_close_marked_drawdown_pct": 3.343536357393039,
+      "period_end_exits": 0,
+      "gross_after_slippage": 137.14007122554216
+    },
+    "double_slippage": {
+      "trades": 185,
+      "net_pnl": -251.173383434656,
+      "fees": 351.37468495907603,
+      "profit_factor": 0.8060840131474852,
+      "win_rate": 0.3837837837837838,
+      "max_close_marked_drawdown_pct": 3.6446544389653677,
+      "period_end_exits": 0,
+      "gross_after_slippage": 100.20130152454631
+    }
+  },
+  "net_target": {
+    "base": {
+      "trades": 181,
+      "net_pnl": -109.7432648811191,
+      "fees": 343.70584746887334,
+      "profit_factor": 0.913722595280241,
+      "win_rate": 0.36464088397790057,
+      "max_close_marked_drawdown_pct": 2.5550417018475793,
+      "period_end_exits": 0,
+      "gross_after_slippage": 233.9625825878787
+    },
+    "double_slippage": {
+      "trades": 181,
+      "net_pnl": -132.77755971131774,
+      "fees": 343.7119081857417,
+      "profit_factor": 0.8974780478031826,
+      "win_rate": 0.36464088397790057,
+      "max_close_marked_drawdown_pct": 2.7541386075606273,
+      "period_end_exits": 0,
+      "gross_after_slippage": 210.93434847454805
+    }
+  },
+  "checks": {
+    "min_trades": true,
+    "profit_factor": false,
+    "positive_net": false,
+    "stress_positive": false,
+    "drawdown": true,
+    "improves_original": true
+  },
+  "passes": false,
+  "deployment_authorized_by_study": false
+}

@@ -1,0 +1,9 @@
+{
+  "research/retest_cost_review_20261019/audit.py": "b0d3665ce6642fa2f3a2b7ad14f3d66d592f6f6425f4ee2efdc20bba0c2f1c8f",
+  "research/retest_cost_review_20261019/download.py": "73179616a47e680726ee080525203238e4a400c36e3d4d4e477c7787bd17ad36",
+  "research/retest_cost_review_20261019/run.py": "a24277a69e5abee87bfe95053c56c932e09a75ca8fe0aa4341bfcbc1fde2c054",
+  "research/retest_cost_review_20261019/variant.py": "e122b567ffd170537b7e0ca39b31f5aef55eef91f0b8ff527697aabe74195390",
+  "research/retest_cost_review_20261019/test_variant.py": "475f7a5441260bab82f02f2655723f6084f30d7e064dc83f9e8402b072976980",
+  "research/retest_cost_review_20261019/protocol.json": "49f3642a9ab863f5d5ea4f7a4761297722026e7de19371e9e993fbc09fcb4373",
+  "research/candle_validation_20261019/engine.py": "c05179f72f175526293058c71014b98737d351ab3361d0dda175f893ee47abe8"
+}
