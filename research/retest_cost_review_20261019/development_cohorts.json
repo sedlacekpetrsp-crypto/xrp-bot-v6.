@@ -1,0 +1,51 @@
+{
+  "ALL": {
+    "trades": 106,
+    "net": -219.9570847716221,
+    "gross_after_slippage": -18.520407633795795,
+    "fees": 201.4366771378263,
+    "wins": 37
+  },
+  "SHORT": {
+    "trades": 69,
+    "net": -159.69109633012843,
+    "gross_after_slippage": -28.56396056758922,
+    "fees": 131.1271357625392,
+    "wins": 23
+  },
+  "target/cost >= 3": {
+    "trades": 85,
+    "net": -194.6539727462791,
+    "gross_after_slippage": -33.114494135159816,
+    "fees": 161.53947861111928,
+    "wins": 28
+  },
+  "efficiency < .3": {
+    "trades": 60,
+    "net": -75.76941013913775,
+    "gross_after_slippage": 38.17931902976098,
+    "fees": 113.94872916889872,
+    "wins": 22
+  },
+  "efficiency >= .3": {
+    "trades": 46,
+    "net": -144.18767463248435,
+    "gross_after_slippage": -56.699726663556774,
+    "fees": 87.48794796892757,
+    "wins": 15
+  },
+  "LONG": {
+    "trades": 37,
+    "net": -60.265988441493676,
+    "gross_after_slippage": 10.043552933793425,
+    "fees": 70.30954137528711,
+    "wins": 14
+  },
+  "target/cost < 3": {
+    "trades": 21,
+    "net": -25.303112025343008,
+    "gross_after_slippage": 14.594086501364018,
+    "fees": 39.89719852670702,
+    "wins": 9
+  }
+}
