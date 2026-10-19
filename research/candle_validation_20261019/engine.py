@@ -65,6 +65,7 @@ def pnl(position,market,fee,slip):
 def exit_price(pos,bar):
  o,h,l=map(float,bar[1:4]);s,t=pos['stop'],pos['target'];long=pos['side']==1
  if (o<=s if long else o>=s):return o,'STOP_GAP'
+ if (o>=t if long else o<=t):return t,'TARGET_GAP'
  if (l<=s if long else h>=s):return s,'STOP'
  if (h>=t if long else l<=t):return t,'TARGET'
  return None,None

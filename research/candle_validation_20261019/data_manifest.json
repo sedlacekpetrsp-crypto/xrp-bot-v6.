@@ -1,0 +1,8 @@
+{
+  "symbol": "XRPUSDC",
+  "interval": "15m",
+  "bars": 18336,
+  "start": "2026-04-11T00:00:00Z",
+  "end_exclusive": "2026-10-19T00:00:00Z",
+  "sha256": "b0f1918b0298e5768e9bef88bd38763efda3bdef2331002e0e43f32e38ef1fda"
+}

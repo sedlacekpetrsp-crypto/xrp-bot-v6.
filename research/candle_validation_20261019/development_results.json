@@ -1,0 +1,94 @@
+[
+  {
+    "strategy": "breakout_reference",
+    "period": "development",
+    "base": {
+      "trades": 285,
+      "net_pnl": -772.5959788367727,
+      "fees": 541.573574609646,
+      "profit_factor": 0.5000602921753291,
+      "win_rate": 0.3368421052631579,
+      "max_close_marked_drawdown_pct": 7.731391881902128,
+      "period_end_exits": 0
+    },
+    "double_slippage": {
+      "trades": 284,
+      "net_pnl": -921.8853142996795,
+      "fees": 539.6855314596716,
+      "profit_factor": 0.43249427268900553,
+      "win_rate": 0.31690140845070425,
+      "max_close_marked_drawdown_pct": 9.224297414405465,
+      "period_end_exits": 0
+    },
+    "numeric_gate": false
+  },
+  {
+    "strategy": "breakout_retest",
+    "period": "development",
+    "base": {
+      "trades": 106,
+      "net_pnl": -219.95708477170592,
+      "fees": 201.4366771378263,
+      "profit_factor": 0.6223229078927447,
+      "win_rate": 0.3490566037735849,
+      "max_close_marked_drawdown_pct": 2.3035917725758615,
+      "period_end_exits": 0
+    },
+    "double_slippage": {
+      "trades": 106,
+      "net_pnl": -269.9764418364266,
+      "fees": 201.47009052986496,
+      "profit_factor": 0.5564261824976197,
+      "win_rate": 0.33962264150943394,
+      "max_close_marked_drawdown_pct": 2.797411966916468,
+      "period_end_exits": 0
+    },
+    "numeric_gate": false
+  },
+  {
+    "strategy": "ema_cross_reference",
+    "period": "development",
+    "base": {
+      "trades": 78,
+      "net_pnl": -203.0654692970529,
+      "fees": 148.16434284386096,
+      "profit_factor": 0.48154821799251635,
+      "win_rate": 0.34615384615384615,
+      "max_close_marked_drawdown_pct": 2.286506684506125,
+      "period_end_exits": 0
+    },
+    "double_slippage": {
+      "trades": 78,
+      "net_pnl": -235.07809043152702,
+      "fees": 148.17287310393547,
+      "profit_factor": 0.4333190727747219,
+      "win_rate": 0.3076923076923077,
+      "max_close_marked_drawdown_pct": 2.5343896371703,
+      "period_end_exits": 0
+    },
+    "numeric_gate": false
+  },
+  {
+    "strategy": "ema_pullback",
+    "period": "development",
+    "base": {
+      "trades": 303,
+      "net_pnl": -506.78517467130587,
+      "fees": 575.3986095565182,
+      "profit_factor": 0.6604666495109968,
+      "win_rate": 0.3927392739273927,
+      "max_close_marked_drawdown_pct": 5.067851746713059,
+      "period_end_exits": 0
+    },
+    "double_slippage": {
+      "trades": 302,
+      "net_pnl": -663.9580343025045,
+      "fees": 573.5778341381742,
+      "profit_factor": 0.5811840754109868,
+      "win_rate": 0.3675496688741722,
+      "max_close_marked_drawdown_pct": 6.639580343025045,
+      "period_end_exits": 0
+    },
+    "numeric_gate": false
+  }
+]

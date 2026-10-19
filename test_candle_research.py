@@ -15,6 +15,9 @@ class CandleTests(unittest.TestCase):
   self.assertEqual(exit_price(p,[0,100,103,98]),(99,'STOP'))
   self.assertEqual(exit_price(p,[0,98,103,97]),(98,'STOP_GAP'))
   self.assertEqual(exit_price(dict(side=-1,stop=102,target=99),[0,100,103,98]),(102,'STOP'))
+ def test_target_gap_precedes_later_stop(self):
+  self.assertEqual(exit_price(dict(side=1,stop=99,target=102),[0,103,104,98]),(102,'TARGET_GAP'))
+  self.assertEqual(exit_price(dict(side=-1,stop=102,target=99),[0,98,103,97]),(99,'TARGET_GAP'))
  def test_widen_stop_without_changing_qty_or_target(self):
   a=open_position(1,100,1,P,.0002);q=dict(P,stop_multiplier=1);b=open_position(1,100,1,q,.0002)
   self.assertEqual(a['qty'],b['qty']);self.assertEqual(a['target'],b['target'])
