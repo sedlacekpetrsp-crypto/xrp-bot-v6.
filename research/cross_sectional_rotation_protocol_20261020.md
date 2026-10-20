@@ -8,7 +8,7 @@ Crypto leadership persists across assets during a broad BTC risk-on regime. At e
 
 ## Fixed execution and risk parameters
 
-- Source: public Binance Vision spot 15-minute monthly archives, October 2022 through September 2026. Every archive is hashed and every timestamp checked for complete continuous coverage.
+- Source: public Binance Vision spot 15-minute monthly archives, October 2022 through September 2026. Every archive is hashed and every timestamp checked. Exchange-wide outage gaps are recorded, never filled; a UTC day is excluded from all assets unless all four have the complete aligned set of 96 bars.
 - Signal: completed daily candles only. Entry or rotation occurs at the next 15-minute open. Ties are deterministic.
 - One position across the portfolio, long only, 35% of current account equity; no leverage and no overlapping positions.
 - Initial stop: 3.0 times the completed 20-day ATR. A gap through the stop fills at the worse opening price. No same-bar target assumption is needed because there is no profit target.

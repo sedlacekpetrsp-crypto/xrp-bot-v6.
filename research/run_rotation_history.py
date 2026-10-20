@@ -51,10 +51,15 @@ def fetch(item):
     start = _timestamp(f"{year}-{month:02d}-01")
     next_year, next_month = (year + 1, 1) if month == 12 else (year, month + 1)
     end = _timestamp(f"{next_year}-{next_month:02d}-01")
-    expected = list(range(start, end, 900_000))
-    if [x["timestamp"] for x in bars] != expected:
-        raise ValueError(f"Incomplete or unordered archive: {filename}")
-    return symbol, bars, {"url": url, "sha256": hashlib.sha256(payload).hexdigest(), "bars": len(bars)}
+    stamps = [x["timestamp"] for x in bars]
+    expected = set(range(start, end, 900_000))
+    if (not stamps or stamps != sorted(set(stamps)) or not set(stamps) <= expected):
+        raise ValueError(f"Invalid or unordered archive: {filename}")
+    missing = sorted(expected - set(stamps))
+    return symbol, bars, {"url": url, "sha256": hashlib.sha256(payload).hexdigest(),
+                          "bars": len(bars), "expected_bars": len(expected),
+                          "missing_bars": len(missing),
+                          "first_missing_timestamp": missing[0] if missing else None}
 
 
 def metrics(result):
@@ -77,6 +82,20 @@ def main():
     for symbol, bars, item in parts:
         market[symbol].extend(bars)
         manifest.append({"symbol": symbol, **item})
+    # Never fabricate outage candles.  Retain only UTC days that are complete
+    # for every asset, so ranking and fills always share identical timestamps.
+    complete_by_symbol = {}
+    for symbol, bars in market.items():
+        counts = {}
+        for bar in bars:
+            counts[bar["timestamp"] // 86_400_000 * 86_400_000] = counts.get(
+                bar["timestamp"] // 86_400_000 * 86_400_000, 0) + 1
+        complete_by_symbol[symbol] = {day for day, count in counts.items() if count == 96}
+    common_days = set.intersection(*complete_by_symbol.values())
+    dropped_days = sorted(set.union(*[set(x for x in days) for days in complete_by_symbol.values()]) - common_days)
+    market = {symbol: [bar for bar in bars
+                       if bar["timestamp"] // 86_400_000 * 86_400_000 in common_days]
+              for symbol, bars in market.items()}
     config = Config()
     normal = {}
     stress = {}
@@ -99,6 +118,8 @@ def main():
               "double_costs": stress, "gate": gate, "passes_historical_gate": all(v for k, v in gate.items()
                                                                                    if k != "forward_paper_30_trades"),
               "robust_candidate": all(gate.values()), "manifest": manifest,
+              "coverage": {"common_complete_days": len(common_days),
+                           "dropped_incomplete_or_unaligned_days": dropped_days},
               "limitations": ["OHLC path cannot reproduce sub-bar execution.",
                               "Spot universe excludes delisted assets and survivorship is possible.",
                               "Historical success would still require 30 new forward PAPER trades."]}

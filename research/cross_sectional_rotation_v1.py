@@ -39,8 +39,11 @@ def validate_market(market):
             if bar["volume"] < 0:
                 raise ValueError(f"Invalid volume for {symbol}")
             stamps.append(bar["timestamp"])
-        if any(stamps[i] - stamps[i - 1] != 900_000 for i in range(1, len(stamps))):
-            raise ValueError(f"Gap or duplicate for {symbol}")
+        if any(stamp % 900_000 for stamp in stamps):
+            raise ValueError(f"Off-grid timestamp for {symbol}")
+        if any(stamps[i] <= stamps[i - 1] or (stamps[i] - stamps[i - 1]) % 900_000
+               for i in range(1, len(stamps))):
+            raise ValueError(f"Unordered timestamp for {symbol}")
         if reference is None:
             reference = stamps
         elif stamps != reference:
@@ -51,11 +54,12 @@ def _daily(market):
     result = {}
     for symbol, bars in market.items():
         days = []
-        for start in range(0, len(bars), 96):
-            part = bars[start:start + 96]
-            if len(part) != 96 or part[0]["timestamp"] % DAY_MS:
-                continue
-            if part[-1]["timestamp"] != part[0]["timestamp"] + 95 * 900_000:
+        grouped = {}
+        for bar in bars:
+            grouped.setdefault(bar["timestamp"] // DAY_MS * DAY_MS, []).append(bar)
+        for day_start in sorted(grouped):
+            part = grouped[day_start]
+            if [x["timestamp"] for x in part] != list(range(day_start, day_start + DAY_MS, 900_000)):
                 continue
             days.append({
                 "timestamp": part[0]["timestamp"],
