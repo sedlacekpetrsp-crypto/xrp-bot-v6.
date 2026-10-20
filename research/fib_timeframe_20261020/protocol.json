@@ -1,0 +1,17 @@
+{
+  "source_commit": "c111da1f2f76bebd0b655de574f65ae659d870d4",
+  "symbols": ["BTCUSDT", "ETHUSDT", "SOLUSDT", "XRPUSDT"],
+  "months": ["2026-03", "2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09"],
+  "development": ["2026-04-01T00:00:00+00:00", "2026-07-01T00:00:00+00:00"],
+  "holdout": ["2026-07-01T00:00:00+00:00", "2026-10-01T00:00:00+00:00"],
+  "variants": {"baseline_5m": "5m", "candidate_15m": "15m"},
+  "fee_per_side": 0.00095,
+  "slippage_per_side": 0.0002,
+  "stress_slippage_per_side": 0.0004,
+  "stop_multiplier": 1.15,
+  "confirmation_score": 4,
+  "shared_reference_balance": 9178.204948230961,
+  "risk_share": 0.001,
+  "gate": "Candidate must have positive net PnL in both periods; holdout >=30 trades, PF>=1.1, more trades than baseline, positive holdout with double slippage. Passing is screening only, not automatic deployment.",
+  "limitations": ["FIB strategy only; no VWAP or 4h portfolio interactions", "5m OHLC execution approximation: next-bar open entry, gap-aware stop, stop-first if SL and TP both touched, breakeven updated at bar close", "Historical news unavailable; news veto disabled only in isolated replay", "Not an exact replay of the production 10-second loop or minute-by-minute retried entry price"]
+}

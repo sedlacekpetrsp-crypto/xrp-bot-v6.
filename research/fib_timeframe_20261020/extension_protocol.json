@@ -1,0 +1,7 @@
+{
+ "hypothesis": "After 15m failed, test 1h FIB swings to determine if larger gross targets can overcome costs.",
+ "frame": "1h",
+ "status": "Exploratory follow-up after observing 5m/15m results; same date windows are reused, not an untouched validation set.",
+ "parameters": "Identical entry/exit/risk rules; only FIB signal timeframe changes. Confirmation remains 5m/15m/1h.",
+ "deployment": "No automatic promotion from this reused sample. Preserve production and paused strategies."
+}

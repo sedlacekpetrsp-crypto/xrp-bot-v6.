@@ -1,0 +1,121 @@
+{
+  "diagnostics": {
+    "\u010cek\u00e1m na dotyk p\u00e1sma a potvrzen\u00fd odraz": 62136,
+    "Swing je p\u0159\u00edli\u0161 mal\u00fd": 143292,
+    "Swing byl poru\u0161en; \u010dek\u00e1m na nov\u00fd": 5388,
+    "raw_candidate": 3048,
+    "MTF_veto": 900,
+    "MTF_score": 1186
+  },
+  "development": {
+    "trades": 2,
+    "net_pnl": -18.356409896461628,
+    "fees": 1.949788598915644,
+    "profit_factor": 0.0,
+    "wins": 0,
+    "max_drawdown": 18.356409896461628,
+    "by_symbol": {
+      "BTCUSDT": {
+        "trades": 0,
+        "net_pnl": 0
+      },
+      "ETHUSDT": {
+        "trades": 0,
+        "net_pnl": 0
+      },
+      "SOLUSDT": {
+        "trades": 2,
+        "net_pnl": -18.356409896461926
+      },
+      "XRPUSDT": {
+        "trades": 0,
+        "net_pnl": 0
+      }
+    },
+    "rejections": {
+      "Nedostate\u010dn\u00fd pom\u011br zisku k riziku po poplatc\u00edch": 276,
+      "\u010cek\u00e1m na cenu v bl\u00edzkosti vstupu sign\u00e1lu": 125,
+      "Cena u\u017e p\u0159ekro\u010dila SL nebo TP sign\u00e1lu": 1,
+      "stop distance outside quality band": 19,
+      "already_traded": 1,
+      "Insufficient net reward for actual widened stop": 1
+    },
+    "window_end_closes": 0,
+    "losses": 2,
+    "breakevens": 0
+  },
+  "holdout": {
+    "trades": 4,
+    "net_pnl": -1.4981982860899734,
+    "fees": 6.486815669982979,
+    "profit_factor": 0.9183828267869543,
+    "wins": 1,
+    "max_drawdown": 23.65959507698426,
+    "by_symbol": {
+      "BTCUSDT": {
+        "trades": 0,
+        "net_pnl": 0
+      },
+      "ETHUSDT": {
+        "trades": 2,
+        "net_pnl": -9.178204948230896
+      },
+      "SOLUSDT": {
+        "trades": 1,
+        "net_pnl": 16.85821161037272
+      },
+      "XRPUSDT": {
+        "trades": 1,
+        "net_pnl": -9.17820494823096
+      }
+    },
+    "rejections": {
+      "Nedostate\u010dn\u00fd pom\u011br zisku k riziku po poplatc\u00edch": 393,
+      "Insufficient net reward for actual widened stop": 11,
+      "\u010cek\u00e1m na cenu v bl\u00edzkosti vstupu sign\u00e1lu": 78,
+      "already_traded": 12,
+      "Cena u\u017e p\u0159ekro\u010dila SL nebo TP sign\u00e1lu": 2,
+      "stop distance outside quality band": 37
+    },
+    "window_end_closes": 0,
+    "losses": 2,
+    "breakevens": 1
+  },
+  "stress": {
+    "trades": 4,
+    "net_pnl": -2.7190661700424243,
+    "fees": 6.208363453859896,
+    "profit_factor": 0.8518737495304619,
+    "wins": 1,
+    "max_drawdown": 23.751482058596594,
+    "by_symbol": {
+      "BTCUSDT": {
+        "trades": 0,
+        "net_pnl": 0
+      },
+      "ETHUSDT": {
+        "trades": 2,
+        "net_pnl": -9.178204948230977
+      },
+      "SOLUSDT": {
+        "trades": 1,
+        "net_pnl": 15.637343726417093
+      },
+      "XRPUSDT": {
+        "trades": 1,
+        "net_pnl": -9.17820494823096
+      }
+    },
+    "rejections": {
+      "Nedostate\u010dn\u00fd pom\u011br zisku k riziku po poplatc\u00edch": 402,
+      "Insufficient net reward for actual widened stop": 1,
+      "\u010cek\u00e1m na cenu v bl\u00edzkosti vstupu sign\u00e1lu": 78,
+      "already_traded": 12,
+      "Cena u\u017e p\u0159ekro\u010dila SL nebo TP sign\u00e1lu": 2,
+      "stop distance outside quality band": 38
+    },
+    "window_end_closes": 0,
+    "losses": 2,
+    "breakevens": 1
+  }
+}

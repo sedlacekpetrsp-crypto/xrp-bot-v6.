@@ -1,0 +1,26 @@
+{
+  "BTCUSDT": {
+    "sha256": "291d205210e592ea9feb7d48b06352d8a4738534fb9dcff0efed4c452508ef4f",
+    "rows": 61632,
+    "first_open": 1772323200000,
+    "last_close": 1790812799999
+  },
+  "ETHUSDT": {
+    "sha256": "f747fa28cba0a6e03e1c947186666880795d3ec1a3d5f3770f972f3801b45716",
+    "rows": 61632,
+    "first_open": 1772323200000,
+    "last_close": 1790812799999
+  },
+  "SOLUSDT": {
+    "sha256": "600370b54e8998cf89e82d6af5eb40fc8d04e51553076f5371f14f4b5cd9369f",
+    "rows": 61632,
+    "first_open": 1772323200000,
+    "last_close": 1790812799999
+  },
+  "XRPUSDT": {
+    "sha256": "76a67c2945e42285f503592006f6a1834513cef31a8f7760dfef918e4d303d01",
+    "rows": 61632,
+    "first_open": 1772323200000,
+    "last_close": 1790812799999
+  }
+}
