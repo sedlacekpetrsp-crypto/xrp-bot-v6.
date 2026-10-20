@@ -1,0 +1,36 @@
+name: Sweep 12 month historical backtest
+on:
+  push:
+    branches: [sweep-trend-research-20261020]
+    paths:
+      - 'research/fetch_binance_klines.py'
+      - 'research/run_sweep_csv.py'
+      - 'research/sweep_trend_v1.py'
+      - '.github/workflows/sweep-historical-backtest.yml'
+  workflow_dispatch:
+jobs:
+  historical:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        symbol: [BTCUSDT, ETHUSDT, SOLUSDT, XRPUSDT]
+        interval: [5m, 15m]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Fetch and validate full historical candle coverage
+        run: python -m research.fetch_binance_klines ${{ matrix.symbol }} ${{ matrix.interval }} history.csv
+      - name: Backtest with chronological out-of-sample validation
+        run: python -m research.run_sweep_csv history.csv | tee result.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sweep-${{ matrix.symbol }}-${{ matrix.interval }}
+          path: result.json
+          if-no-files-found: ignore
