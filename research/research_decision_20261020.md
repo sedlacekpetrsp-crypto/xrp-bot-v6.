@@ -37,3 +37,21 @@ Trade counts can differ under stress because entry prices, brackets and position
 ## Continuation constraints
 
 Keep PAPER-only scope and existing paused strategies paused. No Render, runtime configuration or production branch changes made. Future candidates require a distinct hypothesis, provenance-preserving data, realistic costs, and fresh forward evidence before acceptance. Do not revive failed variants by tuning to the same test window.
+
+## CROSS_SECTIONAL_ROTATION_V1: distinct hypothesis, historically rejected
+
+Protocol and all fixed parameters were committed before historical performance was read. This is a long-only, one-position portfolio rotation strategy: at each UTC day boundary it selects the strongest positive 21-day return among BTC, ETH, SOL and XRP only while the last completed BTC daily close is above its 60-day EMA. It allocates 35% of account equity, enters or rotates at the next 15-minute open, and uses a fixed 3.0 x completed 20-day ATR stop. It is not a sweep, breakout, order-flow, VWAP reversion, Fibonacci, Aroon or Supertrend variant.
+
+The test used 192 public Binance Vision monthly spot archives from October 2022 through September 2026. SHA256 fingerprints and coverage counts are in `cross_sectional_rotation_results_20261020.json`. One exchange-wide outage affected all four assets on 24 March 2023; the incomplete UTC day was recorded and excluded for every asset rather than filled. The resulting common dataset has 1,460 complete aligned days. Five deterministic engine tests passed, including next-open causality, one-position overlap, gap-stop fill at the worse open, increased-cost monotonicity and timestamp misalignment rejection.
+
+Normal costs are 0.095% fee and 0.02% adverse slippage per side; the stress run doubles both. Results use 10,000 USDT initial equity, no leverage, 35% maximum active notional and intraday 15-minute mark-to-market drawdown.
+
+| Period | Trades | Normal net return | Normal PF | Normal max DD | Double-cost net return | Double-cost PF |
+|---|---:|---:|---:|---:|---:|---:|
+| 2023 | 42 | +90.42% | 2.7647 | 19.37% | +84.05% | 2.5888 |
+| 2024 | 41 | +79.56% | 3.2945 | 21.41% | +73.69% | 3.0457 |
+| 2025 | 28 | +10.83% | 1.4879 | 10.54% | +8.37% | 1.3600 |
+| Jan-Sep 2026 | 26 | -0.34% | 0.9777 | 12.06% | -2.40% | 0.8530 |
+| Combined continuous path | 136 | +277.47% | 2.1129 | 21.41% | +238.21% | 1.9583 |
+
+The combined return and profit factor pass their thresholds, but the preregistered gate requires every period to be positive normally and combined maximum drawdown no more than 15%. January-September 2026 is negative and drawdown is 21.41%; no new 30-trade forward PAPER sample exists. Therefore `passes_historical_gate=false` and `robust_candidate=false`. Reject without tuning these parameters on the revealed periods. Do not deploy, start a PAPER service, change Render or touch `v8-fly-layer-test`.

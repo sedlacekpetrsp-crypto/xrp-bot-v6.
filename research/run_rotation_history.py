@@ -85,14 +85,16 @@ def main():
     # Never fabricate outage candles.  Retain only UTC days that are complete
     # for every asset, so ranking and fills always share identical timestamps.
     complete_by_symbol = {}
+    observed_days = set()
     for symbol, bars in market.items():
         counts = {}
         for bar in bars:
             counts[bar["timestamp"] // 86_400_000 * 86_400_000] = counts.get(
                 bar["timestamp"] // 86_400_000 * 86_400_000, 0) + 1
+        observed_days.update(counts)
         complete_by_symbol[symbol] = {day for day, count in counts.items() if count == 96}
     common_days = set.intersection(*complete_by_symbol.values())
-    dropped_days = sorted(set.union(*[set(x for x in days) for days in complete_by_symbol.values()]) - common_days)
+    dropped_days = sorted(observed_days - common_days)
     market = {symbol: [bar for bar in bars
                        if bar["timestamp"] // 86_400_000 * 86_400_000 in common_days]
               for symbol, bars in market.items()}

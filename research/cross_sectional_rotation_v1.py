@@ -167,10 +167,17 @@ def backtest(market, start_ts, end_ts, config=Config()):
                     break
                 if bar["open"] <= position["stop"]:
                     close_position(bar["open"], ts, "GAP_STOP")
+                    peak = max(peak, equity)
+                    max_drawdown = max(max_drawdown, (peak - equity) / peak)
                     break
                 if bar["low"] <= position["stop"]:
                     close_position(position["stop"], ts, "STOP")
+                    peak = max(peak, equity)
+                    max_drawdown = max(max_drawdown, (peak - equity) / peak)
                     break
+                marked = equity + position["quantity"] * (bar["close"] - position["entry"])
+                peak = max(peak, marked)
+                max_drawdown = max(max_drawdown, (peak - marked) / peak)
 
         marked = equity
         if position:
@@ -184,6 +191,8 @@ def backtest(market, start_ts, end_ts, config=Config()):
         last_ts = min(end_ts - 900_000, stamps[-1] + 95 * 900_000)
         bar = bars_by_symbol[position["symbol"]][last_ts]
         close_position(bar["close"], last_ts, "END")
+        peak = max(peak, equity)
+        max_drawdown = max(max_drawdown, (peak - equity) / peak)
     return {"trades": trades, "ending_equity": equity,
             "net_return": equity / config.initial_equity - 1.0,
             "max_drawdown": max_drawdown, "equity_curve": curve}
