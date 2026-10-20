@@ -5,7 +5,8 @@ on:
   pull_request:
     paths:
       - 'app_blue_whale_mirror.py'
-      - 'tests/test_whale_entry_policy_research.py'
+      - 'research/whale_short_rsi_shadow.py'
+      - 'tests/test_whale_*.py'
       - '.github/workflows/whale-research-tests.yml'
 jobs:
   whale-research:
@@ -18,5 +19,5 @@ jobs:
         with:
           python-version: '3.11'
       - run: python -m pip install pytest
-      - run: python -m py_compile app_blue_whale_mirror.py
-      - run: python -m pytest -q tests/test_whale_entry_policy_research.py
+      - run: python -m py_compile app_blue_whale_mirror.py research/whale_short_rsi_shadow.py
+      - run: python -m pytest -q tests/test_whale_entry_policy_research.py tests/test_whale_short_rsi_shadow.py
