@@ -60,7 +60,25 @@ def portfolio_entry_allowed(bot_name, symbol, side):
     """Paused bots cannot enter; existing positions retain their exit management."""
     if bot_name in PAUSED_BOTS:
         return False, "USER_PAUSED"
-    return True,"parallel positions allowed"
+    # PAPER portfolio guard: reject duplicate same-asset/same-side entries.
+    asset = _asset_key(symbol)
+    direction = str(side or "").upper()
+    books = (
+        ("FLY", [getattr(base, "paper_position", None)]),
+        ("FAST", [fast.state.get("open_position")]),
+        ("LEADLAG", [leadlag.state.get("open_position")]),
+        ("TV", [tv.state.get("open_position")]),
+        ("WHALE", list(whale.state.get("open_positions") or []) + [whale.state.get("open_position")]),
+    )
+    for owner, positions in books:
+        if owner == bot_name:
+            continue
+        for position in positions:
+            if not isinstance(position, dict):
+                continue
+            if _asset_key(position.get("symbol")) == asset and str(position.get("side") or "").upper() == direction:
+                return False, "CORRELATED_POSITION_" + owner
+    return True, "no duplicate same-direction exposure"
 
 def _same_direction_fly_exposure(symbol, side):
     """Count existing FLY exposure in the same crypto direction, excluding this asset."""
