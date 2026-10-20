@@ -1,0 +1,22 @@
+name: Blue Whale research tests
+on:
+  push:
+    branches: [whale-filter-research-20261020]
+  pull_request:
+    paths:
+      - 'app_blue_whale_mirror.py'
+      - 'tests/test_whale_entry_policy_research.py'
+      - '.github/workflows/whale-research-tests.yml'
+jobs:
+  whale-research:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install pytest
+      - run: python -m py_compile app_blue_whale_mirror.py
+      - run: python -m pytest -q tests/test_whale_entry_policy_research.py
