@@ -1,0 +1,22 @@
+name: Sweep trend research
+on:
+  push:
+    branches: [sweep-trend-research-20261020]
+  pull_request:
+    paths:
+      - 'research/sweep_trend_v1.py'
+      - 'tests/test_sweep_trend_v1.py'
+      - '.github/workflows/sweep-trend-research.yml'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install pytest
+      - run: python -m py_compile research/sweep_trend_v1.py
+      - run: python -m pytest -q tests/test_sweep_trend_v1.py
