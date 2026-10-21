@@ -73,3 +73,23 @@ The test used 94 public Binance Vision SOLUSDT and ETHUSDT 1-hour monthly archiv
 The strategy fails every profitability and stability gate except sample size. Reject it without parameter tuning on the revealed periods; do not start forward PAPER because the historical prerequisite failed. No Render, deployed branch, paused bot or real account was touched.
 
 Next concrete research step: preregister a genuinely different volatility-conditioned directional hypothesis using a new chronological holdout, rather than modifying SOL/ETH z-score thresholds or reusing this failed pair relationship.
+
+## BROAD_SHOCK_REBOUND_V1: distinct event hypothesis, rejected
+
+The hypothesis and gates were committed before performance was read. A completed-hour signal requires a median six-hour return of -3% or worse across BTC, ETH, SOL and XRP, at least three declining assets, and median six-hour volume at least 1.35 times the preceding 48-hour baseline. The strategy buys a 35%-gross equal-weight spot basket at the next open, holds at most 18 hours, uses a 6% stop on every leg and enforces a 12-hour cooldown. It is a synchronized liquidation-event hypothesis rather than a VWAP/RSI, sweep, breakout, flow, rotation or pair threshold change.
+
+The test used 292 public Binance Vision 1-hour monthly archives from September 2020 through September 2026. Archive URLs, SHA256 fingerprints, missing-bar counts and the ten excluded incomplete UTC dates are in `broad_shock_rebound_results_20261021.json`; no candles were fabricated. The aligned dataset contains 2,211 complete days. Four deterministic tests passed for causal next-open entry, conservative gap stops, one-basket overlap/cost monotonicity and alignment rejection.
+
+| Period | Trades | Normal net | Normal PF | Normal max DD | Double-cost net | Double-cost PF |
+|---|---:|---:|---:|---:|---:|---:|
+| 2021 | 74 | -18.89% | 0.6241 | 20.43% | -23.95% | 0.5413 |
+| 2022 | 75 | -12.10% | 0.7376 | 16.20% | -17.18% | 0.6403 |
+| 2023 | 33 | +5.61% | 1.5987 | 3.75% | +2.84% | 1.2680 |
+| 2024 | 47 | -11.12% | 0.5531 | 11.39% | -14.37% | 0.4601 |
+| 2025 | 58 | -8.03% | 0.7171 | 10.23% | -12.19% | 0.5978 |
+| Jan-Sep 2026 | 29 | +0.17% | 1.0210 | 3.93% | -2.14% | 0.7671 |
+| Combined continuous path | 316 | -38.34% | 0.7201 | 41.42% | -52.34% | 0.6086 |
+
+Only sample size passes. All profitability, cross-period stability, drawdown and profit-concentration gates fail, so `passes_historical_gate=false` and `robust_candidate=false`. Reject without tuning the revealed -3%, volume, stop or holding-period parameters. Do not start forward PAPER and do not touch Render, `v8-fly-layer-test`, paused bots or real accounts.
+
+Next concrete step: test a non-event, volatility-managed directional allocation with parameters fixed on pre-2023 data and a later chronological validation, rather than altering this failed rebound rule.
