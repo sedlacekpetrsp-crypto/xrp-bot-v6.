@@ -55,3 +55,21 @@ Normal costs are 0.095% fee and 0.02% adverse slippage per side; the stress run 
 | Combined continuous path | 136 | +277.47% | 2.1129 | 21.41% | +238.21% | 1.9583 |
 
 The combined return and profit factor pass their thresholds, but the preregistered gate requires every period to be positive normally and combined maximum drawdown no more than 15%. January-September 2026 is negative and drawdown is 21.41%; no new 30-trade forward PAPER sample exists. Therefore `passes_historical_gate=false` and `robust_candidate=false`. Reject without tuning these parameters on the revealed periods. Do not deploy, start a PAPER service, change Render or touch `v8-fly-layer-test`.
+
+## SOL_ETH_PAIRS_V1: distinct market-neutral hypothesis, rejected
+
+The protocol and fixed parameters were committed before historical performance was read. The strategy trades mean reversion in the 720-hour log(SOL/ETH) ratio as an equal-notional two-leg pair: enter beyond absolute z=2.25, exit inside 0.40, stop at absolute z=4.0, after 336 hours, or at a 12% adverse move in either leg. Gross exposure is 35% of equity. Normal costs include 0.095% fees and 0.02% adverse slippage per leg and side plus 8% annualized short borrow; stress doubles all three. This is cross-asset statistical arbitrage, not another single-asset reversion filter.
+
+The test used 94 public Binance Vision SOLUSDT and ETHUSDT 1-hour monthly archives from November 2022 through September 2026. URLs, SHA256 fingerprints and missing-bar counts are stored in `sol_eth_pairs_results_20261021.json`. One exchange-wide incomplete UTC day, 24 March 2023, was recorded and excluded from both legs without fabricated candles, leaving 1,429 complete aligned days. Four deterministic engine tests passed: causal next-open entry, conservative gap-stop fill, cost monotonicity/position non-overlap and timestamp-alignment rejection.
+
+| Period | Trades | Normal net | Normal PF | Normal max DD | Double-cost net | Double-cost PF |
+|---|---:|---:|---:|---:|---:|---:|
+| 2023 | 50 | -24.31% | 0.2365 | 27.55% | -27.69% | 0.1862 |
+| 2024 | 36 | -3.03% | 0.7855 | 9.32% | -6.14% | 0.6157 |
+| 2025 | 43 | -8.34% | 0.6272 | 12.14% | -11.84% | 0.5120 |
+| Jan-Sep 2026 | 38 | -0.17% | 0.9776 | 5.54% | -3.51% | 0.6426 |
+| Combined continuous path | 167 | -32.26% | 0.4992 | 35.05% | -41.78% | 0.3874 |
+
+The strategy fails every profitability and stability gate except sample size. Reject it without parameter tuning on the revealed periods; do not start forward PAPER because the historical prerequisite failed. No Render, deployed branch, paused bot or real account was touched.
+
+Next concrete research step: preregister a genuinely different volatility-conditioned directional hypothesis using a new chronological holdout, rather than modifying SOL/ETH z-score thresholds or reusing this failed pair relationship.
