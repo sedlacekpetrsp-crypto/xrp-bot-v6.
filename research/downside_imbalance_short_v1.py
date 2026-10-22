@@ -42,7 +42,7 @@ def validate(market):
             if bar["volume"] < 0 or bar["timestamp"] % HOUR_MS:
                 raise ValueError(f"Invalid volume or timestamp for {symbol}")
             stamps.append(bar["timestamp"])
-        if any(stamps[i] <= stamps[i - 1] or stamps[i] - stamps[i - 1] != HOUR_MS
+        if any(stamps[i] <= stamps[i - 1] or (stamps[i] - stamps[i - 1]) % HOUR_MS
                for i in range(1, len(stamps))):
             raise ValueError(f"Missing or unordered bars for {symbol}")
         if reference is None:
@@ -55,6 +55,8 @@ def signal(bars, completed_index, config=Config()):
     """Return signal strength using completed bars only, else None."""
     first = completed_index - config.lookback_hours + 1
     if first < 1:
+        return None
+    if bars[completed_index]["timestamp"] - bars[first - 1]["timestamp"] != config.lookback_hours * HOUR_MS:
         return None
     part = bars[first:completed_index + 1]
     returns = [log(bars[i]["close"] / bars[i - 1]["close"])
@@ -127,7 +129,7 @@ def backtest(market, start_ts, end_ts, config=Config()):
                 close_position(symbol, bar["open"], timestamp, "GAP_STOP")
             elif bar["open"] <= position["target"]:
                 close_position(symbol, position["target"], timestamp, "GAP_TARGET")
-            elif i - position["entry_index"] >= config.maximum_hold_hours:
+            elif timestamp - position["entry_ts"] >= config.maximum_hold_hours * HOUR_MS:
                 close_position(symbol, bar["open"], timestamp, "TIME")
 
         # Signals are computed through i-1 and filled at bar i open.

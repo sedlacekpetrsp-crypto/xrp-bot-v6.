@@ -28,6 +28,12 @@ class DownsideImbalanceTests(unittest.TestCase):
         self.assertIsNotNone(signal(bars, 3, self.config()))
         self.assertIsNone(signal(bars, 4, self.config()))
 
+    def test_signal_rejects_lookback_across_missing_time(self):
+        bars = market([100, 99, 98, 96])[SYMBOLS[0]]
+        bars[2]["timestamp"] += 24 * HOUR_MS
+        bars[3]["timestamp"] += 24 * HOUR_MS
+        self.assertIsNone(signal(bars, 3, self.config()))
+
     def test_entry_is_next_open_and_time_exit(self):
         closes = [100, 99, 98, 96, 80, 79, 78]
         opens = [100, 99, 98, 96, 80, 79, 78]
