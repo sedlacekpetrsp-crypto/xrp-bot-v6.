@@ -93,3 +93,23 @@ The test used 292 public Binance Vision 1-hour monthly archives from September 2
 Only sample size passes. All profitability, cross-period stability, drawdown and profit-concentration gates fail, so `passes_historical_gate=false` and `robust_candidate=false`. Reject without tuning the revealed -3%, volume, stop or holding-period parameters. Do not start forward PAPER and do not touch Render, `v8-fly-layer-test`, paused bots or real accounts.
 
 Next concrete step: test a non-event, volatility-managed directional allocation with parameters fixed on pre-2023 data and a later chronological validation, rather than altering this failed rebound rule.
+
+## VOLATILITY_MANAGED_MOMENTUM_V1: positive aggregate, preregistered gate failed
+
+The hypothesis and gates were committed before performance was read. At each UTC month boundary the strategy holds only BTC, ETH, SOL and XRP assets with positive completed 90-day return, weighted by inverse completed 30-day realized volatility. Total spot allocation is capped at 35% of equity and each raw asset share at half that allocation; each leg has a fixed 12% stop. This is a monthly absolute-momentum allocation rule rather than a winner rotation, breakout, event rebound, order-flow or pair strategy.
+
+The run used the same 292 public Binance Vision 1-hour archives from September 2020 through September 2026, but a separately preregistered chronological protocol: 2021–2022 development and 2023–September 2026 validation. URLs, SHA256 fingerprints, missing-bar counts and ten excluded incomplete UTC dates are stored in `volatility_managed_momentum_results_20261022.json`; no candles were filled. Four deterministic tests passed for causal allocation, month-open entries and non-overlap, gap-stop/cost handling and alignment rejection.
+
+| Block | Trades | Normal net | Normal PF | Normal max DD | Double-cost net | Double-cost PF |
+|---|---:|---:|---:|---:|---:|---:|
+| Development 2021 | 38 | +74.74% | 2.6821 | 19.03% | +73.20% | 2.6303 |
+| Development 2022 | 8 | -7.62% | 0.2645 | 9.26% | -8.51% | 0.2391 |
+| Validation 2023 | 28 | +14.50% | 2.0245 | 15.11% | +13.65% | 1.9427 |
+| Validation 2024 | 32 | +19.40% | 1.8436 | 11.76% | +18.44% | 1.7905 |
+| Validation 2025 | 30 | -1.98% | 0.8964 | 11.34% | -2.64% | 0.8640 |
+| Validation Jan-Sep 2026 | 5 | +0.96% | 1.4500 | 3.92% | +0.84% | 1.3881 |
+| Continuous validation | 95 | +35.31% | 1.5084 | 15.11% | +32.15% | 1.4597 |
+
+Aggregate validation, both profit-factor thresholds, sample size, cost stress and concentration checks pass. The preregistered overall gate nevertheless fails because development 2022 and validation 2025 are negative and validation drawdown is 15.108%, above the fixed 15% ceiling; no new 30-trade forward PAPER sample exists. Therefore `passes_historical_gate=false` and `robust_candidate=false`. Reject without changing the revealed 90/30-day windows, stop, caps or rebalance schedule. No PAPER service, Render setting, deployed branch, paused strategy or real account was changed.
+
+Next concrete step: preserve these results as a rejected benchmark and preregister a structurally different downside-asymmetry strategy; do not mine the same validation years for a filter that rescues this model.
