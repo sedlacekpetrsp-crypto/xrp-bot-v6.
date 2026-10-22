@@ -113,3 +113,43 @@ The run used the same 292 public Binance Vision 1-hour archives from September 2
 Aggregate validation, both profit-factor thresholds, sample size, cost stress and concentration checks pass. The preregistered overall gate nevertheless fails because development 2022 and validation 2025 are negative and validation drawdown is 15.108%, above the fixed 15% ceiling; no new 30-trade forward PAPER sample exists. Therefore `passes_historical_gate=false` and `robust_candidate=false`. Reject without changing the revealed 90/30-day windows, stop, caps or rebalance schedule. No PAPER service, Render setting, deployed branch, paused strategy or real account was changed.
 
 Next concrete step: preserve these results as a rejected benchmark and preregister a structurally different downside-asymmetry strategy; do not mine the same validation years for a filter that rescues this model.
+
+## DOWNSIDE_IMBALANCE_SHORT_V1: distinct downside-asymmetry hypothesis, rejected
+
+The hypothesis, fixed parameters and gates were committed before historical performance was
+read. On each asset independently, a completed 24-hour window must have squared negative-return
+energy at least 2.5 times positive energy, a close return of -2% or worse, at least eight negative
+hours, and a close in the bottom quarter of the range. The portfolio shorts the strongest signals
+at the next open, at most two concurrent 17.5%-equity positions, with a 3.5% stop, 4% target,
+eight-hour timeout and 12-hour per-symbol cooldown. This is a short continuation model rather
+than a modification of the rejected long/event, flow, pair, rotation or monthly momentum rules.
+
+The run used 292 public Binance Vision spot 1-hour archives from September 2020 through September
+2026 as a short-execution proxy. URLs, ZIP SHA256 fingerprints and missing-bar counts are in
+`downside_imbalance_short_results_20261022.json`. The ten incomplete or unaligned UTC days were
+removed across every asset without filling; causal lookbacks cannot cross those gaps. The aligned
+dataset contains 2,211 complete days. Normal costs are 0.095% fee and 0.02% adverse slippage per
+side plus 8% annualized borrow accrued hourly; stress doubles all three. Six deterministic tests
+passed, including completed-bar causality, next-open entry, gap-stop fill, stop-first ambiguous
+candles, borrow accounting and rejection of lookbacks across data gaps.
+
+| Block | Trades | Normal net | Normal PF | Normal max DD | Double-cost net | Double-cost PF |
+|---|---:|---:|---:|---:|---:|---:|
+| Development 2021 | 457 | -13.89% | 0.8677 | 21.76% | -29.90% | 0.7183 |
+| Development 2022 | 539 | +4.45% | 1.0483 | 10.53% | -16.34% | 0.8268 |
+| Validation 2023 | 338 | -16.05% | 0.6437 | 16.12% | -26.88% | 0.4655 |
+| Validation 2024 | 431 | -10.83% | 0.8413 | 14.59% | -25.11% | 0.6532 |
+| Validation 2025 | 445 | -20.67% | 0.7093 | 22.94% | -33.80% | 0.5513 |
+| Validation Jan-Sep 2026 | 339 | -9.54% | 0.7717 | 13.05% | -21.58% | 0.5449 |
+| Continuous validation | 1,553 | -46.28% | 0.7435 | 46.44% | -71.57% | 0.5573 |
+
+Only the minimum validation sample-size gate passes. Development consistency, both profit-factor
+thresholds, every normal validation block, stress stability, stressed total return, drawdown and
+profit-concentration gates fail. Thus `passes_historical_gate=false` and `robust_candidate=false`.
+No forward PAPER run is warranted. Do not optimize the revealed energy ratio, return, bracket or
+holding thresholds and do not deploy, start paused strategies, touch Render, modify
+`v8-fly-layer-test` or trade a real account.
+
+Next concrete step: preregister a structurally different time-series volatility-risk-premium
+screen that operates on daily regime transitions and uses a future chronological slice, rather
+than reversing this failed short or retuning its intraday thresholds.
