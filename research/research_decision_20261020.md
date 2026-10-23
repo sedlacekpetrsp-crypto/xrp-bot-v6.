@@ -296,3 +296,35 @@ paused bot or real account was changed.
 Next concrete step: preregister a structurally different volume-neutral range-harvest model with
 explicit maker-like cost assumptions stress-tested against taker execution; do not reverse or
 retune this failed residual continuation.
+
+## RANGE_HARVEST_LIMIT_V1: distinct resting-limit range hypothesis, rejected
+
+The protocol was committed before results were read. In a 20-day BTC regime with directional
+efficiency at most 0.35, the model rests a one-day buy limit 0.5 ATR below prior close, targets
+that close, stops one ATR below entry and holds at most 24 hours. Exposure is 25% and positions
+cannot overlap. Base execution assumes a 0.02% maker entry and normal taker exit; stress assumes
+0.19% fee and 0.04% adverse slippage on both sides.
+
+The test used 73 public Binance Vision BTCUSDT 1-hour archives from September 2020 through
+September 2026. Provenance hashes, coverage and ten removed incomplete UTC days are in
+`range_harvest_limit_results_20261023.json`; no bars were synthesized. Four engine tests passed
+for completed-data setup, delayed limit fill, maximum holding time, worse-open gap stop and cost
+stress monotonicity. Same-bar fill/target credit is prohibited and stop wins.
+
+| Block | Trades | Base net | Base PF | Base max DD | Taker-stress net | Stress PF |
+|---|---:|---:|---:|---:|---:|---:|
+| Development 2021 | 59 | -4.01% | 0.8347 | 8.14% | -8.50% | 0.6678 |
+| Development 2022 | 89 | -4.75% | 0.8148 | 10.26% | -11.39% | 0.5937 |
+| Validation 2023 | 69 | -0.64% | 0.9515 | 5.62% | -6.06% | 0.6048 |
+| Validation 2024 | 77 | -11.62% | 0.5524 | 13.05% | -16.98% | 0.3939 |
+| Validation 2025 | 84 | -4.09% | 0.7905 | 5.22% | -10.42% | 0.5272 |
+| Validation Jan-Sep 2026 | 56 | -4.66% | 0.6085 | 5.77% | -8.90% | 0.3767 |
+| Continuous validation | 286 | -19.71% | 0.7019 | 20.93% | -36.35% | 0.4717 |
+
+Only sample size passes. Development, every validation block, both PF gates, stress stability,
+drawdown and concentration fail. Therefore `passes_historical_gate=false` and
+`robust_candidate=false`. Do not start forward PAPER or tune the range/ATR settings on these
+blocks. No deployment, Render setting, paused bot or real account was changed.
+
+Next concrete step: begin a fresh research family only after preregistering data and evaluation
+periods not selected to repair any of today's failed signals; retain all failures as benchmarks.
