@@ -153,3 +153,39 @@ holding thresholds and do not deploy, start paused strategies, touch Render, mod
 Next concrete step: preregister a structurally different time-series volatility-risk-premium
 screen that operates on daily regime transitions and uses a future chronological slice, rather
 than reversing this failed short or retuning its intraday thresholds.
+
+## WEEKEND_CARRY_V1: distinct calendar-risk hypothesis, rejected
+
+The calendar rule and all gates were committed before historical returns were read. The strategy
+buys an equal-weight BTC, ETH, SOL and XRP spot basket every Saturday at 00:00 UTC and exits at the
+first open at or after 48 hours. Gross exposure is 35% of current equity, each leg has a 6% stop,
+and no baskets overlap. It contains no trend, flow, shock, spread, volatility-sizing or
+cross-sectional price signal used by earlier rejected models.
+
+The test used 292 public Binance Vision 1-hour archives from September 2020 through September
+2026. URLs, ZIP SHA256 fingerprints, coverage counts and ten excluded incomplete or unaligned UTC
+days are in `weekend_carry_results_20261023.json`; no candle was synthesized. The shared dataset
+contains 2,211 complete days. Costs are 0.095% fee and 0.02% adverse slippage per leg and side;
+stress doubles both. Five deterministic tests passed for calendar causality, 48-hour exit,
+non-overlap, worse-open gap stops, cost sensitivity and timestamp alignment.
+
+| Block | Baskets | Normal net | Normal PF | Normal max DD | Double-cost net | Double-cost PF |
+|---|---:|---:|---:|---:|---:|---:|
+| Development 2021 | 51 | +8.24% | 1.1772 | 11.42% | +4.00% | 1.0834 |
+| Development 2022 | 53 | -19.55% | 0.4384 | 21.32% | -22.85% | 0.3733 |
+| Validation 2023 | 52 | +3.36% | 1.1630 | 6.35% | -0.86% | 0.9618 |
+| Validation 2024 | 52 | +5.16% | 1.2217 | 6.38% | +0.88% | 1.0353 |
+| Validation 2025 | 52 | +3.27% | 1.1410 | 7.07% | -0.93% | 0.9626 |
+| Validation Jan-Sep 2026 | 39 | -5.41% | 0.6965 | 10.44% | -8.31% | 0.5673 |
+| Continuous validation | 195 | +6.17% | 1.0687 | 10.72% | -9.16% | 0.8994 |
+
+Sample size, normal drawdown and concentration gates pass. The strategy fails development
+consistency, both combined PF thresholds, all-block normal stability, stress stability and
+positive stressed total return. January-September 2026 is negative even at base costs and the
+aggregate edge disappears when costs double. Therefore `passes_historical_gate=false` and
+`robust_candidate=false`; do not start forward PAPER and do not optimize weekdays, hour, holding
+time or stop on the revealed blocks. No Render resource, deployed branch, paused bot or real
+account was changed.
+
+Next concrete step: preregister a non-calendar, single-market session-transfer hypothesis with
+parameters fixed before testing; do not mine weekday or holding-window variants of this result.
