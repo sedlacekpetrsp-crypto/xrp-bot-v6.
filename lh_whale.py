@@ -13,7 +13,7 @@ import httpx
 from swing_paper import connect
 from lh_sweep import signal_from_closed_candles
 
-BUILD = 'LH-WHALE-SHARED-2026-10-23-3'
+BUILD = 'LH-WHALE-OKX-2026-10-23-4'
 _futures_retry_at = 0.0
 SYMBOL = 'XRPUSDT'
 FEE, SLIP, RISK, RR = .0005, .0002, .005, 2.5
@@ -45,7 +45,9 @@ def advance(state, quote, analysis, now):
             pnl, fill, fees = net(p,price)
             t = dict(id=p['id'],symbol=SYMBOL,side=p['side'],setup='LH_WHALE',
                      entry_price=p['entry_price'],exit_price=fill,qty=p['qty'],pnl=pnl,fees=fees,
-                     reason='STOP LOSS' if stop else 'TAKE PROFIT',opened_at=p['opened_at'],closed_at=iso(now))
+                     reason='STOP LOSS' if stop else 'TAKE PROFIT',opened_at=p['opened_at'],closed_at=iso(now),
+                     futures_provider=p.get('futures_provider','binance'),
+                     confirmation_variant=p.get('confirmation_variant','BINANCE_ORIGINAL'))
             s['balance'] += pnl; s['count'] += 1; s['wins'] += int(pnl>0)
             s['trades'].insert(0,t); s['trades'] = s['trades'][:500]
             s['position'] = None; s['cooldown'] = now+(20 if pnl<0 else 5)*60000
@@ -69,7 +71,9 @@ def advance(state, quote, analysis, now):
                     if target>0 and qty>0:
                         s['position'] = dict(id=f'lh-whale:{stamp}',symbol=SYMBOL,side=analysis['signal'],
                             direction=side,entry_price=entry,entry_market=quote['price'],qty=qty,stop_loss=stop,
-                            take_profit=target,risk_usdt=qty*loss,opened_at=iso(now),signal_candle=stamp)
+                            take_profit=target,risk_usdt=qty*loss,opened_at=iso(now),signal_candle=stamp,
+                            futures_provider=analysis.get('futures_provider','binance'),
+                            confirmation_variant=analysis.get('confirmation_variant','BINANCE_ORIGINAL'))
                         paper_stop_policy.apply(s['position'], FEE, SLIP)
     s['equity_stale'] = not valid
     if valid:
@@ -160,21 +164,31 @@ async def analyze(core,client):
         if not isinstance(data,list): raise ValueError('Neplatná odpověď futures API')
         return data
     global _futures_retry_at
-    if time.monotonic() < _futures_retry_at:
-        result.update(reason='Binance futures data jsou blokovaná; nové vstupy pozastavené',
-                      data_status='blocked', retry_after_seconds=round(_futures_retry_at-time.monotonic()))
-        return result
-    try:
-        oi,top,taker = await asyncio.gather(*(get(p) for p in ('openInterestHist','topLongShortPositionRatio','takerlongshortRatio')))
-    except httpx.HTTPStatusError as exc:
-        if exc.response.status_code not in (403, 451):
-            raise
-        _futures_retry_at = time.monotonic() + 900
-        result.update(reason='Binance futures data jsou blokovaná; nové vstupy pozastavené',
-                      data_status='blocked', retry_after_seconds=900)
-        return result
-    result['data_status'] = 'available'
+    provider = 'binance'
+    statistics = None
+    if time.monotonic() >= _futures_retry_at:
+        try:
+            statistics = await asyncio.gather(*(get(p) for p in ('openInterestHist','topLongShortPositionRatio','takerlongshortRatio')))
+        except httpx.HTTPStatusError as exc:
+            if exc.response.status_code not in (403, 451):
+                raise
+            _futures_retry_at = time.monotonic() + 900
+    if statistics is None:
+        # Public data from another venue, not a proxy around Binance's restriction.
+        # All three confirmations must come from the same fully validated source.
+        from lh_okx_data import fetch
+        provider = 'okx'
+        try:
+            statistics = await fetch(client, stamp)
+        except (httpx.HTTPError, ValueError, TypeError, KeyError, IndexError):
+            result.update(reason='Futures potvrzení není dostupné; nové vstupy pozastavené',
+                          data_status='blocked', futures_provider='unavailable')
+            return result
+    oi, top, taker = statistics
+    result.update(data_status='available', futures_provider=provider,
+                  confirmation_variant='OKX_TOP5_PAPER' if provider == 'okx' else 'BINANCE_ORIGINAL')
     f = futures_confirmation(oi,top,taker,stamp,sig.side if sig else 'LONG')
+    f['provider'] = provider
     result['futures'] = f
     if sig:
         result.update(reason=sig.reason+'; futures potvrzení '+str(f['score'])+'/3',stop=sig.stop)
@@ -220,6 +234,7 @@ def snapshot():
     return dict(bot='LH-WHALE',mode='PAPER',build=BUILD,running=_task is not None and not _task.done(),
         execution='shared-paid-service',signal_source=runtime.get('signal_source', 'local'),
         entries_enabled=bool(runtime.get('analysis') and runtime['analysis'].get('data_status') != 'blocked' and not runtime.get('data_error')),
+        futures_provider=(runtime.get('analysis') or {}).get('futures_provider', 'unavailable'),
         data_status=(runtime.get('analysis') or {}).get('data_status', 'unavailable'),
         healthy=age<45000 and fresh and not runtime.get('last_error') and not runtime.get('data_error') and (runtime.get('analysis') or {}).get('data_status') != 'blocked',
         balance=s['balance'] if s else None,equity=s['equity'] if s and fresh else None,

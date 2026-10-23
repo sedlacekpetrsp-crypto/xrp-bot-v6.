@@ -22,7 +22,8 @@ def test_blocked_futures_fail_closed_and_backoff():
     async def run():
         calls=[]
         def response(req):
-            calls.append(req)
+
+            if req.url.host == 'fapi.binance.com': calls.append(req)
             return httpx.Response(451)
         core=SimpleNamespace(get_klines=klines,LH_LOCAL_ONLY=True)
         with patch.object(lh,'_futures_retry_at',0), patch.object(lh,'signal_from_closed_candles',return_value=SimpleNamespace(side='LONG',stop=98,reason='test')):
