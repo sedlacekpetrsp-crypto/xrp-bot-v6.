@@ -189,3 +189,40 @@ account was changed.
 
 Next concrete step: preregister a non-calendar, single-market session-transfer hypothesis with
 parameters fixed before testing; do not mine weekday or holding-window variants of this result.
+
+## SESSION_TRANSFER_V1: distinct session-continuation hypothesis, rejected
+
+The protocol was committed before historical results were read. At 08:00 UTC the model enters
+BTC LONG after a completed 00:00–07:59 return of at least +0.75%, or SHORT after a return of at
+most -0.75%. It exits at a 2.5% stop, 2.5% target or after eight elapsed hours, uses 20% of current
+equity and never overlaps positions. This fixed-clock, single-market continuation premise is not
+a modification of the rejected weekend, cross-asset, shock, flow, sweep, pair or monthly models.
+
+The test used 73 public Binance Vision BTCUSDT 1-hour monthly archives from September 2020 through
+September 2026. URLs, SHA256 fingerprints, coverage and ten excluded incomplete UTC dates are in
+`session_transfer_results_20261023.json`; no bars were fabricated and signals cannot cross gaps.
+Normal costs are 0.095% fee and 0.02% adverse slippage per side plus 8% annualized SHORT borrow;
+stress doubles all three. Five deterministic tests passed for completed-session causality,
+next-open entry, fixed exit, missing-data rejection, worse-open short gaps, stop-first ambiguity,
+borrow and cost monotonicity.
+
+| Block | Trades (L/S) | Normal net | Normal PF | Normal max DD | Double-cost net | Double-cost PF |
+|---|---:|---:|---:|---:|---:|---:|
+| Development 2021 | 224 (112/112) | -6.72% | 0.8422 | 10.05% | -15.81% | 0.6533 |
+| Development 2022 | 169 (80/89) | -8.70% | 0.7057 | 8.89% | -16.53% | 0.5067 |
+| Validation 2023 | 97 (50/47) | -2.22% | 0.8172 | 4.48% | -6.47% | 0.5556 |
+| Validation 2024 | 147 (82/65) | -1.68% | 0.9193 | 4.25% | -8.28% | 0.6515 |
+| Validation 2025 | 145 (77/68) | -8.07% | 0.6416 | 9.37% | -14.13% | 0.4473 |
+| Validation Jan-Sep 2026 | 101 (44/57) | +1.48% | 1.1312 | 2.59% | -3.13% | 0.7662 |
+| Continuous validation | 490 (253/237) | -10.31% | 0.8391 | 12.57% | -28.64% | 0.5822 |
+
+Only total sample, both-direction sample and normal drawdown gates pass. Development consistency,
+both PF thresholds, cross-block profitability, stress stability, stressed total return and
+profit concentration fail. Therefore `passes_historical_gate=false` and
+`robust_candidate=false`; do not start forward PAPER or tune the revealed UTC boundary, 0.75%
+threshold, bracket or hold. No deployed branch, Render resource, paused bot or real account was
+touched.
+
+Next concrete step: preregister a structurally different spot-only volatility-contraction entry
+with no shorting or fixed session boundary; do not reverse this failed continuation rule on the
+same blocks.
