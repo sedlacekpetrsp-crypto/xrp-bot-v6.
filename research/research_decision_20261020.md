@@ -261,3 +261,38 @@ more trades. No deployment, Render configuration, paused bot or real account was
 Next concrete step: preregister a distinct cross-asset beta-hedged residual-momentum portfolio
 whose signal is not a pair z-score or cross-sectional winner rotation; do not retune this sparse
 volatility event on the revealed blocks.
+
+## BETA_HEDGED_RESIDUAL_MOMENTUM_V1: distinct hedged residual hypothesis, rejected
+
+The 60-day beta model, ten-day residual threshold and gates were committed before results were
+read. At each UTC day boundary it estimates ETH, SOL and XRP beta to BTC, selects the largest
+absolute residual beyond 5%, and trades continuation with an opposite beta-weighted BTC leg.
+Gross exposure is 35%, holding is at most ten days, cooldown five days and either leg has a 10%
+adverse stop. This is neither SOL/ETH z-score reversion nor unhedged winner rotation.
+
+The run used 292 public Binance Vision 1-hour archives from September 2020 through September
+2026. URLs, SHA256 fingerprints, coverage and ten excluded incomplete UTC days are stored in
+`beta_hedged_residual_results_20261023.json`; no candle was fabricated. Normal costs are 0.095%
+fee and 0.02% adverse slippage per leg and side plus 8% annualized short borrow; stress doubles
+all three. Four deterministic tests passed for completed-data selection, next-day entry,
+beta-weighted two-leg non-overlap, worse-open gaps, borrow and cost monotonicity.
+
+| Block | Pairs (alt L/S) | Normal net | Normal PF | Normal max DD | Double-cost net | Double-cost PF |
+|---|---:|---:|---:|---:|---:|---:|
+| Development 2021 | 10 (4/6) | +5.65% | 1.9882 | 6.68% | +4.68% | 1.7304 |
+| Development 2022 | 33 (16/17) | -16.39% | 0.2084 | 17.06% | -19.10% | 0.1524 |
+| Validation 2023 | 26 (15/11) | +1.27% | 1.0773 | 9.28% | -1.42% | 0.9213 |
+| Validation 2024 | 32 (14/18) | -0.16% | 0.9929 | 12.05% | -3.40% | 0.8587 |
+| Validation 2025 | 30 (15/15) | -16.00% | 0.1164 | 18.03% | -18.58% | 0.0698 |
+| Validation Jan-Sep 2026 | 17 (8/9) | -6.30% | 0.2274 | 7.95% | -8.02% | 0.1328 |
+| Continuous validation | 103 (51/52) | -22.81% | 0.6444 | 27.75% | -30.67% | 0.5462 |
+
+Only sample-size and direction-balance gates pass. Development consistency, both PF gates,
+cross-block stability, stress return, drawdown and concentration fail. Therefore
+`passes_historical_gate=false` and `robust_candidate=false`. Do not start forward PAPER or tune
+the beta/residual windows and threshold on these revealed blocks. No Render, deployed branch,
+paused bot or real account was changed.
+
+Next concrete step: preregister a structurally different volume-neutral range-harvest model with
+explicit maker-like cost assumptions stress-tested against taker execution; do not reverse or
+retune this failed residual continuation.
