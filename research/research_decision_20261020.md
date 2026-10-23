@@ -226,3 +226,38 @@ touched.
 Next concrete step: preregister a structurally different spot-only volatility-contraction entry
 with no shorting or fixed session boundary; do not reverse this failed continuation rule on the
 same blocks.
+
+## VOLATILITY_CONTRACTION_SPOT_V1: distinct spot volatility-regime hypothesis, rejected
+
+The rules and gates were committed before historical results were read. A signal occurs only when
+BTC's completed 168-hour realized volatility crosses from above to at most 65% of completed
+720-hour volatility. The model buys 35% of equity at the next hourly open, holds at most 168
+hours, uses an 8% stop and enforces a 168-hour cooldown. It is long-only and has no fixed session,
+weekday, price breakout, flow, rank, pair spread, SHORT or monthly momentum rule.
+
+The test used 73 public Binance Vision BTCUSDT 1-hour monthly archives from September 2020 through
+September 2026. URLs, SHA256 fingerprints, coverage and ten removed incomplete UTC days are in
+`volatility_contraction_spot_results_20261023.json`; no bars were filled and rolling windows cannot
+cross gaps. Base costs are 0.095% fee and 0.02% adverse slippage per side; stress doubles both.
+Five deterministic tests passed for causal regime crossing, next-open entry, time/cooldown
+non-overlap, missing-data rejection, worse-open gap stops and cost monotonicity.
+
+| Block | Trades | Normal net | Normal PF | Normal max DD | Double-cost net | Double-cost PF |
+|---|---:|---:|---:|---:|---:|---:|
+| Development 2021 | 6 | +0.69% | 1.0554 | 11.66% | +0.23% | 1.0181 |
+| Development 2022 | 8 | +3.10% | 1.7748 | 5.45% | +2.45% | 1.5710 |
+| Validation 2023 | 6 | -1.27% | 0.7227 | 5.75% | -1.74% | 0.6375 |
+| Validation 2024 | 4 | -3.24% | 0.6330 | 8.69% | -3.53% | 0.6091 |
+| Validation 2025 | 6 | +1.41% | 1.2973 | 4.05% | +0.93% | 1.1866 |
+| Validation Jan-Sep 2026 | 2 | +0.38% | n/a | 2.37% | +0.22% | n/a |
+| Continuous validation | 18 | -2.75% | 0.8456 | 12.39% | -4.12% | 0.7759 |
+
+Development and normal drawdown gates pass, but the validation has only 18 trades versus the
+fixed minimum 60. Combined return and both PF gates fail; 2023 and 2024 lose, stress stability
+fails, and positive P&L is concentrated. Thus `passes_historical_gate=false` and
+`robust_candidate=false`. Do not start forward PAPER or loosen the 0.65 crossing merely to create
+more trades. No deployment, Render configuration, paused bot or real account was changed.
+
+Next concrete step: preregister a distinct cross-asset beta-hedged residual-momentum portfolio
+whose signal is not a pair z-score or cross-sectional winner rotation; do not retune this sparse
+volatility event on the revealed blocks.
