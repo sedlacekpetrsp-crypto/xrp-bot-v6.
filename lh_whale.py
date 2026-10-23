@@ -13,7 +13,8 @@ import httpx
 from swing_paper import connect
 from lh_sweep import signal_from_closed_candles
 
-BUILD = 'LH-WHALE-SHARED-2026-10-07-2'
+BUILD = 'LH-WHALE-SHARED-2026-10-23-3'
+_futures_retry_at = 0.0
 SYMBOL = 'XRPUSDT'
 FEE, SLIP, RISK, RR = .0005, .0002, .005, 2.5
 runtime = {}
@@ -132,7 +133,7 @@ def futures_confirmation(oi,top,taker,stamp,side):
     return dict(oi_change_pct=100*change,top_ratio=tr,taker_ratio=ta,checks=checks,score=sum(checks.values()))
 
 async def analyze(core,client):
-    signal_url=os.getenv('LH_SIGNAL_URL','').rstrip('/')
+    signal_url='' if getattr(core, 'LH_LOCAL_ONLY', False) else os.getenv('LH_SIGNAL_URL','').rstrip('/')
     if signal_url:
         r=await client.get(signal_url+'/lh-whale/signal')
         r.raise_for_status(); data=r.json(); now=int(time.time()*1000)
@@ -158,7 +159,21 @@ async def analyze(core,client):
         r.raise_for_status(); data = r.json()
         if not isinstance(data,list): raise ValueError('Neplatná odpověď futures API')
         return data
-    oi,top,taker = await asyncio.gather(*(get(p) for p in ('openInterestHist','topLongShortPositionRatio','takerlongshortRatio')))
+    global _futures_retry_at
+    if time.monotonic() < _futures_retry_at:
+        result.update(reason='Binance futures data jsou blokovaná; nové vstupy pozastavené',
+                      data_status='blocked', retry_after_seconds=round(_futures_retry_at-time.monotonic()))
+        return result
+    try:
+        oi,top,taker = await asyncio.gather(*(get(p) for p in ('openInterestHist','topLongShortPositionRatio','takerlongshortRatio')))
+    except httpx.HTTPStatusError as exc:
+        if exc.response.status_code not in (403, 451):
+            raise
+        _futures_retry_at = time.monotonic() + 900
+        result.update(reason='Binance futures data jsou blokovaná; nové vstupy pozastavené',
+                      data_status='blocked', retry_after_seconds=900)
+        return result
+    result['data_status'] = 'available'
     f = futures_confirmation(oi,top,taker,stamp,sig.side if sig else 'LONG')
     result['futures'] = f
     if sig:
@@ -167,6 +182,7 @@ async def analyze(core,client):
     return result
 
 async def worker(core):
+    runtime['signal_source'] = 'local' if getattr(core, 'LH_LOCAL_ONLY', False) or not os.getenv('LH_SIGNAL_URL') else 'europe'
     ready = False; next_scan = 0; analysis = None
     async with httpx.AsyncClient(timeout=8) as client:
         while True:
@@ -202,8 +218,10 @@ def snapshot():
         p=s['position']; ps=[dict(p,current_price=q['price'] if fresh else None,
             unrealized_net_pnl=net(p,q['price'])[0] if fresh else None,price_stale=not fresh)]
     return dict(bot='LH-WHALE',mode='PAPER',build=BUILD,running=_task is not None and not _task.done(),
-        execution='shared-paid-service',signal_source='europe' if os.getenv('LH_SIGNAL_URL') else 'local',
-        healthy=age<45000 and fresh and not runtime.get('last_error') and not runtime.get('data_error'),
+        execution='shared-paid-service',signal_source=runtime.get('signal_source', 'local'),
+        entries_enabled=bool(runtime.get('analysis') and runtime['analysis'].get('data_status') != 'blocked' and not runtime.get('data_error')),
+        data_status=(runtime.get('analysis') or {}).get('data_status', 'unavailable'),
+        healthy=age<45000 and fresh and not runtime.get('last_error') and not runtime.get('data_error') and (runtime.get('analysis') or {}).get('data_status') != 'blocked',
         balance=s['balance'] if s else None,equity=s['equity'] if s and fresh else None,
         net_pnl=s['balance']-10000 if s else None,trades_count=s['count'] if s else 0,
         win_rate=100*s['wins']/s['count'] if s and s['count'] else None,positions=ps,
@@ -212,9 +230,9 @@ def snapshot():
         last_cycle_at=s.get('last_cycle_at') if s else None,persistence=runtime.get('persistence','pending'),
         last_error=runtime.get('last_error'),data_error=runtime.get('data_error'))
 
-def install(app,core):
+def install(app,core,local_only=False):
     from fastapi.responses import JSONResponse
-    remote=os.getenv('LH_WHALE_REMOTE_URL','').rstrip('/')
+    remote='' if local_only else os.getenv('LH_WHALE_REMOTE_URL','').rstrip('/')
     if remote:
         from urllib.parse import urlsplit
         parsed=urlsplit(remote)
@@ -233,6 +251,10 @@ def install(app,core):
                 return JSONResponse(dict(bot='LH-WHALE',mode='PAPER',running=False,healthy=False,
                     error=type(exc).__name__),status_code=503,headers={'Cache-Control':'no-store'})
         return
+    if local_only:
+        from types import SimpleNamespace
+        core = SimpleNamespace(DATABASE_URL=core.DATABASE_URL, get_klines=core.get_klines,
+                               get_live_price=core.get_live_price, LH_LOCAL_ONLY=True)
     @app.on_event('startup')
     async def start():
         global _task

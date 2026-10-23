@@ -849,16 +849,12 @@ def _age_seconds(value):
 
 @app.get("/liquidity-v2/status")
 async def liquidity_v2_status():
-    try:
-        async with httpx.AsyncClient(timeout=8.0) as client:
-            r = await client.get("https://xrp-liquidity-hunter-24-7.onrender.com/liquidity/status")
-            r.raise_for_status()
-            return JSONResponse(r.json(), headers={"Cache-Control":"no-store"})
-    except Exception as exc:
-        return JSONResponse({"running":False,"last_error":str(exc)}, status_code=503, headers={"Cache-Control":"no-store"})
+    return JSONResponse(liquidity_monitor.snapshot(), headers={"Cache-Control":"no-store"})
 
 @app.api_route("/combined/health", methods=["GET", "HEAD"])
 async def combined_health():
+    lh_status = lh_whale.snapshot()
+    liquidity_status = liquidity_monitor.snapshot()
     fly_age = _age_seconds(getattr(base, "last_cycle_at", None))
     whale_age = _age_seconds(whale.state.get("last_scan"))
     leadlag_age = _age_seconds(leadlag.state.get("last_scan"))
@@ -872,7 +868,9 @@ async def combined_health():
     tv_ok = tv_age is not None and tv_age < 90 and tv.state.get("persistence") == "postgres" and not tv.state.get("error")
     best_ok = best_age is not None and best_age < 90 and bool(bestof.core.DATABASE_URL) and not bestof.core.last_error
     return JSONResponse({
-        "ok": bool(fly_ok and whale_ok and leadlag_ok and fast_ok and tv_ok and best_ok),
+        "ok": bool(fly_ok and whale_ok and leadlag_ok and fast_ok and tv_ok and best_ok and lh_status["healthy"] and liquidity_status["healthy"]),
+        "lh_whale": lh_status,
+        "liquidity_monitor": liquidity_status,
         "paused_bots": sorted(PAUSED_BOTS),
         "fly": {
             "healthy": fly_ok,
@@ -1011,9 +1009,9 @@ async def liquidity_hunter_status():
 
 # Independent PAPER portfolios; deliberately separate from BEST balances and risk hooks.
 swing_paper.install(app, bestof.core)
-lh_whale.install(app, bestof.core)
+lh_whale.install(app, bestof.core, local_only=True)
 research_market_evidence.install(app, base)
-liquidity_monitor.install(app)
+liquidity_monitor.install(app, bestof.core)
 
 # News refresh and trading stay active independently of paused FLY.
 news_signal.install(app)
