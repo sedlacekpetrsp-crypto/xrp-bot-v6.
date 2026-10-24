@@ -14,6 +14,8 @@ volume, trend, range, session, pair or portfolio signals.
   December 2020–September 2026. Development: 2021, 2022, 2023. Validation: 2024 H1/H2,
   2025 H1/H2 and January–September 2026; validation is not used for parameter tuning.
 - Funding is acted on only at the open one full hourly timestamp later. No overlapping positions.
+  Archive settlement timestamps up to one second after their nominal hour are normalized back to
+  that hour; larger offsets are rejected rather than silently shifted.
 - Position is 20% of current equity; 5% adverse stop, 3% target, 24-hour maximum hold and eight-hour
   cooldown. Same-bar ambiguity is a stop; a stop gap fills at the worse open.
 - Normal per-side taker fee 0.050% and adverse slippage 0.020%. Actual intervening funding cashflows

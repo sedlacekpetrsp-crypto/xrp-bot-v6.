@@ -1,6 +1,7 @@
 import unittest
 
 from research.eth_funding_extreme_reversal_v1 import Config, HOUR_MS, backtest, funding_signal, with_cost_stress
+from research.run_eth_funding_extreme_history import normalize_funding_timestamp
 
 
 def sample(hours=96):
@@ -14,6 +15,11 @@ def sample(hours=96):
 
 
 class FundingExtremeTests(unittest.TestCase):
+    def test_archive_millisecond_offset_is_normalized_without_changing_hour(self):
+        self.assertEqual(normalize_funding_timestamp(1_609_459_200_006), 1_609_459_200_000)
+        with self.assertRaises(ValueError):
+            normalize_funding_timestamp(1_609_459_202_000)
+
     def test_signal_is_contrarian_and_threshold_is_inclusive(self):
         config = Config()
         self.assertEqual(funding_signal(config.minimum_absolute_funding, config), -1)

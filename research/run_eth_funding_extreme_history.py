@@ -24,6 +24,15 @@ def timestamp(value):
     return int(datetime.fromisoformat(value).replace(tzinfo=timezone.utc).timestamp() * 1000)
 
 
+def normalize_funding_timestamp(value):
+    """Archive settlements can be recorded a few milliseconds after the nominal hour."""
+    stamp = int(value); stamp = stamp // 1000 if stamp > 10**14 else stamp
+    offset = stamp % HOUR_MS
+    if offset > 1_000:
+        raise ValueError(f"Funding timestamp is not a nominal hourly settlement: {stamp}")
+    return stamp - offset
+
+
 def download(kind, item):
     year, month = item
     leaf = "klines" if kind == "price" else "fundingRate"
@@ -55,7 +64,7 @@ def fetch(item):
     for row in funding_rows:
         if not row or not row[0].isdigit():
             continue
-        stamp = int(row[0]); stamp = stamp // 1000 if stamp > 10**14 else stamp
+        stamp = normalize_funding_timestamp(row[0])
         rates[stamp] = float(row[2])
     start = timestamp(f"{item[0]}-{item[1]:02d}-01")
     next_year, next_month = (item[0] + 1, 1) if item[1] == 12 else (item[0], item[1] + 1)
