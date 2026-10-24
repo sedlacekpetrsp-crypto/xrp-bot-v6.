@@ -1,0 +1,26 @@
+test_ambiguous_stop_first (test_autocorr_execution.ExecutionTests.test_ambiguous_stop_first) ... ok
+test_gap_stop (test_autocorr_execution.ExecutionTests.test_gap_stop) ... ok
+test_next_open_fees_and_slippage (test_autocorr_execution.ExecutionTests.test_next_open_fees_and_slippage) ... ok
+test_signal_prefix_invariance (test_autocorr_execution.ExecutionTests.test_signal_prefix_invariance) ... ok
+test_invalid_candle (test_autocorr_regime_v1.RegimeTests.test_invalid_candle) ... ok
+test_missing_bar_rejected (test_autocorr_regime_v1.RegimeTests.test_missing_bar_rejected) ... ok
+test_negative_serial_correlation (test_autocorr_regime_v1.RegimeTests.test_negative_serial_correlation) ... ok
+test_no_future_and_no_trade_flat (test_autocorr_regime_v1.RegimeTests.test_no_future_and_no_trade_flat) ... ok
+test_positive_serial_correlation (test_autocorr_regime_v1.RegimeTests.test_positive_serial_correlation) ... ok
+test_alignment_and_gap (test_relative_strength_v1.RelativeStrengthTests.test_alignment_and_gap) ... ok
+test_closed_daily_signal_next_open_and_holding (test_relative_strength_v1.RelativeStrengthTests.test_closed_daily_signal_next_open_and_holding) ... ok
+test_cost_reconciliation_and_stress (test_relative_strength_v1.RelativeStrengthTests.test_cost_reconciliation_and_stress) ... ok
+test_flat_no_trade (test_relative_strength_v1.RelativeStrengthTests.test_flat_no_trade) ... ok
+test_gap_stop (test_relative_strength_v1.RelativeStrengthTests.test_gap_stop) ... ok
+test_hold_uses_elapsed_time_across_gap (test_relative_strength_v1.RelativeStrengthTests.test_hold_uses_elapsed_time_across_gap) ... ok
+test_real_gap_suppresses_signal_without_imputation (test_relative_strength_v1.RelativeStrengthTests.test_real_gap_suppresses_signal_without_imputation) ... ok
+test_regime_exit_and_boundary (test_relative_strength_v1.RelativeStrengthTests.test_regime_exit_and_boundary) ... ok
+test_signal_positive_and_future_invariance (test_relative_strength_v1.RelativeStrengthTests.test_signal_positive_and_future_invariance) ... ok
+test_stop_on_entry_bar (test_relative_strength_v1.RelativeStrengthTests.test_stop_on_entry_bar) ... ok
+test_calendar_timing_and_costs (test_weekend_drift_v1.WeekendTests.test_calendar_timing_and_costs) ... ok
+test_gap_stop (test_weekend_drift_v1.WeekendTests.test_gap_stop) ... ok
+
+----------------------------------------------------------------------
+Ran 21 tests in 0.047s
+
+OK

@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "checks": [
+    "chronology and no overlapping positions",
+    "daily UTC entry timing",
+    "position sizing and stop-distance risk",
+    "independent fee, slippage and net equity arithmetic",
+    "ledger/report reconciliation"
+  ],
+  "trades_by_run": {
+    "2022_base": 10,
+    "2022_stress": 10,
+    "2023_base": 13,
+    "2023_stress": 13,
+    "2024_base": 23,
+    "2024_stress": 23,
+    "2025_base": 13,
+    "2025_stress": 13,
+    "2026_base": 11,
+    "2026_stress": 11,
+    "continuous_oos_base": 60,
+    "continuous_oos_stress": 60
+  },
+  "note": "Continuous and annual runs overlap in observations; counts must not be added as independent trades."
+}
