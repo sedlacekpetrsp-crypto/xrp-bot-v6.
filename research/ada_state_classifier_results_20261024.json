@@ -1,0 +1,834 @@
+{
+  "strategy": "ADA_STATE_CLASSIFIER_V1",
+  "data": "Binance ADAUSDT spot 1h archives resampled to complete 4h bars",
+  "training_period": "2021-01-01/2022-12-31",
+  "development_period": "2023-01-01/2023-12-31",
+  "validation_period": "2024-01-01/2026-09-30",
+  "config": {
+    "long_probability": 0.6,
+    "short_probability": 0.4,
+    "stop_loss": 0.06,
+    "take_profit": 0.08,
+    "maximum_hold_bars": 6,
+    "cooldown_bars": 2,
+    "position_fraction": 0.2,
+    "fee_rate": 0.00095,
+    "slippage_rate": 0.0002,
+    "short_borrow_annual": 0.08,
+    "initial_equity": 10000.0
+  },
+  "stress_config": {
+    "long_probability": 0.6,
+    "short_probability": 0.4,
+    "stop_loss": 0.06,
+    "take_profit": 0.08,
+    "maximum_hold_bars": 6,
+    "cooldown_bars": 2,
+    "position_fraction": 0.2,
+    "fee_rate": 0.0019,
+    "slippage_rate": 0.0004,
+    "short_borrow_annual": 0.16,
+    "initial_equity": 10000.0
+  },
+  "fitted_model": {
+    "training_samples": 4156,
+    "positive_share": 0.48099133782483156,
+    "feature_names": [
+      "return_24h",
+      "return_72h",
+      "volatility_72h",
+      "range_24h",
+      "volume_shift",
+      "distance_5d_mean"
+    ],
+    "scaler_mean": [
+      -0.00019015678376600324,
+      -0.000622649398758413,
+      0.020618120961213654,
+      0.09380455773074554,
+      0.0816018644820145,
+      0.000755840773082482
+    ],
+    "scaler_scale": [
+      0.05794395096946948,
+      0.0964153573010591,
+      0.010883423937248714,
+      0.07550945430098277,
+      0.6150681371063897,
+      0.07122420998288632
+    ],
+    "coefficients": [
+      -0.13911732965382237,
+      -0.029640679252958515,
+      -0.08665818153762478,
+      0.2468821791318194,
+      -0.018773303165409858,
+      0.020518382660653603
+    ],
+    "intercept": 0.0030243289548343645
+  },
+  "development": {
+    "2023": {
+      "trades": 5,
+      "longs": 5,
+      "shorts": 0,
+      "win_rate": 0.8,
+      "net_return": 0.028140687492192784,
+      "net_pnl": 281.40687492192774,
+      "profit_factor": 3.268282674408731,
+      "max_drawdown": 0.012406164279999939,
+      "fees": 19.319371046612527,
+      "borrow": 0.0
+    }
+  },
+  "development_stress": {
+    "2023": {
+      "trades": 5,
+      "longs": 5,
+      "shorts": 0,
+      "win_rate": 0.8,
+      "net_return": 0.025877370309884906,
+      "net_pnl": 258.7737030988483,
+      "profit_factor": 3.019735482008878,
+      "max_drawdown": 0.012812257119999958,
+      "fees": 38.59926109180445,
+      "borrow": 0.0
+    }
+  },
+  "validation": {
+    "2024_H1": {
+      "trades": 13,
+      "longs": 12,
+      "shorts": 1,
+      "win_rate": 0.8461538461538461,
+      "net_return": 0.07372367506048194,
+      "net_pnl": 737.2367506048195,
+      "profit_factor": 3.766374704530185,
+      "max_drawdown": 0.02749243418856033,
+      "fees": 52.3351700583693,
+      "borrow": 0.46109617975412204
+    },
+    "2024_H2": {
+      "trades": 12,
+      "longs": 12,
+      "shorts": 0,
+      "win_rate": 0.5833333333333334,
+      "net_return": 0.04673289700729044,
+      "net_pnl": 467.32897007290376,
+      "profit_factor": 1.7350149427429242,
+      "max_drawdown": 0.027399908433406357,
+      "fees": 46.90084194079047,
+      "borrow": 0.0
+    },
+    "2025_H1": {
+      "trades": 19,
+      "longs": 18,
+      "shorts": 1,
+      "win_rate": 0.47368421052631576,
+      "net_return": 0.0021926660788353924,
+      "net_pnl": 21.92666078835464,
+      "profit_factor": 1.018029346229123,
+      "max_drawdown": 0.0512304281939748,
+      "fees": 73.43336726241178,
+      "borrow": 0.07572736145358425
+    },
+    "2025_H2": {
+      "trades": 8,
+      "longs": 8,
+      "shorts": 0,
+      "win_rate": 0.375,
+      "net_return": -0.0011164333280576644,
+      "net_pnl": -11.164333280576102,
+      "profit_factor": 0.9535865763786602,
+      "max_drawdown": 0.014783174065107414,
+      "fees": 30.18847676878381,
+      "borrow": 0.0
+    },
+    "2026_JAN_SEP": {
+      "trades": 7,
+      "longs": 7,
+      "shorts": 0,
+      "win_rate": 0.42857142857142855,
+      "net_return": -0.01515414323907427,
+      "net_pnl": -151.54143239074256,
+      "profit_factor": 0.515548184315889,
+      "max_drawdown": 0.02268345950031685,
+      "fees": 26.369715607201865,
+      "borrow": 0.0
+    },
+    "ALL": {
+      "trades": 59,
+      "longs": 57,
+      "shorts": 2,
+      "win_rate": 0.559322033898305,
+      "net_return": 0.10805866300552358,
+      "net_pnl": 1080.5866300552352,
+      "profit_factor": 1.367682151126592,
+      "max_drawdown": 0.05225604827719476,
+      "fees": 248.89769282849474,
+      "borrow": 0.54620630464229
+    }
+  },
+  "validation_stress": {
+    "2024_H1": {
+      "trades": 13,
+      "longs": 12,
+      "shorts": 1,
+      "win_rate": 0.8461538461538461,
+      "net_return": 0.06748617013074698,
+      "net_pnl": 674.861701307469,
+      "profit_factor": 3.4614184900170955,
+      "max_drawdown": 0.028068568071448453,
+      "fees": 104.37494437841939,
+      "borrow": 0.9201476902069657
+    },
+    "2024_H2": {
+      "trades": 12,
+      "longs": 12,
+      "shorts": 0,
+      "win_rate": 0.5833333333333334,
+      "net_return": 0.041431087872308536,
+      "net_pnl": 414.3108787230849,
+      "profit_factor": 1.6323871283139708,
+      "max_drawdown": 0.02797609435412219,
+      "fees": 93.57173111536503,
+      "borrow": 0.0
+    },
+    "2025_H1": {
+      "trades": 19,
+      "longs": 18,
+      "shorts": 1,
+      "win_rate": 0.47368421052631576,
+      "net_return": -0.005937787873470879,
+      "net_pnl": -59.37787873470916,
+      "profit_factor": 0.9526204293983618,
+      "max_drawdown": 0.05590102600041252,
+      "fees": 146.29056469133536,
+      "borrow": 0.1506824959267302
+    },
+    "2025_H2": {
+      "trades": 8,
+      "longs": 8,
+      "shorts": 0,
+      "win_rate": 0.375,
+      "net_return": -0.004707914093838972,
+      "net_pnl": -47.07914093838917,
+      "profit_factor": 0.8206130538304114,
+      "max_drawdown": 0.017229031675072292,
+      "fees": 60.271403207911675,
+      "borrow": 0.0
+    },
+    "2026_JAN_SEP": {
+      "trades": 7,
+      "longs": 7,
+      "shorts": 0,
+      "win_rate": 0.2857142857142857,
+      "net_return": -0.01819349335130771,
+      "net_pnl": -181.93493351307734,
+      "profit_factor": 0.453966524958827,
+      "max_drawdown": 0.024893941307914034,
+      "fees": 52.66159806679004,
+      "borrow": 0.0
+    },
+    "ALL": {
+      "trades": 59,
+      "longs": 57,
+      "shorts": 2,
+      "win_rate": 0.5423728813559322,
+      "net_return": 0.07989819843176438,
+      "net_pnl": 798.9819843176447,
+      "profit_factor": 1.2642749120125796,
+      "max_drawdown": 0.06348916564946726,
+      "fees": 491.42428455013214,
+      "borrow": 1.0876634225117972
+    }
+  },
+  "largest_positive_validation_block_share": 0.6010936241801759,
+  "smaller_direction_share": 0.03389830508474576,
+  "gate": {
+    "development_2023_positive": true,
+    "validation_minimum_80_trades": false,
+    "both_directions_at_least_20pct": false,
+    "normal_pf_at_least_1_20": true,
+    "stress_pf_at_least_1_05": true,
+    "normal_positive_all_blocks": false,
+    "stress_positive_four_blocks": false,
+    "stress_total_positive": true,
+    "normal_max_drawdown_at_most_15pct": true,
+    "profit_not_concentrated": false,
+    "forward_paper_50_trades": false
+  },
+  "passes_historical_gate": false,
+  "robust_candidate": false,
+  "coverage": {
+    "complete_4h_bars": 12768
+  },
+  "manifest": [
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2020-12.zip",
+      "sha256": "4789c8bdd5a3ebae9afefc07c0aec8ccb237aac73e6639377b49317ddb595388",
+      "bars": 740,
+      "expected_bars": 744,
+      "missing_bars": 4,
+      "first_missing_timestamp": 1608562800000
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2021-01.zip",
+      "sha256": "8ba6a868956a0b55f5fbc92203729d3e4553e76585bad441332d8e10ed7abf64",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2021-02.zip",
+      "sha256": "7286c0f1b6f92242aba1efd80eec2603214bb117966d071f094e38359177c2d4",
+      "bars": 671,
+      "expected_bars": 672,
+      "missing_bars": 1,
+      "first_missing_timestamp": 1613016000000
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2021-03.zip",
+      "sha256": "84b6f60b57a2b657d6c3f50a5c01853c86a438a90710b65b81a79699380d5228",
+      "bars": 743,
+      "expected_bars": 744,
+      "missing_bars": 1,
+      "first_missing_timestamp": 1614996000000
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2021-04.zip",
+      "sha256": "0e03b241a778acd66c49d249f72fe70eb1dd23a36f6ac5249b458a6a765ba699",
+      "bars": 715,
+      "expected_bars": 720,
+      "missing_bars": 5,
+      "first_missing_timestamp": 1618884000000
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2021-05.zip",
+      "sha256": "b822b4405248efc04edb922d7fac1906ac2af489015106b699ab03e7d7c7d41f",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2021-06.zip",
+      "sha256": "0ea44e0598d9dbfef51f090e9f012069fb1d71e452872f19856c9b7b22d1429f",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2021-07.zip",
+      "sha256": "7fea41e63f46c95138660731665a57b16a95f0e6c349b727f67f0fc40efbcdba",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2021-08.zip",
+      "sha256": "6f058df86fcf20e2ba68a404490cdddf92a1e3d0cadf274a6fcec4990bf1122a",
+      "bars": 740,
+      "expected_bars": 744,
+      "missing_bars": 4,
+      "first_missing_timestamp": 1628820000000
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2021-09.zip",
+      "sha256": "04da47b70dbbb17958b98d959237b03dde80af3230e1b8f2693aa7ba6dea815f",
+      "bars": 718,
+      "expected_bars": 720,
+      "missing_bars": 2,
+      "first_missing_timestamp": 1632898800000
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2021-10.zip",
+      "sha256": "db2113e5d46c8643fc46083266df5e4e0a497593c1fbd9998e2e7528a07232b6",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2021-11.zip",
+      "sha256": "88fa90e0670e072f3d1bc732e3f4b01826b71bacf4c89977ee441e128a5bbe54",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2021-12.zip",
+      "sha256": "2c88d00c44eb85052195b6f908f27c94d9072e50165586ca2f5a50b1e8b20719",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2022-01.zip",
+      "sha256": "d6e5b3ceae91fcf79dc8dabea3634f298d163a32051b35ebaec8f2de8310fa0a",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2022-02.zip",
+      "sha256": "d0e3932838f372b972e5511240d5fe968fcf2e7ae40b8190b8bbf5e443985f56",
+      "bars": 672,
+      "expected_bars": 672,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2022-03.zip",
+      "sha256": "38a2d52d973e2c7c1b662d53eccd8e9205771995d82defcdfed4a4910a48922b",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2022-04.zip",
+      "sha256": "3c23d11fbbfd2aeaa77f16d0a49b3ac33fd47471c631c1a199954887a58b7416",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2022-05.zip",
+      "sha256": "995f360ec62442ff7ac43a1ea974f7d75e4019b1b694675b6bd110a354ff1d4f",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2022-06.zip",
+      "sha256": "73a1123d3f9f59e6ee4a33d3203f39d7be32b266b0fe02720bc92f83780e370b",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2022-07.zip",
+      "sha256": "9dcfba0faa5d0718157774f4efc11595ee6b5149103e99678f57254945b70749",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2022-08.zip",
+      "sha256": "9259c744880223d38fb1bada5a1db49354ec2d685df01abae9786a756a1f5625",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2022-09.zip",
+      "sha256": "364ce3e01e4d212a28e1fb0564cb543c7a39429810112fd819db31b15e0fc512",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2022-10.zip",
+      "sha256": "9dcd2de884caee4c98ca3f1f039ebf1bd175aaeba30cd1a1193c9a49d08c2239",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2022-11.zip",
+      "sha256": "49e28283c966cf857a4b4950ca50575a3da11cd1fa6afedf4d3f893d8a78e466",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2022-12.zip",
+      "sha256": "53bcef23e4ea97dd3e2042bb5cddf5c53ee98877ef3e2953826becc5ce1ce68f",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2023-01.zip",
+      "sha256": "a91db00a4f9a81cb9d01e522b305e03c6b65875cdaf9ce79fcb3e01f48fb963a",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2023-02.zip",
+      "sha256": "23f4119abf29bb174af27884f323ed448e59af12271f08c104046e67b82fe398",
+      "bars": 672,
+      "expected_bars": 672,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2023-03.zip",
+      "sha256": "7f56e34623650a46ad7001a78937ce71d500597bcaea0601afd5721107c9a495",
+      "bars": 743,
+      "expected_bars": 744,
+      "missing_bars": 1,
+      "first_missing_timestamp": 1679662800000
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2023-04.zip",
+      "sha256": "27cafadf196e1b3803ce9f320d2333c7fb92a2aa429f90000e496c88485f42cb",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2023-05.zip",
+      "sha256": "153ac8632244a390c8cb189fa1a5da0af667c0693f24786187c883612ff0c6e8",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2023-06.zip",
+      "sha256": "78eec7d7953557a5f5d7da7e73c09706d2a09fcd697ba395bc0352b491c78451",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2023-07.zip",
+      "sha256": "6328c6792b2a5d846faa8660ebc01c4b21d663946a479cbed4ba583968c97369",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2023-08.zip",
+      "sha256": "16b801bc40e6720362aa019032f4faff3410a3971b19a7a1b97a4a8d6e3dfb11",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2023-09.zip",
+      "sha256": "f6bea4d800e7fac48bc97b85130e651c0c976dc4bb9d72e8279a22811b08e06b",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2023-10.zip",
+      "sha256": "2cd3b65d01410caad880a7fb0ea89d6a1d5f4dbb553c8e846b71b077ac0bf77b",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2023-11.zip",
+      "sha256": "210cce38bb71bb61e2cd7d79843bcb5dd85257a90933d3308f799302bf1f7202",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2023-12.zip",
+      "sha256": "df83e2b2401863e4540d5c4c0a88bec296e66ff6a9f2cc74fbe5ec7f71ef9402",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2024-01.zip",
+      "sha256": "ff700c7afb987faa6d59ac6c2c19e843ea07d957c3fb6a51c41f3938441d550d",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2024-02.zip",
+      "sha256": "44fc7a7e7ce73e4813e3b82acba2ef6bb0cdc3ba274284f07dd22fd18165cba2",
+      "bars": 696,
+      "expected_bars": 696,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2024-03.zip",
+      "sha256": "1da0f6d2e9d9b0b2250a6b98e69754c75cf97dd723142abda9fe130f06f2186c",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2024-04.zip",
+      "sha256": "dc262d865b848979709110575d46a9fa43b1d10ae9bf404d0127b3b1abf233a0",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2024-05.zip",
+      "sha256": "6841a336676474d322b49b69e4cec7433901d874a4c4fcb20185591ec78794e8",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2024-06.zip",
+      "sha256": "f810e07c21988b65af33e855df489733bf53be745a2033bc0f1bcc412784b59e",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2024-07.zip",
+      "sha256": "9e27762749c480d0284919b0a5f18c093e9932264b8c37a0797b951b805ad85e",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2024-08.zip",
+      "sha256": "7ed485a5202442f8b9c16f988a312282237e04b0280178c9606da29a1753cd45",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2024-09.zip",
+      "sha256": "fd1b5565f27e54fd71fa166879eb1c5c4cc3e6d567d3f9f9e25705b8721bb385",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2024-10.zip",
+      "sha256": "0d1a64b8e3043f80e706ff0667e9c5fb65361ce8bf3149a843e370f3af59fadd",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2024-11.zip",
+      "sha256": "b646e58b1f7c11508ad001965269e65a42872dd72c4a951a21c4ce68ad8ac3aa",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2024-12.zip",
+      "sha256": "ac18b5553b66a5059471d164ea3256cf0d2510c750a8db96846ebe541bd6b24c",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2025-01.zip",
+      "sha256": "7ec3e614f4c5f069613df99191912536b8f2fe18ba3f1c0cf02c32aba926e830",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2025-02.zip",
+      "sha256": "3a6e56b8ef7070846229e471dbedfc306af678f456aab63ac924006edcf9189d",
+      "bars": 672,
+      "expected_bars": 672,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2025-03.zip",
+      "sha256": "9d82d5bf0fc7da418992003eefb7851f29c57fd46b7b3014fe704991d28eb4bd",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2025-04.zip",
+      "sha256": "d62987fad8ce33de23649f7254d6bdc7963b0633cd2a594ea2cc2474cc0177ac",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2025-05.zip",
+      "sha256": "d3b4a7230ad1ec15c21a7a806ea13fb678f60ac23f5ac45d7ec01044334df744",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2025-06.zip",
+      "sha256": "a4b9024bc0cb87c5394c7decacedd2743a1d0e2296d883104c1acd86d817f017",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2025-07.zip",
+      "sha256": "ea434286086281a07ac91224b0f75404dd4439b04478c907e90af8518b0e99c6",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2025-08.zip",
+      "sha256": "7b718b4a55a42d847367876eca41388ad092435810dc375b8696b2daf2d32530",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2025-09.zip",
+      "sha256": "fd58a8bca16afb11a619822864ca3832b4bdff41a40408ab01da3912a7e6578b",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2025-10.zip",
+      "sha256": "1655b172f7adfc09c817bcf782e4d829ee5bbc050ac0748b443fe6af86cf9efe",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2025-11.zip",
+      "sha256": "e827b00ed10a5a35c945234820b3dcb8ce3b1d710eb651ca419ac7f8c486906e",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2025-12.zip",
+      "sha256": "7474b87cc773a6b2cd25da7586e4d1ca7f8434a6ca873f8c7651fad636987b10",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2026-01.zip",
+      "sha256": "1605475980a7465e0410c88b96931e8649adcd2f47b7cc331f4dd8caddd6ddd7",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2026-02.zip",
+      "sha256": "5dc5d7da0cf27142d09f92a239aac41f80c205f3a88302fde678cb86e5454958",
+      "bars": 672,
+      "expected_bars": 672,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2026-03.zip",
+      "sha256": "751f2375dbd1bcd5fd486f123671dc60a27b973e6b7bcb9679d19064169b2150",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2026-04.zip",
+      "sha256": "139a9fbaf5a82fb42996934b22dcf6a33ef85e15221d0cca926bb57b994865c0",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2026-05.zip",
+      "sha256": "ffeb6d3369a9686460028bb3b2f782ae619a8c2d18ecc0ddb49d0abbf707a56e",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2026-06.zip",
+      "sha256": "df7d11498cc5f592afb0be3a39bdb52c157e6c4efad2e9266201aa30f6cd78fe",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2026-07.zip",
+      "sha256": "72420ed25dab2d4f3b00b584209d9e243125c22f4213c670b2941767168f07a8",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2026-08.zip",
+      "sha256": "e4ce4fee516b2f6e0894883c5e0794492b01524880a4f8565bb45efc5d60d40a",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ADAUSDT/1h/ADAUSDT-1h-2026-09.zip",
+      "sha256": "717ad134bf0f9d1f5ee11bff797fa3f239b8b90fd643e37011188f46dfd28be6",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    }
+  ],
+  "limitations": [
+    "A fixed linear classifier cannot capture all regime changes.",
+    "Hourly OHLC cannot reveal intrabar stop/target order; stop is assumed first.",
+    "Short availability and liquidation are not modeled; explicit borrow is charged.",
+    "Historical passage would still require 50 new forward PAPER trades."
+  ]
+}

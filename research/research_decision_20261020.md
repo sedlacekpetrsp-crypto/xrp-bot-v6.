@@ -481,3 +481,39 @@ No deployment, Render setting, paused bot or real account was changed.
 
 Next concrete step: preregister a higher-frequency mechanism with an economic edge larger than
 round-trip costs, rather than adjusting any revealed derivatives threshold.
+
+## ADA_STATE_CLASSIFIER_V1: distinct frozen supervised-state hypothesis, rejected
+
+The ADA market, 2021–2022-only training period, six causal features, regularization, probability
+thresholds, execution rules, 2023 development check, untouched validation blocks and gates were
+committed before model fitting and results. StandardScaler and balanced logistic regression use
+fixed `C=0.1`; fitted means, scales, coefficients and intercept are persisted in
+`ada_state_classifier_results_20261024.json`. No validation data enters training or preprocessing.
+
+The run used 70 public Binance Vision ADAUSDT spot 1-hour archives from December 2020 through
+September 2026, producing 12,768 complete aligned 4-hour bars and 4,156 training samples. URLs,
+SHA256 hashes and missing-hour counts are in the result. Seven early archives contain 18 missing
+hours; incomplete 4-hour groups were discarded, required feature histories had to be contiguous,
+and no bar was fabricated. Validation archives are complete. Five engine tests passed for complete
+resampling, future invariance, next-bar entry, non-overlap/cooldown, worse-open gaps and cost stress.
+
+| Block | Trades (L/S) | Normal net | Normal PF | Normal max DD | Stress net | Stress PF |
+|---|---:|---:|---:|---:|---:|---:|
+| Development 2023 | 5 (5/0) | +2.81% | 3.2683 | 1.24% | +2.59% | 3.0197 |
+| Validation 2024 H1 | 13 (12/1) | +7.37% | 3.7664 | 2.75% | +6.75% | 3.4614 |
+| Validation 2024 H2 | 12 (12/0) | +4.67% | 1.7350 | 2.74% | +4.14% | 1.6324 |
+| Validation 2025 H1 | 19 (18/1) | +0.22% | 1.0180 | 5.12% | -0.59% | 0.9526 |
+| Validation 2025 H2 | 8 (8/0) | -0.11% | 0.9536 | 1.48% | -0.47% | 0.8206 |
+| Validation Jan-Sep 2026 | 7 (7/0) | -1.52% | 0.5155 | 2.27% | -1.82% | 0.4540 |
+| Continuous validation | 59 (57/2) | +10.81% | 1.3677 | 5.23% | +7.99% | 1.2643 |
+
+Development, both combined PF gates, combined stress return and drawdown pass. Nevertheless the
+fixed model fails the preregistered minimum sample, direction balance, normal/stress cross-block
+stability and profit-concentration gates; 2025 H2 and 2026 lose and 60.1% of positive block P&L
+comes from 2024 H1. The positive aggregate is therefore not robust evidence. Thus
+`passes_historical_gate=false` and `robust_candidate=false`. Do not lower probability thresholds,
+rebalance the labels or retrain on revealed 2023–2026 data; do not start forward PAPER. No
+deployment, Render setting, paused bot or real account was changed.
+
+Next concrete step: retain this fixed model as a benchmark and preregister a genuinely symmetric,
+higher-sample mechanism on data not used to repair its long-only regime bias.
