@@ -1,0 +1,1471 @@
+{
+  "strategy": "ETH_FUNDING_EXTREME_REVERSAL_V1",
+  "data": "Binance ETHUSDT USD-M perpetual 1h klines and funding-rate archives",
+  "development_period": "2021-01-01/2023-12-31",
+  "validation_period": "2024-01-01/2026-09-30",
+  "config": {
+    "minimum_absolute_funding": 0.0002,
+    "stop_loss": 0.05,
+    "take_profit": 0.03,
+    "maximum_hold_hours": 24,
+    "cooldown_hours": 8,
+    "position_fraction": 0.2,
+    "fee_rate": 0.0005,
+    "slippage_rate": 0.0002,
+    "funding_credit_multiplier": 1.0,
+    "funding_debit_multiplier": 1.0,
+    "initial_equity": 10000.0
+  },
+  "stress_config": {
+    "minimum_absolute_funding": 0.0002,
+    "stop_loss": 0.05,
+    "take_profit": 0.03,
+    "maximum_hold_hours": 24,
+    "cooldown_hours": 8,
+    "position_fraction": 0.2,
+    "fee_rate": 0.001,
+    "slippage_rate": 0.0004,
+    "funding_credit_multiplier": 0.5,
+    "funding_debit_multiplier": 2.0,
+    "initial_equity": 10000.0
+  },
+  "development": {
+    "2021": {
+      "trades": 186,
+      "longs": 4,
+      "shorts": 182,
+      "win_rate": 0.5591397849462365,
+      "net_return": -0.06909924663603995,
+      "net_pnl": -690.9924663603997,
+      "profit_factor": 0.8845753548743485,
+      "max_drawdown": 0.1375706105774373,
+      "fees": 351.77880405020073,
+      "funding_pnl": 244.49045849129357
+    },
+    "2022": {
+      "trades": 22,
+      "longs": 22,
+      "shorts": 0,
+      "win_rate": 0.5454545454545454,
+      "net_return": -0.013277798627951642,
+      "net_pnl": -132.77798627951597,
+      "profit_factor": 0.833307690262422,
+      "max_drawdown": 0.03053169119188855,
+      "fees": 44.0549436121334,
+      "funding_pnl": 6.297027059141237
+    },
+    "2023": {
+      "trades": 21,
+      "longs": 0,
+      "shorts": 21,
+      "win_rate": 0.6666666666666666,
+      "net_return": 0.029066954926389332,
+      "net_pnl": 290.6695492638937,
+      "profit_factor": 1.7892458849741177,
+      "max_drawdown": 0.012406824617196518,
+      "fees": 42.51509324928194,
+      "funding_pnl": 20.136274856316756
+    }
+  },
+  "development_stress": {
+    "2021": {
+      "trades": 186,
+      "longs": 4,
+      "shorts": 182,
+      "win_rate": 0.553763440860215,
+      "net_return": -0.12297198674906373,
+      "net_pnl": -1229.7198674906376,
+      "profit_factor": 0.7985976081318157,
+      "max_drawdown": 0.17353254031028228,
+      "fees": 683.4699498020777,
+      "funding_pnl": 117.616349218107
+    },
+    "2022": {
+      "trades": 22,
+      "longs": 22,
+      "shorts": 0,
+      "win_rate": 0.5454545454545454,
+      "net_return": -0.01902952221166343,
+      "net_pnl": -190.29522211663425,
+      "profit_factor": 0.7684094917334647,
+      "max_drawdown": 0.03159835057649427,
+      "fees": 87.85014453502303,
+      "funding_pnl": 2.5680474636334636
+    },
+    "2023": {
+      "trades": 21,
+      "longs": 0,
+      "shorts": 21,
+      "win_rate": 0.6666666666666666,
+      "net_return": 0.022538926171049356,
+      "net_pnl": 225.38926171049388,
+      "profit_factor": 1.5764350576113222,
+      "max_drawdown": 0.012654081773321795,
+      "fees": 84.79343976426152,
+      "funding_pnl": 10.033322871606225
+    }
+  },
+  "validation": {
+    "2024_H1": {
+      "trades": 34,
+      "longs": 0,
+      "shorts": 34,
+      "win_rate": 0.5294117647058824,
+      "net_return": -0.006985291311379149,
+      "net_pnl": -69.85291311379115,
+      "profit_factor": 0.9128229171920031,
+      "max_drawdown": 0.05245456263473439,
+      "fees": 66.53812004893598,
+      "funding_pnl": 53.269059801240275
+    },
+    "2024_H2": {
+      "trades": 16,
+      "longs": 0,
+      "shorts": 16,
+      "win_rate": 0.625,
+      "net_return": 0.0001477786525438951,
+      "net_pnl": 1.477786525440024,
+      "profit_factor": 1.00339563578186,
+      "max_drawdown": 0.028208568432629044,
+      "fees": 31.90939497726183,
+      "funding_pnl": 12.566970875538251
+    },
+    "2025_H1": {
+      "trades": 1,
+      "longs": 1,
+      "shorts": 0,
+      "win_rate": 1.0,
+      "net_return": 0.005755820599999906,
+      "net_pnl": 57.5582059999997,
+      "profit_factor": null,
+      "max_drawdown": 0.004385864468263648,
+      "fees": 2.029794,
+      "funding_pnl": 0.0
+    },
+    "2025_H2": {
+      "trades": 0,
+      "longs": 0,
+      "shorts": 0,
+      "win_rate": null,
+      "net_return": 0.0,
+      "net_pnl": 0.0,
+      "profit_factor": null,
+      "max_drawdown": 0.0,
+      "fees": 0,
+      "funding_pnl": 0
+    },
+    "2026_JAN_SEP": {
+      "trades": 4,
+      "longs": 4,
+      "shorts": 0,
+      "win_rate": 0.5,
+      "net_return": 0.004744246852629086,
+      "net_pnl": 47.44246852629112,
+      "profit_factor": 1.7008929379068005,
+      "max_drawdown": 0.010715595105688586,
+      "fees": 8.051775394001078,
+      "funding_pnl": 0.034344320065035
+    },
+    "ALL": {
+      "trades": 55,
+      "longs": 5,
+      "shorts": 50,
+      "win_rate": 0.5636363636363636,
+      "net_return": 0.0036168376271419334,
+      "net_pnl": 36.16837627142013,
+      "profit_factor": 1.0277993645912,
+      "max_drawdown": 0.05245456263473439,
+      "fees": 108.28327238061178,
+      "funding_pnl": 65.78255250710338
+    }
+  },
+  "validation_stress": {
+    "2024_H1": {
+      "trades": 34,
+      "longs": 0,
+      "shorts": 34,
+      "win_rate": 0.47058823529411764,
+      "net_return": -0.006055360165469703,
+      "net_pnl": -60.55360165469756,
+      "profit_factor": 0.923176146253774,
+      "max_drawdown": 0.04438184429523824,
+      "fees": 133.29135733041971,
+      "funding_pnl": 26.471232774290034
+    },
+    "2024_H2": {
+      "trades": 16,
+      "longs": 0,
+      "shorts": 16,
+      "win_rate": 0.5625,
+      "net_return": -0.004512152308253969,
+      "net_pnl": -45.12152308254008,
+      "profit_factor": 0.9007445324457385,
+      "max_drawdown": 0.030733602114032164,
+      "fees": 63.689269143427666,
+      "funding_pnl": 6.2687294266975
+    },
+    "2025_H1": {
+      "trades": 1,
+      "longs": 1,
+      "shorts": 0,
+      "win_rate": 1.0,
+      "net_return": 0.005511682400000106,
+      "net_pnl": 55.11682400000063,
+      "profit_factor": null,
+      "max_drawdown": 0.0043856027342432016,
+      "fees": 4.059176000000001,
+      "funding_pnl": 0.0
+    },
+    "2025_H2": {
+      "trades": 0,
+      "longs": 0,
+      "shorts": 0,
+      "win_rate": null,
+      "net_return": 0.0,
+      "net_pnl": 0.0,
+      "profit_factor": null,
+      "max_drawdown": 0.0,
+      "fees": 0,
+      "funding_pnl": 0
+    },
+    "2026_JAN_SEP": {
+      "trades": 4,
+      "longs": 4,
+      "shorts": 0,
+      "win_rate": 0.5,
+      "net_return": 0.0036811853135731987,
+      "net_pnl": 36.811853135732235,
+      "profit_factor": 1.5014795586176937,
+      "max_drawdown": 0.010723450061048382,
+      "fees": 16.094908237133588,
+      "funding_pnl": -0.13589237666542744
+    },
+    "ALL": {
+      "trades": 55,
+      "longs": 5,
+      "shorts": 50,
+      "win_rate": 0.509090909090909,
+      "net_return": -0.0014241409541340122,
+      "net_pnl": -14.241409541340545,
+      "profit_factor": 0.9891543086046273,
+      "max_drawdown": 0.04438184429523824,
+      "fees": 216.62439637720436,
+      "funding_pnl": 32.56680164023665
+    }
+  },
+  "largest_positive_validation_block_share": 0.5405619637199299,
+  "smaller_direction_share": 0.09090909090909091,
+  "gate": {
+    "development_positive_all_years": false,
+    "validation_minimum_80_trades": false,
+    "validation_both_directions_at_least_20pct": false,
+    "normal_pf_at_least_1_20": false,
+    "stress_pf_at_least_1_05": false,
+    "normal_positive_all_blocks": false,
+    "stress_positive_four_blocks": false,
+    "stress_total_positive": false,
+    "normal_max_drawdown_at_most_15pct": true,
+    "profit_not_concentrated": false,
+    "forward_paper_50_trades": false
+  },
+  "passes_historical_gate": false,
+  "robust_candidate": false,
+  "manifest": [
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2020-12.zip",
+      "sha256": "7698fe1677da731dcb82ab3aa4a63e26de6086e8b7f981f57ed76acfe205529a",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2020-12.zip",
+      "sha256": "f99267a3fef35dd201e76c8338be877fb52883376b4cd0acb890a1387de0b0d4",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2021-01.zip",
+      "sha256": "52b01b6937e57c3299003a91ec93fe8c2560b1ee6cacb24a60c110bf696b6118",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2021-01.zip",
+      "sha256": "4c18c1df8904dea9770aeba5326d26b3fa9a3ffac4891f5f7125d4be2da847c0",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2021-02.zip",
+      "sha256": "d2833fb9bbbf66cf2f829af2c767f70283e01c3c471858a038e342798aae7d24",
+      "rows": 671,
+      "expected_rows": 672,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2021-02.zip",
+      "sha256": "15e9a939f253a11fc1af2858bb3844f3d39019ccf7efa66a9456f0f60afba3dd",
+      "rows": 84
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2021-03.zip",
+      "sha256": "4f5a456703c8d48f947917dd7cb5f07503bd31bfdb60ec9a68b391b70f52666c",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2021-03.zip",
+      "sha256": "2bcaadc8206cb8d76a26f0f3cbf97020b747545b0e75c3dd8a3b195b435478a5",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2021-04.zip",
+      "sha256": "b522173710fb0aa70bff13c54ad6b3b889edb79b42278246796c5da7c4bfce7f",
+      "rows": 719,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2021-04.zip",
+      "sha256": "2fee34e8b9b6e828d01bab0df1c67104f7a98f3c063668c8db627b802ffa5a95",
+      "rows": 90
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2021-05.zip",
+      "sha256": "e43c840fdde7903f99fcbc1311e75cd6cc58b4c302c48a017100747922eefd8c",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2021-05.zip",
+      "sha256": "21809ef6691a1441bd55ba4af4494a038d1a399ae0ae432e80cb41b47d71f3bd",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2021-06.zip",
+      "sha256": "625a8c04b76cc9fa096599bd1498b24b28ea31d9900dfddb86995046bd6b2ebf",
+      "rows": 719,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2021-06.zip",
+      "sha256": "8e58ccf8f52c69c55754492daafadab92d4ca8c8bd027f4532582d06e9f36063",
+      "rows": 90
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2021-07.zip",
+      "sha256": "bd4ffb6a1e7eb374915222129b5270ff0e7eb94c5b355ecc75ba491e4cc7b0b9",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2021-07.zip",
+      "sha256": "f8f538bedf642052e428cd25f3134784de6e62a136e76f6a07ea6e79dfc9c39d",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2021-08.zip",
+      "sha256": "56bfd83ab6a604ffb57aa318805e813c04335a08219eac63f3c4750442c1a9c9",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2021-08.zip",
+      "sha256": "0120b284bde23d077e1e26e5e4b56fd3e2d1d82a3a7fe0e9de26825b9fc9c0db",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2021-09.zip",
+      "sha256": "e29a6a88a2c28b30651cf45e46d5b67f1bd8f8ec42812ad5b4a7a72468dfa3c6",
+      "rows": 719,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2021-09.zip",
+      "sha256": "4b4a94cdafbb8fea7762c266aa79b183700b7c9dcf7e981f7fdbe9372f2eec66",
+      "rows": 90
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2021-10.zip",
+      "sha256": "515de2962ce7c53706f6dcd489b50bade65148e8d59af1d0711134a6450e912c",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2021-10.zip",
+      "sha256": "4dfb8698f6951b2c66229e1c687977eae0778bb703d6268232da2ceb3e9b5e6d",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2021-11.zip",
+      "sha256": "d61dcde383cefa67bd3febb54690d28db408cc7cfb4b4c99f4c00710f5e5b3ad",
+      "rows": 719,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2021-11.zip",
+      "sha256": "d9a7e22a237717f23d4b0505f14613359b7ea7831b23a78653a891cbbe3d521c",
+      "rows": 90
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2021-12.zip",
+      "sha256": "764bae4807411d6683b72085aeeb1bcd168654fbcb88e8f1a81a307240761c1a",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2021-12.zip",
+      "sha256": "788d5c57e7cbc8e6b94ed4d7672618a85311edf1d7f0888083410d0d3389d811",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2022-01.zip",
+      "sha256": "6d96a19efda6917a3912377ef8e1a5eadc8f1a273f91afa069ae70bd679301bc",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2022-01.zip",
+      "sha256": "9f5bd01450b05a8c5e48cdc99fa147e85c82ecf7ee7919fa543a4e6039a2b98d",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2022-02.zip",
+      "sha256": "14f8e42d6d7696d2f622301612a8f4ba6623658732cc5840ef0582b2ee05598e",
+      "rows": 672,
+      "expected_rows": 672,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2022-02.zip",
+      "sha256": "9c35e30327ac8915cc1333415b7d5018425781c81918e349d26b734525fcdfe5",
+      "rows": 84
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2022-03.zip",
+      "sha256": "1b9fcc8ead1a066017e8c40617a78d1b9ee7b7fdad5f9d5353b04a59883274ce",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2022-03.zip",
+      "sha256": "3de0714a2b2582029b32147815298b6e67e972e776ca3f68a4208823b4109404",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2022-04.zip",
+      "sha256": "45bc22bd8603876174adfd1f6273021eeaf76084629030a53cca40f379b8fb0b",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2022-04.zip",
+      "sha256": "7c306ac8b6275a857b064916080e0b6ec502b25a4501c84c3fd2c0b077425de3",
+      "rows": 90
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2022-05.zip",
+      "sha256": "7adea64d8d82d2017c1b7c3fcc6848f685370b524e0a1512bb443980a487f4b8",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2022-05.zip",
+      "sha256": "c458330243c9d8e048ffc7168c9e3c077c01bb82b1644097a4893fee34069b78",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2022-06.zip",
+      "sha256": "582aa0b2c72641cb5e93318a92beee0bbc93e968ccd10b0d89ea755a60f9fb62",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2022-06.zip",
+      "sha256": "f6f3a69b656b91500b41501a230e663ccc3c1a65f46273595b00682d8f6fabb1",
+      "rows": 90
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2022-07.zip",
+      "sha256": "07781d1411a4b793ca5c4daaee70c9e2c1a3200fe12c954c39b3ad6c37badd42",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2022-07.zip",
+      "sha256": "17826e5591af8660a7fed74d60e24eee77c822cf0d901dd8af355a10a36699aa",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2022-08.zip",
+      "sha256": "4182681e2b2fc23bbb348411ca8bdb41894609be1f94a0d9939616bf91cc9f25",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2022-08.zip",
+      "sha256": "a2680549de5e087566f4d323b3a812c2b9863528c6bc49b0e551cb42c381bb4d",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2022-09.zip",
+      "sha256": "75aa0182242ac65110a1dd1737a2062ee9815032d746a57d3191c44c15eacff2",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2022-09.zip",
+      "sha256": "816e4de946d9f854cc457c86ca396b9cb49b46e80cf44941b59b9ad2124f2ef8",
+      "rows": 90
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2022-10.zip",
+      "sha256": "04246418d55fc96753ee5b4be0718796aeb9421af40042b4e145db02e1cfaf3a",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2022-10.zip",
+      "sha256": "e434c29eb544cc57ff574e38685535bb7d04703aee54bc5d52f53cea372810e6",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2022-11.zip",
+      "sha256": "e2e15ddc21d24ac6c3ca56ab77f065eda88252a37f2f778505a332e31fcc5b3c",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2022-11.zip",
+      "sha256": "4f4e52f176f69e99353959d287874a4d4a135b5bb4ea85514dd5a3e65958b2d7",
+      "rows": 90
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2022-12.zip",
+      "sha256": "1ba6559930f09fb8bd68a6592c4059526901939317eea4db8fc2d59cf5688957",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2022-12.zip",
+      "sha256": "8cd0e885d63b85ee602d80eaae956f9ee3e0e25db264eb5c74026a9ae0d71f4e",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2023-01.zip",
+      "sha256": "247b85e0a8806e139f263831445e1d7bb91f9f56e6ab32e1f285038cdd1ceff4",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2023-01.zip",
+      "sha256": "5647d5978092d220eb14e11c7854d86815d0eb6204197e37b4808cc599e986f3",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2023-02.zip",
+      "sha256": "f01571f2420b9eb6486e69b884fe1572abfa59bc226c4003c9d78735c559acc5",
+      "rows": 672,
+      "expected_rows": 672,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2023-02.zip",
+      "sha256": "7da37820c15fb08600ae668551d0b724326b8f71d761582990721059280a221b",
+      "rows": 84
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2023-03.zip",
+      "sha256": "4d5266f12a8a3394ee23516de99fc380e928dbdb79cbf083fd3ddc3242073790",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2023-03.zip",
+      "sha256": "5110b60cbbc5f26048ce02575c26444ea2ed497baed9a5609e118359e1ca3b51",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2023-04.zip",
+      "sha256": "4ac96035c3867e0bfeff4f2f526812ee4b73a0b87b3962bb40934e2614917395",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2023-04.zip",
+      "sha256": "fa3a3cf7c3b8285687ae8c8014eed8bc58ad3ceb33ccb62ff4298048213c0e6c",
+      "rows": 90
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2023-05.zip",
+      "sha256": "a47a9fc2936bcadc99aadfe48858e7d3e31093a9321d9bc083b886b72924f568",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2023-05.zip",
+      "sha256": "bf890ea68d979942ed296b058390eb98b0b495547fee2117d3b76d5e7f629b24",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2023-06.zip",
+      "sha256": "fe108dc555560ded46bb0807d0c2e0bc7722900213a96e4e86bf355f84fbcafa",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2023-06.zip",
+      "sha256": "b3ddac1309f9a684f4e811776a6c09fb2239bb8d1ae0ff4bd342a1c32a5e171f",
+      "rows": 90
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2023-07.zip",
+      "sha256": "911d3674c71a561df5ca5085426e9c61195bf5669bc7da7488ec9548ae476ca1",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2023-07.zip",
+      "sha256": "82577976d8acd886fda84179ee38c9e7ef445732c3b6a062d6ffd2a9e3cc30bf",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2023-08.zip",
+      "sha256": "74210a689eb85c8908ae05cff3297b9dc6eda76a0b41a3f9d72fdde0c14e3b2f",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2023-08.zip",
+      "sha256": "cf749429c366cef3302a804b3e702937e5f1a77aeddc5b628dca7da547a8935a",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2023-09.zip",
+      "sha256": "38883595a881aadfbfd8c256e5170c8b016e9927119250f5128abfba96aba9c5",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2023-09.zip",
+      "sha256": "41ac7eb67a46d14d97daec4c37e8229df5ac6b165639ad4b2c54bc7374930341",
+      "rows": 90
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2023-10.zip",
+      "sha256": "61d6692284b406c9f9f655aef68e151a1eeb90509ddcd7f4a97233b1a002ef9e",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2023-10.zip",
+      "sha256": "ccaf4474f0dc94adedd4330c14995f338186caa2cc9fd0d2e2c55f74cf263a5c",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2023-11.zip",
+      "sha256": "d57c333ac46e779b2399c498cc8fedfbc8804deb688873585ded09aceec1fa16",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2023-11.zip",
+      "sha256": "153ec1450eb5d999ce253e2c7ca2e81b79a523ff52dd18b14faefab8212b999b",
+      "rows": 90
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2023-12.zip",
+      "sha256": "8f581fcee21156d501435fc88db1d99515e6d7432fa7ae2993de3b5f95bb0069",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2023-12.zip",
+      "sha256": "91bdf41566cebb86c6f0e3646b0037de9c22e14ee2f592c5722c7e4a19c91119",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2024-01.zip",
+      "sha256": "2f3d1a6d9292f13b1d6cf86716cbda5b3f6119a310daed1dde5ee3d0d71e2fab",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2024-01.zip",
+      "sha256": "5a71469b0b363886df904e784dddefc484dd943334b1fb7454713ce4ed715a4b",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2024-02.zip",
+      "sha256": "bde9a1b0824b212ef6cea97065543fda0fc57c33479709d34e5db995fc79af01",
+      "rows": 696,
+      "expected_rows": 696,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2024-02.zip",
+      "sha256": "915fad950c48935f3875d88992b8d78290bc8a6fada44408e3ed14aef9a56670",
+      "rows": 87
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2024-03.zip",
+      "sha256": "24af0ecf9db1953e8c83e94823f4aae368ff70ba54106ef121c204cb046f9e41",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2024-03.zip",
+      "sha256": "e9c1d0f3e7e3b493277c7f826afb223482d56bdc7611144d398ac10e47307907",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2024-04.zip",
+      "sha256": "290b594fa46ef95ab9c1486e2640ce2d1894eecd4d71b79bcd30d6632ca75b9f",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2024-04.zip",
+      "sha256": "b54c9f05af116ccd921b32b25960ae26954c4983992d44f2390bf1de08b2c724",
+      "rows": 90
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2024-05.zip",
+      "sha256": "a9b42949325fd4f236c7c88b63f35d94910109218ce2db80b8e29f7a2b2d623b",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2024-05.zip",
+      "sha256": "8350ab4d61b12ec61539611e30809039f54814213bc4c937609360b1ff28b5e0",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2024-06.zip",
+      "sha256": "479dced4a591035987e084dc8a5e5f3f1f2593704c0aeecdebc20c89b35c1d98",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2024-06.zip",
+      "sha256": "def13f4a478c28b0111fb24c57f95fcee80e71982ed74f12e465d20d328e2275",
+      "rows": 90
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2024-07.zip",
+      "sha256": "8cc8d8b6ef13fa0393f53690e5d569afb8a50488e4d7852e20ac22d7bcf17cf5",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2024-07.zip",
+      "sha256": "9d236281ab6430250ad2b472cbbf03812a40aed42e73c8339fc6be55a2417a82",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2024-08.zip",
+      "sha256": "00eddbb3297515be14426119f07468846cd04dc527dbc19834dd45294740a67c",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2024-08.zip",
+      "sha256": "e17684bc761924eb5e1912c52cfa997eddeb99da303e68e28f6f37369f672b9d",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2024-09.zip",
+      "sha256": "37bea2dbe4281fbcaa45a849b6eed4393713b7236c5cb35cff63876e96df5677",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2024-09.zip",
+      "sha256": "ffb6e7441053137cb7ca81cc83bcdd996612f7dbb15aa2e168a7ee521f8cbbca",
+      "rows": 90
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2024-10.zip",
+      "sha256": "b4cda93568426a315e1de2fc7ca0ffb56586495680b233ffd7ce6bec11d18713",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2024-10.zip",
+      "sha256": "2124978c335473a5d9c0f0e9f238193d56c21ac7e250e065a36e9d1201beb049",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2024-11.zip",
+      "sha256": "3e8286eb77062f7c1047ee32aa1ce98dbf42f8e8029acebe38cc1bdd33967c63",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2024-11.zip",
+      "sha256": "636a4c7c86445c2774b4eae8598c480fcbc57de7dde5d40f6937c7fac510797c",
+      "rows": 90
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2024-12.zip",
+      "sha256": "330397f0cfd0dc62253ce6cf61ec142714fe65592a9f8447e4b88ca428bb4c9c",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2024-12.zip",
+      "sha256": "11a0847e8aacb32eeb725611fda4fe6a8419c03eb0c16e14dfc3b9287e78ecc9",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2025-01.zip",
+      "sha256": "99928eb8fdc5d565d317b0e9685e07fc5f9487510a39b8675d7374cfdfcbec82",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2025-01.zip",
+      "sha256": "88c95b99d2784a7baac529fe578563d7e05038a1b8a498b2f59bf81b216fee20",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2025-02.zip",
+      "sha256": "d7466620f50bb4048080ece1deab8eb0298274413a3eb2a9f4c728536ab3c647",
+      "rows": 672,
+      "expected_rows": 672,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2025-02.zip",
+      "sha256": "9e116dd6754484a19ecc41ced40b8dfa7f62c33d41cdc3317336b1e1f043767f",
+      "rows": 84
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2025-03.zip",
+      "sha256": "9dbad1e542ff8344fe8610450cf71d5cb98e1af2e8f2d7a31dbe8679ef263535",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2025-03.zip",
+      "sha256": "62464a8bfb7ba515628acb76d3e2172d33b88805faa2e701a22537c51a17d139",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2025-04.zip",
+      "sha256": "238c691129962d9fe08aaca46ea367f911e62c58a820a8e5ded371bff7f4eec4",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2025-04.zip",
+      "sha256": "7db62cb5e9f32397dacabb3d571b96397024bda3810bde0799c90f61cb773679",
+      "rows": 90
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2025-05.zip",
+      "sha256": "201829c864a26677ad0b53df5b0491e9eab00e6f48e1a8bf5204dc7d794dd7ea",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2025-05.zip",
+      "sha256": "996aff38f046b50510301532ac5cbdca115afca971c49cb548f50e5d70e18d99",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2025-06.zip",
+      "sha256": "45763ee27ad110703c6f71d9ec80711de151b8211b14ad98cc978c4d5ede82ce",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2025-06.zip",
+      "sha256": "ae7ca242249ca3df06d1222a0c264fe83b18c4b2c19fe656e864f7d081d5e198",
+      "rows": 90
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2025-07.zip",
+      "sha256": "e9c3dcdc09de72386d465800c665169c9bb011f35d350f9ba9bc7b4d7a69876a",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2025-07.zip",
+      "sha256": "5f2d840c5669ca946529c33f6df32433c5d0cd973eb4adfd40459270c460e7f8",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2025-08.zip",
+      "sha256": "51e3ca163e71691ebb43b55d32698fc5c25506ee2e663a195d8e5863194908c2",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2025-08.zip",
+      "sha256": "c3fca21c71afb4962e89f8e3d84afe5832019ed8f570ee7c7c299f2436a28b62",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2025-09.zip",
+      "sha256": "9bab9763c1cb2514df907fe6e746405428c6b92cbba12ff987e4820b2a8726f0",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2025-09.zip",
+      "sha256": "2fa09df245aadc73cf43f837a72c3009fcd7d10c8c4e3db48b2d1021c331841a",
+      "rows": 90
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2025-10.zip",
+      "sha256": "6c51ad0250f4174431c659a3c78f604be087e844c6357e5feb48ba66e6bb1862",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2025-10.zip",
+      "sha256": "1ae86c5fb1f15d8792906b746cc7598ebe7e6e7194b74501db79c874e37d7e14",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2025-11.zip",
+      "sha256": "4b5622c5a4021b1a0bbd2d1fa754bb9d13f16b996d79b153b423bce0ec154f26",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2025-11.zip",
+      "sha256": "a3a8abb219373ec1e02e8d1a47015665d180d6130cfe1df71d2fa8fc9de59e59",
+      "rows": 90
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2025-12.zip",
+      "sha256": "80080e1303ab2c291e53103d703b5364ef7a3da36dff5eaf45044cca74e764ca",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2025-12.zip",
+      "sha256": "ef9e84f53a5fa07702958c8700077c8be0a90ec8b3e25110f5611109c3c0090c",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2026-01.zip",
+      "sha256": "d710e68cf0dc90759814647dff64be482b4ddd05bf332adb73126885cb2979d7",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2026-01.zip",
+      "sha256": "830cf7797ea6ecdc554ac2d9047a141df1a6a544f4ea58e7028227930462b139",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2026-02.zip",
+      "sha256": "97a6c569361290917a525d54d5f964af1642dc2d281e162834b4685157016540",
+      "rows": 672,
+      "expected_rows": 672,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2026-02.zip",
+      "sha256": "e445f00c81a7fa8361d99b3660f24b4f58e5d952fe301d70bbc72c319bc01a77",
+      "rows": 84
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2026-03.zip",
+      "sha256": "9ec5e28db1e0cf093d5c756b85329b43db730d6f95d6ed142a9717044b1423c2",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2026-03.zip",
+      "sha256": "9f5625846c503a1e94fcdecd2deb37dc8852e341add353fa48c2b9a0cc70df6a",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2026-04.zip",
+      "sha256": "b72f5a102bd468d1e3d0c3b88619f1354a29e81616f9a55935d2e00837958e4b",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2026-04.zip",
+      "sha256": "86160f455478a8b262d96d1516f583355e6e0cec7beeb5784e69dda76f599e98",
+      "rows": 90
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2026-05.zip",
+      "sha256": "5353c7cd71f610eca5a58824606ba1016efe34ea62fd6e6cd4b7be4b99277915",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2026-05.zip",
+      "sha256": "ff926ad3fc48493c26c85af16620b19c695cc1854faa1e7f0ea2ab9fdafc2084",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2026-06.zip",
+      "sha256": "138bcb6c7c8be4c5bdd8048fa417be551fbeffe4024f64e5bef5ed30d3069d8c",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2026-06.zip",
+      "sha256": "cc6fb028a811bc423b711f6b89de067bf92a2eda61303e1ce0b219b5d3210e47",
+      "rows": 90
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2026-07.zip",
+      "sha256": "2036043c65c50a1d9c817db4c93db0c97366851d7cc972efb8c5e951cb3b5cdd",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2026-07.zip",
+      "sha256": "ece7f6c64d0e45fbd64929dec40bae525fe365381046e367de5ca0827bc623d3",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2026-08.zip",
+      "sha256": "52ede96e424bdc696b4b7a30aa4f2f56cd32e58c6598400f25f7b3a8dc6cf50a",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2026-08.zip",
+      "sha256": "8b843307038b3aedf725b1342003cce39f9526451ed92f407ca80bc637487839",
+      "rows": 93
+    },
+    {
+      "kind": "price",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2026-09.zip",
+      "sha256": "f4331baae4c38dea1c123836808f3353473cc28e6c434ef38669698ae79599fc",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "symbol": "ETHUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2026-09.zip",
+      "sha256": "d1916b9181cf3507ad5a6522ac6587cd84a424941f1a2132ab887f768b5dd4de",
+      "rows": 90
+    }
+  ],
+  "limitations": [
+    "Hourly OHLC cannot reveal intrabar stop/target order; stop is assumed first.",
+    "Liquidations, maintenance margin and order-book impact are not modeled.",
+    "Funding archive timestamps are treated as known only for the following hourly entry.",
+    "Historical passage would still require 50 new forward PAPER trades."
+  ]
+}

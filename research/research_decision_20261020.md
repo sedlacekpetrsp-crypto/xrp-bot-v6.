@@ -366,3 +366,42 @@ real account was changed.
 
 Next concrete step: preregister a new data source or market mechanism rather than adjusting this
 volume-dry-up event; retain its 2024–2026 blocks as permanently revealed validation evidence.
+
+## ETH_FUNDING_EXTREME_REVERSAL_V1: distinct derivatives-crowding hypothesis, rejected
+
+The funding threshold, contrarian direction, position/risk rules, chronological blocks and gates
+were committed before results were read. An archive-format check then revealed that Binance
+records some nominal funding settlements a few milliseconds after the hour. Before rerunning the
+history, a documented normalization of offsets up to one second was committed; it changes no
+signal value or strategy parameter. The model enters opposite an absolute funding rate of at
+least 0.020% at the next hourly open, uses 20% equity, a 5% stop, 3% target, 24-hour maximum hold
+and eight-hour cooldown. This is a derivatives crowding/carry mechanism, not a spot signal.
+
+The completed run used 140 public Binance Vision ETHUSDT USD-M archives: 70 hourly-price and 70
+funding-rate files from December 2020 through September 2026. All 51,120 expected hourly bars
+were present; 6,390 funding records, URLs and both archive SHA256 hashes are stored in
+`eth_funding_extreme_results_20261024.json`. No candle or funding rate was fabricated. Six tests
+passed for settlement normalization, next-hour causality, contrarian direction, non-overlap,
+worse-open gaps, actual funding cashflows and adverse stress behavior.
+
+| Block | Trades (L/S) | Normal net | Normal PF | Normal max DD | Stress net | Stress PF |
+|---|---:|---:|---:|---:|---:|---:|
+| Development 2021 | 186 (4/182) | -6.91% | 0.8846 | 13.76% | -12.30% | 0.7986 |
+| Development 2022 | 22 (22/0) | -1.33% | 0.8333 | 3.05% | -1.90% | 0.7684 |
+| Development 2023 | 21 (0/21) | +2.91% | 1.7892 | 1.24% | +2.25% | 1.5764 |
+| Validation 2024 H1 | 34 (0/34) | -0.70% | 0.9128 | 5.25% | -0.61% | 0.9232 |
+| Validation 2024 H2 | 16 (0/16) | +0.01% | 1.0034 | 2.82% | -0.45% | 0.9007 |
+| Validation 2025 H1 | 1 (1/0) | +0.58% | n/a | 0.44% | +0.55% | n/a |
+| Validation 2025 H2 | 0 (0/0) | 0.00% | n/a | 0.00% | 0.00% | n/a |
+| Validation Jan-Sep 2026 | 4 (4/0) | +0.47% | 1.7009 | 1.07% | +0.37% | 1.5015 |
+| Continuous validation | 55 (5/50) | +0.36% | 1.0278 | 5.25% | -0.14% | 0.9892 |
+
+Only the drawdown gate passes. Development consistency, sample size, direction balance, both PF
+gates, normal/stress block stability, combined stress return and concentration all fail. Funding
+regimes also became too sparse after 2024 for the fixed threshold. Therefore
+`passes_historical_gate=false` and `robust_candidate=false`. Do not lower the revealed funding
+threshold or start forward PAPER. No deployment, Render setting, paused bot or real account was
+changed.
+
+Next concrete step: use an independently preregistered mechanism and data rather than lowering
+this sparse funding threshold; retain all funding periods as revealed evidence.
