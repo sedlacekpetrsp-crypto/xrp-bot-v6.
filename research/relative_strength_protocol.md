@@ -1,0 +1,12 @@
+# XRP_RELATIVE_STRENGTH_V1 — frozen protocol
+
+2026-10-24. Offline research only; no production/Render/LIVE changes.
+Hypothesis: XRP seven-day strength relative to BOTH BTC and ETH persists when BTC's 30-day return is positive. Trade XRP spot only; no synthetic short or leveraged pair spread.
+
+Hourly Binance spot candles, 2022-01-01 to 2026-10-01 exclusive; XRPUSDT, BTCUSDT, ETHUSDT. Validate every timestamp and OHLC and retain source SHA256. Decisions once daily using the fully closed 23:00 UTC candle, entry next 00:00 open. XRP seven-day gross return divided by each benchmark's seven-day gross return must exceed 1.02; XRP seven-day return >0; BTC 30-day return >0. ATR24 from closed hourly candles; initial stop 2 ATR, no target. Exit at next midnight open if either relative ratio <=1 or BTC 30-day return <=0; otherwise exit after 168 hours. Gap stops use worse open; stop intrabar at threshold. One position, equity risk 0.5%, maximum notional 20%, zero leverage, initial equity $10000. Fees 9.5 bps and adverse slippage 2 bps each side, doubled in stress. No parameter search.
+
+2022 development/control period (first 30 days warmup); fixed annual chronological OOS folds 2023, 2024, 2025, Jan–Sep 2026. Flat at fold boundaries; only prior data for warmup; force exit at final candle close. Also continuous OOS 2023–Sep 2026 to show compounding/drawdown across folds. No fitting on validation data. Prior hypotheses inspected some 2025–2026 data, so all results remain exploratory, not pristine holdout.
+
+Acceptance: >=100 aggregate OOS trades, aggregate PF>1.2, positive expectancy/net P&L, at least 3/4 positive annual folds, final 2026 fold positive, double-cost aggregate PF>1.05 and positive P&L, continuous OOS drawdown <=10% at both costs, no month >50% of aggregate net profit. Even a historical pass requires >=30 future calendar days and >=100 independently timestamped forward PAPER trades with positive stressed expectancy. Failing evidence means NEPROŠEL, no new parameter tuning on this sample. Low sample alone cannot support success.
+
+Report full trades, monthly/yearly outcomes, gross/fees/slippage, per-fold and continuous drawdown. Drawdown uses close-marked peaks and conservative candle-low liquidation values (exit-candle low may occur after exit); not tick-exact. Comparison: 20%-initial-notional XRP buy-and-hold with same fees/slippage per fold, no rebalancing; descriptive only, not an acceptance gate. Freeze this document in GitHub BEFORE evaluating price data.
