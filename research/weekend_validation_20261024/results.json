@@ -1,0 +1,286 @@
+{
+  "strategy": "WEEKEND_DRIFT_V1",
+  "status": "NEPROSEL",
+  "manifest": [
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/15m/XRPUSDT-15m-2025-10.zip",
+      "sha256": "4fe1f1462d33d17c3cdb8532bb42cb19367496af84e5e32bef0de5573eab4294",
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/15m/XRPUSDT-15m-2025-11.zip",
+      "sha256": "2ec0708037a8707c1ad0e2219b6420e9ea6189fc220e290401f3fa3b9a2cebdd",
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/15m/XRPUSDT-15m-2025-12.zip",
+      "sha256": "99dae53efb7d6870d4c751d97188ab9ad88b77c8e911e66465bdbb559062f0ca",
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/15m/XRPUSDT-15m-2026-01.zip",
+      "sha256": "e44d632908caaf6a33be8ce0a072c32b9c00155b66771d0ef3b18a2f9e450288",
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/15m/XRPUSDT-15m-2026-02.zip",
+      "sha256": "f6f4c12154c68f8161ea75751d19c1db69a99d766da66e80da349b09b804f719",
+      "bars": 2688
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/15m/XRPUSDT-15m-2026-03.zip",
+      "sha256": "1429ff075c12fe59e514fdb72c034a054ed99de8227cb392f82e8b44f35d4f68",
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/15m/XRPUSDT-15m-2026-04.zip",
+      "sha256": "769cc260db9e429f9c2721c49cfa3d4335cf74f54a0f696d2252110c876cd20c",
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/15m/XRPUSDT-15m-2026-05.zip",
+      "sha256": "0435ba8114a6746726dfb02fc018e3cb8066866e661340780df3c1313b4a5086",
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/15m/XRPUSDT-15m-2026-06.zip",
+      "sha256": "947b075b09360101c4b57d8b3a55c4b0f4ca647de156caea031e1332b8e9f7d9",
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/15m/XRPUSDT-15m-2026-07.zip",
+      "sha256": "52e64466c6f04b1c0df7fd39517382fa863400402c5fb398322c967a98458723",
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/15m/XRPUSDT-15m-2026-08.zip",
+      "sha256": "8166a0f5a59effd67aebe0fb7920c20ab7864907d294e1a066058bfef045ccb1",
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/15m/XRPUSDT-15m-2026-09.zip",
+      "sha256": "d54464b71887b17a194de8fdc33371da4e38c09c2edad8002e28e6f259350eb7",
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/15m/ETHUSDT-15m-2025-10.zip",
+      "sha256": "ddb2b2851af41e31794d00d663571523a1709b631fd7444933824cb9ad5edd85",
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/15m/ETHUSDT-15m-2025-11.zip",
+      "sha256": "288889103766ff11ec404e74a92c1e1ceb0884e40d9f653922207dd566f35d20",
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/15m/ETHUSDT-15m-2025-12.zip",
+      "sha256": "b4270c918a02f78800b6390e94af525f29c8554d27cc13cf6b62537691476df8",
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/15m/ETHUSDT-15m-2026-01.zip",
+      "sha256": "f9b69306bb83aabdba848b7b0e39eae08ef06bce33a8e2df43e4e4d9319c28de",
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/15m/ETHUSDT-15m-2026-02.zip",
+      "sha256": "88c42f0ae1ce10df10784d00b692d59114ea3739464d2d0f1ce5a3a6726d5bf4",
+      "bars": 2688
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/15m/ETHUSDT-15m-2026-03.zip",
+      "sha256": "4db1d336066d4e3a89d53f4e2c8de009ee91944de20b4096d01cee73e04f5cf2",
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/15m/ETHUSDT-15m-2026-04.zip",
+      "sha256": "c86b7752f8eb21a15a20b7197d0951a5ddb523628a6756daeece3dcb96ca2f7c",
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/15m/ETHUSDT-15m-2026-05.zip",
+      "sha256": "487c08d03a03d1ff7adac5d2d61b009165bd364e4ec44a0c5ca0dda44ef780b5",
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/15m/ETHUSDT-15m-2026-06.zip",
+      "sha256": "be1199a81d8064fe6193f2993de58f75f4a57fd9ca11a5e8c7c7ba2ca50fa9ce",
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/15m/ETHUSDT-15m-2026-07.zip",
+      "sha256": "d4742ef1a072a4662f371ddd56b4388fb2af68310c70831ccfadda89bd29b8c8",
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/15m/ETHUSDT-15m-2026-08.zip",
+      "sha256": "9fee5627c59a8eba386ea8574db136dced264ffb0c41e69975008a25d6e18ebb",
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/15m/ETHUSDT-15m-2026-09.zip",
+      "sha256": "88bb25ae0989bc335a1a1eb0e661a32b3984369ff94b6e8db888a82e916b4b1f",
+      "bars": 2880
+    }
+  ],
+  "runs": {
+    "XRPUSDT_train_base": {
+      "trades": 39,
+      "net_pnl": -234.15818572480953,
+      "return_pct": -4.683163714496191,
+      "profit_factor": 0.5734786004551654,
+      "expectancy": -6.0040560442258855,
+      "max_drawdown_pct": 6.367993702282397,
+      "monthly_net": {
+        "2025-10": 37.08666199209425,
+        "2025-11": -76.90821597794891,
+        "2025-12": -23.871730076622086,
+        "2026-01": -53.56428786592089,
+        "2026-02": -34.51350072482721,
+        "2026-03": -20.870188371690144,
+        "2026-04": -81.8241232150524,
+        "2026-05": 17.62787125380091,
+        "2026-06": 2.679327261356902
+      },
+      "fees": 72.14711660694931,
+      "gross_before_fees_and_slippage": -146.82220833665588
+    },
+    "XRPUSDT_train_stress": {
+      "trades": 39,
+      "net_pnl": -315.2941318988887,
+      "return_pct": -6.305882637977773,
+      "profit_factor": 0.47498149121163,
+      "expectancy": -8.084464920484326,
+      "max_drawdown_pct": 7.628602491134723,
+      "monthly_net": {
+        "2025-10": 28.178717234017327,
+        "2025-11": -85.23530083579608,
+        "2025-12": -34.88771780917276,
+        "2026-01": -63.805928317855376,
+        "2026-02": -42.498110450454405,
+        "2026-03": -29.075845864753248,
+        "2026-04": -88.90944533682139,
+        "2026-05": 8.916044734911498,
+        "2026-06": -7.9765452529642085
+      },
+      "fees": 143.08941965863988,
+      "gross_before_fees_and_slippage": -142.0806466239685
+    },
+    "XRPUSDT_oos_base": {
+      "trades": 13,
+      "net_pnl": -31.579415212804392,
+      "return_pct": -0.6315883042560878,
+      "profit_factor": 0.7425444028845797,
+      "expectancy": -2.429185785600338,
+      "max_drawdown_pct": 4.21945912131916,
+      "monthly_net": {
+        "2026-07": 20.82942435003577,
+        "2026-08": -35.14469309275628,
+        "2026-09": -17.264146470083883
+      },
+      "fees": 24.75192836557174,
+      "gross_before_fees_and_slippage": -1.6165546244064117
+    },
+    "XRPUSDT_oos_stress": {
+      "trades": 13,
+      "net_pnl": -60.622936758954864,
+      "return_pct": -1.2124587351790972,
+      "profit_factor": 0.5519453125196344,
+      "expectancy": -4.663302827611913,
+      "max_drawdown_pct": 4.428597683228184,
+      "monthly_net": {
+        "2026-07": 11.572083309691461,
+        "2026-08": -46.10411819817354,
+        "2026-09": -26.09090187047277
+      },
+      "fees": 49.36020091382417,
+      "gross_before_fees_and_slippage": -0.8711147394947147
+    },
+    "ETHUSDT_train_base": {
+      "trades": 39,
+      "net_pnl": -158.17723602436632,
+      "return_pct": -3.163544720487326,
+      "profit_factor": 0.6757399932228463,
+      "expectancy": -4.055826564727342,
+      "max_drawdown_pct": 6.723775147586805,
+      "monthly_net": {
+        "2025-10": 62.328890643582106,
+        "2025-11": 37.51924455263948,
+        "2025-12": -41.721183578938025,
+        "2026-01": -47.74626678712128,
+        "2026-02": -88.73972775190836,
+        "2026-03": -41.94504359230653,
+        "2026-04": -7.902236565845087,
+        "2026-05": -18.887332657944132,
+        "2026-06": -11.08358028652451
+      },
+      "fees": 73.55638754533054,
+      "gross_before_fees_and_slippage": -69.13529597174815
+    },
+    "ETHUSDT_train_stress": {
+      "trades": 39,
+      "net_pnl": -241.23266484761376,
+      "return_pct": -4.824653296952276,
+      "profit_factor": 0.5482767615679595,
+      "expectancy": -6.185452944810609,
+      "max_drawdown_pct": 7.943658984829168,
+      "monthly_net": {
+        "2025-10": 53.15604950209858,
+        "2025-11": 28.249610327172746,
+        "2025-12": -52.926342376958914,
+        "2026-01": -58.489796916088935,
+        "2026-02": -96.35797326270227,
+        "2026-03": -49.82424560259583,
+        "2026-04": -16.290374519546766,
+        "2026-05": -27.059437000384648,
+        "2026-06": -21.690154998607706
+      },
+      "fees": 145.86354597324194,
+      "gross_before_fees_and_slippage": -64.66101427840218
+    },
+    "ETHUSDT_oos_base": {
+      "trades": 13,
+      "net_pnl": 48.94396924948313,
+      "return_pct": 0.9788793849896625,
+      "profit_factor": 1.6799587806743228,
+      "expectancy": 3.7649207114987027,
+      "max_drawdown_pct": 1.4797839965196817,
+      "monthly_net": {
+        "2026-07": 78.73210443713663,
+        "2026-08": -40.35743066046383,
+        "2026-09": 10.569295472810339
+      },
+      "fees": 25.011809477464578,
+      "gross_before_fees_and_slippage": 79.22142599632288
+    },
+    "ETHUSDT_oos_stress": {
+      "trades": 13,
+      "net_pnl": 18.965172043486234,
+      "return_pct": 0.3793034408697247,
+      "profit_factor": 1.2221418719739088,
+      "expectancy": 1.4588593879604796,
+      "max_drawdown_pct": 1.7464388797836354,
+      "monthly_net": {
+        "2026-07": 69.31638773729195,
+        "2026-08": -51.615368131772364,
+        "2026-09": 1.264152437966648
+      },
+      "fees": 49.87646519429429,
+      "gross_before_fees_and_slippage": 79.34195839444976
+    }
+  },
+  "capital_policy": "Two isolated $5000 sleeves, each capped at 20% sleeve equity; combined gross <=20% total equity. No tuning. OOS starts flat; autocorr uses 97 prior warmup bars, calendar strategy none.",
+  "limitations": [
+    "Exploratory OOS: these dates were inspected in prior projects.",
+    "Intrabar drawdown conservatively uses entire exit candle low.",
+    "No independent forward paper validation yet."
+  ],
+  "gates": {
+    "at_least_100_oos_trades": false,
+    "both_symbols_profitable": false,
+    "both_base_pf_above_1_2": false,
+    "both_stress_pf_above_1_05": false,
+    "drawdown_at_most_10_pct": true,
+    "monthly_profit_concentration": false
+  }
+}
