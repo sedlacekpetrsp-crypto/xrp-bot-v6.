@@ -405,3 +405,41 @@ changed.
 
 Next concrete step: use an independently preregistered mechanism and data rather than lowering
 this sparse funding threshold; retain all funding periods as revealed evidence.
+
+## SOL_BASIS_CONVERGENCE_V1: distinct market-neutral dislocation hypothesis, rejected
+
+The synchronized data sources, 0.40% entry premium, two-leg execution, exits, costs, chronological
+blocks and gates were committed before historical results were read. The strategy buys SOL spot
+and shorts equal-notional SOL perpetual after a completed premium dislocation, then exits at the
+next open after convergence, a 1.20% spread stop or 48 hours. Each leg is 15% of equity. This is
+a market-neutral basis trade, not the rejected directional funding-reversal model.
+
+The completed run used 210 public Binance Vision archives from December 2020 through September
+2026: 70 spot, 70 USD-M perpetual and 70 funding files. URLs, SHA256 hashes and missing-row counts
+are in `sol_basis_convergence_results_20261024.json`. The source contains 18 missing spot hours
+and 120 missing perpetual hours, all confined to development data; 138 unsynchronized hours were
+excluded and no values were fabricated. All validation hours are synchronized. Five engine tests
+passed for completed-close entry, synchronized fills, next-open gap stops, actual funding and
+adverse cost stress.
+
+| Block | Trades | Normal net | Normal PF | Normal max DD | Stress net | Stress PF |
+|---|---:|---:|---:|---:|---:|---:|
+| Development 2021 | 29 | +1.52% | 46.3763 | 0.31% | -0.85% | 0.1004 |
+| Development 2022 | 1 | +0.05% | n/a | 0.03% | -0.01% | 0.0000 |
+| Development 2023 | 0 | 0.00% | n/a | 0.00% | 0.00% | n/a |
+| Validation 2024 H1 | 0 | 0.00% | n/a | 0.00% | 0.00% | n/a |
+| Validation 2024 H2 | 0 | 0.00% | n/a | 0.00% | 0.00% | n/a |
+| Validation 2025 H1 | 0 | 0.00% | n/a | 0.00% | 0.00% | n/a |
+| Validation 2025 H2 | 0 | 0.00% | n/a | 0.00% | 0.00% | n/a |
+| Validation Jan-Sep 2026 | 0 | 0.00% | n/a | 0.00% | 0.00% | n/a |
+| Continuous validation | 0 | 0.00% | n/a | 0.00% | 0.00% | n/a |
+
+Only the drawdown gate passes. The apparent 2021 base-cost PF is based on a small obsolete regime
+and reverses under the preregistered stress. The fixed dislocation never occurs in validation, so
+development, sample-size, PF, stability, stress-return and concentration gates fail. Therefore
+`passes_historical_gate=false` and `robust_candidate=false`. Do not lower the spread threshold on
+these revealed periods or start forward PAPER. No deployment, Render setting, paused bot or real
+account was changed.
+
+Next concrete step: move away from rare fixed-threshold derivatives dislocations and preregister
+a mechanism with adequate event frequency without calibrating it on these revealed periods.

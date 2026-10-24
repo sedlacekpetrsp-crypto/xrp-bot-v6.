@@ -1,0 +1,1994 @@
+{
+  "strategy": "SOL_BASIS_CONVERGENCE_V1",
+  "data": "Binance SOLUSDT spot and USD-M perpetual 1h plus funding archives",
+  "development_period": "2021-01-01/2023-12-31",
+  "validation_period": "2024-01-01/2026-09-30",
+  "config": {
+    "entry_premium": 0.004,
+    "target_premium": 0.0002,
+    "stop_premium": 0.012,
+    "maximum_hold_hours": 48,
+    "cooldown_hours": 8,
+    "leg_fraction": 0.15,
+    "spot_fee_rate": 0.00095,
+    "futures_fee_rate": 0.0005,
+    "slippage_rate": 0.0002,
+    "funding_credit_multiplier": 1.0,
+    "funding_debit_multiplier": 1.0,
+    "initial_equity": 10000.0
+  },
+  "stress_config": {
+    "entry_premium": 0.004,
+    "target_premium": 0.0002,
+    "stop_premium": 0.012,
+    "maximum_hold_hours": 48,
+    "cooldown_hours": 8,
+    "leg_fraction": 0.15,
+    "spot_fee_rate": 0.0019,
+    "futures_fee_rate": 0.001,
+    "slippage_rate": 0.0004,
+    "funding_credit_multiplier": 0.5,
+    "funding_debit_multiplier": 2.0,
+    "initial_equity": 10000.0
+  },
+  "development": {
+    "2021": {
+      "trades": 29,
+      "win_rate": 0.9310344827586207,
+      "net_return": 0.015179657520655088,
+      "net_pnl": 151.7965752065502,
+      "profit_factor": 46.37628588781747,
+      "max_drawdown": 0.0030632180237685027,
+      "fees": 128.03805934902888,
+      "funding_pnl": 147.97201667579662
+    },
+    "2022": {
+      "trades": 1,
+      "win_rate": 1.0,
+      "net_return": 0.000488817988958612,
+      "net_pnl": 4.8881798895854445,
+      "profit_factor": null,
+      "max_drawdown": 0.0003118033009135064,
+      "fees": 4.349068413243157,
+      "funding_pnl": 0.0
+    },
+    "2023": {
+      "trades": 0,
+      "win_rate": null,
+      "net_return": 0.0,
+      "net_pnl": 0.0,
+      "profit_factor": null,
+      "max_drawdown": 0.0,
+      "fees": 0,
+      "funding_pnl": 0
+    }
+  },
+  "development_stress": {
+    "2021": {
+      "trades": 29,
+      "win_rate": 0.1724137931034483,
+      "net_return": -0.008460209644689853,
+      "net_pnl": -84.60209644689894,
+      "profit_factor": 0.10036709960752443,
+      "max_drawdown": 0.008953129508595564,
+      "fees": 253.09801906896686,
+      "funding_pnl": 73.1990927649408
+    },
+    "2022": {
+      "trades": 1,
+      "win_rate": 0.0,
+      "net_return": -6.586829941712669e-05,
+      "net_pnl": -0.6586829941716132,
+      "profit_factor": 0.0,
+      "max_drawdown": 0.0005890209859495493,
+      "fees": 8.697592563970268,
+      "funding_pnl": 0.0
+    },
+    "2023": {
+      "trades": 0,
+      "win_rate": null,
+      "net_return": 0.0,
+      "net_pnl": 0.0,
+      "profit_factor": null,
+      "max_drawdown": 0.0,
+      "fees": 0,
+      "funding_pnl": 0
+    }
+  },
+  "validation": {
+    "2024_H1": {
+      "trades": 0,
+      "win_rate": null,
+      "net_return": 0.0,
+      "net_pnl": 0.0,
+      "profit_factor": null,
+      "max_drawdown": 0.0,
+      "fees": 0,
+      "funding_pnl": 0
+    },
+    "2024_H2": {
+      "trades": 0,
+      "win_rate": null,
+      "net_return": 0.0,
+      "net_pnl": 0.0,
+      "profit_factor": null,
+      "max_drawdown": 0.0,
+      "fees": 0,
+      "funding_pnl": 0
+    },
+    "2025_H1": {
+      "trades": 0,
+      "win_rate": null,
+      "net_return": 0.0,
+      "net_pnl": 0.0,
+      "profit_factor": null,
+      "max_drawdown": 0.0,
+      "fees": 0,
+      "funding_pnl": 0
+    },
+    "2025_H2": {
+      "trades": 0,
+      "win_rate": null,
+      "net_return": 0.0,
+      "net_pnl": 0.0,
+      "profit_factor": null,
+      "max_drawdown": 0.0,
+      "fees": 0,
+      "funding_pnl": 0
+    },
+    "2026_JAN_SEP": {
+      "trades": 0,
+      "win_rate": null,
+      "net_return": 0.0,
+      "net_pnl": 0.0,
+      "profit_factor": null,
+      "max_drawdown": 0.0,
+      "fees": 0,
+      "funding_pnl": 0
+    },
+    "ALL": {
+      "trades": 0,
+      "win_rate": null,
+      "net_return": 0.0,
+      "net_pnl": 0.0,
+      "profit_factor": null,
+      "max_drawdown": 0.0,
+      "fees": 0,
+      "funding_pnl": 0
+    }
+  },
+  "validation_stress": {
+    "2024_H1": {
+      "trades": 0,
+      "win_rate": null,
+      "net_return": 0.0,
+      "net_pnl": 0.0,
+      "profit_factor": null,
+      "max_drawdown": 0.0,
+      "fees": 0,
+      "funding_pnl": 0
+    },
+    "2024_H2": {
+      "trades": 0,
+      "win_rate": null,
+      "net_return": 0.0,
+      "net_pnl": 0.0,
+      "profit_factor": null,
+      "max_drawdown": 0.0,
+      "fees": 0,
+      "funding_pnl": 0
+    },
+    "2025_H1": {
+      "trades": 0,
+      "win_rate": null,
+      "net_return": 0.0,
+      "net_pnl": 0.0,
+      "profit_factor": null,
+      "max_drawdown": 0.0,
+      "fees": 0,
+      "funding_pnl": 0
+    },
+    "2025_H2": {
+      "trades": 0,
+      "win_rate": null,
+      "net_return": 0.0,
+      "net_pnl": 0.0,
+      "profit_factor": null,
+      "max_drawdown": 0.0,
+      "fees": 0,
+      "funding_pnl": 0
+    },
+    "2026_JAN_SEP": {
+      "trades": 0,
+      "win_rate": null,
+      "net_return": 0.0,
+      "net_pnl": 0.0,
+      "profit_factor": null,
+      "max_drawdown": 0.0,
+      "fees": 0,
+      "funding_pnl": 0
+    },
+    "ALL": {
+      "trades": 0,
+      "win_rate": null,
+      "net_return": 0.0,
+      "net_pnl": 0.0,
+      "profit_factor": null,
+      "max_drawdown": 0.0,
+      "fees": 0,
+      "funding_pnl": 0
+    }
+  },
+  "largest_positive_validation_block_share": 1,
+  "gate": {
+    "development_positive_all_years": false,
+    "validation_minimum_40_trades": false,
+    "normal_pf_at_least_1_20": false,
+    "stress_pf_at_least_1_05": false,
+    "normal_positive_all_blocks": false,
+    "stress_positive_four_blocks": false,
+    "stress_total_positive": false,
+    "normal_max_drawdown_at_most_10pct": true,
+    "profit_not_concentrated": false,
+    "forward_paper_50_trades": false
+  },
+  "passes_historical_gate": false,
+  "robust_candidate": false,
+  "manifest": [
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2020-12.zip",
+      "sha256": "791b0facab9d3b94fb8c6c4bfd712391ee7526de3e4ddbe6e1797a7f21d2801b",
+      "rows": 739,
+      "expected_rows": 744,
+      "missing_rows": 4,
+      "first_missing_timestamp": 1608562800000,
+      "missing_synchronized_rows": 4
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2020-12.zip",
+      "sha256": "bd5f75cc091658b0794eb80777914b3d7e8940438da77980bd659a935f6bbd5d",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2020-12.zip",
+      "sha256": "925301315c1928ded7c81a816c82a8b01c52712fcd4fd842ff68199950856b17",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2021-01.zip",
+      "sha256": "ea5f900dec5986dc42bb617b53b5b1fa3e995cb2eedb30b0e4cd97498e8a0e5c",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2021-01.zip",
+      "sha256": "fef310549a5baf8fcdb67a2c6c97a0ec05f25dbc87afbb2a0ba0f08842a52c27",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2021-01.zip",
+      "sha256": "69ceaed5037e3560bd6f31651ba0214de913af8f0c4c25712c95cbbe1308cb97",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2021-02.zip",
+      "sha256": "4f0d06729fd2601cabd2c3ec63d82552358fa4381479dbf1b3dde5ab927dbc52",
+      "rows": 670,
+      "expected_rows": 672,
+      "missing_rows": 1,
+      "first_missing_timestamp": 1613016000000,
+      "missing_synchronized_rows": 1
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2021-02.zip",
+      "sha256": "029ec118946bf80d43f27baec8a80004265134c9540e7f9a04e440e453a43f99",
+      "rows": 671,
+      "expected_rows": 672,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2021-02.zip",
+      "sha256": "88363d90b2bb922736556118610a8b1ddadc679b474950b69b07eb3ca9eb0253",
+      "rows": 84
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2021-03.zip",
+      "sha256": "36eb5c89019e49fc97477fca9fc2dbc79ccfda91f246fe1b70c6e905ce91f579",
+      "rows": 742,
+      "expected_rows": 744,
+      "missing_rows": 1,
+      "first_missing_timestamp": 1614996000000,
+      "missing_synchronized_rows": 1
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2021-03.zip",
+      "sha256": "94eaba4252ae9189c9be07ea2d40e3f016ee924a761462303882ffc9bb4e4e4c",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2021-03.zip",
+      "sha256": "256b24b3655ef98daa5080a509c0674fc11e7c83774869b0ae2a794cbbf2a05a",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2021-04.zip",
+      "sha256": "b642201a82243a290c4b3a2f5c94d3aa5088a631f4b71faac1b81bc373f88d51",
+      "rows": 714,
+      "expected_rows": 720,
+      "missing_rows": 5,
+      "first_missing_timestamp": 1618884000000,
+      "missing_synchronized_rows": 5
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2021-04.zip",
+      "sha256": "21d8b0ffa824a3d4845f4e0103f9739a9931e4788a5da3958a0c8e4552552965",
+      "rows": 719,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2021-04.zip",
+      "sha256": "3a7fa828be00e3e352cef39ca5856c0d86077724f8d1ce576be79f302c21dd71",
+      "rows": 90
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2021-05.zip",
+      "sha256": "ae2f4afc892f9b949a9c56f30c1143d9d267c313cfad17ee1dd6d738ffc98f29",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2021-05.zip",
+      "sha256": "efb32d5fd15525744c959ce9685e20af8227b6104ea3b279faae0dc8d73cd4a3",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2021-05.zip",
+      "sha256": "f9a657f15d4753cb73bf8ffd0d62405d480044162c19e1f7437608e2c1bb6694",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2021-06.zip",
+      "sha256": "6b62bd2c29fe923868ead8ee6ec420a205bac46a3573a384061dd12113c11a3b",
+      "rows": 719,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2021-06.zip",
+      "sha256": "8fe15facd01ac0eec8d23b04bc606f2c56344c1ee2aa88c3758c07a6cfeb5765",
+      "rows": 719,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2021-06.zip",
+      "sha256": "5d97dc076126d6df30eb68185be0613a08391b18d6046da006c790b3674b0d40",
+      "rows": 90
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2021-07.zip",
+      "sha256": "5caaf512734e089498a1793783f5e91b5df881c625546f57c8b026888cb27ae1",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2021-07.zip",
+      "sha256": "b1d3d3064ad1c48ee3db89da36f402ba27ed8764c14f5f8725db8c2d44412826",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2021-07.zip",
+      "sha256": "d5cc6efda2474a0ea47626b8ec17b40f8b2cc21aa1338e55796f402c9173e125",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2021-08.zip",
+      "sha256": "f06ca4825d66c1d8faf0294ba6147b17e100175d08b422470d4daeff48243d31",
+      "rows": 739,
+      "expected_rows": 744,
+      "missing_rows": 4,
+      "first_missing_timestamp": 1628820000000,
+      "missing_synchronized_rows": 4
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2021-08.zip",
+      "sha256": "13a75507c7c6396782ca02659d2738a668a5b16a438d239b64199f19c69f81a0",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2021-08.zip",
+      "sha256": "36028dd0bcfa30c6be842f0ee066ffa1ae3d93082cf4aafd302d1c0a3a386ecd",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2021-09.zip",
+      "sha256": "da02b1053bc0b6de434645fabff293c41927fc6a0720199eb141deb598a4b825",
+      "rows": 717,
+      "expected_rows": 720,
+      "missing_rows": 2,
+      "first_missing_timestamp": 1632898800000,
+      "missing_synchronized_rows": 2
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2021-09.zip",
+      "sha256": "11ee5441a6a3d72b10b501b1ac246bff97ee0673def1954d116ecd2b09f584ff",
+      "rows": 719,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2021-09.zip",
+      "sha256": "2b1bbc144fed66818841e7af5f5e310adf8e2cb3b1d7643e0c1b2bb30bf421e8",
+      "rows": 90
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2021-10.zip",
+      "sha256": "3293815f4ab92f3ce2146a06c517e0fc62c1baa9273492041617195f56b511a2",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2021-10.zip",
+      "sha256": "400e88409c92a5a01eb4c4b7b6e4f5fddfef93dd4a3d9c8f89cc35d51cc298ac",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2021-10.zip",
+      "sha256": "0ac3fe161fe23ac8479a4a6e5fbfc38e91ae1515663d93a3fe767c351ee81187",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2021-11.zip",
+      "sha256": "577c3127dde0f4869a2195662aeec896a135f686962a172aad42176d9655fba0",
+      "rows": 719,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2021-11.zip",
+      "sha256": "4939d7a971e30ac1d7b87c6c0352375bf8a0a539cd13bbf3e3920969a24bb42e",
+      "rows": 719,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2021-11.zip",
+      "sha256": "16996f42bf6d48a5569bfecd8af6027de2298b30dca1d95381c595893de8e2e8",
+      "rows": 90
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2021-12.zip",
+      "sha256": "e6e88ff1edc3a6910df90bbe311e0ec071913bd8673307adb4d4ecf41db4ef5e",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2021-12.zip",
+      "sha256": "61d5be6bdb0fb8007898c8f61375a83fe466cd18f1fc67c53e6f42b8b8a34d07",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2021-12.zip",
+      "sha256": "0ea2c59cde9362715dea398bd66d3325d5bdb40c39db0370977bcad0b0f67533",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2022-01.zip",
+      "sha256": "cd070a2f7daeaa33835ca00ab10c371a0bc89c353591c65977706635b7418ca0",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2022-01.zip",
+      "sha256": "bbe2ad04379133e2ca7b68cb5351b5ba610523c6a0d53b4ecfd628b972165cc3",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2022-01.zip",
+      "sha256": "f3be14b01356f33f6cbde6d12ee30311ae91fc521dc78d72a0aa39db8c295053",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2022-02.zip",
+      "sha256": "f6eed394dcbfb8815120c328d1c1e22136e25febb9854ce6c0bbd566c92fb673",
+      "rows": 671,
+      "expected_rows": 672,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 72
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2022-02.zip",
+      "sha256": "36b1e2ff3ffe162718e61bb23ef84a104dc2cc5591c18cd8ce4c04e96655b84c",
+      "rows": 600,
+      "expected_rows": 672,
+      "missing_rows": 72,
+      "first_missing_timestamp": 1645833600000
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2022-02.zip",
+      "sha256": "d622a4a5cfb461e81d9cb13ebdd34b02e2d221c2ddb8d708dc4047d2f499fa96",
+      "rows": 84
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2022-03.zip",
+      "sha256": "8d2e26a84944cf39f343c0b7669e7dabf03bcd7d7afc3e82f6ef2161452f6542",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2022-03.zip",
+      "sha256": "044c37d917fea58900c8ddf4086b9fc71fcadd55215a10680e1e7461ffa78265",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2022-03.zip",
+      "sha256": "10d3d16d74340850c2148553261dfdad7ffeb0b705f014c869fa807a1e7ddc84",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2022-04.zip",
+      "sha256": "001350cb05168fadc8d1240ae89a37f878f986a78951232191a890f77bbb7bcc",
+      "rows": 719,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 48
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2022-04.zip",
+      "sha256": "1e4464fee6301816ff2efa7696d8cf53f34684b9b60616cf6af26e8cd75cfefc",
+      "rows": 672,
+      "expected_rows": 720,
+      "missing_rows": 48,
+      "first_missing_timestamp": 1648771200000
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2022-04.zip",
+      "sha256": "f07052472753f04eb8e7fb818cf60e90e187e712f63a577741ca7ae59c63bc9e",
+      "rows": 90
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2022-05.zip",
+      "sha256": "f68c41a69d18b96d72c9449662cc5c563287369f56033d873f087091db9fb817",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2022-05.zip",
+      "sha256": "6a8888b3d3d5a856d44eff5907210c30cc81fe210364f8b611726ad24b6846ba",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2022-05.zip",
+      "sha256": "ed42b50666e40e1489f01730f85e5efe919b9a94344e043369a459c66492a940",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2022-06.zip",
+      "sha256": "4e111c3b8d040f832accab28b4405c6a23b90f33883fa8857ba60ec1d073bfef",
+      "rows": 719,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2022-06.zip",
+      "sha256": "0a550357320ba4954437b15b85f01bf0cc0c455f07f19e27ca91ddda19f1f147",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2022-06.zip",
+      "sha256": "78249fec5212753b19ce01c2fb23ffdc3deecd29bd3ab61fb7cf70ba6c395edc",
+      "rows": 90
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2022-07.zip",
+      "sha256": "10a6858a4c66cd1e0ea3e4a4265a737d3114f73062094a75bd48e9c8afd14aee",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2022-07.zip",
+      "sha256": "05fc6f96bc940ae0d290b1039387c3a223b5159596819998563f34508594719a",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2022-07.zip",
+      "sha256": "ce4c96d62e020d4b3c53bc31c248e5800a4a6eb3a6809c36509238122aa02a3a",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2022-08.zip",
+      "sha256": "a76d0f3bca32a91f4ea923c60c6c87256a673b2a73bdcc117449fc8e4f57ebe6",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2022-08.zip",
+      "sha256": "971ab9bee4ad830767c285d3af6df5357af1bfa2ddb084fa49596cf9b5276036",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2022-08.zip",
+      "sha256": "1604d1993d0c6a7e37e2ff81a6944d7b5c0e81475e3fe475bdbdf0deaff4d847",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2022-09.zip",
+      "sha256": "bcba92d96fd85adcf5894674551a3ac52334b1836fcd7b09745c6c2ec70e930a",
+      "rows": 719,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2022-09.zip",
+      "sha256": "41699bac620ac3f15318dd9238392fc5782d4321660e5c7986925eee3d172381",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2022-09.zip",
+      "sha256": "673b50b2daec4a34da7d8a8095995ddbafa6f66bf8c2d499ba48f8050cf68565",
+      "rows": 90
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2022-10.zip",
+      "sha256": "c855d5b612c4b362110007383e27c965db324f54ab091ac82cf00b827cab8f6b",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2022-10.zip",
+      "sha256": "bc6bb18da0f2e30171cefad3d2df55a70d12e7eafed7b566225ae67e737be6cd",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2022-10.zip",
+      "sha256": "d0436ed57e674ae3c00eeff3aa46f6e65c596892b80e5b6e8183d487c6ef3168",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2022-11.zip",
+      "sha256": "d61c2d3b3ba2e772d39fcc1181973359cd8b59fd1a9b8b29aa8e1dc394d889c9",
+      "rows": 719,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2022-11.zip",
+      "sha256": "e156bc7231bfe31e21aaf5628260062aa9d59184ef075412ab0fa546dea1fd80",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2022-11.zip",
+      "sha256": "73fbada102584d8e19cb9594f04471f589ff37404b0cf64c0bd7cb4ac4d4a157",
+      "rows": 165
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2022-12.zip",
+      "sha256": "9f2df163d62154fd641ab95228e6123e378cfc972effea348721317515ddc9d6",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2022-12.zip",
+      "sha256": "8f1fa76f20f0cd161f238d4e7014274969df3d3ab5e8b6c9e1dc8327e02ec2d5",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2022-12.zip",
+      "sha256": "b9b8d803d985679959d21a55d08b14db331cf961442f8446eb18d723ea154567",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2023-01.zip",
+      "sha256": "24e284cea68c9a42bd6a5bd6cdc2ce56ca00fea106728f36de3d171b215f6905",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2023-01.zip",
+      "sha256": "0d7bc47dc3b49cbadd29274b63c02af8f23af40fe241412d357903ae945aa79d",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2023-01.zip",
+      "sha256": "12a401fc459341834a0d3c2f207d55e7aced058b62838f296028885ee2e52612",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2023-02.zip",
+      "sha256": "e6c07a992221248893cd519539d2937e241931e1f129206bd13d4197b1f3b6c9",
+      "rows": 671,
+      "expected_rows": 672,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2023-02.zip",
+      "sha256": "1dc1a4ad1c82935fbe8b4c218f22087470b3a20cc2c1a394574ad1587ba5a828",
+      "rows": 672,
+      "expected_rows": 672,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2023-02.zip",
+      "sha256": "1173c36ad296e152ed9f954ce49fd65b7ffd8a03f270906a1e816fdbb7929f57",
+      "rows": 84
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2023-03.zip",
+      "sha256": "7345fc8807e3e73e11595b5b371bf96d414048f77d1498964fa5c5f8fe3f02e7",
+      "rows": 742,
+      "expected_rows": 744,
+      "missing_rows": 1,
+      "first_missing_timestamp": 1679662800000,
+      "missing_synchronized_rows": 1
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2023-03.zip",
+      "sha256": "c41bd78088a2bb8547f1b3bf5c89fcadd7606397d2a74f0961c47cf6754f8f8a",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2023-03.zip",
+      "sha256": "6a950dfbe4e75ce7e28a174d1432fed82fe08964053c618bec2be70f83ae6b61",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2023-04.zip",
+      "sha256": "89bb7df7673715efdaac4445bc5e7bb980e78469245f6f6baa978d4e7e2a8bc5",
+      "rows": 719,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2023-04.zip",
+      "sha256": "34aca0062513dbb81e99b4b6e2e0e2dd29b453e33c629c8cea1beeff9faf7543",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2023-04.zip",
+      "sha256": "88d1b03da4cd68774d846d5a9b7a9ba3d165a7b03855cad84a181820a2f7b297",
+      "rows": 90
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2023-05.zip",
+      "sha256": "8578fd237c61fe3cf535eea93143f094989f26af41cc2d24c813f4836daaeb44",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2023-05.zip",
+      "sha256": "4c5b1305d4395bb122f85b60520db8995c810357a2c189158b2beae2d116b1bc",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2023-05.zip",
+      "sha256": "b644431236540c0fa4573e96b9357077755d53440427fb2419e68272ea653137",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2023-06.zip",
+      "sha256": "0e2e5c23418ff24a31cbcb4fe95e73db1c7fc90abcf960b86c37b53b3b19c77d",
+      "rows": 719,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2023-06.zip",
+      "sha256": "023229af2e8a8900ee79ba088837b174acc52512f2e8296b02aa279cf97a82f5",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2023-06.zip",
+      "sha256": "63de6ffcbab1fec0b83807efde188fdafb06d4ed0f947c4df86d757f894d88c9",
+      "rows": 90
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2023-07.zip",
+      "sha256": "7eebf42589b01a086f3be7f2af9a39d1a5df6dbd16f062ae383717725ea008c8",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2023-07.zip",
+      "sha256": "e45b525229f485463a33f3c59f4dc3eafa2de1f9fbca8f2126cd3c074f62b6bb",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2023-07.zip",
+      "sha256": "7323f1cf79a8dfeb78dd7bd8cd2940a7db00ee023739430435b1cc25cecadcae",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2023-08.zip",
+      "sha256": "25cb0c865a4bf34ac55dee9cfea5a39d7d9f765c0f7654158086202ff78a9c9f",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2023-08.zip",
+      "sha256": "d509bcda20054981e3f738ef1a33090dc12ddaea5593932e2545a285ee4987c9",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2023-08.zip",
+      "sha256": "87ce0395cf9d1fa9ea4849b4811d366c1867d4159f3c1a2b4a3e0656972be2a0",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2023-09.zip",
+      "sha256": "47b3f1869eca8bf460a31570c38ae5ad9eb338773493cad95683cb3d933c05f5",
+      "rows": 719,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2023-09.zip",
+      "sha256": "99ac300173c437de0b735ca04ff7ac55512431eedd381795f2ba069edd9020c6",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2023-09.zip",
+      "sha256": "7a8c1135aa165e9399a274acf1f330bbf6bae594266582fc1cfc91b950f73e75",
+      "rows": 90
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2023-10.zip",
+      "sha256": "2d4fdfa1fc9b7bcf69382883e472b4ce741cd6470ead4d4bce46c6d263988837",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2023-10.zip",
+      "sha256": "e9046fe166dd07107386312716030e66aad44136d40712b17b976ff9dd905bef",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2023-10.zip",
+      "sha256": "a56852237de6b69483565853858901ce7e4c611d3950d485a064bf90069958ba",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2023-11.zip",
+      "sha256": "2fb358d1f7fc162236cadb344f21dca8b270e5ef6e88964c9f49a9c3f28b714c",
+      "rows": 719,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2023-11.zip",
+      "sha256": "96c7b5324c80818622477b6d3fa71b82f62ae2266ec42f763433a11eef7494bb",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2023-11.zip",
+      "sha256": "1cbd9c6b802cdf035ba408c03e82aab678c2a994c2c6860386a4226ba104e252",
+      "rows": 90
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2023-12.zip",
+      "sha256": "8ed8a6482a5538cbcc683f861305f049c86ea09bf0f10cff19a525b55eada4b8",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2023-12.zip",
+      "sha256": "5d7fea512037fe238b6133df8bec56231cf086b73a44bdff89e5dcdfb991d62f",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2023-12.zip",
+      "sha256": "debe51eb20a3b7d6093baec3b609e7a9f746c64635cfa77aa761e88e84454902",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2024-01.zip",
+      "sha256": "f2a90d8c6ed9f666b95e85e048ac4f6ba424c7fe143a982f671ad0b7f0c8cbdc",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2024-01.zip",
+      "sha256": "eb8a8dc7685761609f19b403db0eb6655d757f720f71da9b8c1ab638ddfc85b9",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2024-01.zip",
+      "sha256": "6b514b6c2bb67ff04df97d747efb9c6e4bb1bb27e889f1dc51a42ab1419a3d24",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2024-02.zip",
+      "sha256": "fd194ff79e56690fa5bb463b6c280f5c521fb39087c6f4d5fa9c683eb92ca0d8",
+      "rows": 695,
+      "expected_rows": 696,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2024-02.zip",
+      "sha256": "7d87e385b8befd2c3fd6090475904fb6d28ec65d1afb1f1892570178bfba54ac",
+      "rows": 696,
+      "expected_rows": 696,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2024-02.zip",
+      "sha256": "7ccaf8d60ddf07e03eba0589ec4f75abfc2a842217722aaefe996ee1bc095706",
+      "rows": 87
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2024-03.zip",
+      "sha256": "b24ea98ce4ffebb0bc831acd1de8558f49c371ff4774fa31667daa11ffc0dd6c",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2024-03.zip",
+      "sha256": "b679c264fc7d70ccf70d9fb25481bfed485a01c2cd439b8b698933b9398119c1",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2024-03.zip",
+      "sha256": "ff3041b6119af926fc55fc722332240037f1aee9b3a2db25f9cb801ba8e2992c",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2024-04.zip",
+      "sha256": "ab98165d2c785e871a4614bcb853edbd49b0701a2b3fed1f9d0bf602d128a4fc",
+      "rows": 719,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2024-04.zip",
+      "sha256": "02fdeb42d8293094fab995cca7b33ef6fb18714d173e6da9e894119c734557e9",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2024-04.zip",
+      "sha256": "591e7c4993e59b60966213efd938f48420cd9b63db815240ffc070ec40470e53",
+      "rows": 90
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2024-05.zip",
+      "sha256": "effcd422f7171f6b8fdaec8b8a7bdf9f354e772503569ca648f5a106f82871d9",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2024-05.zip",
+      "sha256": "b22668d0d3fc2fb430efd5cca654dcf167b5df2d8997401f49d8e3f9ba43b3c8",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2024-05.zip",
+      "sha256": "cdd788722e8b85fd6c9d992e7c1c767be87afc91db5b8c07751f898b373cbf29",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2024-06.zip",
+      "sha256": "578fd34d382d7663934a9556c3316a28ac504cffa9a53434b2909f241271898f",
+      "rows": 719,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2024-06.zip",
+      "sha256": "80e770b293faa4ae6da7d149df3e1912da67bb121b58123260c7f4b755f4809d",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2024-06.zip",
+      "sha256": "8da6c97d67718422a5df9a0d50e37849521fb54de87cbb3b3397e441439dfcc9",
+      "rows": 90
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2024-07.zip",
+      "sha256": "828f2a8814662d3bcff915eec19fd1771ec996a4a024317fda3f2d2ba61fb310",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2024-07.zip",
+      "sha256": "da7072219268b51067972bf51032440ba3214d63df037180bc0c9e33a77ffa8b",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2024-07.zip",
+      "sha256": "2585a0db933c70b62c87cac509de42ac09b98d370238c0d8c68249a20bd2b9a3",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2024-08.zip",
+      "sha256": "4f9d4d80f237b67b7038f6d2fc4e131daf8ca65f679359a92ba33574014b1c2a",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2024-08.zip",
+      "sha256": "08bc16fd25cb4b024ac2f3d187d4ed5426014e48808ea9523b9792b141dca34d",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2024-08.zip",
+      "sha256": "ef076200aab768d33f71449957f6cd9c96c0da696708a5f561b97e7a0995e8d2",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2024-09.zip",
+      "sha256": "70641e992419a4003519e06094c68b2e13971341e92559e307a38d7215d94b63",
+      "rows": 719,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2024-09.zip",
+      "sha256": "c99c50b8413b34318d5aa778b890d8d06d5c333c4db101570c1c9ee7e35b6451",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2024-09.zip",
+      "sha256": "7666e4d3e6ea6dd28011c508cf01421007521e98e96ea551f809836441b43ca0",
+      "rows": 90
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2024-10.zip",
+      "sha256": "3b5d4eb1f9049f8030a01886d2d9ca346da66163fd1fa81ba145fca5fa085edd",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2024-10.zip",
+      "sha256": "ae94c6ea35e4b98c5a2e41a32a9d75e18793ced7c3e55c9e524a3e0c43ae75d7",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2024-10.zip",
+      "sha256": "dbece64e8c5bc69c487cc03c00f6a4d4da2cad9152c73860386fcdc7d2ec9d05",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2024-11.zip",
+      "sha256": "62fd1843a47ec177849a68faf0a5c33ae11bc33b462f664657a6a68246743080",
+      "rows": 719,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2024-11.zip",
+      "sha256": "620f261485e352e46458f683129cdf5141d2f70222a70b65228d6473f884ca81",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2024-11.zip",
+      "sha256": "f53a9b637d695a251200e48929a573b4bf04cc2d99d5a3a09fe7bdca622918aa",
+      "rows": 90
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2024-12.zip",
+      "sha256": "af4ab37dbb738e3ee0c168fe9b55366111e4ad112a905f4740a6efbd810e752d",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2024-12.zip",
+      "sha256": "bdb5c900670da54eac3653f7be69529dbfeb13574aa6072049ff1c419d7f5567",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2024-12.zip",
+      "sha256": "bae83020ac2ccfa6dd8d1362d373a92b4d5a7e396cef52e78dc2e7d81e63f621",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2025-01.zip",
+      "sha256": "8a40f8d5eb6e28b0c57c830ccb76e49046c1bdc631ec840e32576808f62ad466",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2025-01.zip",
+      "sha256": "372c98abd2da7bbf5e3cbe39e77296efe8ef4e94790c3566da3e7313049be7b8",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2025-01.zip",
+      "sha256": "314888152c16bc2d846f9aaa9ea3ebeec7c67d235ef2671f1a5e6fe0a8b4dbf2",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2025-02.zip",
+      "sha256": "8b7af1c42f8d8ac9bff2b2c8bc8a098150364947d93b363df0ab51e280aea544",
+      "rows": 671,
+      "expected_rows": 672,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2025-02.zip",
+      "sha256": "863aeb10c3a31a5a9da82bfbcd120740c0dfad5078a579366caf166f58aa9b34",
+      "rows": 672,
+      "expected_rows": 672,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2025-02.zip",
+      "sha256": "eeade74c1ca2a6dc9d78ba0d7a1ff145c323be72cfa2c09fcef9edab88baef9f",
+      "rows": 84
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2025-03.zip",
+      "sha256": "7ddd11cb34dca5c6815cce34107d1bfc4a492c65b5f1def1d80419b04cb4b838",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2025-03.zip",
+      "sha256": "04b504d8b18dd7e1dce1783add7bf40df0132e6aeb9932a46aa950abb36534c8",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2025-03.zip",
+      "sha256": "3f77a33779c946da6f3082d14fb9a5497e7e4a4e3fff4d68967e6ddf96cf99ea",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2025-04.zip",
+      "sha256": "6f5a34a5482fa8abddfa2205df55605993b4c458315f613567eadfbd2062a0c3",
+      "rows": 719,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2025-04.zip",
+      "sha256": "6d8784d0f2a936547897208aada8b57d65104bd3307cfad32fb39070fdec061c",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2025-04.zip",
+      "sha256": "6cd3fb27bae9313e15734d7214f4a83dc37a7a199cfc12c23f7777a5e27f7fd7",
+      "rows": 90
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2025-05.zip",
+      "sha256": "cb07bdbbed3f21db679ea6944805a4282f121440abf0415905fe4fdc05f480f2",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2025-05.zip",
+      "sha256": "b20e5bf7b4b3b3d5c0720ab2d845e03933ef08f15d3f06570b009463ba12bad9",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2025-05.zip",
+      "sha256": "eb03fd0d0b31eef9ee05544ea8dcce097a807d3475f67d0a5f0859c487c5f5c3",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2025-06.zip",
+      "sha256": "082af5c4634055a860eb765f2b0549344ae6dfd9274eaa09b06859eb7125ad0f",
+      "rows": 719,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2025-06.zip",
+      "sha256": "72d6fb9cab913d98220a06a08eab70a361b5d3fe84ea9701420e5f2cc6600c7c",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2025-06.zip",
+      "sha256": "4ccee0a6fd67cb775be49d124b9eb038f26acd09426fcb9aaf9d3de74cf3a24e",
+      "rows": 90
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2025-07.zip",
+      "sha256": "c2e17bfe68c0ae9ac8c12162c7a64534d91f56a9f9ec0560f300fa6414fc8f19",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2025-07.zip",
+      "sha256": "5493328c22d7804c5d64298e8ac475786eba0810cdb31ed6e6134f5720c5a2bc",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2025-07.zip",
+      "sha256": "66ce38d1a8bc4bdd53af29d8ea5c72493ed48fe9894ee5e9ff4600ccec864c4f",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2025-08.zip",
+      "sha256": "7ea49f6b1196a1c26473433850dfe139b775380cc4cdf03bf853fb553ee6c4e0",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2025-08.zip",
+      "sha256": "ff753c960ffa6954d3ffbd9cf6f6a0f8d2b280753cf868ebe4732d0afa5a14fd",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2025-08.zip",
+      "sha256": "fe9efc3abe1e4be2a2fa9a4008e6957856387f6783a06b97cac3ee271746915f",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2025-09.zip",
+      "sha256": "87ad6a05fe9d7fa90d4abd08cc3e6806759e9f3dcab69869fa3566d43bc876da",
+      "rows": 719,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2025-09.zip",
+      "sha256": "9cbc37023b21bc91802c38689466e2bb69eff22e55d6012c6feb0bb0bce56004",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2025-09.zip",
+      "sha256": "f953315124d20dab98ba710d108103fb4cf054d1535787fd76d35d6b9c18e534",
+      "rows": 90
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2025-10.zip",
+      "sha256": "3cbcc4ed883fe75c9b095cb5981c810b39196b015940bff7cdd7fb6d68cb0865",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2025-10.zip",
+      "sha256": "8d96a116ab53375ce88316e027fed319d625a35756122ed4af79d75584133b97",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2025-10.zip",
+      "sha256": "d80c5be7660a950ad673a0e82488877c6ca0eb81f084d4c844320f892ad2c020",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2025-11.zip",
+      "sha256": "311effa24632be0dfc523980554d876d5516e6acd6c08c7aa7daa3000ba393b9",
+      "rows": 719,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2025-11.zip",
+      "sha256": "2a74a61262338c2cf49d65d3c2d8e5a27ccda3aadedeaeed87da0544b13fb372",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2025-11.zip",
+      "sha256": "5134fdf4319d629473f8cff1e66dc74180844ae2846ab41a8128466ab3682c2f",
+      "rows": 90
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2025-12.zip",
+      "sha256": "d8259dd2f6758b7cd4166564bf8aa7219d6aa140ecf68a3667749da41d4c2560",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2025-12.zip",
+      "sha256": "7c25b753fd893dc697b5e7e8a1d0db904150181be7b7991cc05ba5b08f81cdf8",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2025-12.zip",
+      "sha256": "01db13c460b0190736e1da019c7fcd7ea0abbf3b047e16d3aa8a9e9acec3101f",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2026-01.zip",
+      "sha256": "949d8838cf48d6bd348762534e6307601574f82d58126dc26f0d91740622c27c",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2026-01.zip",
+      "sha256": "cc16e807c075689a73f096b7603c34f1eb289bb2d782ca8f6147e4c42632ed0e",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2026-01.zip",
+      "sha256": "c53be79aae38a1f35e94880f106df4eceab57bfa74a0b5fc5852fdfabf57ab8e",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2026-02.zip",
+      "sha256": "5e219b1a7d7384327e40b27b8accb7f1ae797f3c6ee628441de3035bc1fa3964",
+      "rows": 671,
+      "expected_rows": 672,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2026-02.zip",
+      "sha256": "fa733e5400163477fa7eb544a9a7e04b5c679656720ccb7f92787fcf33b739a3",
+      "rows": 672,
+      "expected_rows": 672,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2026-02.zip",
+      "sha256": "84cb9bcf44ba1364b37db876e7c852aa1b831371556b610e2387115addec9d5f",
+      "rows": 84
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2026-03.zip",
+      "sha256": "5bfab930f6e73e8a486ad1281de8df114d2c6a71cc08f7a449e6c6697af369b6",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2026-03.zip",
+      "sha256": "5e9440665d3e4209c320e2dab897b5c3cec578800e669e1c8fd3503f157e49f1",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2026-03.zip",
+      "sha256": "75cfaea075d97779a577c3744ea63e3d83704f281806fb5f76f2d3e0f089fd2c",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2026-04.zip",
+      "sha256": "7266fae3d30b6b693bb731e7d392cdf132066b2e71a86b1695b0ab0c8a6b8507",
+      "rows": 719,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2026-04.zip",
+      "sha256": "2f466580c7e6d2e02a67a968428c0f9b987108cc1a3d2ba73061e329aacc208d",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2026-04.zip",
+      "sha256": "951a280e98b6d20fe4be25bf2b71f3cda1c07c7583a88cb874151e2b1fe941f1",
+      "rows": 90
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2026-05.zip",
+      "sha256": "bc33dc72343c662cb0614d4afe2ce7030ec7a4648d7c9a2dd1e99477e0001101",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2026-05.zip",
+      "sha256": "0d1aef19746005c140421825e55e482813330b19a82cbc24c792aaa0464778c2",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2026-05.zip",
+      "sha256": "c13066e5f7c5d161dbebd488cbeaab1205688c6dc7f9fafcc8f94296f2c1e47b",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2026-06.zip",
+      "sha256": "feb36f4d0a5bb0c13596b57d9477f60e7331cec8762b23102cb5ea188eddcdaf",
+      "rows": 719,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2026-06.zip",
+      "sha256": "5b6913a64843d8fbadeb1783a2ef064291355a33e6eee84f1a03c7e8786acfc8",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2026-06.zip",
+      "sha256": "8d32fa3153d54c58667650e8b2c65e489b3a433b775052a93208bf60541a40d3",
+      "rows": 90
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2026-07.zip",
+      "sha256": "62abffc3fdbf438465dc44432d16a1806e6c140ab3e1824ffceb908d831f67e2",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2026-07.zip",
+      "sha256": "4a88a47617d14ba94ae2154732ba724497a8cad66b1d7fd0dc4f88216101e0be",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2026-07.zip",
+      "sha256": "13f655eaa29865b16acc7bd97be74e212bc4c2139fc2f9ead4d150852c2a9ebb",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2026-08.zip",
+      "sha256": "fcec8b92044eb5a2cdcbfb038afce21bb8e02a06b18b1eaffc4ef88bacb1185e",
+      "rows": 743,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2026-08.zip",
+      "sha256": "a25ab3dfcabcf739bd8bdd0aa9b1302865d5c571a5af1ffbb6e4a2b5c26ab833",
+      "rows": 744,
+      "expected_rows": 744,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2026-08.zip",
+      "sha256": "593e99bb628c0b178a5a2c8f415e1ed489dfd7dea497366f1fee91b8768c704d",
+      "rows": 93
+    },
+    {
+      "kind": "spot",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2026-09.zip",
+      "sha256": "3253ecc95e95ccac49036d4efb297e40906df5e1516f91b5288121e20457e343",
+      "rows": 719,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null,
+      "missing_synchronized_rows": 0
+    },
+    {
+      "kind": "perp",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1h/SOLUSDT-1h-2026-09.zip",
+      "sha256": "e57f44b7df1f4269a06395c161d3618d9bc3d56e623825fc77c615d713a19263",
+      "rows": 720,
+      "expected_rows": 720,
+      "missing_rows": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "kind": "funding",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2026-09.zip",
+      "sha256": "8503ce0767496c63929bedc4f43307efcea8216d181a873b32a695f6d85092ef",
+      "rows": 90
+    }
+  ],
+  "limitations": [
+    "Hourly closes trigger exits at the following open, including adverse spread gaps.",
+    "Borrow availability, margin liquidation and order-book impact are not modeled.",
+    "Historical passage would still require 50 new forward PAPER trades."
+  ]
+}
