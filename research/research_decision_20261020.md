@@ -517,3 +517,38 @@ deployment, Render setting, paused bot or real account was changed.
 
 Next concrete step: retain this fixed model as a benchmark and preregister a genuinely symmetric,
 higher-sample mechanism on data not used to repair its long-only regime bias.
+
+## TRIANGULAR_PARITY_V1: distinct atomic cross-rate hypothesis, rejected
+
+The three spot markets, both triangular routes, 0.50% completed-bar threshold, next-open three-leg
+execution, allocation, cooldown, costs, periods and gates were committed before historical results
+were read. Every cycle starts and ends in USDT at one synchronized next-bar open, so signal-to-fill
+gaps are realized rather than credited at the signal close. This is atomic cross-rate parity, not
+a held directional, pair-spread, classifier, trend, reversion, flow or derivatives strategy.
+
+The run used 138 public Binance Vision 5-minute archives: BTCUSDT, ETHUSDT and ETHBTC for each of
+46 months from December 2022 through September 2026. URLs and SHA256 hashes are in
+`triangular_parity_results_20261024.json`. The exact three-market intersection contains 403,184
+bars. Sixteen timestamps are missing in March 2023 only; all validation months are complete and no
+price was fabricated. Five tests passed for both routes, next-bar entry/cooldown, adverse gap
+realization, three-leg fees and cost stress.
+
+| Block | Cycles (forward/reverse) | Normal net | Normal PF | Stress net | Stress PF |
+|---|---:|---:|---:|---:|---:|
+| Development 2023 | 1 (1/0) | +0.10% | n/a | +0.04% | n/a |
+| Validation 2024 H1 | 0 (0/0) | 0.00% | n/a | 0.00% | n/a |
+| Validation 2024 H2 | 0 (0/0) | 0.00% | n/a | 0.00% | n/a |
+| Validation 2025 H1 | 0 (0/0) | 0.00% | n/a | 0.00% | n/a |
+| Validation 2025 H2 | 1 (1/0) | +0.16% | n/a | +0.09% | n/a |
+| Validation Jan-Sep 2026 | 0 (0/0) | 0.00% | n/a | 0.00% | n/a |
+| Continuous validation | 1 (1/0) | +0.16% | n/a | +0.09% | n/a |
+
+Development, combined stress return and drawdown pass, but a single one-direction validation
+cycle is not evidence. Sample size, route balance, both PF gates, block stability and concentration
+fail. Therefore `passes_historical_gate=false` and `robust_candidate=false`. Lowering the 0.50%
+threshold after seeing these bars is prohibited; do not start forward PAPER. Moreover 5-minute
+OHLC cannot prove simultaneous executable depth, so even a historical pass would need quote-level
+forward evidence. No deployment, Render setting, paused bot or real account was changed.
+
+Next concrete step: preserve the full failure ledger and begin the next session with a new
+preregistered data/mechanism family, not a looser parity threshold or a repaired prior signal.
