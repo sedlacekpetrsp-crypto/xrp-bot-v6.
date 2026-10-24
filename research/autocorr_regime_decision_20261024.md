@@ -1,0 +1,11 @@
+# AUTOCORR_REGIME_SWITCH_V1 — preregistration (2026-10-24)
+
+Status: HYPOTHESIS REGISTERED, HISTORICAL TEST NOT YET RUN. This is NOT evidence of profitability.
+
+Distinct hypothesis: the sign of 96-bar lag-one autocorrelation of log returns conditions the direction of the next 4-bar price move. Positive autocorrelation >= +0.12 trades a 4-bar breakout continuation; negative <= -0.12 trades a 4-bar reversal, with no trade in between. Unlike rejected flow pressure, sweep, volatility momentum, and state classifier candidates, this tests a pre-specified conditional reversal-vs-continuation decision on serial dependence, not flow, volume, or volatility alone. Spot LONG only; no shorting.
+
+Fixed parameters before seeing results: XRPUSDT and ETHUSDT spot 15m; 96 closed returns; lag-one Pearson autocorrelation; regime threshold +/-0.12; 4-bar return threshold +/-0.35%; ATR14; stop 1.8 ATR; target 2.2R; max 24 bars; fee 0.095% per side; adverse slippage 0.02% per side; 0.5% account-equity risk per trade; max 20% notional; one position per symbol, 20% total gross portfolio cap. Entry at next bar open; intrabar ambiguous stop wins; gap stop at worse open. Zero leverage.
+
+Historical protocol: actual Binance Vision monthly spot 15m klines Oct 2025–Sep 2026, complete consecutive UTC timestamps and source SHA256. Train Oct 2025–Jun 2026; locked chronological OOS Jul–Sep 2026. Run both markets and 2x fee/slippage stress without tuning. This period was previously inspected in other projects: exploratory OOS, NOT untouched validation. Evaluate monthly subperiods, gross/net P/L, drawdown, PF, and >=100 OOS trades aggregate; require PF>1.2, positive net expectancy and net P/L on both symbols, stress PF>1.05, no single month >50% of total profit, max DD <=10%. After passing, demand >=30 calendar days and >=100 new timestamped forward PAPER trades on independent future observations with positive stressed expectancy before any PROŠEL designation. No LIVE or Render changes.
+
+Next action: run unit tests and independent historical downloader/backtest on real complete archives; write exact data provenance, results, limitations, and decision here. Never label a pending run as failed or successful.
