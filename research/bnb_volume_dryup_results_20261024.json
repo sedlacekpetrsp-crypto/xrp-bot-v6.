@@ -1,0 +1,867 @@
+{
+  "strategy": "BNB_VOLUME_DRYUP_V1",
+  "data": "Binance BNBUSDT spot 1h monthly archives",
+  "development_period": "2021-01-01/2023-12-31",
+  "validation_period": "2024-01-01/2026-09-30",
+  "config": {
+    "return_lookback_hours": 48,
+    "recent_volume_hours": 6,
+    "baseline_volume_hours": 48,
+    "maximum_return": -0.03,
+    "maximum_volume_ratio": 0.7,
+    "stop_loss": 0.04,
+    "take_profit": 0.06,
+    "maximum_hold_hours": 36,
+    "cooldown_hours": 24,
+    "position_fraction": 0.25,
+    "fee_rate": 0.00095,
+    "slippage_rate": 0.0002,
+    "initial_equity": 10000.0
+  },
+  "double_cost_config": {
+    "return_lookback_hours": 48,
+    "recent_volume_hours": 6,
+    "baseline_volume_hours": 48,
+    "maximum_return": -0.03,
+    "maximum_volume_ratio": 0.7,
+    "stop_loss": 0.04,
+    "take_profit": 0.06,
+    "maximum_hold_hours": 36,
+    "cooldown_hours": 24,
+    "position_fraction": 0.25,
+    "fee_rate": 0.0019,
+    "slippage_rate": 0.0004,
+    "initial_equity": 10000.0
+  },
+  "development": {
+    "2021": {
+      "trades": 73,
+      "win_rate": 0.4520547945205479,
+      "net_return": 0.027769212339751492,
+      "net_pnl": 277.6921233975154,
+      "profit_factor": 1.0781378227400427,
+      "max_drawdown": 0.07743692993055212,
+      "fees": 362.79500930582594
+    },
+    "2022": {
+      "trades": 62,
+      "win_rate": 0.41935483870967744,
+      "net_return": -0.05663777306995543,
+      "net_pnl": -566.3777306995544,
+      "profit_factor": 0.7952946107735104,
+      "max_drawdown": 0.08943166738246114,
+      "fees": 281.4822326044899
+    },
+    "2023": {
+      "trades": 38,
+      "win_rate": 0.47368421052631576,
+      "net_return": -0.009863659758876153,
+      "net_pnl": -98.63659758876202,
+      "profit_factor": 0.8737831030697584,
+      "max_drawdown": 0.06237173508723144,
+      "fees": 180.3228694739742
+    }
+  },
+  "development_double_cost": {
+    "2021": {
+      "trades": 73,
+      "win_rate": 0.4383561643835616,
+      "net_return": -0.011974603396772698,
+      "net_pnl": -119.74603396772727,
+      "profit_factor": 0.9676936953026692,
+      "max_drawdown": 0.08697326399209815,
+      "fees": 711.5506264512904
+    },
+    "2022": {
+      "trades": 62,
+      "win_rate": 0.3870967741935484,
+      "net_return": -0.08808579987390153,
+      "net_pnl": -880.8579987390149,
+      "profit_factor": 0.6973291606855335,
+      "max_drawdown": 0.11107199994154891,
+      "fees": 553.6938835499532
+    },
+    "2023": {
+      "trades": 38,
+      "win_rate": 0.42105263157894735,
+      "net_return": -0.031090080411786403,
+      "net_pnl": -310.900804117864,
+      "profit_factor": 0.6499057272418362,
+      "max_drawdown": 0.06945473629389963,
+      "fees": 356.8210785263072
+    }
+  },
+  "validation": {
+    "2024_H1": {
+      "trades": 25,
+      "win_rate": 0.48,
+      "net_return": -0.01526590323651289,
+      "net_pnl": -152.65903236512895,
+      "profit_factor": 0.8297510675315762,
+      "max_drawdown": 0.041627312470658456,
+      "fees": 117.10564865099201
+    },
+    "2024_H2": {
+      "trades": 24,
+      "win_rate": 0.5416666666666666,
+      "net_return": 0.016342234665065458,
+      "net_pnl": 163.42234665065553,
+      "profit_factor": 1.1828433852801234,
+      "max_drawdown": 0.026541212648661182,
+      "fees": 114.6554198918341
+    },
+    "2025_H1": {
+      "trades": 21,
+      "win_rate": 0.47619047619047616,
+      "net_return": 0.020133390428329845,
+      "net_pnl": 201.3339042832995,
+      "profit_factor": 1.3390876886025636,
+      "max_drawdown": 0.03068922981210759,
+      "fees": 100.92327219951598
+    },
+    "2025_H2": {
+      "trades": 23,
+      "win_rate": 0.6956521739130435,
+      "net_return": 0.04802550779644266,
+      "net_pnl": 480.25507796442616,
+      "profit_factor": 1.7774877021579247,
+      "max_drawdown": 0.02528532731969095,
+      "fees": 110.79639209124235
+    },
+    "2026_JAN_SEP": {
+      "trades": 29,
+      "win_rate": 0.4827586206896552,
+      "net_return": -0.03103826568971313,
+      "net_pnl": -310.3826568971308,
+      "profit_factor": 0.7167445552117649,
+      "max_drawdown": 0.05741667514769743,
+      "fees": 134.03844141701938
+    },
+    "ALL": {
+      "trades": 122,
+      "win_rate": 0.5327868852459017,
+      "net_return": 0.03679857462612057,
+      "net_pnl": 367.98574626120535,
+      "profit_factor": 1.0881570755806835,
+      "max_drawdown": 0.05741667514769775,
+      "fees": 587.5604757847691
+    }
+  },
+  "validation_double_cost": {
+    "2024_H1": {
+      "trades": 25,
+      "win_rate": 0.44,
+      "net_return": -0.028892316639684945,
+      "net_pnl": -288.9231663968494,
+      "profit_factor": 0.7007090243290706,
+      "max_drawdown": 0.045678801645398635,
+      "fees": 232.62662544280514
+    },
+    "2024_H2": {
+      "trades": 24,
+      "win_rate": 0.5416666666666666,
+      "net_return": 0.0029879889563204642,
+      "net_pnl": 29.879889563204415,
+      "profit_factor": 1.0315328730002338,
+      "max_drawdown": 0.028743900725707816,
+      "fees": 227.82946925965766
+    },
+    "2025_H1": {
+      "trades": 21,
+      "win_rate": 0.47619047619047616,
+      "net_return": 0.008214490096983607,
+      "net_pnl": 82.14490096983536,
+      "profit_factor": 1.1260460368716512,
+      "max_drawdown": 0.03414609238436755,
+      "fees": 200.69101230573028
+    },
+    "2025_H2": {
+      "trades": 23,
+      "win_rate": 0.6956521739130435,
+      "net_return": 0.03461757305484836,
+      "net_pnl": 346.17573054848435,
+      "profit_factor": 1.530835662328048,
+      "max_drawdown": 0.026429993838275132,
+      "fees": 220.192277134328
+    },
+    "2026_JAN_SEP": {
+      "trades": 29,
+      "win_rate": 0.4827586206896552,
+      "net_return": -0.04653961372832904,
+      "net_pnl": -465.39613728329095,
+      "profit_factor": 0.6011838411019504,
+      "max_drawdown": 0.06927286062690442,
+      "fees": 265.98125923524543
+    },
+    "ALL": {
+      "trades": 122,
+      "win_rate": 0.5245901639344263,
+      "net_return": -0.03127934016681577,
+      "net_pnl": -312.79340166815746,
+      "profit_factor": 0.9280330905092007,
+      "max_drawdown": 0.06927286062690396,
+      "fees": 1135.8179141040036
+    }
+  },
+  "largest_positive_validation_block_share": 0.5683415849471769,
+  "gate": {
+    "development_positive_all_years": false,
+    "validation_minimum_80_trades": true,
+    "normal_pf_at_least_1_20": false,
+    "stress_pf_at_least_1_05": false,
+    "normal_positive_all_blocks": false,
+    "stress_positive_four_blocks": false,
+    "stress_total_positive": false,
+    "normal_max_drawdown_at_most_15pct": true,
+    "profit_not_concentrated": false,
+    "forward_paper_50_trades": false
+  },
+  "passes_historical_gate": false,
+  "robust_candidate": false,
+  "manifest": [
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2020-11.zip",
+      "sha256": "0f021ef432d688d84402beeb699d56af37c286fbdbb755568c5befe3533215bd",
+      "bars": 719,
+      "expected_bars": 720,
+      "missing_bars": 1,
+      "first_missing_timestamp": 1606716000000
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2020-12.zip",
+      "sha256": "787805f1a8f7721ab1e9908ea446d806d09a210a2120aeda9667e66e09ab6ccd",
+      "bars": 740,
+      "expected_bars": 744,
+      "missing_bars": 4,
+      "first_missing_timestamp": 1608562800000
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2021-01.zip",
+      "sha256": "5cdf6cb04631af89dcf108fb7cb8f5c0a5d23ee6c7a5ab9fbd3db3086637e694",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2021-02.zip",
+      "sha256": "43b7f41f3f21631ff10bd8773dc15b51fad7e34e71781abe44e293d783be2215",
+      "bars": 671,
+      "expected_bars": 672,
+      "missing_bars": 1,
+      "first_missing_timestamp": 1613016000000
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2021-03.zip",
+      "sha256": "3b91972b1b96f3744ac6cd176ce805a2205ca0e04695ca86c0cda5d2adcb600a",
+      "bars": 743,
+      "expected_bars": 744,
+      "missing_bars": 1,
+      "first_missing_timestamp": 1614996000000
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2021-04.zip",
+      "sha256": "7a7c1d9b77747355826fcc8bfafa02881baacda993dd6aa552229697b7809864",
+      "bars": 715,
+      "expected_bars": 720,
+      "missing_bars": 5,
+      "first_missing_timestamp": 1618884000000
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2021-05.zip",
+      "sha256": "487847e1fb70123743a58793305629d327d6cd4515e059d40e4017a9e120fe01",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2021-06.zip",
+      "sha256": "6778ed4eacf42e5c8fe3ae44cfbc932fff6c690db59cfa93b096010628441f99",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2021-07.zip",
+      "sha256": "ca4060e5f13413a1b861483641d4dd9d3fe81c7a612caba21b565b4e20346934",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2021-08.zip",
+      "sha256": "40c898781fa5eb29fa76b4fd6950a119fdf743c2305b99d2727e96d8730c52a5",
+      "bars": 740,
+      "expected_bars": 744,
+      "missing_bars": 4,
+      "first_missing_timestamp": 1628820000000
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2021-09.zip",
+      "sha256": "2aaf3c5358b46ef7d59d7013fd3dacf2a9ecf27037929f061611c028d205abe1",
+      "bars": 718,
+      "expected_bars": 720,
+      "missing_bars": 2,
+      "first_missing_timestamp": 1632898800000
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2021-10.zip",
+      "sha256": "dc2acb054fdcea05d7c8cb4511376b20954d034f6ddfd4d5cd07cb405886c082",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2021-11.zip",
+      "sha256": "dc3f62a12d9f21818c9bd8b35511e3e255fc4f4bf114fc4e4506a32267f97e6f",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2021-12.zip",
+      "sha256": "8bbc6c5be0dd58d060085a2048d2d9a807183fce333234cee1cfb03447b14b36",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2022-01.zip",
+      "sha256": "663ea08387d4c5155b2421ebeaaaba14850e4362cc9e24ee7979bfefab03f625",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2022-02.zip",
+      "sha256": "00b3aab119398a6ef303a9b122f7ee819eb1c62c358d3d511ceae345b74ba6db",
+      "bars": 672,
+      "expected_bars": 672,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2022-03.zip",
+      "sha256": "c6c3ae3b1332fc39d92749bd126fb675571fbe80576cd95d56d0a16a0ec77afd",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2022-04.zip",
+      "sha256": "496c543a2aac62b3d8ab6a71c89da4db9ad4fcd9bc640905edbeda7b4487004f",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2022-05.zip",
+      "sha256": "e183a9b786ba8c2ddcfb48cf974dcd8edad5c6816e865e3ec62d9d94eec08c7e",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2022-06.zip",
+      "sha256": "ea7faf8f2d22c27768b868ca431c56d2cbb83d955d3debe1e6dfb70f034de32a",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2022-07.zip",
+      "sha256": "829ef1e541a13599cba457ce963674c2f14447899c7f43b878299e5f59a2b7f5",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2022-08.zip",
+      "sha256": "927a92e9c381729b063cbe89a4a8bca10898aca61e1a6919a016ea7eb959304f",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2022-09.zip",
+      "sha256": "054d3296f060a815d7ad5c6485d4883430dad0fc08e78f0be10df66884620eed",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2022-10.zip",
+      "sha256": "dfc624a65e466abc9698c1d153843d78f1df449107bce97c5215525417fa3718",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2022-11.zip",
+      "sha256": "f9f9497753bd5d1df5a2a59ee5dfe07edd79f2be7aaa14a5371511a464fa2495",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2022-12.zip",
+      "sha256": "acc9f21b1ed51b5f4cc2978ee95a0e50ffea7891cd1037a01c8c88c4e71a7104",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2023-01.zip",
+      "sha256": "4d7ad8f2cc41682200d6e8d1ab6088219e302b3a356f9997c19395b0208497b5",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2023-02.zip",
+      "sha256": "0e15c412a2a14f40e67c12b5546ef736f88d045815e68341f1f5a567cc428ac6",
+      "bars": 672,
+      "expected_bars": 672,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2023-03.zip",
+      "sha256": "55bba490654b69c26cc1989f17902737535682f70491132f66246fbea3b7017a",
+      "bars": 743,
+      "expected_bars": 744,
+      "missing_bars": 1,
+      "first_missing_timestamp": 1679662800000
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2023-04.zip",
+      "sha256": "d45f37c1f4c7bce00774074ab01c5f385ba150e28e5cb0c84a73371d2042c313",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2023-05.zip",
+      "sha256": "882253ca7518d2b5cebdc388b6e8cf5a1c19d180e629f848d201c5bda54c46c3",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2023-06.zip",
+      "sha256": "27607d49c36f479d582801faa9b8eb698b79032ca4aac69d65c720eeca6cf122",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2023-07.zip",
+      "sha256": "7bfa51be86f9822859af309dc579134089c2e8040a9f66503be0d5cd96499060",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2023-08.zip",
+      "sha256": "5eebe4ec692c43e9bc8722632da94cd79187aa17b848da9361656ce0be430bd0",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2023-09.zip",
+      "sha256": "159a99069e8826ee23aca59b5dc7864a083fe5a4d8b13f888b68dfaa4317816b",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2023-10.zip",
+      "sha256": "65e6c269037fb53ed74b9cd03219a42d98dff1d48cffde8307e9d9c73dfce63b",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2023-11.zip",
+      "sha256": "486035abf6083f90e53e0c49e0fa829d0380d174a65ea6e8bb9066f76b139554",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2023-12.zip",
+      "sha256": "9153d4b7bf9e5cc6c49857b65ad7a3566faf525774deb0336aad1af9b44bd639",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2024-01.zip",
+      "sha256": "e06554367764c662b9690e28359193fb9c8b9d5d44cd09f4b23d6d022fe9552a",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2024-02.zip",
+      "sha256": "c79637210a9b67dcd198cdff3d75c8f275bbb0be13ff0a7703378e16fe051d52",
+      "bars": 696,
+      "expected_bars": 696,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2024-03.zip",
+      "sha256": "06e124d8cdeda60dd327ad23d9f61470f874e14e6fe495cb1739b50961af48dc",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2024-04.zip",
+      "sha256": "623fae707bcafc75e01281565626f1ea0fac03d010d630dad7f67fc76ff31e72",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2024-05.zip",
+      "sha256": "489692791a583ed29b26fcadfba774832820a842e8e393e41764df9221279d2e",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2024-06.zip",
+      "sha256": "c9f4bf8e332c1a4dc3e57655f17c12a5554f8bd085ddabf70fbe464b7071ba95",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2024-07.zip",
+      "sha256": "6fd039df81b4a12d699b9f810cb39dfbb389edb1d508571d49432247c630fb4a",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2024-08.zip",
+      "sha256": "4334244cd1cd0e2ed4d9a1e42d92e67418b83b9565d8eb9618f826005f1655f2",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2024-09.zip",
+      "sha256": "2697bc4cfc775ad17de0adfabd4b94ac4d575414dd374e72a9b77339f7dd2930",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2024-10.zip",
+      "sha256": "36768457c4e40c9b80088d0e2559876822e18269ecb782b5f570f0b205ef9d8f",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2024-11.zip",
+      "sha256": "133bb27dc562eafce74b7a7deaaf7742a5e7790efbd23130876b2ce41a18c77b",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2024-12.zip",
+      "sha256": "9ffb3beebc21b20ac140d985050a49fa1e11b475aa9dff3f9b75e55a9b832165",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2025-01.zip",
+      "sha256": "c2df916221d659c4ea89daff3b7c2f14aa44e48e8163191580b8579664621ab0",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2025-02.zip",
+      "sha256": "75effe494d7a7d29b020f73c5acb23c0a2f8731df29d95837c489c359de62db1",
+      "bars": 672,
+      "expected_bars": 672,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2025-03.zip",
+      "sha256": "74161c8cd3e6869d3d42a321af8590002f7666e0507220eff513a3c84751dc6d",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2025-04.zip",
+      "sha256": "e93a57bbaddfe264cc0b697aa52486ebdf8901195d7363eefa2f0208ad7b7e45",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2025-05.zip",
+      "sha256": "0f77041a1e43581b7b67210e35432c997d33b2b450ff5586ee2aaaf1a7e1cceb",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2025-06.zip",
+      "sha256": "4738dcff9c08bdd71a98d81cb5caab2e31edde3e6e152a0d89689e41f2d3c110",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2025-07.zip",
+      "sha256": "8541283a264382b0d8d3cec5c563e457dae00cf97c8c0b4d3cee1781825d0246",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2025-08.zip",
+      "sha256": "74939c2d6afa29f927ceb4a0adacc873ba975e0f37ecd2b05c5a3f4c45673a6b",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2025-09.zip",
+      "sha256": "edb2ba0c725e932b6adb162a38470b29a0f3888a216a4663851de202b2c7937b",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2025-10.zip",
+      "sha256": "22b2595e7df28f89e12523fac0aaf14e742fbf7ab4ff8feb081201fe3f714edc",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2025-11.zip",
+      "sha256": "34eebef4cf7743a1d44567b9857eddc020c3a96b4c9aac65702a4537df72ae76",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2025-12.zip",
+      "sha256": "3d0d7dd68c548d3439ba773e1556a89911fff14af7aac9ed34d16090b85cad5e",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2026-01.zip",
+      "sha256": "c2524b2a5a48fa55cd6c8321118b7ad0de7ef83794344ccfd86d161e11b7c6a5",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2026-02.zip",
+      "sha256": "819761ffd58e265f471c4edbe5ffd2e7abbeb747a85a6b2c0cb389f921850f29",
+      "bars": 672,
+      "expected_bars": 672,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2026-03.zip",
+      "sha256": "b80b2124644a48ce2fbf90cd2cedadfdf79aa2de72ac14d0dcd7c487fe75196c",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2026-04.zip",
+      "sha256": "4283e0a097dc65dbf0658744352086a46e0862023825f60d815da5ccd8f7f835",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2026-05.zip",
+      "sha256": "74aac29cedf0fc0b94a1bb7bb1b8ba3aebfef827da0c21be181884789dcef9ae",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2026-06.zip",
+      "sha256": "0c3b052bd921899ca8216f86cbd2830a8f20bc5725bcf49611486267fb704997",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2026-07.zip",
+      "sha256": "7257a39b939fce6c29ba7f44ae42fbec4517d18dacc2b3d27c9c536881af7d10",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2026-08.zip",
+      "sha256": "420f85b0f1440f209d4ac1aaecf1b0d91e165a18f4edea3de11695589d5578c7",
+      "bars": 744,
+      "expected_bars": 744,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    },
+    {
+      "symbol": "BNBUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BNBUSDT/1h/BNBUSDT-1h-2026-09.zip",
+      "sha256": "caccd0ca4bd8b63257f402381e3a869a358943fd17f98a13d0f00c88aab21050",
+      "bars": 720,
+      "expected_bars": 720,
+      "missing_bars": 0,
+      "first_missing_timestamp": null
+    }
+  ],
+  "limitations": [
+    "Hourly OHLC cannot reveal intrabar stop/target order; stop is assumed first.",
+    "Quote-volume behavior on one exchange and one asset may not generalize.",
+    "Historical passage would still require 50 new forward PAPER trades."
+  ]
+}

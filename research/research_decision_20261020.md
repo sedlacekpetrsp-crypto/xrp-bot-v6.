@@ -328,3 +328,41 @@ blocks. No deployment, Render setting, paused bot or real account was changed.
 
 Next concrete step: begin a fresh research family only after preregistering data and evaluation
 periods not selected to repair any of today's failed signals; retain all failures as benchmarks.
+
+## BNB_VOLUME_DRYUP_V1: distinct seller-exhaustion hypothesis, rejected
+
+The hypothesis, BNB-only data set, 48-hour decline, six-versus-48-hour quote-volume contraction,
+execution rules, chronological blocks and gates were committed before historical results were
+read. The model buys 25% of equity at the next hourly open after a return at most -3% and volume
+ratio at most 0.70, with a 4% stop, 6% target, 36-hour maximum hold and 24-hour cooldown. It is a
+single-asset post-decline supply-exhaustion event, not a variant of rejected flow pressure,
+cross-market shock rebound, range-limit or portfolio momentum.
+
+The run used 71 public Binance Vision `BNBUSDT` 1-hour archives from November 2020 through
+September 2026. URLs, SHA256 fingerprints and per-month missing-candle counts are stored in
+`bnb_volume_dryup_results_20261024.json`. Eight early development archives contain 19 missing
+hours in total; no validation archive is incomplete, no candle was fabricated, and signals whose
+required history crossed a gap were prohibited. Four deterministic tests passed for completed
+history, next-bar entry, non-overlap/cooldown, worse-open gap stops and cost monotonicity.
+
+| Block | Trades | Normal net | Normal PF | Normal max DD | Double-cost net | Double-cost PF |
+|---|---:|---:|---:|---:|---:|---:|
+| Development 2021 | 73 | +2.78% | 1.0781 | 7.74% | -1.20% | 0.9677 |
+| Development 2022 | 62 | -5.66% | 0.7953 | 8.94% | -8.81% | 0.6973 |
+| Development 2023 | 38 | -0.99% | 0.8738 | 6.24% | -3.11% | 0.6499 |
+| Validation 2024 H1 | 25 | -1.53% | 0.8298 | 4.16% | -2.89% | 0.7007 |
+| Validation 2024 H2 | 24 | +1.63% | 1.1828 | 2.65% | +0.30% | 1.0315 |
+| Validation 2025 H1 | 21 | +2.01% | 1.3391 | 3.07% | +0.82% | 1.1260 |
+| Validation 2025 H2 | 23 | +4.80% | 1.7775 | 2.53% | +3.46% | 1.5308 |
+| Validation Jan-Sep 2026 | 29 | -3.10% | 0.7167 | 5.74% | -4.65% | 0.6012 |
+| Continuous validation | 122 | +3.68% | 1.0882 | 5.74% | -3.13% | 0.9280 |
+
+Sample size and normal drawdown pass, but development consistency, both combined PF gates,
+normal and stress block stability, combined stress return and profit-concentration gates fail.
+The superficially positive normal validation therefore does not qualify; double costs reverse it.
+Thus `passes_historical_gate=false` and `robust_candidate=false`. Do not start forward PAPER or
+retune the thresholds on the revealed BNB blocks. No deployment, Render setting, paused bot or
+real account was changed.
+
+Next concrete step: preregister a new data source or market mechanism rather than adjusting this
+volume-dry-up event; retain its 2024–2026 blocks as permanently revealed validation evidence.
