@@ -1,0 +1,1083 @@
+{
+  "strategy": "BTC_QUARTERLY_CARRY_V1",
+  "data": "Binance BTCUSDT spot and dated USD-M quarterly futures 1h archives",
+  "development_period": "2021-01-01/2023-12-31",
+  "validation_period": "2024-01-01/2026-09-30",
+  "config": {
+    "entry_window_days": 28,
+    "entry_cutoff_days": 7,
+    "minimum_annualized_basis": 0.08,
+    "stop_annualized_basis": 0.25,
+    "leg_fraction": 0.15,
+    "spot_fee_rate": 0.00095,
+    "futures_fee_rate": 0.0005,
+    "slippage_rate": 0.0002,
+    "initial_equity": 10000.0
+  },
+  "stress_config": {
+    "entry_window_days": 28,
+    "entry_cutoff_days": 7,
+    "minimum_annualized_basis": 0.08,
+    "stop_annualized_basis": 0.25,
+    "leg_fraction": 0.15,
+    "spot_fee_rate": 0.0019,
+    "futures_fee_rate": 0.001,
+    "slippage_rate": 0.0004,
+    "initial_equity": 10000.0
+  },
+  "development": {
+    "2021": {
+      "trades": 4,
+      "net_return": 0.000362729609180823,
+      "net_pnl": 3.627296091808603,
+      "profit_factor": 2.0802779259648427,
+      "max_drawdown": 0.0037982536118678105,
+      "fees": 16.772142430298302,
+      "contracts": [
+        "BTCUSDT_210326",
+        "BTCUSDT_210625",
+        "BTCUSDT_210924",
+        "BTCUSDT_211231"
+      ]
+    },
+    "2022": {
+      "trades": 0,
+      "net_return": 0.0,
+      "net_pnl": 0.0,
+      "profit_factor": null,
+      "max_drawdown": 0.0,
+      "fees": 0,
+      "contracts": []
+    },
+    "2023": {
+      "trades": 2,
+      "net_return": -0.000304712682098085,
+      "net_pnl": -3.0471268209803384,
+      "profit_factor": 0.1464325630888066,
+      "max_drawdown": 0.0033790836728963603,
+      "fees": 9.230649370370308,
+      "contracts": [
+        "BTCUSDT_230331",
+        "BTCUSDT_231229"
+      ]
+    }
+  },
+  "development_stress": {
+    "2021": {
+      "trades": 4,
+      "net_return": -0.001758513551527896,
+      "net_pnl": -17.585135515279035,
+      "profit_factor": 0.0,
+      "max_drawdown": 0.00396609069975223,
+      "fees": 33.51552481523837,
+      "contracts": [
+        "BTCUSDT_210326",
+        "BTCUSDT_210625",
+        "BTCUSDT_210924",
+        "BTCUSDT_211231"
+      ]
+    },
+    "2022": {
+      "trades": 0,
+      "net_return": 0.0,
+      "net_pnl": 0.0,
+      "profit_factor": null,
+      "max_drawdown": 0.0,
+      "fees": 0,
+      "contracts": []
+    },
+    "2023": {
+      "trades": 2,
+      "net_return": -0.0014965751517327375,
+      "net_pnl": -14.96575151732759,
+      "profit_factor": 0.0,
+      "max_drawdown": 0.003690074697432547,
+      "fees": 18.4545807282382,
+      "contracts": [
+        "BTCUSDT_230331",
+        "BTCUSDT_231229"
+      ]
+    }
+  },
+  "validation": {
+    "2024_H1": {
+      "trades": 2,
+      "net_return": -0.0004860572944349606,
+      "net_pnl": -4.860572944349769,
+      "profit_factor": 0.48352379166303977,
+      "max_drawdown": 0.0009411029716162375,
+      "fees": 8.476687380246698,
+      "contracts": [
+        "BTCUSDT_240329",
+        "BTCUSDT_240628"
+      ]
+    },
+    "2024_H2": {
+      "trades": 2,
+      "net_return": -0.0011481012468280705,
+      "net_pnl": -11.481012468280824,
+      "profit_factor": 0.0,
+      "max_drawdown": 0.0011481012468280824,
+      "fees": 8.899733608616764,
+      "contracts": [
+        "BTCUSDT_240927",
+        "BTCUSDT_241227"
+      ]
+    },
+    "2025_H1": {
+      "trades": 1,
+      "net_return": 0.000268462222551058,
+      "net_pnl": 2.6846222255098837,
+      "profit_factor": null,
+      "max_drawdown": 0.0004110718769725281,
+      "fees": 4.432105695705307,
+      "contracts": [
+        "BTCUSDT_250328"
+      ]
+    },
+    "2025_H2": {
+      "trades": 1,
+      "net_return": 4.879466064444671e-05,
+      "net_pnl": 0.4879466064448934,
+      "profit_factor": null,
+      "max_drawdown": 0.00036858703461615947,
+      "fees": 4.295412496174988,
+      "contracts": [
+        "BTCUSDT_250926"
+      ]
+    },
+    "2026_JAN_SEP": {
+      "trades": 1,
+      "net_return": -0.0002788493987365692,
+      "net_pnl": -2.788493987365655,
+      "profit_factor": 0.0,
+      "max_drawdown": 0.0004710804783990221,
+      "fees": 4.589879203512354,
+      "contracts": [
+        "BTCUSDT_260925"
+      ]
+    },
+    "ALL": {
+      "trades": 7,
+      "net_return": -0.0015953310041990632,
+      "net_pnl": -15.953310041990335,
+      "profit_factor": 0.3260479561336862,
+      "max_drawdown": 0.0016336004982771557,
+      "fees": 30.670342420981612,
+      "contracts": [
+        "BTCUSDT_240329",
+        "BTCUSDT_240628",
+        "BTCUSDT_240927",
+        "BTCUSDT_241227",
+        "BTCUSDT_250328",
+        "BTCUSDT_250926",
+        "BTCUSDT_260925"
+      ]
+    }
+  },
+  "validation_stress": {
+    "2024_H1": {
+      "trades": 2,
+      "net_return": -0.0015613343127721668,
+      "net_pnl": -15.613343127721237,
+      "profit_factor": 0.0,
+      "max_drawdown": 0.0015613343127721237,
+      "fees": 16.94776412731018,
+      "contracts": [
+        "BTCUSDT_240329",
+        "BTCUSDT_240628"
+      ]
+    },
+    "2024_H2": {
+      "trades": 2,
+      "net_return": -0.002288274484556152,
+      "net_pnl": -22.88274484556132,
+      "profit_factor": 0.0,
+      "max_drawdown": 0.002288274484556132,
+      "fees": 17.793266965659715,
+      "contracts": [
+        "BTCUSDT_240927",
+        "BTCUSDT_241227"
+      ]
+    },
+    "2025_H1": {
+      "trades": 1,
+      "net_return": -0.00029913355345512205,
+      "net_pnl": -2.9913355345506716,
+      "profit_factor": 0.0,
+      "max_drawdown": 0.0006902668936942063,
+      "fees": 8.863647637470473,
+      "contracts": [
+        "BTCUSDT_250328"
+      ]
+    },
+    "2025_H2": {
+      "trades": 1,
+      "net_return": -0.000497622599240688,
+      "net_pnl": -4.976225992406398,
+      "profit_factor": 0.0,
+      "max_drawdown": 0.0006375610831571544,
+      "fees": 8.590296377172194,
+      "contracts": [
+        "BTCUSDT_250926"
+      ]
+    },
+    "2026_JAN_SEP": {
+      "trades": 1,
+      "net_return": -0.0008709896619073509,
+      "net_pnl": -8.709896619073334,
+      "profit_factor": 0.0,
+      "max_drawdown": 0.0008709896619073334,
+      "fees": 9.179158292943033,
+      "contracts": [
+        "BTCUSDT_260925"
+      ]
+    },
+    "ALL": {
+      "trades": 7,
+      "net_return": -0.005506528188648163,
+      "net_pnl": -55.0652818864819,
+      "profit_factor": 0.0,
+      "max_drawdown": 0.00550652818864819,
+      "fees": 61.234076466602026,
+      "contracts": [
+        "BTCUSDT_240329",
+        "BTCUSDT_240628",
+        "BTCUSDT_240927",
+        "BTCUSDT_241227",
+        "BTCUSDT_250328",
+        "BTCUSDT_250926",
+        "BTCUSDT_260925"
+      ]
+    }
+  },
+  "largest_positive_validation_block_share": 0.8461982600565847,
+  "gate": {
+    "development_positive_all_years": false,
+    "validation_minimum_8_expiries": false,
+    "normal_pf_at_least_1_20": false,
+    "stress_pf_at_least_1_05": false,
+    "normal_positive_all_blocks": false,
+    "stress_positive_four_blocks": false,
+    "stress_total_positive": false,
+    "normal_max_drawdown_at_most_5pct": true,
+    "profit_not_concentrated": false,
+    "forward_paper_4_expiries": false
+  },
+  "passes_historical_gate": false,
+  "robust_candidate": false,
+  "coverage": [
+    {
+      "contract": "BTCUSDT_210326",
+      "expected_window_hours": 673,
+      "missing_synchronized_hours": 1,
+      "first_missing_timestamp": 1614996000000,
+      "expiry_open_present": true
+    },
+    {
+      "contract": "BTCUSDT_210625",
+      "expected_window_hours": 673,
+      "missing_synchronized_hours": 0,
+      "first_missing_timestamp": null,
+      "expiry_open_present": true
+    },
+    {
+      "contract": "BTCUSDT_210924",
+      "expected_window_hours": 673,
+      "missing_synchronized_hours": 0,
+      "first_missing_timestamp": null,
+      "expiry_open_present": true
+    },
+    {
+      "contract": "BTCUSDT_211231",
+      "expected_window_hours": 673,
+      "missing_synchronized_hours": 0,
+      "first_missing_timestamp": null,
+      "expiry_open_present": true
+    },
+    {
+      "contract": "BTCUSDT_220325",
+      "expected_window_hours": 673,
+      "missing_synchronized_hours": 0,
+      "first_missing_timestamp": null,
+      "expiry_open_present": true
+    },
+    {
+      "contract": "BTCUSDT_220624",
+      "expected_window_hours": 673,
+      "missing_synchronized_hours": 0,
+      "first_missing_timestamp": null,
+      "expiry_open_present": true
+    },
+    {
+      "contract": "BTCUSDT_220930",
+      "expected_window_hours": 673,
+      "missing_synchronized_hours": 0,
+      "first_missing_timestamp": null,
+      "expiry_open_present": true
+    },
+    {
+      "contract": "BTCUSDT_221230",
+      "expected_window_hours": 673,
+      "missing_synchronized_hours": 0,
+      "first_missing_timestamp": null,
+      "expiry_open_present": true
+    },
+    {
+      "contract": "BTCUSDT_230331",
+      "expected_window_hours": 673,
+      "missing_synchronized_hours": 1,
+      "first_missing_timestamp": 1679662800000,
+      "expiry_open_present": true
+    },
+    {
+      "contract": "BTCUSDT_230630",
+      "expected_window_hours": 673,
+      "missing_synchronized_hours": 0,
+      "first_missing_timestamp": null,
+      "expiry_open_present": true
+    },
+    {
+      "contract": "BTCUSDT_230929",
+      "expected_window_hours": 673,
+      "missing_synchronized_hours": 0,
+      "first_missing_timestamp": null,
+      "expiry_open_present": true
+    },
+    {
+      "contract": "BTCUSDT_231229",
+      "expected_window_hours": 673,
+      "missing_synchronized_hours": 0,
+      "first_missing_timestamp": null,
+      "expiry_open_present": true
+    },
+    {
+      "contract": "BTCUSDT_240329",
+      "expected_window_hours": 673,
+      "missing_synchronized_hours": 0,
+      "first_missing_timestamp": null,
+      "expiry_open_present": true
+    },
+    {
+      "contract": "BTCUSDT_240628",
+      "expected_window_hours": 673,
+      "missing_synchronized_hours": 0,
+      "first_missing_timestamp": null,
+      "expiry_open_present": true
+    },
+    {
+      "contract": "BTCUSDT_240927",
+      "expected_window_hours": 673,
+      "missing_synchronized_hours": 0,
+      "first_missing_timestamp": null,
+      "expiry_open_present": true
+    },
+    {
+      "contract": "BTCUSDT_241227",
+      "expected_window_hours": 673,
+      "missing_synchronized_hours": 0,
+      "first_missing_timestamp": null,
+      "expiry_open_present": true
+    },
+    {
+      "contract": "BTCUSDT_250328",
+      "expected_window_hours": 673,
+      "missing_synchronized_hours": 0,
+      "first_missing_timestamp": null,
+      "expiry_open_present": true
+    },
+    {
+      "contract": "BTCUSDT_250627",
+      "expected_window_hours": 673,
+      "missing_synchronized_hours": 0,
+      "first_missing_timestamp": null,
+      "expiry_open_present": true
+    },
+    {
+      "contract": "BTCUSDT_250926",
+      "expected_window_hours": 673,
+      "missing_synchronized_hours": 0,
+      "first_missing_timestamp": null,
+      "expiry_open_present": true
+    },
+    {
+      "contract": "BTCUSDT_251226",
+      "expected_window_hours": 673,
+      "missing_synchronized_hours": 0,
+      "first_missing_timestamp": null,
+      "expiry_open_present": true
+    },
+    {
+      "contract": "BTCUSDT_260327",
+      "expected_window_hours": 673,
+      "missing_synchronized_hours": 0,
+      "first_missing_timestamp": null,
+      "expiry_open_present": true
+    },
+    {
+      "contract": "BTCUSDT_260626",
+      "expected_window_hours": 673,
+      "missing_synchronized_hours": 0,
+      "first_missing_timestamp": null,
+      "expiry_open_present": true
+    },
+    {
+      "contract": "BTCUSDT_260925",
+      "expected_window_hours": 673,
+      "missing_synchronized_hours": 0,
+      "first_missing_timestamp": null,
+      "expiry_open_present": true
+    }
+  ],
+  "manifest": [
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_210326",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2021-02.zip",
+      "sha256": "8cd20f5058dc7585cfa874a3ab0e5fd0096f369c182d8fda80dc16495050e018",
+      "rows": 671
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_210326",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_210326/1h/BTCUSDT_210326-1h-2021-02.zip",
+      "sha256": "567d348c8a199dcc1e8803e1a7640dac9642ecf174042e0fb3de209ac773273e",
+      "rows": 616
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_210326",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2021-03.zip",
+      "sha256": "748783e9715835dd334fbc0cbbff0518962ebbcbe0430acb65f2f506193bad2d",
+      "rows": 743
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_210326",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_210326/1h/BTCUSDT_210326-1h-2021-03.zip",
+      "sha256": "4b2d3bc4a3c025e86f188749f0775724fb8a90880387ee5634ebbce237449133",
+      "rows": 609
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_210625",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2021-05.zip",
+      "sha256": "728503d417904afff17b403e66f74c18ed0067d3f8e4215130c8a97180c9fccc",
+      "rows": 744
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_210625",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_210625/1h/BTCUSDT_210625-1h-2021-05.zip",
+      "sha256": "4574a1dd877377edeef491a3edefca0bf303ef666637e40e74656a458fe1b572",
+      "rows": 744
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_210625",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2021-06.zip",
+      "sha256": "9ea9585cf2c938044d2d1b613f451ff9482bd7d2a38da2c9d22cf0c9f00f65ac",
+      "rows": 720
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_210625",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_210625/1h/BTCUSDT_210625-1h-2021-06.zip",
+      "sha256": "0b37c85a0de9bd0b85a48ce8e044efe93d3e03977ee3858d7e3755c2af036647",
+      "rows": 587
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_210924",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2021-08.zip",
+      "sha256": "5cadb462255761842326a2c4b5fe2a91c8a2135c3ba6dd5f0969877f0722f4be",
+      "rows": 740
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_210924",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_210924/1h/BTCUSDT_210924-1h-2021-08.zip",
+      "sha256": "186f84e9e097258c4256f50668ab890aaec4e7a7ecf08a4f546c4e0e0184df70",
+      "rows": 744
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_210924",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2021-09.zip",
+      "sha256": "0d344f8ab39d910c148b89fada91256afcb3e8b20eb812ebc158ac8ac527ea07",
+      "rows": 718
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_210924",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_210924/1h/BTCUSDT_210924-1h-2021-09.zip",
+      "sha256": "1b00c0be40146339289cf177ff576e9926da3a1753f876ee64ba3d52972a0dfa",
+      "rows": 561
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_211231",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2021-11.zip",
+      "sha256": "64d376e949c3518c3b526cac41322114a2e7287395e9089f0da34e25079c2940",
+      "rows": 720
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_211231",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_211231/1h/BTCUSDT_211231-1h-2021-11.zip",
+      "sha256": "aa4641fb7190c970f65cfb145aca27a2afb7a3db3bd61e0dd4064acdcb55019f",
+      "rows": 720
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_211231",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2021-12.zip",
+      "sha256": "b01133a69b22aa7904742a06a892ff3811152377f61e23977051a937afe2fbaa",
+      "rows": 744
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_211231",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_211231/1h/BTCUSDT_211231-1h-2021-12.zip",
+      "sha256": "61bb24f6a74b1f206abe43132639886a0fa830cd03ebb577acbae9fc381524d6",
+      "rows": 729
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_220325",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2022-02.zip",
+      "sha256": "4e479b38278726cccb9257f5564c5c78477144d3ffe69df6afaf3b55ace617be",
+      "rows": 672
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_220325",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_220325/1h/BTCUSDT_220325-1h-2022-02.zip",
+      "sha256": "4bbc54d9e36aa2e93ac9856332e1ce8a302d295c8c4fbff0970bc640f1a80919",
+      "rows": 672
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_220325",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2022-03.zip",
+      "sha256": "1cfb082f6bc9a2937b5b846073ddf65f71b18f2502778ac667aab3421ef80085",
+      "rows": 744
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_220325",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_220325/1h/BTCUSDT_220325-1h-2022-03.zip",
+      "sha256": "173dc3ba68df10a801830e3b43797739c440048f1f7d58b25438822f1b2a21c8",
+      "rows": 585
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_220624",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2022-05.zip",
+      "sha256": "ff0744eceba5e6d2f7145ecfdc9d3fac84f4576c15221dbeb71c6d6e59484300",
+      "rows": 744
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_220624",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_220624/1h/BTCUSDT_220624-1h-2022-05.zip",
+      "sha256": "27c6e8af8f1bd2a7d2f3e3af650b0df9a4381ac2d59dd4029b455421a39c0159",
+      "rows": 744
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_220624",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2022-06.zip",
+      "sha256": "b18f6f8edbb41960f81aec100c7836fdc0de6d640ee4309a3d0fad999ae0a2c8",
+      "rows": 720
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_220624",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_220624/1h/BTCUSDT_220624-1h-2022-06.zip",
+      "sha256": "d7be7b990cac3527ffffe7248bfbb5bc8d9cc5f9cf1a73052657d091d660b387",
+      "rows": 561
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_220930",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2022-08.zip",
+      "sha256": "3cc22044f94cb303d12013293ba6db6d44abdf1490d38d00f1389e98717a3891",
+      "rows": 744
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_220930",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_220930/1h/BTCUSDT_220930-1h-2022-08.zip",
+      "sha256": "2bcca5e21bab600d966de90b5e139b01a6b45c7b52e449400966cd76864aaa32",
+      "rows": 744
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_220930",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2022-09.zip",
+      "sha256": "a65dcd73017d92ea8d86e82ea1aee3dac55881f8672594d2e85d1cf392e1e78a",
+      "rows": 720
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_220930",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_220930/1h/BTCUSDT_220930-1h-2022-09.zip",
+      "sha256": "768cdf57f1d12f0d5d9ea0d4bcf3430207ba317496369b32afddfb4edc07de93",
+      "rows": 705
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_221230",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2022-11.zip",
+      "sha256": "5608adf8602a8ac616ee03c2c4461a37f4646631d67edf3d2f1a94e82e5c5065",
+      "rows": 720
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_221230",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_221230/1h/BTCUSDT_221230-1h-2022-11.zip",
+      "sha256": "7cb110d7ab7fa3ec0817aeadd6e5e0326c1f96d9a0e30ea92584f4435976d973",
+      "rows": 720
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_221230",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2022-12.zip",
+      "sha256": "69c5e5f01df947bfea48ab3c8e2f462b7358effa9e2700489a4ad0dbd29b24aa",
+      "rows": 744
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_221230",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_221230/1h/BTCUSDT_221230-1h-2022-12.zip",
+      "sha256": "eadb64ffeb9a74a6f46686be3a6471dc39004a51086a5368722626b0c5be2d38",
+      "rows": 705
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_230331",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2023-02.zip",
+      "sha256": "53525b700548a19488fcb8754778acdf7941c9ba0b6e7eb548a51a376ef8d86b",
+      "rows": 672
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_230331",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_230331/1h/BTCUSDT_230331-1h-2023-02.zip",
+      "sha256": "82daf21d03fc15dad5df611c40dcfff0c7980141edc54296b812a63eaf54892b",
+      "rows": 672
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_230331",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2023-03.zip",
+      "sha256": "7f2afb8e0179a57ac31eab5205660298ba5eb77039ac2e21aef9b715ff3d06ce",
+      "rows": 743
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_230331",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_230331/1h/BTCUSDT_230331-1h-2023-03.zip",
+      "sha256": "419fecb8db0b5465030c1c451804ab4efc264ed26d0211d1bd953185bf848965",
+      "rows": 729
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_230630",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2023-05.zip",
+      "sha256": "16b33557a4a4040fc56c711f4b1a750ebafb5a7f8dd46c060d9fc8c66cdc1982",
+      "rows": 744
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_230630",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_230630/1h/BTCUSDT_230630-1h-2023-05.zip",
+      "sha256": "157d00451c435170c95afe89b976355f08c7f0a2b1888a4e84aada58ed9c6a95",
+      "rows": 744
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_230630",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2023-06.zip",
+      "sha256": "05f87fb5f004ee0aff019adb7015afab8df0baaaf2b77154d75ae53e18d59b11",
+      "rows": 720
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_230630",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_230630/1h/BTCUSDT_230630-1h-2023-06.zip",
+      "sha256": "d7256fabe7311cbf14ad558d32153686d6af448f3bc7d1cead056cb6d9b0d1e0",
+      "rows": 705
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_230929",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2023-08.zip",
+      "sha256": "e983243d44536a06ff4707cf35df29f636fe788e6fb69c3b3feed2ef43d343d4",
+      "rows": 744
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_230929",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_230929/1h/BTCUSDT_230929-1h-2023-08.zip",
+      "sha256": "9d379cd805fb6b5db91ae95ca7b96211179125f05eddd3e0bcb91d6a6340e05e",
+      "rows": 744
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_230929",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2023-09.zip",
+      "sha256": "28e12ccaf15745bfe11f570b9079793750047fde3d340fe0231858b26bc0f9d9",
+      "rows": 720
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_230929",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_230929/1h/BTCUSDT_230929-1h-2023-09.zip",
+      "sha256": "44b01356d9ed747d2e7217206d01c40658b51432971769448e08b8ca1184fa90",
+      "rows": 720
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_231229",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2023-11.zip",
+      "sha256": "4f550d182d529839dd9cfc28ef0ecca8cd8003e991067e92a2af5b9e92762f49",
+      "rows": 720
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_231229",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_231229/1h/BTCUSDT_231229-1h-2023-11.zip",
+      "sha256": "227a3a5248aadc8915aac411a2186a847561c5cedcc16f9d3d295884de7b5af2",
+      "rows": 720
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_231229",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2023-12.zip",
+      "sha256": "6117d93e3eb6574df6b0087a45cf12e171afe91789b523b0bfcce00d8f1b6e37",
+      "rows": 744
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_231229",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_231229/1h/BTCUSDT_231229-1h-2023-12.zip",
+      "sha256": "591b60802272148bb9aa0133a7bdeb4453ee4c3757d5f79de5c55d0beb7f55bf",
+      "rows": 744
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_240329",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-02.zip",
+      "sha256": "b83aa7319ef1d4baa7b923c0fe802b88dfaf241c7456af295f1f656a24379b33",
+      "rows": 696
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_240329",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_240329/1h/BTCUSDT_240329-1h-2024-02.zip",
+      "sha256": "4941d7a2fa252fc1c5ed5b12275d23424a2acb9f2e9448c1cb6fe114be0889f9",
+      "rows": 696
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_240329",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-03.zip",
+      "sha256": "b0851daf609d6ab82fdf8f1d1c4fbd974bc1b4e6530a832067516ac1c2be63a6",
+      "rows": 744
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_240329",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_240329/1h/BTCUSDT_240329-1h-2024-03.zip",
+      "sha256": "620ec4e01e84e14c37ae052fe6fc94b5b56cfba7de3b4e66d701e62f461525a6",
+      "rows": 682
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_240628",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-05.zip",
+      "sha256": "077c71eec71a8ecf2edb6e3a3927b600b8f358fd37066ce120c19fb5302a9ab8",
+      "rows": 744
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_240628",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_240628/1h/BTCUSDT_240628-1h-2024-05.zip",
+      "sha256": "01046498c5bb0ad1f09bdc6b899d8a65f15f9b35db7e47e45789a1ce51555b77",
+      "rows": 744
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_240628",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-06.zip",
+      "sha256": "2e1f968fa34b9feabfb19cc6eec47a146e20d64a706f4b17d0babf4d2f475c39",
+      "rows": 720
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_240628",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_240628/1h/BTCUSDT_240628-1h-2024-06.zip",
+      "sha256": "854e264c77e1208631b03614dd614fd28d19b567326ee8f0149869ef8132ea97",
+      "rows": 720
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_240927",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-08.zip",
+      "sha256": "88521a975ee7bfdd21f891d81f4243a01b90b977cf525d11747e27c66e3bad60",
+      "rows": 744
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_240927",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_240927/1h/BTCUSDT_240927-1h-2024-08.zip",
+      "sha256": "2f033b4be93941765f9a2936145dec24ff495f90c8958b84104308fc3395b2c0",
+      "rows": 744
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_240927",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-09.zip",
+      "sha256": "123f402c6dbf19b9b72b4af7ad4d5325c73ba4833148cc398b803d7a34ac5c5f",
+      "rows": 720
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_240927",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_240927/1h/BTCUSDT_240927-1h-2024-09.zip",
+      "sha256": "64c18236771889ff8552884917288affe97f6935e9c06031701cf09e17aab0f6",
+      "rows": 633
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_241227",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-11.zip",
+      "sha256": "7a51fe8811c754ff43a2be0ba10e53a6d4218521e27ac765fbc9a1ca0fc15bac",
+      "rows": 720
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_241227",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_241227/1h/BTCUSDT_241227-1h-2024-11.zip",
+      "sha256": "7ce717b1e3ccd484ad9c9af6ab48a0e69f35b8167c06ef89abe5a9ec608040d5",
+      "rows": 720
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_241227",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-12.zip",
+      "sha256": "dfec812f73a84257b195cbdaed34d020fa77e845625c061c13bd6a60e7ef9372",
+      "rows": 744
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_241227",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_241227/1h/BTCUSDT_241227-1h-2024-12.zip",
+      "sha256": "d56901c6d9a395230a4d43a8f7acbf8b4e7cd0cf0f94fe027107ce0cae3e8143",
+      "rows": 633
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_250328",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-02.zip",
+      "sha256": "7420f55c93f61d7e734fc9d2507c7f2fcb5eaf48112277cecd241d4e1dbf3bd5",
+      "rows": 672
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_250328",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_250328/1h/BTCUSDT_250328-1h-2025-02.zip",
+      "sha256": "6916327a59ac8c8b1e5e9c1ad608967acead21139d60e23a903563d7d1a9bdb6",
+      "rows": 672
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_250328",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-03.zip",
+      "sha256": "b5ae8bb57e5e526c2050c9f8229b723871a5af47d80c53453abf61847a5f3aa6",
+      "rows": 744
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_250328",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_250328/1h/BTCUSDT_250328-1h-2025-03.zip",
+      "sha256": "07a1fd0664471f886256833339d245bf27b9ee58136bf64897095bafb6b46de4",
+      "rows": 657
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_250627",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-05.zip",
+      "sha256": "da6213bf4c57ea60faed3ef1f6a0ecb87f22ca7a3a67614604cf44d2d6b265fe",
+      "rows": 744
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_250627",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_250627/1h/BTCUSDT_250627-1h-2025-05.zip",
+      "sha256": "6946e55312a6b2d16d7a8c19e12f0f71649405b712a49005ca2140f5fde1e2b9",
+      "rows": 744
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_250627",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-06.zip",
+      "sha256": "d0760943538f48032dd066401e53f46bbf4868e6545929678e23bcdee032a5e8",
+      "rows": 720
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_250627",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_250627/1h/BTCUSDT_250627-1h-2025-06.zip",
+      "sha256": "e951bc471626de32220ef623768de8ccd1fecd24f7ba8187123a06a32c54027d",
+      "rows": 633
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_250926",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-08.zip",
+      "sha256": "a99ec5bac64333fb521b2ab1bac5e8387eede6413cc7841656a02be95613c64f",
+      "rows": 744
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_250926",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_250926/1h/BTCUSDT_250926-1h-2025-08.zip",
+      "sha256": "8a6e9598b6a4ea18dc033877eb0f12842bc2ea9cc2dd9aec6b1010ca3403b9d7",
+      "rows": 744
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_250926",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-09.zip",
+      "sha256": "b0ad5b54097f6adb440d07204fd215dae9b224fb73569fd4309a55c9234d46b3",
+      "rows": 720
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_250926",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_250926/1h/BTCUSDT_250926-1h-2025-09.zip",
+      "sha256": "3af9eb74226f4f43b55e0f09ad5fefbe2270b861a306258cbc78f3afd7e8425f",
+      "rows": 609
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_251226",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-11.zip",
+      "sha256": "1f28f02e33e1f19e5163cd45b67c07b3b75870e78dbbf9f861d1348ca372d942",
+      "rows": 720
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_251226",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_251226/1h/BTCUSDT_251226-1h-2025-11.zip",
+      "sha256": "27921645df37aef13b0fe5b68657b54f0414dbe8e59d16808922af82fe6ab571",
+      "rows": 720
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_251226",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-12.zip",
+      "sha256": "d546c6e44b443e34cef5122043c5cdd3b9c76980e23cc408dafd9f6f76d65c05",
+      "rows": 744
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_251226",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_251226/1h/BTCUSDT_251226-1h-2025-12.zip",
+      "sha256": "9db27eae42d90185349fd3e9ae2d2fb582e0250dbfebb138004ba03e8b191e70",
+      "rows": 744
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_260327",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2026-02.zip",
+      "sha256": "0be4e5c92892495c5da5b371fe8755f2d508b28a58414b4171284480806ed6c4",
+      "rows": 672
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_260327",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_260327/1h/BTCUSDT_260327-1h-2026-02.zip",
+      "sha256": "badebe13a56383c4783281efac9aebec8a069645863857a8b81ac650bf9a7aeb",
+      "rows": 672
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_260327",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2026-03.zip",
+      "sha256": "44f383f9423f96cdc29e03b4ba8062296763dd740ab1d93f04b62c88bac30aa6",
+      "rows": 744
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_260327",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_260327/1h/BTCUSDT_260327-1h-2026-03.zip",
+      "sha256": "038f8e0c67decff706a29ed97dc8539cea3a33258543e4d73abc89628a015cad",
+      "rows": 744
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_260626",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2026-05.zip",
+      "sha256": "11b8537dc1769a7de9d6cb2e0354dd4a376018986a826c67d1078e25fbf8fb80",
+      "rows": 744
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_260626",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_260626/1h/BTCUSDT_260626-1h-2026-05.zip",
+      "sha256": "60f31622e21044807e181d5748069f14492c83fb9cfa1337bbaa90f035eade50",
+      "rows": 744
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_260626",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2026-06.zip",
+      "sha256": "7c446aee297f382ee92b8d9b3300a1d7c21bed8166118f3bb261275bed5e308e",
+      "rows": 720
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_260626",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_260626/1h/BTCUSDT_260626-1h-2026-06.zip",
+      "sha256": "feebf183ba473d8bed90f3477a61c2f6f88b50a5c7de36df7a35d8e5933502c7",
+      "rows": 609
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_260925",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2026-08.zip",
+      "sha256": "1fa85817e358f73e0dd9509f6f31c79bf9b23d9470971a882c8f814871a3fccf",
+      "rows": 744
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_260925",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_260925/1h/BTCUSDT_260925-1h-2026-08.zip",
+      "sha256": "920a7c4799f4b18770b6008a1bbb565e040bc13de415ab84df32bcd751ed13a3",
+      "rows": 744
+    },
+    {
+      "kind": "spot",
+      "contract": "BTCUSDT_260925",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2026-09.zip",
+      "sha256": "39b31046d702bd7e482e03b125d6fbfd730147aa5d9ad03d8b04bf1961a8e9bd",
+      "rows": 720
+    },
+    {
+      "kind": "future",
+      "contract": "BTCUSDT_260925",
+      "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_260925/1h/BTCUSDT_260925-1h-2026-09.zip",
+      "sha256": "ea0392e936e8028d1bfde996123850474d22508b2690584b9e77de6c884fee14",
+      "rows": 585
+    }
+  ],
+  "limitations": [
+    "Settlement is represented by the synchronized expiry-hour open, not an exchange settlement statement.",
+    "Margin liquidation and order-book impact are not modeled.",
+    "Historical passage would still require four new quarterly forward PAPER expiries."
+  ]
+}

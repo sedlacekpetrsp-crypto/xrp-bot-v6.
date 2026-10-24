@@ -443,3 +443,41 @@ account was changed.
 
 Next concrete step: move away from rare fixed-threshold derivatives dislocations and preregister
 a mechanism with adequate event frequency without calibrating it on these revealed periods.
+
+## BTC_QUARTERLY_CARRY_V1: distinct dated-futures carry hypothesis, rejected
+
+The 23 dated contracts, fixed pre-expiry window, 8% annualized entry basis, two-leg sizing,
+contractual exit proxy, spread stop, costs, chronological blocks and gates were committed before
+results were read. The strategy buys BTC spot and shorts the matching USD-M quarterly future,
+each at 15% of equity, entering only from a completed 00:00 UTC signal and settling at the
+synchronized 08:00 UTC expiry open unless annualized basis first widens to 25%. This is dated
+term carry with contractual convergence, not a perpetual-funding or perpetual-basis variant.
+
+The run used 92 public Binance Vision archives covering two months for each March 2021–September
+2026 expiry: 46 spot and 46 individual quarterly-futures files. URLs, SHA256 hashes and per-contract
+coverage are in `btc_quarterly_carry_results_20261024.json`. Two development windows each miss one
+synchronized hour; all validation windows and every expiry open are complete. No price was
+fabricated, and missing transitions could not enter. Five tests passed for annualization,
+next-hour causality, gap-stop fills, missing-transition rejection and cost monotonicity.
+
+| Block | Trades | Normal net | Normal PF | Normal max DD | Stress net | Stress PF |
+|---|---:|---:|---:|---:|---:|---:|
+| Development 2021 | 4 | +0.04% | 2.0803 | 0.38% | -0.18% | 0.0000 |
+| Development 2022 | 0 | 0.00% | n/a | 0.00% | 0.00% | n/a |
+| Development 2023 | 2 | -0.03% | 0.1464 | 0.34% | -0.15% | 0.0000 |
+| Validation 2024 H1 | 2 | -0.05% | 0.4835 | 0.09% | -0.16% | 0.0000 |
+| Validation 2024 H2 | 2 | -0.11% | 0.0000 | 0.11% | -0.23% | 0.0000 |
+| Validation 2025 H1 | 1 | +0.03% | n/a | 0.04% | -0.03% | 0.0000 |
+| Validation 2025 H2 | 1 | +0.00% | n/a | 0.04% | -0.05% | 0.0000 |
+| Validation Jan-Sep 2026 | 1 | -0.03% | 0.0000 | 0.05% | -0.09% | 0.0000 |
+| Continuous validation | 7 | -0.16% | 0.3260 | 0.16% | -0.55% | 0.0000 |
+
+Only the drawdown gate passes. Development consistency, minimum eight validation expiries, both
+PF gates, block stability, combined stress return and concentration fail. Base-cost carry is
+already negative in validation and every stress block loses. Therefore
+`passes_historical_gate=false` and `robust_candidate=false`. Do not lower the annualized-basis
+threshold or change the entry window on these revealed contracts; do not start forward PAPER.
+No deployment, Render setting, paused bot or real account was changed.
+
+Next concrete step: preregister a higher-frequency mechanism with an economic edge larger than
+round-trip costs, rather than adjusting any revealed derivatives threshold.
