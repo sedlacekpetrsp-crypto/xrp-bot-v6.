@@ -34,11 +34,17 @@ def fetch_funding(job):
         if members != [name[:-4] + ".csv"]:
             raise ValueError("unexpected funding archive")
         rows = list(csv.DictReader(io.TextIOWrapper(archive.open(members[0]))))
-    output = [
-        dict(timestamp=int(r["calc_time"]), interval_hours=int(r["funding_interval_hours"]), rate=float(r["last_funding_rate"]))
-        for r in rows
-    ]
-    return output, dict(url=url, sha256=hashlib.sha256(payload).hexdigest(), bytes=len(payload), rows=len(output))
+    output, offsets = [], []
+    for row in rows:
+        raw_timestamp = int(row["calc_time"])
+        nominal_timestamp = round(raw_timestamp / STEP) * STEP
+        offset = raw_timestamp - nominal_timestamp
+        if abs(offset) > 1_000:
+            raise ValueError("funding timestamp too far from nominal hour")
+        if offset:
+            offsets.append(offset)
+        output.append(dict(timestamp=nominal_timestamp, interval_hours=int(row["funding_interval_hours"]), rate=float(row["last_funding_rate"])))
+    return output, dict(url=url, sha256=hashlib.sha256(payload).hexdigest(), bytes=len(payload), rows=len(output), normalized_timestamps=len(offsets), max_abs_adjustment_ms=max(map(abs, offsets), default=0))
 
 
 def fetch_spot(job):

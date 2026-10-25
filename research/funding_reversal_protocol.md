@@ -9,3 +9,7 @@ Fixed causal rule: after a completed funding record, its `last_funding_rate` mus
 2022 is control. Locked OOS quarters are 2023 Q1 through 2026 Q3; the continuous OOS path is non-independent. All historical gates: >=150 OOS trades; positive base net/expectancy and PF>1.15; positive stress net/expectancy and PF>1.02; >=10/15 positive quarters including 2026 Q3; continuous base and stress drawdown <=10%; no quarter contributes >30% of total positive OOS profit. Historical passage remains `TEST NEDOKONCEN` until >=30 future days and >=100 new PAPER trades have positive stressed expectancy. No threshold tuning after results and no LIVE, production, Render, main or deployed-branch changes.
 
 Next: commit this protocol, implementation and deterministic tests before downloading or evaluating historical outcomes.
+
+## Pre-results timestamp amendment
+
+Initial ingestion stopped in `validate` before any trade or performance calculation because Binance funding `calc_time` values are sometimes a few milliseconds after the nominal hour (observed offsets 1–31 ms). Funding timestamps within 1,000 ms of an exact hour will be normalized to that hour solely for causal alignment to the next spot-hour open; each archive records the count and maximum absolute adjustment. A larger offset is rejected. Rates, prices, signal thresholds, execution rules and gates are unchanged; no price or missing observation is synthesized.
