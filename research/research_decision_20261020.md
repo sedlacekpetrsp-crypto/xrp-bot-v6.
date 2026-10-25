@@ -61,3 +61,11 @@ This candidate used Binance quote volume per reported trade as a distinct observ
 Across 57 real XRPUSDT hourly archives, 155 annual-fold OOS trades lost -$794.78, PF 0.669, expectancy -$5.13; doubled costs lost -$1,452.17, PF 0.486, expectancy -$9.37. Every OOS year and the control lost. All 41 code tests and independent ledger audit passed, but only the sample gate passed. Full provenance, results, ledger and audit are in `research/large_trade_followthrough_validation_20261025/`. Reject without retuning or forward promotion.
 
 Next concrete step: avoid further variants based on one-hour continuation after volume/trade-size anomalies on this history; investigate a genuinely different mechanism and preregister it. PAPER-only isolation remains unchanged.
+
+## MULTI_STABLE_PEG_REVERSION_V1: rejected (2026-10-25)
+
+The distinct stablecoin redemption-anchor hypothesis was frozen in commit `31769d0b11fe8db9fea692f1fe55bc3ca695b55c`. Ninety-nine real Binance Vision archives for USDCUSDT, FDUSDUSDT and TUSDUSDT had complete Jan 2024–Sep 2026 15m coverage. All 46 code tests and the independent equal-sleeve audit passed.
+
+The locked quarterly OOS screen found only 8 base trades, -$14.58, PF 0.292, expectancy -$1.82; double-cost stress found 13 path-dependent trades, -$42.09, PF 0.084, expectancy -$3.24. USDC did not reach the preregistered dislocation, and the FDUSD/TUSD trades lost. Only drawdown passed. Reject for inadequate sample and negative base/stress evidence; do not loosen thresholds on these observed quarters. Complete provenance, results and ledgers are in `research/stable_peg_validation_20261025/`.
+
+Next concrete step: retain the no-retuning rule; use a distinct mechanism with a naturally larger event sample and freeze it before evaluation. PAPER-only isolation remains unchanged.

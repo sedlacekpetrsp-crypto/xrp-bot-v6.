@@ -1,0 +1,1372 @@
+{
+  "strategy": "MULTI_STABLE_PEG_REVERSION_V1",
+  "status": "NEPROSEL",
+  "protocol": "research/stable_peg_protocol.md",
+  "protocol_sha256": "9e4f8f0041839eafeb94387c22994abcda1aab618a6ce8984e6a869264b0d709",
+  "manifest": [
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2024-01.zip",
+      "sha256": "05317e0b8af52c0bae05f4f77840255ed3e3b2f059ea442b8985142fd4f06407",
+      "bytes": 115379,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2024-02.zip",
+      "sha256": "8d166ad77908bfaaf6a9cde895da5fbd8dcc48fe4c2e6baab398bd6c0e60f725",
+      "bytes": 107088,
+      "bars": 2784
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2024-03.zip",
+      "sha256": "37a68b3a88e7316fec54aa8f3a18b0c0927bb210ff01b0900b7e9dddc3527998",
+      "bytes": 118446,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2024-04.zip",
+      "sha256": "7be1cc17655ee44b0efbebabc6cf8aadf55222632996b521cf5bdd79f5a07944",
+      "bytes": 112476,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2024-05.zip",
+      "sha256": "15e46659e78eb48ae47f8ec3de463f6f3d08cc1123659ef42da10bed523525ea",
+      "bytes": 114369,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2024-06.zip",
+      "sha256": "040169959425a66f1f9b586193a8afaeeb70388c2622277455089b690a178ef2",
+      "bytes": 111406,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2024-07.zip",
+      "sha256": "49ff9724ef7a59b58d66b18c30d9899307f3355c1e149b9ad9a69ee31384a892",
+      "bytes": 113459,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2024-08.zip",
+      "sha256": "75dcb1c3841d7ae490a4670c8af761c51e05c5969042ac3c4088b13e889531fb",
+      "bytes": 113928,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2024-09.zip",
+      "sha256": "1df934bddccb78f616249a4dde9bc828553653e32b54bd4ff740b6ccbb6b7227",
+      "bytes": 105354,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2024-10.zip",
+      "sha256": "dbff47a586002a6d03b4eaf0410d35c66956fd862da2960d3f7607deaf24a793",
+      "bytes": 113592,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2024-11.zip",
+      "sha256": "b97e52605f52c62d56fa146938ba569df8db51579ce366a0486820eef9baac47",
+      "bytes": 116014,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2024-12.zip",
+      "sha256": "9876083238753d213c5d1196bd963b760655daf8c895050137253d5748321a02",
+      "bytes": 120435,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2025-01.zip",
+      "sha256": "1c8e63f5cfa42466694ad1fba5e1047c40b787658b9c62d6736b038328e8ec44",
+      "bytes": 119089,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2025-02.zip",
+      "sha256": "5d507fb15f2249cdca5a42b819212d11d54dd5bbb67c17c9d99203a918e35cb4",
+      "bytes": 105581,
+      "bars": 2688
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2025-03.zip",
+      "sha256": "b69259cff5fdc6003ebddee0ea17b2af46b011fbf28d7ffbdb147fc03cfd93c7",
+      "bytes": 114358,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2025-04.zip",
+      "sha256": "1402330c1d034ab5e4ad4cc749eed0e510628625c8b187961d15c1697ca56642",
+      "bytes": 111177,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2025-05.zip",
+      "sha256": "4c562506222741d4b82ddd09cd2d93e7103c2dfbe62e2f3be4811ae0c1181415",
+      "bytes": 114734,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2025-06.zip",
+      "sha256": "d347db95c6618558141151652ad0d21e201178ce558a78f871f374b076762737",
+      "bytes": 111782,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2025-07.zip",
+      "sha256": "354252ec1e87a71cec8836216b36745f84ac6fbfe2bc640c8814167ce22f8eee",
+      "bytes": 115798,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2025-08.zip",
+      "sha256": "9703cc8a4c9fec37c4006e2115892f425eb7c3407062118a5809f26c05aedfe5",
+      "bytes": 116760,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2025-09.zip",
+      "sha256": "723c55914638697746acb8426c466cc792ef3b77c7ae0121127d5cea1a0992ab",
+      "bytes": 114105,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2025-10.zip",
+      "sha256": "6f82118ca23101feacd613da305aa2facf3ad128984383841b2a01521efbd275",
+      "bytes": 119152,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2025-11.zip",
+      "sha256": "ced3090ed87b249908f4f458d583aa46b2675f64ab73eaf59e7d48bc4c346da4",
+      "bytes": 112958,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2025-12.zip",
+      "sha256": "edf55aca75c10e431ea9fbb8837546e67d8eb254cede0ae6dc4b584f7303535c",
+      "bytes": 115413,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2026-01.zip",
+      "sha256": "6a0dd7cd1f26ab3ed0bf52240ef148ceb695d0107a11de8ddf1c389f2b920824",
+      "bytes": 118075,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2026-02.zip",
+      "sha256": "7e38f5a6b8b1693a3f7ac032bac16cda16fd1afbafa4001103091f1320317bc5",
+      "bytes": 105089,
+      "bars": 2688
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2026-03.zip",
+      "sha256": "c1594adcf595f16b714db18e4bcab6e95592fd16e9662fe5928647a9c610ee80",
+      "bytes": 111610,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2026-04.zip",
+      "sha256": "4c2af6a55ba4f43243b556e2e28930b7557e2d92ad9b59df0e851bbb073e27f2",
+      "bytes": 118046,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2026-05.zip",
+      "sha256": "8bec4002c9d4ed9adced93a7ae8c4f012cb6774e647ca9899ddf4cbd6cff14d9",
+      "bytes": 125951,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2026-06.zip",
+      "sha256": "f5137380a786e6b8d85353613ff26c814495530b5b0fcf6e0b764e9765e60ec9",
+      "bytes": 126606,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2026-07.zip",
+      "sha256": "520118958d2f49d2132b6e334b49bc432b075ca3967269952baf957a8da0182d",
+      "bytes": 130460,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2026-08.zip",
+      "sha256": "df04c5ceea49266aa34c9ac1d02c0e8c30b42b26035a3caaf171773b895683b9",
+      "bytes": 129872,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/USDCUSDT/15m/USDCUSDT-15m-2026-09.zip",
+      "sha256": "77b6ecf4b311e99172111a2b5a7a2d090e8fd0c578681e5601b257f02d2af246",
+      "bytes": 127472,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2024-01.zip",
+      "sha256": "408c3a6acb850dcbc22debd35e4b5ea3c41ff5fcd04a1a29256024ea6e824ab8",
+      "bytes": 121036,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2024-02.zip",
+      "sha256": "b542317837819bcc679fd798be0ec8f38c53b07db288c7615f7db5763b563e59",
+      "bytes": 113442,
+      "bars": 2784
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2024-03.zip",
+      "sha256": "4d7bec6a60a16d26316cfee27f3b0ba8822e3c954892c7f1e893304f2ba17a12",
+      "bytes": 125981,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2024-04.zip",
+      "sha256": "7367e8cb6d9b0b4596299feba7ee00e2eb111b1daf668c10e0315c81a63667ba",
+      "bytes": 118944,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2024-05.zip",
+      "sha256": "510008c25c9bebe77a8baee11cd7f1e53351ed97d084471567447a3056bef3c4",
+      "bytes": 114807,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2024-06.zip",
+      "sha256": "271fbafed5c21b7a584fa5c6e12ebfc3a370aaf9686b2f00f91de22766943a5f",
+      "bytes": 110058,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2024-07.zip",
+      "sha256": "37ae62b1ec35c74745c896c12c11342032a0814855f08beb4478ec441468e786",
+      "bytes": 111506,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2024-08.zip",
+      "sha256": "664db549578b2023eda2775eb7f0b2f2ad8ef51d0caeb05dca390eee01b4f9ae",
+      "bytes": 115591,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2024-09.zip",
+      "sha256": "919a7a9217e0571f3f8184b7d091280131a055fb25dfac5f309cbecbfec22b9a",
+      "bytes": 110563,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2024-10.zip",
+      "sha256": "4089fb97eb254c9ed69dd90bfaec7bb983bba741bed8c232d4a0b196650b70c5",
+      "bytes": 113509,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2024-11.zip",
+      "sha256": "5e7b73df9f9ee0d504d7c3ad323404f7826438c65ffb41a52d03d67bac80e733",
+      "bytes": 115860,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2024-12.zip",
+      "sha256": "18c0b810f293dd7d7d5ffe69825e4d34dce46a0a279b50988d69841a9bb8dcfd",
+      "bytes": 121107,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2025-01.zip",
+      "sha256": "770fd87da074c2464c2336f7e1be631a1317848bb912bcddeafd536bd526e01b",
+      "bytes": 117498,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2025-02.zip",
+      "sha256": "598770e2746e38b3b2fa6bb2f8b51cfea5847eab69c7f4aa58d7d12e389d1080",
+      "bytes": 106033,
+      "bars": 2688
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2025-03.zip",
+      "sha256": "24eabb4c5e0e4497e01a1e903325d8c676a9838da10a2d7a2b469501c630ad50",
+      "bytes": 116329,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2025-04.zip",
+      "sha256": "d730d8859ac8b8bce94fedee833ffaf3d3180711765b1b0ff361f33dc5422446",
+      "bytes": 111818,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2025-05.zip",
+      "sha256": "978a9a0ec69be5cd49b2121dcdf859d271d8f58626605e8a018831c52222d271",
+      "bytes": 112838,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2025-06.zip",
+      "sha256": "8f41cb967a0d7fa85e3c7ecae7adbc8840adf2490c808367a6c71f8b0fcbac21",
+      "bytes": 109617,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2025-07.zip",
+      "sha256": "b422a6f637f6a74c86388e98a042ea64a1a4dff475edd104786ce9d36f9f6d00",
+      "bytes": 115113,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2025-08.zip",
+      "sha256": "964bac5766e9fd055618828295b70ccc0533eb13247b85a921f22d5fa4f23b8b",
+      "bytes": 115277,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2025-09.zip",
+      "sha256": "d5684ac1bc016e67aa470d5a036633cf0d075e6d4af43989a65f46a96b6feca3",
+      "bytes": 110475,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2025-10.zip",
+      "sha256": "055ad1a8ae6de798c41a34aeb0962618314b95b74b2c089e30084ba7f3207d97",
+      "bytes": 115168,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2025-11.zip",
+      "sha256": "4f7f46946d44f399900dc6f7a2494d13ae8f2ac21309b7819d0b88e6aa3deadb",
+      "bytes": 110907,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2025-12.zip",
+      "sha256": "1f124763f8759342657142bff05484d7cdd678dfb71422f6c78b8261cc3a516b",
+      "bytes": 111465,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2026-01.zip",
+      "sha256": "0ad5ebe547e75321cde21488024276f7efb96214fbfe9e5e3dafdf9ab7baa670",
+      "bytes": 110791,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2026-02.zip",
+      "sha256": "8ab6035563ccfa6f3ff136344a0bfc7199ccd688db4eff22273edd94b2ff61f6",
+      "bytes": 96001,
+      "bars": 2688
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2026-03.zip",
+      "sha256": "37353b350847980ad7127465a8a0addc511da178d20e6f617ceddc6df6cbcd22",
+      "bytes": 104619,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2026-04.zip",
+      "sha256": "1166dffe37e2985da37f07875afe66ae442180756cec908861d38309e2815cab",
+      "bytes": 99230,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2026-05.zip",
+      "sha256": "20598369f1f1c33f53313f1dec4deaaf36eff28e0412bd696907f9b43d094c6a",
+      "bytes": 102601,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2026-06.zip",
+      "sha256": "91933ec643c192ae364df1a7536982407716588e26db2c22fbbe6938a5d02b1f",
+      "bytes": 99425,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2026-07.zip",
+      "sha256": "2d36f9b7aaf919accdfc720b35cd830f5f4093e198ea53882b73ec3ce26ed45e",
+      "bytes": 100889,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2026-08.zip",
+      "sha256": "ec0b9d91ca4d77416418e0f079f9614a25d9a05ed182f07e53d942b82abb3096",
+      "bytes": 101202,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/FDUSDUSDT/15m/FDUSDUSDT-15m-2026-09.zip",
+      "sha256": "d2b5c85aacf8875b09772893143e64c11e7340ec9502bf8a9ee5cdcef48bd33f",
+      "bytes": 100273,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2024-01.zip",
+      "sha256": "2f1dd7a634f9da0b7a390bc88e9a5f5cf6df3dbaa83cd3cdffe88611c57fa77f",
+      "bytes": 115121,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2024-02.zip",
+      "sha256": "7d5964cd8fcd67ca956d9132a46197f3c96c2236ac5e133c95c70dc543d447a9",
+      "bytes": 106572,
+      "bars": 2784
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2024-03.zip",
+      "sha256": "2a74255c38ef85dac371d0973c0b3f9f4bd86a487fc65c132b97871fa4a37e0f",
+      "bytes": 107805,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2024-04.zip",
+      "sha256": "c68fa33c379c71cbe935f39a59b4c4e6bc6188812139e78c1877471b129ba99b",
+      "bytes": 97420,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2024-05.zip",
+      "sha256": "7eac847049e1664e984c791e98fae3a48a35cec7413005095e18a33cc0005b3a",
+      "bytes": 95846,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2024-06.zip",
+      "sha256": "036a77a334053c013cb2d1e9ab818bbf77ba013d53efef9d9d6d78702012b06e",
+      "bytes": 90747,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2024-07.zip",
+      "sha256": "77d5ef8b20f7177fb16b97590500cff442e6073a8ec73681a35d3b25106abfa7",
+      "bytes": 94490,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2024-08.zip",
+      "sha256": "046f8af0f15e7b9a29e4f28454b8f9c016c4a334984d2d34244c4afe68bac9f7",
+      "bytes": 91165,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2024-09.zip",
+      "sha256": "c1bcc6a429e74d9c540eed14fb4677ccfee9092a83bd7e5c8de998ac3c576ac1",
+      "bytes": 85342,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2024-10.zip",
+      "sha256": "350371a750a5ea9fa84cb6b47f2f999d33bb0a1b9e751e914adbff85451a8958",
+      "bytes": 89568,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2024-11.zip",
+      "sha256": "9808c5b9ff06eadb99425263eaa1d3626be4b869d0878658b69e522e72ec9af9",
+      "bytes": 93120,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2024-12.zip",
+      "sha256": "929e61bb28b53c39dd2a80c25be8b961ea822f63e7bbba81a32d3b9e3c3cbf8c",
+      "bytes": 96841,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2025-01.zip",
+      "sha256": "03e529d9c5dd1fba4b614cf62006b3971e65b33e97c12eb15076395090667cfa",
+      "bytes": 89394,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2025-02.zip",
+      "sha256": "30f574d56edfc5adc7364ab4f1751ef8fc84548242f408fd0d5bfffc6e90fae1",
+      "bytes": 80125,
+      "bars": 2688
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2025-03.zip",
+      "sha256": "8b856ec472c1592082c80d2837724c74c852accba16637db993d77dfae60b14b",
+      "bytes": 87015,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2025-04.zip",
+      "sha256": "657d8e1e281610bcbe5e88f14fab5f71f382446fbe6748e128dec9ee8f44f251",
+      "bytes": 77260,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2025-05.zip",
+      "sha256": "6ba7a770f64b3def6cb0921ad8c2a1e7ffd6db269582cd3eff5cae6ee470920d",
+      "bytes": 78953,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2025-06.zip",
+      "sha256": "00c7d459dbca11ce5d56557ff136ff5425179fa1c562f0bfa2a8d7ce0ccaef66",
+      "bytes": 77815,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2025-07.zip",
+      "sha256": "d196bd6aebe43a644095460b12b8a8c48ccc5e7a4026ec347b372d34eeaa9d19",
+      "bytes": 81598,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2025-08.zip",
+      "sha256": "622f33b10c66ec9a7f0128c3ca595abab1a31bd95c42054937dfc3b70aa7fbe4",
+      "bytes": 85684,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2025-09.zip",
+      "sha256": "c61127e2d5561b29259cd380fd164494dc4d759420c8b5c1658cf4b14e93270c",
+      "bytes": 79998,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2025-10.zip",
+      "sha256": "5e3cd323d9202bcef1ad59d50d8691f551f6b8ab9866d3097183380ab2207f8d",
+      "bytes": 86498,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2025-11.zip",
+      "sha256": "f46773a1b02d4629d35a1b8a630cfbb93a8c079e01e76ebeb85b5cd93bb04770",
+      "bytes": 80194,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2025-12.zip",
+      "sha256": "2f315ba4719692f6e0f0fc2834b7b91bdb6f11ab52c15031db87925cc29ff085",
+      "bytes": 79321,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2026-01.zip",
+      "sha256": "c54f8ce797e3392befdcf7bb2cff319007b39135951125b80ad2dfbbf38b881a",
+      "bytes": 75374,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2026-02.zip",
+      "sha256": "e6808624b0b3582b8f89f326c61b2ea75bef894fe535fa004395e96940acf33a",
+      "bytes": 76756,
+      "bars": 2688
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2026-03.zip",
+      "sha256": "7b3bac26475cd3774d19e11404136ad906e765b50f1b7423d9e4325c5bc867c6",
+      "bytes": 79429,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2026-04.zip",
+      "sha256": "2c870dd83359f82781806f82c0e1fb592932c4f6c42b9e15d521e9e5a7a01c66",
+      "bytes": 67336,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2026-05.zip",
+      "sha256": "af260ca80decc1de49e0a07924de361a2e23a79eec6b28bc04cdb5a94fecc346",
+      "bytes": 53578,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2026-06.zip",
+      "sha256": "246e069405cd34b28c1fc98bb5a7f9926cafadb1e5c27ab85094d509605ab4c2",
+      "bytes": 58565,
+      "bars": 2880
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2026-07.zip",
+      "sha256": "842d9696d2b77a099f2f6a55603a78f6559815b4b803bffa63d939d639dce3ee",
+      "bytes": 63366,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2026-08.zip",
+      "sha256": "0c46ebe5fee5a85ed1d808c18602862c1ff43bc7d05648c750463c3f8bf7c3e3",
+      "bytes": 60259,
+      "bars": 2976
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/TUSDUSDT/15m/TUSDUSDT-15m-2026-09.zip",
+      "sha256": "166c391c15dbe3f3464ca1d47a26afb2eb50d6403b5442f59783f46ed50c7587",
+      "bytes": 51650,
+      "bars": 2880
+    }
+  ],
+  "runs": {
+    "USDCUSDT_2024_control_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "USDCUSDT_2024_control_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "USDCUSDT_2025Q1_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "USDCUSDT_2025Q1_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "USDCUSDT_2025Q2_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "USDCUSDT_2025Q2_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "USDCUSDT_2025Q3_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "USDCUSDT_2025Q3_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "USDCUSDT_2025Q4_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "USDCUSDT_2025Q4_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "USDCUSDT_2026Q1_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "USDCUSDT_2026Q1_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "USDCUSDT_2026Q2_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "USDCUSDT_2026Q2_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "USDCUSDT_2026Q3_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "USDCUSDT_2026Q3_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "USDCUSDT_continuous_oos_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "USDCUSDT_continuous_oos_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "FDUSDUSDT_2024_control_base": {
+      "trades": 3,
+      "net_pnl": -5.801570172977559,
+      "return_pct": -0.17404710518932676,
+      "profit_factor": 0.38032213040291996,
+      "expectancy": -1.933856724325853,
+      "max_drawdown_pct": 1.5291947451121495,
+      "monthly_net": {
+        "2024-03": -5.801570172977559
+      },
+      "fees": 3.7924746548581663,
+      "gross_before_fees_and_slippage": -1.2106798497343791,
+      "slippage_cost": 0.7984156683850152
+    },
+    "FDUSDUSDT_2024_control_stress": {
+      "trades": 3,
+      "net_pnl": -10.389732505889981,
+      "return_pct": -0.31169197517669944,
+      "profit_factor": 0.16303331980607838,
+      "expectancy": -3.4632441686299935,
+      "max_drawdown_pct": 1.5731641754246084,
+      "monthly_net": {
+        "2024-03": -10.389732505889981
+      },
+      "fees": 7.579948351394044,
+      "gross_before_fees_and_slippage": -1.2140057484435944,
+      "slippage_cost": 1.5957784060523421
+    },
+    "FDUSDUSDT_2025Q1_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "FDUSDUSDT_2025Q1_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "FDUSDUSDT_2025Q2_base": {
+      "trades": 3,
+      "net_pnl": 1.8605203998214117,
+      "return_pct": 0.055815611994642356,
+      "profit_factor": 1.526091638347293,
+      "expectancy": 0.6201734666071372,
+      "max_drawdown_pct": 0.18690860871118273,
+      "monthly_net": {
+        "2025-04": 1.8605203998214117
+      },
+      "fees": 3.8032750694255095,
+      "gross_before_fees_and_slippage": 6.464485216126386,
+      "slippage_cost": 0.8006897468794656
+    },
+    "FDUSDUSDT_2025Q2_stress": {
+      "trades": 4,
+      "net_pnl": -5.807947414101369,
+      "return_pct": -0.17423842242304105,
+      "profit_factor": 0.39862177640392465,
+      "expectancy": -1.4519868535253422,
+      "max_drawdown_pct": 0.3914863895115286,
+      "monthly_net": {
+        "2025-04": -5.807947414101369
+      },
+      "fees": 10.126854899002378,
+      "gross_before_fees_and_slippage": 6.450877969462852,
+      "slippage_cost": 2.1319704845618417
+    },
+    "FDUSDUSDT_2025Q3_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "FDUSDUSDT_2025Q3_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "FDUSDUSDT_2025Q4_base": {
+      "trades": 3,
+      "net_pnl": -9.221370082445615,
+      "return_pct": -0.2766411024733685,
+      "profit_factor": 0.06190198980592373,
+      "expectancy": -3.0737900274818717,
+      "max_drawdown_pct": 0.40686415347728594,
+      "monthly_net": {
+        "2025-10": -9.221370082445615
+      },
+      "fees": 3.7891209105579735,
+      "gross_before_fees_and_slippage": -4.634539691888673,
+      "slippage_cost": 0.7977094799989706
+    },
+    "FDUSDUSDT_2025Q4_stress": {
+      "trades": 3,
+      "net_pnl": -13.80177859458316,
+      "return_pct": -0.4140533578374948,
+      "profit_factor": 0.0,
+      "expectancy": -4.600592864861054,
+      "max_drawdown_pct": 0.5439811863300382,
+      "monthly_net": {
+        "2025-10": -13.80177859458316
+      },
+      "fees": 7.573249677332923,
+      "gross_before_fees_and_slippage": -4.6341613055934605,
+      "slippage_cost": 1.5943676116567764
+    },
+    "FDUSDUSDT_2026Q1_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "FDUSDUSDT_2026Q1_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "FDUSDUSDT_2026Q2_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "FDUSDUSDT_2026Q2_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "FDUSDUSDT_2026Q3_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "FDUSDUSDT_2026Q3_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "FDUSDUSDT_continuous_oos_base": {
+      "trades": 6,
+      "net_pnl": -7.365996646770013,
+      "return_pct": -0.22097989940310037,
+      "profit_factor": 0.4491411049234005,
+      "expectancy": -1.2276661077950022,
+      "max_drawdown_pct": 0.4068641534772847,
+      "monthly_net": {
+        "2025-04": 1.8605203998214117,
+        "2025-10": -9.226517046591425
+      },
+      "fees": 7.594510901008928,
+      "gross_before_fees_and_slippage": 1.8273587275455518,
+      "slippage_cost": 1.5988444733066376
+    },
+    "FDUSDUSDT_continuous_oos_stress": {
+      "trades": 7,
+      "net_pnl": -19.585678007395003,
+      "return_pct": -0.5875703402218501,
+      "profit_factor": 0.16427161931427994,
+      "expectancy": -2.797954001056429,
+      "max_drawdown_pct": 0.7172717845157285,
+      "monthly_net": {
+        "2025-04": -5.807947414101369,
+        "2025-10": -13.777730593293638
+      },
+      "fees": 17.68690906557136,
+      "gross_before_fees_and_slippage": 1.824791153420796,
+      "slippage_cost": 3.7235600952444434
+    },
+    "TUSDUSDT_2024_control_base": {
+      "trades": 162,
+      "net_pnl": -259.108295296351,
+      "return_pct": -7.77324885889053,
+      "profit_factor": 0.03442410874473399,
+      "expectancy": -1.5994339215824136,
+      "max_drawdown_pct": 8.048466032863285,
+      "monthly_net": {
+        "2024-01": -181.50370533612318,
+        "2024-02": -79.47808708037036,
+        "2024-11": 1.8734971201425794
+      },
+      "fees": 196.26761662039803,
+      "gross_before_fees_and_slippage": -21.52118130092464,
+      "slippage_cost": 41.31949737502832
+    },
+    "TUSDUSDT_2024_control_stress": {
+      "trades": 232,
+      "net_pnl": -659.3106833943352,
+      "return_pct": -19.779320501830057,
+      "profit_factor": 0.004699085426329779,
+      "expectancy": -2.8418563939411,
+      "max_drawdown_pct": 19.909698780220378,
+      "monthly_net": {
+        "2024-01": -418.5295838295147,
+        "2024-02": -238.71518290690815,
+        "2024-11": -2.065916657912319
+      },
+      "fees": 525.1794677954043,
+      "gross_before_fees_and_slippage": -23.567120886439444,
+      "slippage_cost": 110.56409471249144
+    },
+    "TUSDUSDT_2025Q1_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "TUSDUSDT_2025Q1_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "TUSDUSDT_2025Q2_base": {
+      "trades": 2,
+      "net_pnl": -7.216733238521879,
+      "return_pct": -0.21650199715565638,
+      "profit_factor": 0.0,
+      "expectancy": -3.6083666192609396,
+      "max_drawdown_pct": 1.7197852346432092,
+      "monthly_net": {
+        "2025-06": -7.216733238521879
+      },
+      "fees": 2.526768205027615,
+      "gross_before_fees_and_slippage": -4.158013998756392,
+      "slippage_cost": 0.5319510347378722
+    },
+    "TUSDUSDT_2025Q2_stress": {
+      "trades": 6,
+      "net_pnl": -22.479058233838153,
+      "return_pct": -0.6743717470151446,
+      "profit_factor": 0.0,
+      "expectancy": -3.746509705639692,
+      "max_drawdown_pct": 1.7634972833401887,
+      "monthly_net": {
+        "2025-06": -22.479058233838153
+      },
+      "fees": 15.135513962505518,
+      "gross_before_fees_and_slippage": -4.157120944365699,
+      "slippage_cost": 3.186423326966933
+    },
+    "TUSDUSDT_2025Q3_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "TUSDUSDT_2025Q3_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "TUSDUSDT_2025Q4_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "TUSDUSDT_2025Q4_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "TUSDUSDT_2026Q1_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "TUSDUSDT_2026Q1_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "TUSDUSDT_2026Q2_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "TUSDUSDT_2026Q2_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "TUSDUSDT_2026Q3_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "TUSDUSDT_2026Q3_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0.0,
+      "monthly_net": {},
+      "fees": 0,
+      "gross_before_fees_and_slippage": 0,
+      "slippage_cost": 0
+    },
+    "TUSDUSDT_continuous_oos_base": {
+      "trades": 2,
+      "net_pnl": -7.216733238521879,
+      "return_pct": -0.21650199715565638,
+      "profit_factor": 0.0,
+      "expectancy": -3.6083666192609396,
+      "max_drawdown_pct": 1.7197852346432092,
+      "monthly_net": {
+        "2025-06": -7.216733238521879
+      },
+      "fees": 2.526768205027615,
+      "gross_before_fees_and_slippage": -4.158013998756392,
+      "slippage_cost": 0.5319510347378722
+    },
+    "TUSDUSDT_continuous_oos_stress": {
+      "trades": 6,
+      "net_pnl": -22.479058233838153,
+      "return_pct": -0.6743717470151446,
+      "profit_factor": 0.0,
+      "expectancy": -3.746509705639692,
+      "max_drawdown_pct": 1.7634972833401887,
+      "monthly_net": {
+        "2025-06": -22.479058233838153
+      },
+      "fees": 15.135513962505518,
+      "gross_before_fees_and_slippage": -4.157120944365699,
+      "slippage_cost": 3.186423326966933
+    }
+  },
+  "aggregate_oos": {
+    "trades": 8,
+    "net_pnl": -14.577582921146083,
+    "profit_factor": 0.2917688373141176,
+    "expectancy": -1.8221978651432604
+  },
+  "aggregate_stress": {
+    "trades": 13,
+    "net_pnl": -42.08878424252268,
+    "profit_factor": 0.08380280840263188,
+    "expectancy": -3.23759878788636
+  },
+  "by_symbol": {
+    "USDCUSDT": {
+      "trades": 0,
+      "net_pnl": 0,
+      "profit_factor": null,
+      "expectancy": null
+    },
+    "FDUSDUSDT": {
+      "trades": 6,
+      "net_pnl": -7.360849682624204,
+      "profit_factor": 0.4493000581063492,
+      "expectancy": -1.2268082804373674
+    },
+    "TUSDUSDT": {
+      "trades": 2,
+      "net_pnl": -7.216733238521879,
+      "profit_factor": 0.0,
+      "expectancy": -3.6083666192609396
+    }
+  },
+  "by_symbol_stress": {
+    "USDCUSDT": {
+      "trades": 0,
+      "net_pnl": 0,
+      "profit_factor": null,
+      "expectancy": null
+    },
+    "FDUSDUSDT": {
+      "trades": 7,
+      "net_pnl": -19.609726008684525,
+      "profit_factor": 0.1641032268518197,
+      "expectancy": -2.801389429812075
+    },
+    "TUSDUSDT": {
+      "trades": 6,
+      "net_pnl": -22.479058233838153,
+      "profit_factor": 0.0,
+      "expectancy": -3.746509705639692
+    }
+  },
+  "by_quarter": {
+    "2025Q1": 0,
+    "2025Q2": -5.3562128387004675,
+    "2025Q3": 0,
+    "2025Q4": -9.221370082445615,
+    "2026Q1": 0,
+    "2026Q2": 0,
+    "2026Q3": 0
+  },
+  "continuous_portfolio_net": {
+    "base": -14.582729885291892,
+    "stress": -42.064736241233156
+  },
+  "gates": {
+    "sample": false,
+    "base_net": false,
+    "base_expectancy": false,
+    "base_pf": false,
+    "stress_net": false,
+    "stress_expectancy": false,
+    "stress_pf": false,
+    "all_symbols": false,
+    "five_positive_quarters": false,
+    "final_quarter": false,
+    "drawdown": true,
+    "concentration": false
+  },
+  "limitations": [
+    "Exploratory history.",
+    "Local SHA256 are not publisher signatures.",
+    "Isolated equal sleeves; no cross-sleeve reallocation.",
+    "OHLC path/drawdown not tick-exact.",
+    "No forward PAPER evidence."
+  ]
+}
