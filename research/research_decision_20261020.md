@@ -69,3 +69,11 @@ The distinct stablecoin redemption-anchor hypothesis was frozen in commit `31769
 The locked quarterly OOS screen found only 8 base trades, -$14.58, PF 0.292, expectancy -$1.82; double-cost stress found 13 path-dependent trades, -$42.09, PF 0.084, expectancy -$3.24. USDC did not reach the preregistered dislocation, and the FDUSD/TUSD trades lost. Only drawdown passed. Reject for inadequate sample and negative base/stress evidence; do not loosen thresholds on these observed quarters. Complete provenance, results and ledgers are in `research/stable_peg_validation_20261025/`.
 
 Next concrete step: retain the no-retuning rule; use a distinct mechanism with a naturally larger event sample and freeze it before evaluation. PAPER-only isolation remains unchanged.
+
+## XRP_OI_CROWDING_UNWIND_V1: rejected (2026-10-25)
+
+The derivatives-positioning hypothesis and gates were frozen before performance evaluation, with two ingestion-only no-imputation amendments recorded before rerunning. The completed screen used 1,004 real Binance Futures metrics archives and 33 real Binance spot 5m archives from January 2024 through September 2026. Source URLs, byte counts and local SHA256 fingerprints are preserved with the output. Seventy-one invalid required-metric rows were excluded; gaps were retained and causal lookbacks crossing them were suppressed.
+
+Across the seven locked OOS quarters, 111 base-cost trades lost $579.90, PF 0.5843, expectancy -$5.22. Doubled costs produced 112 path-dependent trades and lost $1,074.52, PF 0.3745, expectancy -$9.59. Only one quarter was positive and final 2026 Q3 lost. Continuous OOS drawdown was 6.46% base and 11.00% stressed. Every frozen gate failed, including the 150-trade minimum. All 52 repository tests and an independent ledger audit passed, which establishes mechanics rather than profitability. Full results, provenance, compressed ledger and audit are in `research/oi_crowding_validation_20261025/`.
+
+Reject without threshold retuning or forward promotion. Next concrete step: preregister a genuinely different observable mechanism, reserve new forward data, and avoid further OI/long-short/taker-crowding variants on these observed quarters. PAPER-only and production-isolation constraints remain unchanged.

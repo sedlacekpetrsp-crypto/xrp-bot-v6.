@@ -1,0 +1,31 @@
+{
+  "status": "PASS",
+  "checks": [
+    "chronology and next-5m-open timing",
+    "no overlapping positions",
+    "notional and stop-distance risk limits",
+    "independent fees, slippage, P/L and equity arithmetic",
+    "ledger/report reconciliation"
+  ],
+  "trades_by_run": {
+    "2024_control_base": 52,
+    "2024_control_stress": 52,
+    "2025Q1_base": 11,
+    "2025Q1_stress": 11,
+    "2025Q2_base": 13,
+    "2025Q2_stress": 13,
+    "2025Q3_base": 9,
+    "2025Q3_stress": 9,
+    "2025Q4_base": 23,
+    "2025Q4_stress": 23,
+    "2026Q1_base": 26,
+    "2026Q1_stress": 26,
+    "2026Q2_base": 10,
+    "2026Q2_stress": 10,
+    "2026Q3_base": 19,
+    "2026Q3_stress": 20,
+    "continuous_oos_base": 111,
+    "continuous_oos_stress": 112
+  },
+  "note": "Quarter folds and continuous run share observations and are not independent samples."
+}

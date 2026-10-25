@@ -15,3 +15,13 @@ Next: commit this protocol, simulator, tests and provenance runner before downlo
 Initial ingestion stopped before producing any trade or performance result: Binance file `XRPUSDT-metrics-2024-06-12.zip` has an empty `count_long_short_ratio` at 2024-06-12 08:20 UTC. The row will be excluded and reported, never imputed. Timestamp intersection retains a gap and the existing complete-288-sample check suppresses signals crossing it. No signal, exit, cost, sizing or success parameter changes.
 
 A second ingestion-only stop, still before any performance calculation, found 63 rows whose reported `sum_open_interest` is exactly zero. Zero open interest is invalid for the ratio/change signal and will be handled identically to a blank required field: exclude, report, retain gaps, suppress crossing lookbacks. No forward fill or parameter change.
+
+## Completed historical validation — rejected
+
+The amended protocol was frozen before evaluation (SHA256 `baac5292bbfc688c2015f4698efcf04a2f6fc4e9c102b0f9ca8207a10bf180ba`). The run used 1,004 Binance Futures metrics archives and 33 Binance spot kline archives; every source URL, byte count and locally calculated SHA256 is recorded in `oi_crowding_validation_20261025/results.json`. Seventy-one invalid required-metric rows were excluded and reported. Alignment found no metric-only timestamps, 201 spot-only timestamps and no duplicate metric timestamp. Missing observations were not synthesized; exact 288-sample causal windows suppressed signals across gaps.
+
+The seven locked OOS quarters produced 111 base-cost trades, -$579.90, PF 0.5843 and expectancy -$5.22. Doubled costs produced 112 path-dependent trades, -$1,074.52, PF 0.3745 and expectancy -$9.59. Only 2026 Q2 was base-cost positive; final 2026 Q3 lost $203.15. The continuous, non-independent OOS path lost $568.64 with 6.46% maximum drawdown; stress lost $1,030.05 with 11.00% maximum drawdown. Every preregistered gate failed, including the 150-trade sample minimum. No forward PAPER stage is authorized.
+
+All 52 repository unit tests passed. `audit_oi_crowding.py` independently reconciled every ledger with next-5m-open timing, non-overlap, sizing, costs, slippage, P/L and equity and wrote a PASS audit. Passing mechanics do not alter the profitability rejection. Do not retune this strategy on these observed quarters.
+
+Next concrete step: preregister a different mechanism that does not reuse OI/long-short/taker crowding thresholds or previously rejected OHLC continuation, residual, relative-strength, autocorrelation, calendar, stablecoin-peg, flow-pressure or sweep-trend ideas. Keep it offline/PAPER-only and reserve new forward observations before any acceptance decision.
