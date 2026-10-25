@@ -53,3 +53,11 @@ The zero-intercept BTC/ETH factor-residual mean-reversion rules and gates were f
 The four annual OOS folds contain 231 non-overlapping trades: -$2,029.15, PF 0.563, expectancy -$8.78; doubled costs: -$3,007.28, PF 0.424, expectancy -$13.02. All four OOS years and the 2022 control lost. Continuous base/stress drawdowns were 20.16%/27.74%. Only sample size passed; the candidate fails all profit, stress, stability, final-fold, drawdown and concentration gates. It is rejected without parameter retuning or forward promotion. Full provenance, hashes, metrics, ledger and audit are in `research/residual_snapback_validation_20261025/`.
 
 Next concrete step: do not continue OHLC-only XRP/BTC/ETH relative-return variants on this reused history. Freeze a distinct hypothesis based on a different observable mechanism before testing. PAPER-only and production-isolation constraints remain unchanged.
+
+## XRP_LARGE_TRADE_FOLLOWTHROUGH_V1: rejected (2026-10-25)
+
+This candidate used Binance quote volume per reported trade as a distinct observable for large-trade participation. Rules were frozen in `466679ca08c11cbc074893a161e4acc5d2580d8a`; a real zero-activity row and adjacent missing hour caused ingestion to stop before results, so the no-imputation gap policy was documented in `e2495aa2f59e69a32f893fe943d11b9b6e54a540` before rerunning.
+
+Across 57 real XRPUSDT hourly archives, 155 annual-fold OOS trades lost -$794.78, PF 0.669, expectancy -$5.13; doubled costs lost -$1,452.17, PF 0.486, expectancy -$9.37. Every OOS year and the control lost. All 41 code tests and independent ledger audit passed, but only the sample gate passed. Full provenance, results, ledger and audit are in `research/large_trade_followthrough_validation_20261025/`. Reject without retuning or forward promotion.
+
+Next concrete step: avoid further variants based on one-hour continuation after volume/trade-size anomalies on this history; investigate a genuinely different mechanism and preregister it. PAPER-only isolation remains unchanged.
