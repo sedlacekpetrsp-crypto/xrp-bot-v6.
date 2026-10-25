@@ -9,3 +9,7 @@ Fixed signal at closed timestamp: global `count_long_short_ratio` z-score <= -2.
 2024 is control. Locked OOS quarters are 2025 Q1–Q4 and 2026 Q1–Q3; continuous OOS is non-independent. All gates: >=150 OOS trades; positive base net/expectancy, PF>1.15; positive stress net/expectancy, PF>1.02; >=5/7 positive quarters including 2026 Q3; continuous base/stress drawdown <=10%; no quarter >40% of positive profit. Historical passage remains `TEST NEDOKONCEN` until >=30 future days and >=100 new PAPER trades pass stressed expectancy. No tuning, LIVE, production, Render, main or deployed changes.
 
 Next: commit this protocol, simulator, tests and provenance runner before downloading/evaluating outcomes.
+
+## Pre-results missing-metric amendment
+
+Initial ingestion stopped before producing any trade or performance result: Binance file `XRPUSDT-metrics-2024-06-12.zip` has an empty `count_long_short_ratio` at 2024-06-12 08:20 UTC. The row will be excluded and reported, never imputed. Timestamp intersection retains a gap and the existing complete-288-sample check suppresses signals crossing it. No signal, exit, cost, sizing or success parameter changes.

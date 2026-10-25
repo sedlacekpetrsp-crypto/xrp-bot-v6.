@@ -14,10 +14,13 @@ def get(url,path):
 def fetch_metric(job):
     d,cache=job;ds=d.strftime('%Y-%m-%d');name=f'XRPUSDT-metrics-{ds}.zip';url=f'https://data.binance.vision/data/futures/um/daily/metrics/XRPUSDT/{name}';payload=get(url,cache/name)
     with zipfile.ZipFile(io.BytesIO(payload)) as z:rows=list(csv.DictReader(io.TextIOWrapper(z.open(name[:-4]+'.csv'))))
-    out=[]
+    out=[];missing=[]
     for r in rows:
-        t=int(datetime.strptime(r['create_time'],'%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.utc).timestamp()*1000);out.append(dict(timestamp=t,open_interest=float(r['sum_open_interest']),long_short=float(r['count_long_short_ratio']),taker_ratio=float(r['sum_taker_long_short_vol_ratio'])))
-    out.sort(key=lambda x:x['timestamp']);return out,dict(url=url,sha256=hashlib.sha256(payload).hexdigest(),bytes=len(payload),rows=len(out))
+        t=int(datetime.strptime(r['create_time'],'%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.utc).timestamp()*1000)
+        required=(r.get('sum_open_interest'),r.get('count_long_short_ratio'),r.get('sum_taker_long_short_vol_ratio'))
+        if not all(required):missing.append(t);continue
+        out.append(dict(timestamp=t,open_interest=float(required[0]),long_short=float(required[1]),taker_ratio=float(required[2])))
+    out.sort(key=lambda x:x['timestamp']);return out,dict(url=url,sha256=hashlib.sha256(payload).hexdigest(),bytes=len(payload),rows=len(out),missing_required_timestamps=missing)
 def fetch_spot(job):
     y,m,cache=job;name=f'XRPUSDT-5m-{y}-{m:02d}.zip';url=f'https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/5m/{name}';payload=get(url,cache/name)
     with zipfile.ZipFile(io.BytesIO(payload)) as z:rows=list(csv.reader(io.TextIOWrapper(z.open(name[:-4]+'.csv'))))
