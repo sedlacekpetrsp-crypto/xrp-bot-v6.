@@ -11,3 +11,13 @@ No price imputation. Markets must align; a signal requires an uninterrupted 168-
 All historical gates required: >=150 aggregate annual-fold OOS trades; base net and expectancy positive, PF>1.15; doubled-cost net and expectancy positive, PF>1.02; >=3/4 profitable annual folds including 2026; continuous base/stress drawdown <=10%; no single month >40% of positive aggregate profit. Historical passage still means `TEST NEDOKONCEN` until >=30 new calendar days and >=100 independently accumulated forward PAPER trades have positive base and stressed expectancy. No LIVE, production, Render or deployed-branch changes.
 
 Next: commit protocol, isolated implementation and mechanics tests; then run unchanged code on real data.
+
+## Completed validation (2026-10-25)
+
+Decision: **NEPROŠEL**. The frozen rules were committed as `88f4039600997677b804db077e9d3a091ef170aa` before performance evaluation. All 35 repository research tests passed, including six new causality, gap, alignment, execution, cost, sizing and non-trading tests. The existing independent ledger audit also passed chronology, next-open timing, non-overlap, sizing, cost arithmetic, equity and report reconciliation.
+
+The test validated 171 real Binance Vision monthly archives, 41,615 aligned hourly candles per market, January 2022–September 2026. The common 2023-03-24 13:00 UTC missing candle was not fabricated; signals require uninterrupted history. Source URLs and locally computed SHA256 fingerprints are in `results.json`.
+
+Annual-fold OOS: 231 trades, -$2,029.15 net, PF 0.563, expectancy -$8.78/trade. Doubled costs: -$3,007.28, PF 0.424, expectancy -$13.02. Every OOS year lost at base costs. Continuous OOS returned -18.98% with 20.16% conservative drawdown; stress returned -27.05% with 27.74% drawdown. Only the sample-size gate passed; every profitability, stability, final-period, drawdown and concentration gate failed. The 2022 control also lost (-6.10%, PF 0.576). No forward PAPER stage is justified.
+
+Full provenance/metrics: `research/residual_snapback_validation_20261025/results.json`; ledger: `trades.json.gz`; independent audit: `audit.json`. Do not tune this residual threshold, holding period or brackets on these observed folds. Next research must use a structurally different mechanism. No production, LIVE, Render or deployed branch was changed.

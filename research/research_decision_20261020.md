@@ -45,3 +45,11 @@ The rules and gates were frozen in the preceding GitHub commit before performanc
 On 114 real Binance Vision monthly archives (BTC/XRP 1h, January 2022–September 2026), the four annual OOS folds produced only 50 trades, -$173.72 net, PF 0.730, versus -$373.47 and PF 0.509 under doubled costs. Only 2023 was base-cost positive; even that fold lost under stress. The 2022 control and 2024–2026 folds lost. The completed result fails sample, profitability, stress, stability, final-period, and concentration gates; it is not eligible for forward PAPER promotion. Exact provenance, SHA256 hashes, full ledgers, audit and limitations are in `research/btc_lead_lag_validation_20261025/` and `research/btc_lead_lag_protocol.md`.
 
 Next concrete step: freeze and test a genuinely different mechanism, preferably one with new information beyond OHLC cross-market momentum; do not tune lead/lag thresholds on the now-observed folds. PAPER-only constraints remain unchanged.
+
+## XRP_RESIDUAL_SNAPBACK_V1: rejected (2026-10-25)
+
+The zero-intercept BTC/ETH factor-residual mean-reversion rules and gates were frozen in commit `88f4039600997677b804db077e9d3a091ef170aa`, before evaluation. On 171 actual Binance Vision archives (XRP/BTC/ETH 1h, Jan 2022–Sep 2026), all 35 code tests and the independent ledger audit passed. Mechanics success is not profitability evidence.
+
+The four annual OOS folds contain 231 non-overlapping trades: -$2,029.15, PF 0.563, expectancy -$8.78; doubled costs: -$3,007.28, PF 0.424, expectancy -$13.02. All four OOS years and the 2022 control lost. Continuous base/stress drawdowns were 20.16%/27.74%. Only sample size passed; the candidate fails all profit, stress, stability, final-fold, drawdown and concentration gates. It is rejected without parameter retuning or forward promotion. Full provenance, hashes, metrics, ledger and audit are in `research/residual_snapback_validation_20261025/`.
+
+Next concrete step: do not continue OHLC-only XRP/BTC/ETH relative-return variants on this reused history. Freeze a distinct hypothesis based on a different observable mechanism before testing. PAPER-only and production-isolation constraints remain unchanged.

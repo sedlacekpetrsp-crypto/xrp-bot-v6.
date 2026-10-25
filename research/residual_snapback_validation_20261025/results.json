@@ -1,0 +1,1438 @@
+{
+  "strategy": "XRP_RESIDUAL_SNAPBACK_V1",
+  "status": "NEPROSEL",
+  "protocol": "research/residual_snapback_protocol.md",
+  "protocol_sha256": "9f6773e4b5edde6df20a2fdd2bac64e155f7b11e2cde6acde0e5b4a9c3cf8a49",
+  "manifest": [
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2022-01.zip",
+      "sha256": "3dd1aac953fbf7ed2d3f019bd3d85e7b1cfc335493723b02ea422543eb12be6e",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2022-02.zip",
+      "sha256": "aa4fc993b3a634164574297fe55143652af3543ac87a1bba2865177808e20541",
+      "bars": 672,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2022-03.zip",
+      "sha256": "7f919c2ea70d24ec90f617a697216c1fe6f0eaaf27a4c4d5514b59ef8b87b907",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2022-04.zip",
+      "sha256": "fc87ce152ba125900f7a3e181edb514a1dd2c625ddea4f9c25aa3fb9b7393da7",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2022-05.zip",
+      "sha256": "d597c3bf8094b9ae317154ca762ffdb7669c1207a6952682b37fd65e1d31cb76",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2022-06.zip",
+      "sha256": "8347834a6951818114ad6aa914833ce1585123bc35bbe34623f2bc5f3108049a",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2022-07.zip",
+      "sha256": "67e062f1453d9b60f34d472829d4d1670ac24176af9b554b3650150b8e4da364",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2022-08.zip",
+      "sha256": "ee7291e5da57026319d088b29376b13f5eece37520a7181fd1040acf5f68298a",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2022-09.zip",
+      "sha256": "ab5af203255ab893f20301362b07cdd93bf2686a794a6dffd1bb75588be1ae34",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2022-10.zip",
+      "sha256": "2cd0fa7d849f8be4e42171bec9b715886088619d062474b77756d15e7e489e16",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2022-11.zip",
+      "sha256": "13f222c67465b9eba0a0eb0644d43a1c22cc16b2be8c533e8e578c8a2028bdc1",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2022-12.zip",
+      "sha256": "a8cc8dcc3e93c0ef22dcf842336f355b2ecbb8ab49b8124631c3894b45905105",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2023-01.zip",
+      "sha256": "5efb145b921b6d2adcf73338eaf787033e333033c49623a0d9152682e91b9f93",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2023-02.zip",
+      "sha256": "907ff8915cdf9ea1c02c4949c6872d208f5f2c81c18e1751dcf1166fe2902118",
+      "bars": 672,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2023-03.zip",
+      "sha256": "f714a3c98ba10e82a79ec8fe126b78d70a9b3804dbbde00294c0d1d3f3280df2",
+      "bars": 743,
+      "missing_timestamps": [
+        1679662800000
+      ]
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2023-04.zip",
+      "sha256": "de8ce6aedf975d5ef89560a93a1fefb35ea51d06719a3636dd37034883c396a5",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2023-05.zip",
+      "sha256": "c5ea3091f0e130331c00ef75d36a2a2403cf4134c392fbf8b85ec97b6c21ae9b",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2023-06.zip",
+      "sha256": "ebf9c8259a56ba70e5dfd37ec36ede85443ece2c352ba13a33017a8b5bfe83ad",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2023-07.zip",
+      "sha256": "5c92d13b871a149840ce45cac89991a0401451f3475c503a1e1622d71839a6b9",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2023-08.zip",
+      "sha256": "dd70ed1784aafd35b6a2b6b304abefc8a7acb20900bcee24889f5f3746219e1d",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2023-09.zip",
+      "sha256": "fe3e268b4464a8745240f6dcc5c3d245c23f42e6d0432f2cef254ed49cb4f50b",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2023-10.zip",
+      "sha256": "70407de31af716063c041443ad0b8563adfb7c78bf6d20001060e5ce7142b2b0",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2023-11.zip",
+      "sha256": "8f58815f558f51def4455ad31e5afe0b43548e54c8905541bee72b5058504a6a",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2023-12.zip",
+      "sha256": "25152d0d103af6372f509ee705ab8739a9aef936f9862f745a19f12f2cc99192",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2024-01.zip",
+      "sha256": "77159b42f03dfbe6cd42a05d3491081d34a37293f97b0972b3391757d3c3dcbc",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2024-02.zip",
+      "sha256": "4491e38698b5d787da8616136e0c2090e2b6c5efd3e937657245410274e9544c",
+      "bars": 696,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2024-03.zip",
+      "sha256": "b2cb09642dfc521ca15e203e2c6d2d96e67c81467005fa9d43aa5ea74f316918",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2024-04.zip",
+      "sha256": "60ac7130e31cd5dee55c5107adbcf52b4b38874e9757a2c5599c6c4ae262bcf9",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2024-05.zip",
+      "sha256": "6a10159e5b18de42a3a88bcf7502e881a2013143d70720df347b7fbbae023971",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2024-06.zip",
+      "sha256": "218efe7887d1dee55eb9094bc16361f2bde83fec29e33143d3d9f7a3df72a4d4",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2024-07.zip",
+      "sha256": "35b918d07cd7dc678cee9f7d65f468b556b9310490110151cea866e5b1a8eccb",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2024-08.zip",
+      "sha256": "00648458df95d1c616e1a44f19a6e8b25269071c685cba625897f732c1c205c6",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2024-09.zip",
+      "sha256": "c8f04c971faf07da02d29d68e27c1b83e1e42709a50c06dfe8be43f00fdb14c0",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2024-10.zip",
+      "sha256": "76afc2abe3a70a2c79f5706d6a66e5154a58927613f033d2c76e4ac5d5eedca7",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2024-11.zip",
+      "sha256": "010994259de1aa0378e21fd2a4755153b69f1f6f4779d91b0098a4d4c4d5545c",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2024-12.zip",
+      "sha256": "31f6d94510b7db48db22109cdcfed960112bda90a8ff5c670ae528cbf3b05db4",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2025-01.zip",
+      "sha256": "217109fad8b3a8681b6f860a0c5c461810c735b07a1153044310e86606be12ec",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2025-02.zip",
+      "sha256": "1a8f692561213eac27013427cf7df056822217467329fcf5bcd428525da86ee5",
+      "bars": 672,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2025-03.zip",
+      "sha256": "c70843debb833b68b05f8a73ca174d0e329e2d8ab34fc1b5e77c86d18e872202",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2025-04.zip",
+      "sha256": "72fecc94a24cebd0b7d04d03e72e10a64d441f9b0f729ee7fcb7a40bed866362",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2025-05.zip",
+      "sha256": "6d03555be628369abcc80946a41dfd485710364466871befc3084b05d4f2c1f5",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2025-06.zip",
+      "sha256": "45067e46f6dbd885b03d59fb797407391c41910cc570ad23b90aa719d12742f8",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2025-07.zip",
+      "sha256": "9445599dbaad1ff2b1a102b18ec7a6a436b906f22f0ce2b32c2f7a8d1f3dd5ca",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2025-08.zip",
+      "sha256": "b2f06ce11bb56fcbe97de82ee0f21be58f41811589612fc7e42d82bd7f695197",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2025-09.zip",
+      "sha256": "6e7cc11c407faa368c2215b8f5adad29afe6bb70c33c74aa5b23bf50dcfb9d20",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2025-10.zip",
+      "sha256": "4645b87ae8b4a3ab7c936b4ead2748e3ce9e3961208d4e40fbba897f63e39560",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2025-11.zip",
+      "sha256": "a411aedae1fb7140ab043885223a890a35b3887ffdba85f34437cf26b83937b3",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2025-12.zip",
+      "sha256": "c1f7afa290b1e8c4ef3bc84a3d992d779e636ad69ac700dd24a0847d2f704a49",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2026-01.zip",
+      "sha256": "31af99c0ea11a3b6d7e062e7755ba3240ea1369d2fc1c0b30fcfe0ca7d68b1b8",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2026-02.zip",
+      "sha256": "7fd13cd45c932ae481142213d4035df0ccce048a6dfb2e306c146746540ee2fd",
+      "bars": 672,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2026-03.zip",
+      "sha256": "fb697b2abd451ed92c624c457b021fdd38f589e84428ab25dca337d41617aa72",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2026-04.zip",
+      "sha256": "a6e372008a5940aba04f5a8aa86b75163657180b276aca365f87c993c0930e32",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2026-05.zip",
+      "sha256": "03a0520e027df25a9aaba468d585799c30458fbfba7b0588f6f7b3cf7013312c",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2026-06.zip",
+      "sha256": "1a923423f6574df3a2cf51c2ef44847d7df6b5d1a5ca8857d5eef75692143a77",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2026-07.zip",
+      "sha256": "7517ae48bfaa5db2f61682a24124b3e4e74f8c39803355a226ec4959086dd2fd",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2026-08.zip",
+      "sha256": "15a0e4239d81c22496a2a4845d32d76d4e657a3250ce9286d1fa757cda821c90",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1h/XRPUSDT-1h-2026-09.zip",
+      "sha256": "fa67d293f03a74d5bb8eb9bb13b0f0b966e254c1d114ed75281d8bd21d242acb",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2022-01.zip",
+      "sha256": "e04068d0aee5e3571dc7e9a1d220475047f544e1cf1bad800b7cbbf190281c40",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2022-02.zip",
+      "sha256": "4e479b38278726cccb9257f5564c5c78477144d3ffe69df6afaf3b55ace617be",
+      "bars": 672,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2022-03.zip",
+      "sha256": "1cfb082f6bc9a2937b5b846073ddf65f71b18f2502778ac667aab3421ef80085",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2022-04.zip",
+      "sha256": "7157a267e70bcd9ae04a8898527fad00d7733e941df9b95a1d5e0ae6dcd61c3e",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2022-05.zip",
+      "sha256": "ff0744eceba5e6d2f7145ecfdc9d3fac84f4576c15221dbeb71c6d6e59484300",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2022-06.zip",
+      "sha256": "b18f6f8edbb41960f81aec100c7836fdc0de6d640ee4309a3d0fad999ae0a2c8",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2022-07.zip",
+      "sha256": "9f0ba9663f9fada7692b3cfe645df3832599f9e785056ddd77bd464475553e9e",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2022-08.zip",
+      "sha256": "3cc22044f94cb303d12013293ba6db6d44abdf1490d38d00f1389e98717a3891",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2022-09.zip",
+      "sha256": "a65dcd73017d92ea8d86e82ea1aee3dac55881f8672594d2e85d1cf392e1e78a",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2022-10.zip",
+      "sha256": "2591cbbe022ce9d4559aee1fa41ea0033324c2c4debc776cfedc9588167d413b",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2022-11.zip",
+      "sha256": "5608adf8602a8ac616ee03c2c4461a37f4646631d67edf3d2f1a94e82e5c5065",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2022-12.zip",
+      "sha256": "69c5e5f01df947bfea48ab3c8e2f462b7358effa9e2700489a4ad0dbd29b24aa",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2023-01.zip",
+      "sha256": "ea8caf7fd56c7f7143723f56f8d12a2fc0b643badbcdae5c660db2d11454a11d",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2023-02.zip",
+      "sha256": "53525b700548a19488fcb8754778acdf7941c9ba0b6e7eb548a51a376ef8d86b",
+      "bars": 672,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2023-03.zip",
+      "sha256": "7f2afb8e0179a57ac31eab5205660298ba5eb77039ac2e21aef9b715ff3d06ce",
+      "bars": 743,
+      "missing_timestamps": [
+        1679662800000
+      ]
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2023-04.zip",
+      "sha256": "1787dc83836deafaa77d4276cbe3b3ca1fe0083b3017079e3560605ff4f7a4ba",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2023-05.zip",
+      "sha256": "16b33557a4a4040fc56c711f4b1a750ebafb5a7f8dd46c060d9fc8c66cdc1982",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2023-06.zip",
+      "sha256": "05f87fb5f004ee0aff019adb7015afab8df0baaaf2b77154d75ae53e18d59b11",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2023-07.zip",
+      "sha256": "f49a738a793055a583784e78a54840a43861fd110118cbe1add14ef1afb63032",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2023-08.zip",
+      "sha256": "e983243d44536a06ff4707cf35df29f636fe788e6fb69c3b3feed2ef43d343d4",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2023-09.zip",
+      "sha256": "28e12ccaf15745bfe11f570b9079793750047fde3d340fe0231858b26bc0f9d9",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2023-10.zip",
+      "sha256": "165ec50601f914d6c41b776414096bc73974bf45fcd41aaddfedd1cf66cb6c6e",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2023-11.zip",
+      "sha256": "4f550d182d529839dd9cfc28ef0ecca8cd8003e991067e92a2af5b9e92762f49",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2023-12.zip",
+      "sha256": "6117d93e3eb6574df6b0087a45cf12e171afe91789b523b0bfcce00d8f1b6e37",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-01.zip",
+      "sha256": "cf873a185bd5b24b8e00034e49583fcb49928e0c3a45c6fc27a632a683655417",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-02.zip",
+      "sha256": "b83aa7319ef1d4baa7b923c0fe802b88dfaf241c7456af295f1f656a24379b33",
+      "bars": 696,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-03.zip",
+      "sha256": "b0851daf609d6ab82fdf8f1d1c4fbd974bc1b4e6530a832067516ac1c2be63a6",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-04.zip",
+      "sha256": "e266707ad2ea3cd4680bf1ac5025f0c1bfeb38e703374a91f8dc193d1ec8d48f",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-05.zip",
+      "sha256": "077c71eec71a8ecf2edb6e3a3927b600b8f358fd37066ce120c19fb5302a9ab8",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-06.zip",
+      "sha256": "2e1f968fa34b9feabfb19cc6eec47a146e20d64a706f4b17d0babf4d2f475c39",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-07.zip",
+      "sha256": "41fd58a70ae40bebb74682555cc5054709f8dde0f5c8193ae2103dac95274e5f",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-08.zip",
+      "sha256": "88521a975ee7bfdd21f891d81f4243a01b90b977cf525d11747e27c66e3bad60",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-09.zip",
+      "sha256": "123f402c6dbf19b9b72b4af7ad4d5325c73ba4833148cc398b803d7a34ac5c5f",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-10.zip",
+      "sha256": "393b18ad2634f0cd3b2fd54321c8286ea143419cf3129b4cc44e089681912b03",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-11.zip",
+      "sha256": "7a51fe8811c754ff43a2be0ba10e53a6d4218521e27ac765fbc9a1ca0fc15bac",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-12.zip",
+      "sha256": "dfec812f73a84257b195cbdaed34d020fa77e845625c061c13bd6a60e7ef9372",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-01.zip",
+      "sha256": "e7f2aaa5396a8062a57ab29ce9fab2d76b2c84ec58815d4ab7b3fe16f78c7118",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-02.zip",
+      "sha256": "7420f55c93f61d7e734fc9d2507c7f2fcb5eaf48112277cecd241d4e1dbf3bd5",
+      "bars": 672,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-03.zip",
+      "sha256": "b5ae8bb57e5e526c2050c9f8229b723871a5af47d80c53453abf61847a5f3aa6",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-04.zip",
+      "sha256": "bbec48ed5f7b603bbceff943ad0dccd3c29cae6d14161bcd2eabc9f762ff0a35",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-05.zip",
+      "sha256": "da6213bf4c57ea60faed3ef1f6a0ecb87f22ca7a3a67614604cf44d2d6b265fe",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-06.zip",
+      "sha256": "d0760943538f48032dd066401e53f46bbf4868e6545929678e23bcdee032a5e8",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-07.zip",
+      "sha256": "487738ee596380eaad32a2a93c75d17e1ebdd165a9b544c0e44be36079f5c02e",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-08.zip",
+      "sha256": "a99ec5bac64333fb521b2ab1bac5e8387eede6413cc7841656a02be95613c64f",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-09.zip",
+      "sha256": "b0ad5b54097f6adb440d07204fd215dae9b224fb73569fd4309a55c9234d46b3",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-10.zip",
+      "sha256": "5426b1b48905963d50e11d1243910b5fa05a89c9a2003bcd5082561d352a2123",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-11.zip",
+      "sha256": "1f28f02e33e1f19e5163cd45b67c07b3b75870e78dbbf9f861d1348ca372d942",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-12.zip",
+      "sha256": "d546c6e44b443e34cef5122043c5cdd3b9c76980e23cc408dafd9f6f76d65c05",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2026-01.zip",
+      "sha256": "a40e86beb4f1e6d4b19ca022c87b8b2f0e4e40874d349a5a75b27baa9634c858",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2026-02.zip",
+      "sha256": "0be4e5c92892495c5da5b371fe8755f2d508b28a58414b4171284480806ed6c4",
+      "bars": 672,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2026-03.zip",
+      "sha256": "44f383f9423f96cdc29e03b4ba8062296763dd740ab1d93f04b62c88bac30aa6",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2026-04.zip",
+      "sha256": "9f8e49b70978177414a005a6e84b1cf891f97b0196526cbd579535449c14b6f6",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2026-05.zip",
+      "sha256": "11b8537dc1769a7de9d6cb2e0354dd4a376018986a826c67d1078e25fbf8fb80",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2026-06.zip",
+      "sha256": "7c446aee297f382ee92b8d9b3300a1d7c21bed8166118f3bb261275bed5e308e",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2026-07.zip",
+      "sha256": "ec98553c10acdbf3f210c55045614e8d3daf616e407c36718269361b1e972b16",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2026-08.zip",
+      "sha256": "1fa85817e358f73e0dd9509f6f31c79bf9b23d9470971a882c8f814871a3fccf",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2026-09.zip",
+      "sha256": "39b31046d702bd7e482e03b125d6fbfd730147aa5d9ad03d8b04bf1961a8e9bd",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2022-01.zip",
+      "sha256": "14a3875732b7e404be2522aec94b5f17fc43f81e77c0a68fdd72980ea644ef5a",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2022-02.zip",
+      "sha256": "2c155824e909de8c1f91a41bbdc2356c29f3c16944db3982a7c912ff58083eb3",
+      "bars": 672,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2022-03.zip",
+      "sha256": "9af5cd5120e2942f763f0a45cec35b0a98322015d52b29884655875f8bfe361d",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2022-04.zip",
+      "sha256": "d47fd9d00967d87564a52cc7025960de98513f863a83018e9f9dd0eb5875df39",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2022-05.zip",
+      "sha256": "382390f47d0660bb3dc16aaedf7901002a2293ca7a375045b08d956208c95615",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2022-06.zip",
+      "sha256": "9fd8dabf04723354423f643b62b74ac5f1046e28f855c0e15d9eb68b5e49f559",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2022-07.zip",
+      "sha256": "87c81755af5e05b5b24182eed98582284b6896048d231a245581d76df669d4b4",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2022-08.zip",
+      "sha256": "7792ffb44dbcd7a9964ea796ffc2dc2049b5437a5a317c07b64eb4be8aac1a13",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2022-09.zip",
+      "sha256": "e64c3e782b8421fa035843584bff1ddcdee84ee1bcb06d6e154915855d6917c4",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2022-10.zip",
+      "sha256": "e0e1d08f8e089a0273e2ad62ad052b690d4082c82bf56da6f7b2c37795e2ab6f",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2022-11.zip",
+      "sha256": "109c93bc5db33562650e146c9a9332ec4496dae5021cf942f5c75317c75d16eb",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2022-12.zip",
+      "sha256": "6f704c3ed1be5ce404b5ca53e733e42b005308714218ff9e21d15e7cfb128f01",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2023-01.zip",
+      "sha256": "6a646f674ecfa736db1e6fd0c4ebaf26594806efde851f2c7081aec533714e3d",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2023-02.zip",
+      "sha256": "c23f2ce377caba0279a932cfea93701bd02c996879293c5c395eaba06a943039",
+      "bars": 672,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2023-03.zip",
+      "sha256": "90d268be1e0d39f7411f88ca3c0f21fe110fee7ff3c1dd054555e1fea6e22d8d",
+      "bars": 743,
+      "missing_timestamps": [
+        1679662800000
+      ]
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2023-04.zip",
+      "sha256": "36598c7b9ac93706b8c9f9e6da11bc2137f605c442dab139ac35e397efcd9473",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2023-05.zip",
+      "sha256": "e03f762cd90b9a4eb6bf3499a05f4df84a71fd23f18d8b1b9c2e88eb469b0f2e",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2023-06.zip",
+      "sha256": "7ca4b8f6f6ff04f6899fe49b68df2c7b60841dfadb4a334631491af2d192bfbf",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2023-07.zip",
+      "sha256": "b141e7b3ec07f24756b1c5c27b562acfe06d331678a49c493a5fa2cba44eb97a",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2023-08.zip",
+      "sha256": "25930d0ba8280ec82b879d130071582c3ee4d5a1fbe31dc34c016b2c314d3525",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2023-09.zip",
+      "sha256": "3453dc6570a7193ab358e5a4c592439b4073028b1ab09412610d9409cf330219",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2023-10.zip",
+      "sha256": "d91229dd47c4cf53b8e326b500295a4fb9f0316faca0e2149076065bc53ae049",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2023-11.zip",
+      "sha256": "2be46057e4a5b40b4b7c6bdf5b163aa22e353048e62907e730cd471fbf3a62b5",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2023-12.zip",
+      "sha256": "89ec0d0b4f4ee72f4f1c2fad52ec1d94435d525bb107ae23d6f9716c77dbc428",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2024-01.zip",
+      "sha256": "1fdb3a8fa6b77ef30ef17ed4b71b184172ef1f812d83bd0f50bbd08e71a92057",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2024-02.zip",
+      "sha256": "f080ff288b2f7e85e78c5370a8a3258b93f85531ff96b4131c1b7889649a8ba4",
+      "bars": 696,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2024-03.zip",
+      "sha256": "4eb16ab0c5db15e5e0d77827f5c19c215c7ce601a5501d9563b75bda7602f46e",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2024-04.zip",
+      "sha256": "8b710fad720ae0bc75eaded37b3add95ca49122ae398f3f6e33e57e864da781e",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2024-05.zip",
+      "sha256": "0307d64f0d9ae6ff4001442a014d7b02dcbc5a003dcc36ba139f1c9695996b51",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2024-06.zip",
+      "sha256": "59ee6920bd72d93d1130c89711c93ea192bbfd5f82b548dcb0448f66450f6a06",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2024-07.zip",
+      "sha256": "83181cfcc1f1e32a542e2c220cbd58acd1c550cc64ad1e2c414e47088266aa7c",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2024-08.zip",
+      "sha256": "d908255a48978f6acb769c4b856a3307c58a8c19dbf2b3b7f10067245d5e8b89",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2024-09.zip",
+      "sha256": "bfbdda97d03abac469199120ec3c2f1305e2d5947e9155ff84dbeafe33cd4a67",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2024-10.zip",
+      "sha256": "cbb13664485b6c9a6365da7ae23299b722ab5926a6aed516add486ef501883bc",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2024-11.zip",
+      "sha256": "29cd30419b86d5dff5467a7a81d43e492aaaeb3669db216ab8badaad5fe610ec",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2024-12.zip",
+      "sha256": "84312b7dc2b5c903853c78d94f587ef1d24b7960d7bd95f5bfe3afc3db006203",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2025-01.zip",
+      "sha256": "f7350a6f3b51de466a0db52ba890cf296d4faeb6e84811b9606f87ad39ccf3ec",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2025-02.zip",
+      "sha256": "40c2f73850422d47ca7d044959cecc39ff3416f6e3c88f30636da4a01a0b6e31",
+      "bars": 672,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2025-03.zip",
+      "sha256": "dc32ecad498d19f8663633196ec84cbd480595c89aa1ae6062c0fa0b8d9bd11d",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2025-04.zip",
+      "sha256": "73f39799fae1ba4ef291c6785b934a6c817426ef8ef60e1bdf42078efd27893d",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2025-05.zip",
+      "sha256": "720a319face496acff79d8e6279b9b03f31495097d555c74daa076cd66421bee",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2025-06.zip",
+      "sha256": "780788805b48a094886590d939ef45372db2ee053aa5d464f8e135121df2b8eb",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2025-07.zip",
+      "sha256": "d5c4c2482004a49b479ff5bfbdb885b25035ace24e5f95edd8057507718df366",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2025-08.zip",
+      "sha256": "1ebdd24f8e1df5369518b721fdb0bfaaca9892ae71499b82783194573f804cad",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2025-09.zip",
+      "sha256": "f83ffff284b408574a4571e83fabc5c641e20edc71818912541cc38ec7e1be43",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2025-10.zip",
+      "sha256": "f3668059619d772ae8f7167d82666dcc6e2f88f17e6fd66a4a8098c9cd8ba042",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2025-11.zip",
+      "sha256": "3c0171cdd5eef1ece36c818ace3a07cc48e331cb9d991488a8db917bc496b78d",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2025-12.zip",
+      "sha256": "7a7a35ce7b9be9bafa0a00c47370acc57a48329a3289c21cb19f1185f6430fdb",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2026-01.zip",
+      "sha256": "eb060da7fb1adc65c7999f7d1f4f3b004edf2335311bb32d05a86f9577c21106",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2026-02.zip",
+      "sha256": "8c8c6e664688497711832add90349b8617caf7e8892f085e97fe4290989fe78b",
+      "bars": 672,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2026-03.zip",
+      "sha256": "0bf4dc37f2b201a8891f63dd76164742ed7d4fa24c24065a2e7709f34488ff74",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2026-04.zip",
+      "sha256": "46d62ed100717d8195bce4c07a41dc7606f41abc491ca71f9bfe653d2b92bfc0",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2026-05.zip",
+      "sha256": "8c4cef22ad7046183621f1a41155e91301780a3c9f377d7770763027b08e2462",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2026-06.zip",
+      "sha256": "e24954ab4ada9dc5f6bbf9ac30275d459a5729fb522f045f627296b4ad7ee985",
+      "bars": 720,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2026-07.zip",
+      "sha256": "5e8c974c008689943b473ccc5890707d0c2cd0b7e71bdb28c0ad65a87abde338",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2026-08.zip",
+      "sha256": "ebac99df5b1d9c84c56ea8f7a86daf09bcb43f8fdbded0049fec5205ab977dcc",
+      "bars": 744,
+      "missing_timestamps": []
+    },
+    {
+      "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1h/ETHUSDT-1h-2026-09.zip",
+      "sha256": "04a3deb832f99c5f4e961c28baa4c6856b1f1cc5a7d887068aafeed6a717f4ac",
+      "bars": 720,
+      "missing_timestamps": []
+    }
+  ],
+  "alignment_omissions": {
+    "XRPUSDT": [],
+    "BTCUSDT": [],
+    "ETHUSDT": []
+  },
+  "runs": {
+    "2022_control_base": {
+      "trades": 69,
+      "net_pnl": -610.0087246834655,
+      "return_pct": -6.100087246834655,
+      "profit_factor": 0.5758199484838831,
+      "expectancy": -8.840706154832834,
+      "max_drawdown_pct": 9.129775512546018,
+      "monthly_net": {
+        "2022-01": -30.888497144907003,
+        "2022-02": 90.37289376039561,
+        "2022-03": -76.89981783289488,
+        "2022-04": -152.74884489803313,
+        "2022-05": -233.0173877359524,
+        "2022-06": -119.78106212739034,
+        "2022-07": -91.80647216485089,
+        "2022-08": -161.63367612877914,
+        "2022-09": 59.8994903970666,
+        "2022-10": -19.60482285151893,
+        "2022-11": 140.18343242465323,
+        "2022-12": -14.083960381254247
+      },
+      "fees": 226.330487819676,
+      "gross_before_fees_and_slippage": -336.0297265534737,
+      "slippage_cost": 47.64851031031582
+    },
+    "2022_control_stress": {
+      "trades": 69,
+      "net_pnl": -881.7615589035684,
+      "return_pct": -8.817615589035684,
+      "profit_factor": 0.44694385465648356,
+      "expectancy": -12.779153027587947,
+      "max_drawdown_pct": 10.781245283851135,
+      "monthly_net": {
+        "2022-01": -40.25240617833808,
+        "2022-02": 84.21137114495983,
+        "2022-03": -93.32450246858068,
+        "2022-04": -173.48258904448534,
+        "2022-05": -251.7932014344589,
+        "2022-06": -135.91376348239396,
+        "2022-07": -114.34106074226818,
+        "2022-08": -210.33068092865616,
+        "2022-09": 37.65566465689868,
+        "2022-10": -42.456573809632786,
+        "2022-11": 112.24167138389775,
+        "2022-12": -53.97548800051063
+      },
+      "fees": 446.1692730552248,
+      "gross_before_fees_and_slippage": -341.66196723948394,
+      "slippage_cost": 93.93031860885968
+    },
+    "2023_base": {
+      "trades": 71,
+      "net_pnl": -583.4494309081771,
+      "return_pct": -5.834494309081771,
+      "profit_factor": 0.5379216176675514,
+      "expectancy": -8.21759761842503,
+      "max_drawdown_pct": 6.845512960731017,
+      "monthly_net": {
+        "2023-01": 26.96813114393127,
+        "2023-02": -35.15812492834219,
+        "2023-03": 47.50784925919509,
+        "2023-04": -101.96175762451031,
+        "2023-05": -32.97901973890016,
+        "2023-06": -14.128600145828138,
+        "2023-07": -72.01491002951607,
+        "2023-08": -212.28736356806422,
+        "2023-09": -75.34823653291178,
+        "2023-10": 106.30144259179285,
+        "2023-11": -59.29265867271845,
+        "2023-12": -161.05618266230488
+      },
+      "fees": 254.6644026248129,
+      "gross_before_fees_and_slippage": -275.1714808429004,
+      "slippage_cost": 53.61354744046366
+    },
+    "2023_stress": {
+      "trades": 71,
+      "net_pnl": -946.2037807509643,
+      "return_pct": -9.462037807509642,
+      "profit_factor": 0.3574753007521113,
+      "expectancy": -13.326813813393862,
+      "max_drawdown_pct": 10.0873417258149,
+      "monthly_net": {
+        "2023-01": -4.127678312020446,
+        "2023-02": -65.6958567554394,
+        "2023-03": -22.79189001028631,
+        "2023-04": -125.97360271724807,
+        "2023-05": -45.247145912376865,
+        "2023-06": -30.99365713131248,
+        "2023-07": -92.58132631206323,
+        "2023-08": -239.891459358161,
+        "2023-09": -153.80404769862741,
+        "2023-10": 86.31967172201257,
+        "2023-11": -64.20228670073377,
+        "2023-12": -187.2145015647078
+      },
+      "fees": 499.2893348240995,
+      "gross_before_fees_and_slippage": -341.80095644153505,
+      "slippage_cost": 105.11348948532965
+    },
+    "2024_base": {
+      "trades": 52,
+      "net_pnl": -159.9684399586497,
+      "return_pct": -1.599684399586497,
+      "profit_factor": 0.8380312180456264,
+      "expectancy": -3.0763161530509557,
+      "max_drawdown_pct": 4.456993581648678,
+      "monthly_net": {
+        "2024-01": -8.870808568931292,
+        "2024-02": 31.813165753974065,
+        "2024-03": -11.642756817717604,
+        "2024-04": 136.2168380677533,
+        "2024-05": -53.03038085354254,
+        "2024-06": -74.02057149705341,
+        "2024-07": -168.76033853631924,
+        "2024-08": -4.651133050592769,
+        "2024-09": 12.24341991475356,
+        "2024-10": 13.152158878504334,
+        "2024-11": -33.8002173809565,
+        "2024-12": 1.3821841314784606
+      },
+      "fees": 176.42811746025342,
+      "gross_before_fees_and_slippage": 53.60244121627807,
+      "slippage_cost": 37.142763714674345
+    },
+    "2024_stress": {
+      "trades": 52,
+      "net_pnl": -357.6899927345585,
+      "return_pct": -3.5768999273455844,
+      "profit_factor": 0.6709840373691506,
+      "expectancy": -6.878653706433817,
+      "max_drawdown_pct": 5.548489640663964,
+      "monthly_net": {
+        "2024-01": -17.262340805406183,
+        "2024-02": 19.76937457459021,
+        "2024-03": -16.20793428837495,
+        "2024-04": 109.44939570397443,
+        "2024-05": -88.03771570807297,
+        "2024-06": -80.95556419650931,
+        "2024-07": -197.3013399128671,
+        "2024-08": -18.226023102619813,
+        "2024-09": -9.521373724456772,
+        "2024-10": -2.7739915831855697,
+        "2024-11": -49.075167441080026,
+        "2024-12": -7.547312250550391
+      },
+      "fees": 349.34815653836773,
+      "gross_before_fees_and_slippage": 65.20515456049054,
+      "slippage_cost": 73.54699075668124
+    },
+    "2025_base": {
+      "trades": 51,
+      "net_pnl": -304.98245651282593,
+      "return_pct": -3.0498245651282594,
+      "profit_factor": 0.7154579322926341,
+      "expectancy": -5.980048166918156,
+      "max_drawdown_pct": 5.626939588648467,
+      "monthly_net": {
+        "2025-01": -44.820379765483324,
+        "2025-02": -141.1056973948045,
+        "2025-03": 7.692043846138951,
+        "2025-04": 54.92892634398588,
+        "2025-05": 185.95493687027692,
+        "2025-06": -95.56068196740038,
+        "2025-07": 36.86602377929062,
+        "2025-08": -140.25135856707396,
+        "2025-09": 66.98749096870296,
+        "2025-10": -119.95077751032929,
+        "2025-11": -156.89563542202205,
+        "2025-12": 41.17265230589229
+      },
+      "fees": 173.11300882024972,
+      "gross_before_fees_and_slippage": -95.4246075474065,
+      "slippage_cost": 36.444840145169735
+    },
+    "2025_stress": {
+      "trades": 51,
+      "net_pnl": -495.7448298728682,
+      "return_pct": -4.957448298728682,
+      "profit_factor": 0.5742155952125507,
+      "expectancy": -9.720486860252317,
+      "max_drawdown_pct": 7.2003813049158385,
+      "monthly_net": {
+        "2025-01": -65.98275875480805,
+        "2025-02": -149.76330806472936,
+        "2025-03": 3.1541811084686078,
+        "2025-04": 33.27520362924705,
+        "2025-05": 159.1834936064283,
+        "2025-06": -107.15015344715053,
+        "2025-07": 21.96624158119907,
+        "2025-08": -154.3648492864031,
+        "2025-09": 49.214700152636084,
+        "2025-10": -132.20314963704007,
+        "2025-11": -164.74269883611237,
+        "2025-12": 11.66826807539615
+      },
+      "fees": 342.86975449756585,
+      "gross_before_fees_and_slippage": -80.69198207601409,
+      "slippage_cost": 72.18309329928825
+    },
+    "2026_base": {
+      "trades": 57,
+      "net_pnl": -980.7461287829019,
+      "return_pct": -9.80746128782902,
+      "profit_factor": 0.25740796449928266,
+      "expectancy": -17.206072434787753,
+      "max_drawdown_pct": 10.201825136891257,
+      "monthly_net": {
+        "2026-01": -229.30275123563325,
+        "2026-02": -260.9194759169218,
+        "2026-03": -52.35335776435522,
+        "2026-04": 25.119422868590785,
+        "2026-05": -83.3964289562605,
+        "2026-06": -193.91503847743658,
+        "2026-07": -24.752168921745017,
+        "2026-08": -88.40260372741191,
+        "2026-09": -72.82372665172832
+      },
+      "fees": 193.97176304881074,
+      "gross_before_fees_and_slippage": -745.93823492977,
+      "slippage_cost": 40.83613080432098
+    },
+    "2026_stress": {
+      "trades": 57,
+      "net_pnl": -1207.639729162187,
+      "return_pct": -12.07639729162187,
+      "profit_factor": 0.1924723448259604,
+      "expectancy": -21.186661915126088,
+      "max_drawdown_pct": 12.346505647067952,
+      "monthly_net": {
+        "2026-01": -277.93166721599937,
+        "2026-02": -277.04868387469776,
+        "2026-03": -68.11064077390834,
+        "2026-04": -4.6233060979465606,
+        "2026-05": -102.60413095187972,
+        "2026-06": -217.65536809303129,
+        "2026-07": -55.356952309440565,
+        "2026-08": -111.20125922519426,
+        "2026-09": -93.10772062008922
+      },
+      "fees": 382.8200889312026,
+      "gross_before_fees_and_slippage": -744.2260563742785,
+      "slippage_cost": 80.59358385670592
+    },
+    "continuous_oos_base": {
+      "trades": 231,
+      "net_pnl": -1897.7144478492428,
+      "return_pct": -18.977144478492427,
+      "profit_factor": 0.5659664694373623,
+      "expectancy": -8.215214059953432,
+      "max_drawdown_pct": 20.163556116130703,
+      "monthly_net": {
+        "2023-01": 26.96813114393127,
+        "2023-02": -35.15812492834219,
+        "2023-03": 47.50784925919509,
+        "2023-04": -101.96175762451031,
+        "2023-05": -32.97901973890016,
+        "2023-06": -14.128600145828138,
+        "2023-07": -72.01491002951607,
+        "2023-08": -212.28736356806422,
+        "2023-09": -75.34823653291178,
+        "2023-10": 106.30144259179285,
+        "2023-11": -59.29265867271845,
+        "2023-12": -161.05618266230488,
+        "2024-01": -8.35324174780746,
+        "2024-02": 29.95702840851972,
+        "2024-03": -10.963460833767648,
+        "2024-04": 128.26927440267917,
+        "2024-05": -49.93632630055825,
+        "2024-06": -69.70184546550806,
+        "2024-07": -158.91402618843065,
+        "2024-08": -4.379762957448122,
+        "2024-09": 11.529078276590273,
+        "2024-10": 12.384796917216612,
+        "2024-11": -31.82814562140733,
+        "2024-12": 1.301540676986292,
+        "2025-01": -41.53018506283618,
+        "2025-02": -130.7473465617477,
+        "2025-03": 7.127382813646179,
+        "2025-04": 50.89667888368532,
+        "2025-05": 172.3042727879336,
+        "2025-06": -88.54572021929349,
+        "2025-07": 34.15974603731358,
+        "2025-08": -129.95572342495893,
+        "2025-09": 62.07004294434273,
+        "2025-10": -111.14537660101287,
+        "2025-11": -145.37816967909362,
+        "2025-12": 38.150231629860826,
+        "2026-01": -205.99002921227043,
+        "2026-02": -234.39234887742958,
+        "2026-03": -47.030703457011604,
+        "2026-04": 22.56558468057448,
+        "2026-05": -74.917691760471,
+        "2026-06": -174.20010979117458,
+        "2026-07": -22.235668659805334,
+        "2026-08": -79.41489941190262,
+        "2026-09": -65.41989356647885
+      },
+      "fees": 755.454949706974,
+      "gross_before_fees_and_slippage": -983.2163901642092,
+      "slippage_cost": 159.0431079780593
+    },
+    "continuous_oos_stress": {
+      "trades": 231,
+      "net_pnl": -2704.8308115388745,
+      "return_pct": -27.048308115388746,
+      "profit_factor": 0.4262348966182913,
+      "expectancy": -11.70922429237608,
+      "max_drawdown_pct": 27.741108837450774,
+      "monthly_net": {
+        "2023-01": -4.127678312020446,
+        "2023-02": -65.6958567554394,
+        "2023-03": -22.79189001028631,
+        "2023-04": -125.97360271724807,
+        "2023-05": -45.247145912376865,
+        "2023-06": -30.99365713131248,
+        "2023-07": -92.58132631206323,
+        "2023-08": -239.891459358161,
+        "2023-09": -153.80404769862741,
+        "2023-10": 86.31967172201257,
+        "2023-11": -64.20228670073377,
+        "2023-12": -187.2145015647078,
+        "2024-01": -15.628971591937475,
+        "2024-02": 17.898788878034274,
+        "2024-03": -14.674333418192592,
+        "2024-04": 99.09325250237353,
+        "2024-05": -79.70755376290724,
+        "2024-06": -73.29551810495289,
+        "2024-07": -178.6326125355885,
+        "2024-08": -16.501469905844495,
+        "2024-09": -8.620457742854377,
+        "2024-10": -2.5115154508074227,
+        "2024-11": -44.43165654370639,
+        "2024-12": -6.8331827119525315,
+        "2025-01": -57.60262500392937,
+        "2025-02": -130.7426339334734,
+        "2025-03": 2.7535846486921285,
+        "2025-04": 29.04908968276864,
+        "2025-05": 138.96640974197396,
+        "2025-06": -93.54155880425274,
+        "2025-07": 19.17642124133419,
+        "2025-08": -134.7597568673167,
+        "2025-09": 42.964192026398806,
+        "2025-10": -115.41270169043764,
+        "2025-11": -143.81956866118983,
+        "2025-12": 10.186340842309615,
+        "2026-01": -230.60457860180298,
+        "2026-02": -229.87195247332716,
+        "2026-03": -56.51254414905964,
+        "2026-04": -3.8360348251915077,
+        "2026-05": -85.13237306842727,
+        "2026-06": -180.59231948011873,
+        "2026-07": -45.930594335900786,
+        "2026-08": -92.26555498509092,
+        "2026-09": -77.25304170353306
+      },
+      "fees": 1432.5379180778516,
+      "gross_before_fees_and_slippage": -970.7061186523861,
+      "slippage_cost": 301.586774808637
+    }
+  },
+  "aggregate_oos": {
+    "trades": 231,
+    "net_pnl": -2029.1464561625544,
+    "profit_factor": 0.5629529400859905,
+    "expectancy": -8.784183792911492
+  },
+  "aggregate_stress": {
+    "trades": 231,
+    "net_pnl": -3007.2783325205783,
+    "profit_factor": 0.42384583716816493,
+    "expectancy": -13.018520920002503
+  },
+  "gates": {
+    "sample": true,
+    "base_net": false,
+    "base_expectancy": false,
+    "base_pf": false,
+    "stress_net": false,
+    "stress_expectancy": false,
+    "stress_pf": false,
+    "three_positive_folds": false,
+    "final_fold": false,
+    "drawdown": false,
+    "concentration": false
+  },
+  "limitations": [
+    "Exploratory inspected history.",
+    "Local SHA256 are not publisher signatures.",
+    "OHLC path/drawdown are not tick-exact.",
+    "No independent forward PAPER evidence."
+  ]
+}
