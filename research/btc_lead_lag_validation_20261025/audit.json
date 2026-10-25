@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "checks": [
+    "chronology and next-open timing",
+    "no overlapping positions",
+    "notional and stop-distance risk limits",
+    "independent fees, slippage, P/L and equity arithmetic",
+    "ledger/report reconciliation"
+  ],
+  "trades_by_run": {
+    "2022_control_base": 16,
+    "2022_control_stress": 16,
+    "2023_base": 18,
+    "2023_stress": 18,
+    "2024_base": 26,
+    "2024_stress": 26,
+    "2025_base": 3,
+    "2025_stress": 3,
+    "2026_base": 3,
+    "2026_stress": 3,
+    "continuous_oos_base": 50,
+    "continuous_oos_stress": 50
+  },
+  "note": "Annual folds and continuous run share observations and are not independent samples."
+}

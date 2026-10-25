@@ -37,3 +37,11 @@ Trade counts can differ under stress because entry prices, brackets and position
 ## Continuation constraints
 
 Keep PAPER-only scope and existing paused strategies paused. No Render, runtime configuration or production branch changes made. Future candidates require a distinct hypothesis, provenance-preserving data, realistic costs, and fresh forward evidence before acceptance. Do not revive failed variants by tuning to the same test window.
+
+## BTC_LEAD_LAG_IMPULSE_V1: rejected (2026-10-25)
+
+The rules and gates were frozen in the preceding GitHub commit before performance evaluation. This distinct cross-market hypothesis bought XRP after a large positive BTC hourly move that XRP had not matched. It used next-open entries, 24-hour ATR brackets, six-hour maximum holding, one 20%-notional position, 0.5% stop-risk sizing, gap-stop and adverse intrabar handling, 9.5 bps fees plus 2 bps slippage per side, and doubled-cost stress.
+
+On 114 real Binance Vision monthly archives (BTC/XRP 1h, January 2022–September 2026), the four annual OOS folds produced only 50 trades, -$173.72 net, PF 0.730, versus -$373.47 and PF 0.509 under doubled costs. Only 2023 was base-cost positive; even that fold lost under stress. The 2022 control and 2024–2026 folds lost. The completed result fails sample, profitability, stress, stability, final-period, and concentration gates; it is not eligible for forward PAPER promotion. Exact provenance, SHA256 hashes, full ledgers, audit and limitations are in `research/btc_lead_lag_validation_20261025/` and `research/btc_lead_lag_protocol.md`.
+
+Next concrete step: freeze and test a genuinely different mechanism, preferably one with new information beyond OHLC cross-market momentum; do not tune lead/lag thresholds on the now-observed folds. PAPER-only constraints remain unchanged.

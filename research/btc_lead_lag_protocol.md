@@ -27,3 +27,29 @@ Historical screening gates, all required: at least 120 aggregate annual-fold OOS
 Even if every historical gate passes, status remains `TEST NEDOKONCEN`: promotion additionally requires at least 30 future calendar days and 100 new, timestamped, independently accumulated forward PAPER trades with positive base and stressed expectancy. No LIVE, Render, production, or deployed-branch changes are permitted.
 
 Next action: commit this protocol with the isolated implementation and mechanics tests, then run tests and the unchanged runner on real archives.
+
+## Completed historical validation (2026-10-25)
+
+Decision: **NEPROŠEL**. The frozen historical screen was completed without parameter changes. All 29 repository research tests passed, including eight lead/lag mechanics tests. An independent ledger audit passed chronology, next-open timing, non-overlap, sizing, cost arithmetic, equity reconciliation, and report counts. Passing code tests do not establish profitability.
+
+The run read 114 actual Binance Vision monthly archives (BTCUSDT and XRPUSDT, January 2022–September 2026), 41,615 aligned hourly candles per market. Both markets omit the same 2023-03-24 13:00 UTC archive candle, so cross-market alignment omitted no additional timestamps. The signal requires an uninterrupted causal 24-hour history and therefore does not bridge this gap. `results.json` retains every source URL, byte count and locally computed SHA256 fingerprint; these hashes identify retrieved files but are not publisher signatures.
+
+| Period | Trades | Base net | Base PF | Stress net | Stress PF |
+|---|---:|---:|---:|---:|---:|
+| 2022 control | 16 | -$133.43 | 0.500 | -$197.48 | 0.350 |
+| 2023 OOS | 18 | +$67.09 | 1.417 | -$12.69 | 0.937 |
+| 2024 OOS | 26 | -$193.05 | 0.524 | -$292.07 | 0.378 |
+| 2025 OOS | 3 | -$30.27 | 0.160 | -$39.92 | 0.064 |
+| 2026 OOS through September | 3 | -$17.49 | 0.569 | -$28.79 | 0.391 |
+
+Aggregate annual-fold OOS is 50 non-overlapping trades, -$173.72, PF 0.730 and -$3.47 expectancy; doubled costs produce -$373.47, PF 0.509 and -$7.47 expectancy. Continuous OOS is -1.744% at base costs and -3.709% under stress, with conservative drawdowns of 3.675% and 4.761%. Only the drawdown gate passed; sample, base/stress profitability, PF, period stability, final fold and concentration gates failed. Annual-fold capital resets explain the small difference between aggregate and continuous P/L. No forward PAPER stage is justified.
+
+Full metrics/provenance are in `research/btc_lead_lag_validation_20261025/results.json`, trades in `trades.json.gz`, and the independent report in `audit.json`. Reproduce with:
+
+```sh
+python -m unittest discover -s tests -v
+python -m research.run_btc_lead_lag /tmp/crypto-archives research/btc_lead_lag_validation_20261025
+python -m research.audit_btc_lead_lag research/btc_lead_lag_validation_20261025
+```
+
+Do not tune the thresholds or revive this mechanism against these observed dates. Next research should use a structurally different data source or mechanism and freeze a new evaluation protocol before reading outcomes. No production, Render, LIVE, deployed-branch, or infrastructure changes were made.
