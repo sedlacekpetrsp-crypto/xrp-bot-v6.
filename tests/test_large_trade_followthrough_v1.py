@@ -23,7 +23,6 @@ class Tests(unittest.TestCase):
     def test_invalid_and_gap(self):
         b=self.bars();b[2]['trades']=0
         with self.assertRaises(ValueError):validate(b)
-        b=self.bars();b.pop(2)
-        with self.assertRaises(ValueError):validate(b)
+        b=self.bars();b.pop(100);validate(b);self.assertIsNone(signal(b,168))
     def test_no_trade(self):self.assertEqual(backtest(self.bars(),0,220*STEP),[])
 if __name__=='__main__':unittest.main()

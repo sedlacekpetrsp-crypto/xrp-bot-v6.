@@ -11,3 +11,7 @@ Actual Binance Vision monthly spot archives Jan 2022–Sep 2026, with URL/SHA256
 All historical gates required: >=150 aggregate OOS trades; positive base net/expectancy and PF>1.15; positive double-cost net/expectancy and PF>1.02; >=3/4 profitable annual folds including 2026; continuous base/stress drawdown <=10%; no month >40% of positive aggregate profit. Historical success remains `TEST NEDOKONCEN` until >=30 future days and >=100 new forward PAPER trades pass base and stress expectancy. No production, LIVE, Render, main or deployed-branch changes.
 
 Next: commit this protocol, implementation and mechanics tests; then run unchanged historical evaluation.
+
+## Pre-evaluation data amendment
+
+The first ingestion attempt stopped before calculating any trades or performance because the Binance March 2023 archive contains a zero-activity XRP candle at 2023-03-24 12:00 UTC (`quote_volume=0`, `trades=0`) and omits 13:00 UTC. No price or microstructure field will be invented. The runner will exclude the unusable zero-activity row, retain the resulting timestamp gap, record the excluded timestamp, and suppress every signal whose 168-hour lookback crosses the gap. This amendment changes no signal threshold, exit, sizing or success gate and must be committed before re-running evaluation.

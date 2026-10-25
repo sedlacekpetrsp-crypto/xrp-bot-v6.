@@ -14,11 +14,12 @@ def validate(bars):
         o,h,l,c,q,n=(float(b[k]) for k in ('open','high','low','close','quote_volume','trades'))
         if not all(isfinite(v) for v in (o,h,l,c,q,n)) or not 0<l<=min(o,c)<=max(o,c)<=h or q<=0 or n<=0:raise ValueError('invalid bar')
         t=int(b['timestamp'])
-        if t%STEP or (last is not None and t-last!=STEP):raise ValueError('missing/duplicate hour')
+        if t%STEP or (last is not None and (t<=last or (t-last)%STEP)):raise ValueError('invalid/duplicate hour')
         last=t
 
 def signal(bars,i,c=Config()):
     if i<c.window:return None
+    if bars[i]['timestamp']-bars[i-c.window]['timestamp']!=c.window*STEP:return None
     sizes=[log(bars[k]['quote_volume']/bars[k]['trades']) for k in range(i-c.window,i)]
     mean=sum(sizes)/len(sizes);sd=sqrt(sum((x-mean)**2 for x in sizes)/len(sizes))
     if sd<=0:return None

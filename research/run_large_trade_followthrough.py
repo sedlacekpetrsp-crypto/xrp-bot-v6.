@@ -19,7 +19,8 @@ def main():
     cache=pathlib.Path(sys.argv[1]);cache.mkdir(parents=True,exist_ok=True);dest=pathlib.Path(sys.argv[2]);dest.mkdir(parents=True,exist_ok=True)
     jobs=[(y,m,cache) for y in range(2022,2027) for m in range(1,13) if (y,m)<(2026,10)]
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as p:chunks=list(p.map(fetch,jobs))
-    bars=[b for x,_ in chunks for b in x];validate(bars);runs={};ledger={}
+    raw=[b for x,_ in chunks for b in x];excluded=[b['timestamp'] for b in raw if b['quote_volume']<=0 or b['trades']<=0]
+    bars=[b for b in raw if b['quote_volume']>0 and b['trades']>0];validate(bars);runs={};ledger={}
     folds=[('2022_control',stamp(2022,1),stamp(2023,1))]+[(str(y),stamp(y,1),stamp(y+1,1) if y<2026 else stamp(2026,10)) for y in range(2023,2027)]+[('continuous_oos',stamp(2023,1),stamp(2026,10))]
     for name,start,end in folds:
         for cost,mult in [('base',1),('stress',2)]:
@@ -28,7 +29,7 @@ def main():
     for y in range(2023,2027):
         for k,v in runs[f'{y}_base']['monthly_net'].items():monthly[k]=v
     gates=dict(sample=a['trades']>=150,base_net=a['net_pnl']>0,base_expectancy=(a['expectancy'] or 0)>0,base_pf=(a['profit_factor'] or 0)>1.15,stress_net=b['net_pnl']>0,stress_expectancy=(b['expectancy'] or 0)>0,stress_pf=(b['profit_factor'] or 0)>1.02,three_positive_folds=sum(runs[f'{y}_base']['net_pnl']>0 for y in range(2023,2027))>=3,final_fold=runs['2026_base']['net_pnl']>0,drawdown=all(runs[f'continuous_oos_{x}']['max_drawdown_pct']<=10 for x in ('base','stress')),concentration=a['net_pnl']>0 and max(monthly.values(),default=0)<=.4*a['net_pnl'])
-    p=pathlib.Path('research/large_trade_followthrough_protocol.md');result=dict(strategy='XRP_LARGE_TRADE_FOLLOWTHROUGH_V1',status='NEPROSEL' if not all(gates.values()) else 'TEST NEDOKONCEN: forward evidence required',protocol=str(p),protocol_sha256=hashlib.sha256(p.read_bytes()).hexdigest(),manifest=[x for _,x in chunks],runs=runs,aggregate_oos=a,aggregate_stress=b,gates=gates,limitations=['Exploratory reused history.','Local SHA256 are not publisher signatures.','OHLC path/drawdown not tick-exact.','No forward PAPER evidence.'])
+    p=pathlib.Path('research/large_trade_followthrough_protocol.md');result=dict(strategy='XRP_LARGE_TRADE_FOLLOWTHROUGH_V1',status='NEPROSEL' if not all(gates.values()) else 'TEST NEDOKONCEN: forward evidence required',protocol=str(p),protocol_sha256=hashlib.sha256(p.read_bytes()).hexdigest(),manifest=[x for _,x in chunks],excluded_zero_activity_timestamps=excluded,runs=runs,aggregate_oos=a,aggregate_stress=b,gates=gates,limitations=['Exploratory reused history.','Local SHA256 are not publisher signatures.','OHLC path/drawdown not tick-exact.','No forward PAPER evidence.'])
     (dest/'results.json').write_text(json.dumps(result,indent=2,allow_nan=False)+'\n');
     with gzip.open(dest/'trades.json.gz','wt') as f:json.dump(ledger,f)
     print(result['status'],json.dumps(gates),flush=True)
