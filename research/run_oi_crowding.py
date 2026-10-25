@@ -18,7 +18,7 @@ def fetch_metric(job):
     for r in rows:
         t=int(datetime.strptime(r['create_time'],'%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.utc).timestamp()*1000)
         required=(r.get('sum_open_interest'),r.get('count_long_short_ratio'),r.get('sum_taker_long_short_vol_ratio'))
-        if not all(required):missing.append(t);continue
+        if not all(required) or any(float(x)<=0 for x in required):missing.append(t);continue
         out.append(dict(timestamp=t,open_interest=float(required[0]),long_short=float(required[1]),taker_ratio=float(required[2])))
     out.sort(key=lambda x:x['timestamp']);return out,dict(url=url,sha256=hashlib.sha256(payload).hexdigest(),bytes=len(payload),rows=len(out),missing_required_timestamps=missing)
 def fetch_spot(job):

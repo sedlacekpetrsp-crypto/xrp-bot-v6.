@@ -13,3 +13,5 @@ Next: commit this protocol, simulator, tests and provenance runner before downlo
 ## Pre-results missing-metric amendment
 
 Initial ingestion stopped before producing any trade or performance result: Binance file `XRPUSDT-metrics-2024-06-12.zip` has an empty `count_long_short_ratio` at 2024-06-12 08:20 UTC. The row will be excluded and reported, never imputed. Timestamp intersection retains a gap and the existing complete-288-sample check suppresses signals crossing it. No signal, exit, cost, sizing or success parameter changes.
+
+A second ingestion-only stop, still before any performance calculation, found 63 rows whose reported `sum_open_interest` is exactly zero. Zero open interest is invalid for the ratio/change signal and will be handled identically to a blank required field: exclude, report, retain gaps, suppress crossing lookbacks. No forward fill or parameter change.
