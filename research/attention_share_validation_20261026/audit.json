@@ -1,0 +1,8 @@
+{
+  "independent": true,
+  "imports_strategy": false,
+  "checks": 5082,
+  "failures": [],
+  "passed": true,
+  "manifest_sha256_count": 285
+}

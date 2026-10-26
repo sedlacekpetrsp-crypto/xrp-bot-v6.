@@ -117,3 +117,11 @@ This distinct passive-liquidity hypothesis used published XRP perpetual-futures 
 The completed ingestion covered 1,004 requested daily depth archives and 33 monthly spot archives, with 1,036 actual SHA256 fingerprints and one explicit missing depth day. The frozen exact 59:30 snapshot existed in only 4,021 of 24,096 spot hours, creating 2,557 gaps and no consecutive 720-hour causal history. Consequently V1 generated 0 control and 0 OOS trades and decisively failed the 150-trade sample and all profit/stability gates. Zero P/L/drawdown is not positive evidence. All 83 repository tests passed; the independent audit correctly found an empty ledger and verified manifest counts. Full provenance and quality output are in `research/orderbook_depth_validation_20261026/`.
 
 Reject V1 without post-result timestamp relaxation. Any later order-book study must be a separately named, preregistered design using a causal cadence rule calibrated outside its evaluation interval. No forward promotion; production, Render and LIVE remain untouched.
+
+## XRP_ATTENTION_SHARE_SURGE_V1: rejected (2026-10-26)
+
+This distinct hypothesis used XRP's share of reported USDT quote volume in a frozen BTC/ETH/BNB/SOL/XRP basket as a measure of market attention. Rules and gates were committed before performance evaluation. The test used 285 real Binance Vision monthly spot archives from January 2022 through September 2026, with 41,615 aligned hours per market, no duplicates or omissions, and one preserved exchange-wide missing hour. Source URLs and local SHA256 fingerprints are retained.
+
+Across four annual OOS folds, 172 base-cost trades lost $964.12, PF 0.7981, expectancy -$5.61. Doubled costs lost $1,570.53, PF 0.6926, expectancy -$9.13. Every OOS year and the 2022 control lost; continuous drawdown was 12.74% base and 17.18% stressed. Only sample size passed. All 89 repository tests and 5,082 independent audit checks passed, establishing mechanics rather than profitability. Full evidence is in `research/attention_share_validation_20261026/`.
+
+Reject without retuning the percentile or basket and without forward promotion. Next work must use a genuinely different information mechanism and retain independent future PAPER evidence. Production, Render and LIVE remain untouched.
