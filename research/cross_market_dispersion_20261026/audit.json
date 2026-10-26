@@ -1,0 +1,11 @@
+{
+  "228_verified_archives": true,
+  "base_ledger_reconciled": true,
+  "base_trade_count": 137,
+  "stress_ledger_reconciled": true,
+  "stress_trade_count": 137,
+  "files_sha256": {
+    "trades_stress.json.gz": "6271205e95e0c640e643304ac927bda1f6018f20cd5c33713328055de736c3ee",
+    "trades_base.json.gz": "09974cc222fe53ef950dfebde1f4b55e58b581b9ab1aefe2a99a4b429cf0c070"
+  }
+}

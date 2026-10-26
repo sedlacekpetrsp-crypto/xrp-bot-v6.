@@ -1,6 +1,6 @@
 # CROSS_MARKET_DISPERSION_HEDGE_V1 — preregistered 2026-10-26
 
-**Status: development; no real-data results, no forward evidence.** No LIVE, no Render, no production changes.
+**Current status: NEPROŠEL. See EXECUTION_REPORT.md and results.json. Earlier checkpoint statements below are historical and superseded.** No LIVE, no Render, no production changes.
 
 Distinct mechanism: market-neutral cross-sectional dispersion harvesting. At each UTC daily boundary, compute 24-hour *realized return dispersion* across BTC, ETH, XRP and SOL from strictly previous closed hourly bars. If dispersion exceeds the 90th percentile of the preceding 180 fully observed daily dispersions, enter a **dollar-neutral** spread: long the worst-performing asset and short the best-performing asset over the preceding 24 hours; hold 24 hours and exit at next daily open. No entry otherwise. This is not an RSI/EMA, relative-strength long-only rotation, BTC lead-lag, beta residual or isolated funding strategy. Shorts are **research-only synthetic**; if live feasibility is not independently verified, reject deployment regardless of paper profits.
 
@@ -20,3 +20,8 @@ Committed isolated pure-Python simulator in `strategy.py` and six deterministic 
 ## 2026-10-26 execution setup
 
 Manual-only GitHub Actions workflow added at `.github/workflows/research-cross-market-dispersion.yml`, branch-guarded, read-only permissions, 90-minute timeout, uploads historical evidence if generated. This connector does **not** provide workflow_dispatch, so no Actions run was started. Local runtime cannot resolve data.binance.vision DNS; no public historical archive was downloaded and no performance results exist. Next authorized step: dispatch workflow on research branch from GitHub Actions (may require workflow registered on default branch, which must NOT be modified without permission), inspect unit-test and archive logs, correct research-only code as needed, audit complete data and metrics. Workflow may not appear in GitHub Actions until default-branch registration; do not merge to main merely to trigger it. No claim of validated strategy.
+
+
+## Completed validation — 2026-10-26
+
+See [EXECUTION_REPORT.md](EXECUTION_REPORT.md). GitHub run 40368025792 completed successfully; the strategy failed acceptance. Real archives and both diagnostic historical cost scenarios were executed, 12 tests passed, and ledgers reconciled. OOS: 48 trades, -8.41% base, -11.00% stress. Full-coverage gate also failed due to one missing historical hour. No promotion or production changes.

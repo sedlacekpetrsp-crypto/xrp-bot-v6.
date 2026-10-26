@@ -1,0 +1,9 @@
+{
+  "code_commit": "9c7cf363072a170d68400e692fce640cb8f67467",
+  "run_id": 40368025792,
+  "job_id": 121730915167,
+  "artifact_id": 12670428944,
+  "artifact_sha256": "a736a72ed0e1f0b647c4e72005d9f5d2f41acaf607f001c5e05c6956dc2b2067",
+  "workflow_conclusion": "success",
+  "strategy_decision": "NEPROSEL"
+}

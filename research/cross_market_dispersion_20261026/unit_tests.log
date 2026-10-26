@@ -1,0 +1,17 @@
+test_costs_and_ledger_reconcile (test_cross_market_dispersion_20261026.ExecutionTests.test_costs_and_ledger_reconcile) ... ok
+test_empty_and_non_hour_timestamps_rejected (test_cross_market_dispersion_20261026.ExecutionTests.test_empty_and_non_hour_timestamps_rejected) ... ok
+test_gap_exits_both_at_open (test_cross_market_dispersion_20261026.ExecutionTests.test_gap_exits_both_at_open) ... ok
+test_intrabar_pair_not_retroactive_open (test_cross_market_dispersion_20261026.ExecutionTests.test_intrabar_pair_not_retroactive_open) ... ok
+test_no_overlap (test_cross_market_dispersion_20261026.ExecutionTests.test_no_overlap) ... ok
+test_signal_ignores_future_and_current_open (test_cross_market_dispersion_20261026.ExecutionTests.test_signal_ignores_future_and_current_open) ... ok
+test_bad_ohlc_rejected (test_cross_market_dispersion_20261026.Tests.test_bad_ohlc_rejected) ... ok
+test_cost_stress_flat (test_cross_market_dispersion_20261026.Tests.test_cost_stress_flat) ... ok
+test_gap_rejected (test_cross_market_dispersion_20261026.Tests.test_gap_rejected) ... ok
+test_misalignment_rejected (test_cross_market_dispersion_20261026.Tests.test_misalignment_rejected) ... ok
+test_no_signal_flat (test_cross_market_dispersion_20261026.Tests.test_no_signal_flat) ... ok
+test_percentile (test_cross_market_dispersion_20261026.Tests.test_percentile) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.083s
+
+OK
