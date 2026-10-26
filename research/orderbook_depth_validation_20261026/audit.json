@@ -1,0 +1,10 @@
+{
+  "independent": true,
+  "imports_strategy": false,
+  "ledger_checks": 0,
+  "failures": [],
+  "passed": true,
+  "manifest_entries": 1037,
+  "manifest_sha256_count": 1036,
+  "missing_entries": 1
+}

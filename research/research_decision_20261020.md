@@ -109,3 +109,11 @@ This distinct Amihud-style hypothesis bought XRP after an extreme negative hourl
 Across 57 real Binance Vision XRPUSDT hourly archives and 15 quarterly OOS folds, 213 base-cost trades lost $1,065.48, PF 0.7475, expectancy -$5.00. Doubled costs lost $2,020.26, PF 0.5800, expectancy -$9.48. Only 6/15 quarters were positive; continuous base/stress drawdown was 12.76%/19.03%. The 2022 control lost at both cost levels. All 77 code tests and 8,448 independent audit checks passed, establishing mechanics rather than profitability. Complete provenance, local SHA256 fingerprints, metrics, compressed ledgers and audit are in `research/illiquidity_reversal_validation_20261026/`.
 
 Reject without retuning the now-observed return/impact thresholds or forward promotion. Next concrete step: freeze a genuinely different mechanism not based on single-market hourly price impact, while reserving future data for independent PAPER evidence. Production, Render and LIVE remain untouched.
+
+## XRP_ORDERBOOK_DEPTH_IMBALANCE_V1: rejected (2026-10-26)
+
+This distinct passive-liquidity hypothesis used published XRP perpetual-futures depth at +/-1% and spot execution. Rules were committed before evaluation; after the initial download stopped on HTTP 404, the no-imputation missing-archive rule was separately committed before rerunning.
+
+The completed ingestion covered 1,004 requested daily depth archives and 33 monthly spot archives, with 1,036 actual SHA256 fingerprints and one explicit missing depth day. The frozen exact 59:30 snapshot existed in only 4,021 of 24,096 spot hours, creating 2,557 gaps and no consecutive 720-hour causal history. Consequently V1 generated 0 control and 0 OOS trades and decisively failed the 150-trade sample and all profit/stability gates. Zero P/L/drawdown is not positive evidence. All 83 repository tests passed; the independent audit correctly found an empty ledger and verified manifest counts. Full provenance and quality output are in `research/orderbook_depth_validation_20261026/`.
+
+Reject V1 without post-result timestamp relaxation. Any later order-book study must be a separately named, preregistered design using a causal cadence rule calibrated outside its evaluation interval. No forward promotion; production, Render and LIVE remain untouched.
