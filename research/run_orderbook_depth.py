@@ -23,8 +23,8 @@ def depth_fetch(job):
     with zipfile.ZipFile(io.BytesIO(payload)) as archive:
         rows=csv.DictReader(io.TextIOWrapper(archive.open(archive.namelist()[0])))
         for row in rows:
+            if row['timestamp'][14:19]!='59:30' or row['percentage'] not in ('-1','1'): continue
             when=dt.datetime.strptime(row['timestamp'],'%Y-%m-%d %H:%M:%S').replace(tzinfo=dt.timezone.utc)
-            if when.minute!=59 or when.second!=30 or row['percentage'] not in ('-1','1'): continue
             hour=int(when.replace(minute=0,second=0).timestamp()*1000); slot=points.setdefault(hour,{})
             slot['bid_notional' if row['percentage']=='-1' else 'ask_notional']=float(row['notional'])
     out=[dict(timestamp=t,**v) for t,v in points.items() if set(v)=={'bid_notional','ask_notional'}]
