@@ -23,7 +23,7 @@ def validate(bars):
     if any(t%STEP for t in times) or any(b<=a for a,b in zip(times,times[1:])): raise ValueError('timestamp')
     for b in bars:
         o,h,l,c,q=(float(b[k]) for k in ('open','high','low','close','quote_volume'))
-        if not all(isfinite(x) for x in (o,h,l,c,q)) or not 0<l<=min(o,c)<=max(o,c)<=h or q<=0: raise ValueError('bar')
+        if not all(isfinite(x) for x in (o,h,l,c,q)) or not 0<l<=min(o,c)<=max(o,c)<=h or q<0: raise ValueError('bar')
 
 def percentile(values,q):
     values=sorted(values); rank=q*(len(values)-1); lo=int(rank); hi=min(lo+1,len(values)-1); w=rank-lo
@@ -34,6 +34,7 @@ def impact(bars,i): return max(0.,-log(bars[i]['close']/bars[i-1]['close']))/bar
 def signal(bars,i,c=Config()):
     need=max(c.window+1,c.atr_window)
     if i<need or bars[i]['timestamp']-bars[i-c.window-1]['timestamp']!=(c.window+1)*STEP: return None
+    if any(b['quote_volume']<=0 for b in bars[i-c.window-1:i+1]): return None
     ret=log(bars[i]['close']/bars[i-1]['close'])
     if ret>c.return_floor: return None
     current=impact(bars,i); threshold=percentile([impact(bars,k) for k in range(i-c.window,i)],c.quantile)

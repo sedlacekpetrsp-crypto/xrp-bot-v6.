@@ -21,3 +21,7 @@ Treat 2022 as control. Evaluate locked quarterly folds from 2023Q1 through 2026Q
 
 All historical gates must pass: at least 150 quarterly OOS trades; base net and expectancy positive with PF >1.15; stressed net and expectancy positive with PF >1.02; at least 10 of 15 quarters positive and 2026Q3 positive; continuous base and stress drawdown <=10%; no quarter contributes more than 30% of total positive-quarter profit. Even then the status remains TEST NEDOKONČEN until at least 30 future calendar days and 100 newly timestamped non-overlapping forward PAPER trades have positive stressed expectancy. Historical success alone can never mean PROŠEL.
 
+## Pre-result ingestion amendment — 2026-10-26
+
+The first attempted run stopped before computing any performance because the real March 2023 archive contains one zero-activity row at 2023-03-24 12:00 UTC (`OHLC=0.4292`, reported quote volume zero), followed by a missing 13:00 hour. Preserve the zero-volume row and the adjacent gap; do not invent volume or a price. Validation permits zero quote volume as a recorded inactive observation, but a signal is suppressed whenever any required 721-hour history contains non-positive quote volume or is not exactly consecutive. This ingestion-only rule is frozen before rerunning and does not change signal thresholds, exits, costs, sizing or gates.
+

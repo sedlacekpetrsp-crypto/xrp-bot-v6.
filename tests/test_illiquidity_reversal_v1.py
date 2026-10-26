@@ -13,6 +13,8 @@ class Tests(unittest.TestCase):
         b=data(); found=signal(b,31,self.config()); self.assertIsNotNone(found); b[32]['close']=9.; self.assertEqual(found,signal(b,31,self.config()))
     def test_gap_suppresses(self):
         b=data(); b.pop(25); self.assertIsNone(signal(b,30,self.config()))
+    def test_zero_volume_history_suppresses(self):
+        b=data(); b[25]['quote_volume']=0; self.assertIsNone(signal(b,31,self.config()))
     def test_next_open_and_time(self):
         t=backtest(data(),0,10**18,self.config())[0]; self.assertEqual(t['entry_index'],t['signal_index']+1); self.assertEqual(t['exit_index']-t['entry_index'],2)
     def test_gap_stop_and_ambiguity(self):
@@ -21,7 +23,7 @@ class Tests(unittest.TestCase):
         c=self.config(); base=backtest(data(),0,10**18,c)[0]; stress=backtest(data(),0,10**18,replace(c,fee=c.fee*2,slippage=c.slippage*2))[0]
         self.assertLess(stress['pnl'],base['pnl']); self.assertLessEqual(base['qty']*base['entry'],2000+1e-6); self.assertLessEqual(base['qty']*(base['entry']-base['stop']),50+1e-6)
     def test_validation(self):
-        b=data(); validate(b); b[2]['quote_volume']=0
+        b=data(); validate(b); b[2]['quote_volume']=-1
         with self.assertRaises(ValueError): validate(b)
 
 if __name__=='__main__': unittest.main()
