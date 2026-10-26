@@ -85,3 +85,11 @@ Rules and gates were frozen before evaluation. Initial ingestion then stopped be
 Across 15 locked OOS quarters, 321 base-cost trades lost $1,403.59, PF 0.7585, expectancy -$4.37. Doubled costs lost $2,754.20, PF 0.5855, expectancy -$8.58. Only four quarters were positive and final 2026 Q3 lost. Continuous OOS drawdown was 15.26% base and 25.26% stressed. Only the sample gate passed. All 58 repository tests and the independent ledger audit passed, establishing implementation consistency rather than an edge. Complete provenance, results, ledger and audit are in `research/funding_reversal_validation_20261025/`.
 
 Reject without retuning or forward promotion. Next concrete step: move away from derivatives-crowding variants and preregister a strategy based on a genuinely new observable data family, with fresh forward evidence reserved before any acceptance. PAPER-only isolation remains unchanged.
+
+## ALT_BREADTH_CAPITULATION_REVERSAL_V1: rejected (2026-10-26)
+
+The fixed eight-market breadth rules and acceptance gates were committed before evaluation. Validation used 513 actual Binance Vision monthly spot archives for XRP plus BTC, ETH, BNB, SOL, ADA, DOGE, LINK and LTC from January 2022 through September 2026. URLs, byte counts and local SHA256 fingerprints are preserved. No duplicates were found. A single exchange-wide missing hour was retained without imputation; no signal lookback or position crossed it.
+
+Across 15 locked OOS quarters, 405 base-cost trades lost $1,549.54, PF 0.8500, expectancy -$3.83. Doubled costs produced 406 path-dependent trades and lost $3,112.40, PF 0.7243, expectancy -$7.67. Five quarters were positive and final 2026 Q3 lost. Continuous drawdown was 20.21% base and 28.71% stressed. Only sample size passed. All 64 repository tests and an independent ledger audit passed, establishing implementation consistency rather than profitability. Complete provenance, results, ledgers and audit are in `research/breadth_capitulation_validation_20261026/`.
+
+Reject without retuning or forward promotion. Next concrete step: avoid threshold variants of this market-breadth capitulation idea on the now-observed periods; freeze a different mechanism before testing and reserve new forward evidence. PAPER-only and production isolation remain unchanged.
