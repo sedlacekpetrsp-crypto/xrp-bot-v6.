@@ -87,12 +87,12 @@ def main():
     out={"sources":sources,"results":{},"protocol":"fixed 2026-10-26; all observations exploratory"}
     out["data_audit"]={"gaps":gaps,"aligned_bars":len(times),"segments":[{"start":b[0],"end":b[-1],"bars":len(b)} for b in blocks],"strict_coverage_pass":not gaps and all(p["bars"]==p["expected_bars"] for pp in sources.values() for p in pp)}
     for stress in (False,True):
-        trades=[];capital=10000
+        trades=[];capital=10000;peak=10000
         for segment_id,segment in enumerate(segments):
-            part=backtest(segment,Config(),stress,initial=capital)
+            part=backtest(segment,Config(),stress,initial=capital,initial_peak=peak)
             for t in part:t["segment_id"]=segment_id
             trades.extend(part)
-            if part:capital=part[-1]["equity"]
+            if part:capital=part[-1]["equity"];peak=part[-1]["peak_equity"]
         key="stress" if stress else "base"
         with gzip.open(ROOT/f"trades_{key}.json.gz","wt") as f:json.dump(trades,f)
         year=lambda t: datetime.fromtimestamp(t["entry_timestamp"]/1000,timezone.utc).year

@@ -47,11 +47,11 @@ def daily_disps(markets):
         days.append((i,pstdev(rets.values()),rets))
     return days
 
-def backtest(markets,c=Config(),stress=False,initial=10000):
+def backtest(markets,c=Config(),stress=False,initial=10000,initial_peak=None):
     validate(markets)
     days=daily_disps(markets)
     equity=initial;trades=[]
-    peak=initial;max_dd=0.0
+    peak=max(initial,initial_peak or initial);max_dd=0.0
     fee=c.fee*(2 if stress else 1);slip=c.slip*(2 if stress else 1)
     for d in range(c.history_days,len(days)-1):
         i,disp,rets=days[d]
@@ -101,7 +101,7 @@ def backtest(markets,c=Config(),stress=False,initial=10000):
         max_dd=max(max_dd,trade_dd);peak=max(peak,equity)
         trades.append(dict(entry_index=i,exit_index=exit_i,long=long,short=short,pnl=pnl,equity=equity,reason=reason,dispersion=disp,
             entry_timestamp=markets[long][i]["timestamp"],exit_timestamp=markets[long][exit_i]["timestamp"],
-            equity_before=equity_before,minimum_equity_bound=trade_min,drawdown_bound=trade_dd,
+            equity_before=equity_before,peak_equity=peak,minimum_equity_bound=trade_min,drawdown_bound=trade_dd,
             cumulative_drawdown_bound=max_dd,entry_long=entry_long,entry_short=entry_short,
             fill_long=fill_l,fill_short=fill_s,qty_long=qty_l,qty_short=qty_s,held_days=held,
             fees=fee*(qty_l*(entry_long+fill_l)+qty_s*(entry_short+fill_s)),
