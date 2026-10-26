@@ -74,7 +74,7 @@ def backtest(markets,c=Config(),stress=False,initial=10000):
                 px_s=max(s["open"],stop_s) if s_hit else s["open"]
                 reason="STOP";break
         fill_l=px_l*(1-slip);fill_s=px_s*(1+slip)
-        held=(exit_i-i+1)/24
+        held=(exit_i-i)/24
         pnl=qty_l*(fill_l-entry_long)+qty_s*(entry_short-fill_s)
         pnl-=fee*(qty_l*(entry_long+fill_l)+qty_s*(entry_short+fill_s))
         pnl-=c.borrow_day*(2 if stress else 1)*qty_s*entry_short*held
