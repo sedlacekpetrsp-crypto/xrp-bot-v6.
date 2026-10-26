@@ -1,5 +1,11 @@
-name: Research dispersion (manual only)
+name: Research dispersion (isolated branch)
 on:
+  push:
+    branches: [research/cross-market-dispersion-20261026]
+    paths:
+      - research/cross_market_dispersion_20261026/*.py
+      - tests/test_cross_market_dispersion_20261026.py
+      - .github/workflows/research-cross-market-dispersion.yml
   workflow_dispatch:
 
 permissions:
