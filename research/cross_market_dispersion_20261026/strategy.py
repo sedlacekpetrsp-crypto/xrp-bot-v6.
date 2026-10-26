@@ -39,7 +39,7 @@ def daily_disps(markets):
     rows=markets[ASSETS[0]]
     # Only full UTC days, using completed 24h returns at day boundary.
     days=[]
-    for i in range(24,len(rows)):
+    for i in range(25,len(rows)):
         t=int(rows[i]["timestamp"])
         if t%86400000: continue
         rets={a:markets[a][i-1]["close"]/markets[a][i-25]["close"]-1 for a in ASSETS}
