@@ -1,0 +1,31 @@
+name: Research dispersion (manual only)
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  historical-validation:
+    if: github.ref_name == 'research/cross-market-dispersion-20261026'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Offline research unit tests
+        run: python -m unittest tests/test_cross_market_dispersion_20261026.py -v
+      - name: Public Binance Vision archive backtest
+        run: python -m research.cross_market_dispersion_20261026.run_history
+      - name: Upload full research evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cross-market-dispersion-evidence
+          path: |
+            research/cross_market_dispersion_20261026/results.json
+            research/cross_market_dispersion_20261026/trades_*.json.gz
+          if-no-files-found: warn
+          retention-days: 30
