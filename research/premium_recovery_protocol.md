@@ -1,0 +1,11 @@
+# XRP_CONTINUOUS_PREMIUM_RECOVERY_V1 — frozen protocol (2026-10-26)
+
+Status: **REGISTERED; NOT EVALUATED.** Distinct mechanism: continuous perpetual mark/index premium recovery, not periodic funding, open interest/account crowding, spot flow/trade size, market breadth, pair relative strength/residuals, calendar/autocorrelation, stablecoin or triangular parity, sweep trend or ordinary breakout. Hypothesis: after an unusually deep negative perpetual premium, a material hourly premium recovery while it remains non-positive identifies deleveraging exhaustion and predicts a short XRP spot rebound.
+
+Data: real Binance Vision monthly XRPUSDT USD-M `premiumIndexKlines` and XRPUSDT spot 1h klines, January 2022–September 2026. Record URL, byte count and local SHA256 for all archives. Sort, reject duplicates/invalid bars, intersect only exact timestamps, report all omissions/gaps and invent nothing. Signal and ATR windows must be contiguous.
+
+Fixed causal rule on a closed hour: the prior premium close must be <=-0.10% and at/below the 2.5th empirical percentile of the preceding 720 premium closes (the extreme and confirmation hours excluded); current premium close must rise by >=0.05 percentage point yet remain <=0. Enter XRP spot long at next hourly open. ATR24; stop 1.5 ATR; target 2R; maximum 12 bars. Stop wins same-bar ambiguity; gap stop fills at worse open. Fee 9.5 bps/side plus adverse slippage 2 bps/side; stress doubles both. Risk 0.5% equity, notional <=20%, one non-overlapping position, no leverage. No funding cashflow is claimed.
+
+2022 is control. Locked OOS quarters are 2023 Q1 through 2026 Q3; continuous OOS is non-independent. All gates: >=150 OOS trades; positive base net/expectancy and PF>1.15; positive stress net/expectancy and PF>1.02; >=10/15 positive quarters including 2026 Q3; continuous base/stress drawdown <=10%; no quarter contributes >30% of positive OOS profit. Historical passage remains `TEST NEDOKONCEN` until >=30 future days and >=100 new PAPER trades show positive stressed expectancy. No post-result tuning and no LIVE, production, Render, main or deployed-branch changes.
+
+Next: commit the protocol, implementation, tests and provenance runner before downloading/evaluating outcomes.
