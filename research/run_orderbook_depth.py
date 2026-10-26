@@ -1,5 +1,5 @@
 """Download Binance book-depth/spot archives and run the frozen screen."""
-import concurrent.futures,csv,datetime as dt,gzip,hashlib,io,json,pathlib,sys,urllib.request,zipfile
+import concurrent.futures,csv,datetime as dt,gzip,hashlib,io,json,pathlib,sys,urllib.error,urllib.request,zipfile
 from dataclasses import replace
 from research.orderbook_depth_v1 import Config,STEP,backtest,validate
 from research.run_autocorr_history import metrics as score,stamp
@@ -15,7 +15,11 @@ def get(url,path):
     return path.read_bytes()
 
 def depth_fetch(job):
-    day,cache=job; ds=day.isoformat(); name=f'XRPUSDT-bookDepth-{ds}.zip'; url=f'https://data.binance.vision/data/futures/um/daily/bookDepth/XRPUSDT/{name}'; payload=get(url,cache/name); points={}
+    day,cache=job; ds=day.isoformat(); name=f'XRPUSDT-bookDepth-{ds}.zip'; url=f'https://data.binance.vision/data/futures/um/daily/bookDepth/XRPUSDT/{name}'; points={}
+    try: payload=get(url,cache/name)
+    except urllib.error.HTTPError as error:
+        if error.code==404: return [],dict(kind='bookDepth',url=url,missing_http_404=True,rows=0)
+        raise
     with zipfile.ZipFile(io.BytesIO(payload)) as archive:
         rows=csv.DictReader(io.TextIOWrapper(archive.open(archive.namelist()[0])))
         for row in rows:

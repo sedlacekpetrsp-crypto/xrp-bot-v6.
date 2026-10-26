@@ -20,3 +20,7 @@ An unusually bid-heavy perpetual-futures order book within 1% of mid price repre
 
 All historical gates must pass: >=150 OOS trades; positive base net/expectancy and PF>1.15; positive stressed net/expectancy and PF>1.02; >=5/7 quarters positive and 2026Q3 positive; continuous base/stress drawdown <=10%; no quarter >35% of all positive-quarter profit. Even a full historical pass remains TEST NEDOKONČEN until >=30 future days and >=100 newly timestamped forward PAPER trades show positive stressed expectancy.
 
+## Pre-result missing-archive amendment — 2026-10-26
+
+The first download stopped on a publisher HTTP 404 before any performance was computed. A missing daily `bookDepth` archive is now recorded explicitly in the manifest and contributes no observations. No depth is interpolated or copied. The existing exact-consecutiveness rule suppresses any 720-hour causal window crossing such a gap. Non-404 download failures remain errors. This ingestion-only amendment is frozen before rerunning and changes no signal, execution, cost, sizing or acceptance parameter.
+
