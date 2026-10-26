@@ -9,3 +9,10 @@ Freeze: 1h Binance spot OHLCV BTCUSDT, ETHUSDT, XRPUSDT, SOLUSDT Jan 2022–Sep 
 Chronological evaluation: 2022 exploratory control, 2023–2024 development, 2025–Sep 2026 locked OOS. The historical periods were examined in other research and are not an untouched holdout. Minimum 100 OOS portfolio trades, OOS net PF >=1.2, OOS stressed PF >1.05, positive net and stressed return in both calendar 2025 and 2026, max DD <=10%, no single month >50% of net profits. Then >=30 days of **new** forward PAPER and >=100 independent spread trades with positive net and stressed expectancy, with borrow/short execution feasibility established, before PROŠEL.
 
 Next: implement pure offline simulator with validated aligned OHLCV, deterministic tests for timing, stops, sizing, fees and overlap; then run authenticated historical archive downloads, preserve URLs/SHA256 and complete ledger. Do not assert failure or success until execution and audit are complete.
+
+
+## Implementation checkpoint — 2026-10-26
+
+Committed isolated pure-Python simulator in `strategy.py` and six deterministic unit-test definitions in `tests/test_cross_market_dispersion_20261026.py`. Code validates contiguous hourly timestamps and alignment, OHLC sanity, uses lagged dispersion percentile, next-day opens, conservative stop/gap prices, fee/slippage and 2x stress, synthetic borrow drag, and fixed 10%-per-leg sizing. No production integration.
+
+**NOT YET EXECUTED:** Unit tests have not been run; historical data have not been downloaded for this candidate. No SHA256 manifest, historical ledger, OOS metrics, or forward PAPER evidence exists. Therefore no PROŠEL/NEPROŠEL decision is defensible. An additional code audit is required: validate the intended day-boundary return definition and verify paired-leg exit execution under hourly stop events; ensure portfolio-level equity and max drawdown are independently reconciled. Run tests, fetch Binance Vision actual four-market hourly archives Jan 2022–Sep 2026, verify archive SHA256 and timestamps, and run frozen evaluation without retuning. Keep LIVE and Render untouched.
