@@ -1,0 +1,10 @@
+Command: python -m unittest discover -s tests -v
+Date: 2026-10-27
+Result: 108 tests ran; OK.
+
+Nine XRP_VOLATILITY_COMPRESSION_BREAKOUT_V1 tests cover causal signal and
+next-open timing, prefix invariance, missing-history suppression, 72-bar
+time exit, non-overlap, stop-before-target ambiguity, gap-stop filling,
+cost stress, sizing, data-gap liquidation, and input validation.
+Passing tests establish mechanics, not profitability.
+
