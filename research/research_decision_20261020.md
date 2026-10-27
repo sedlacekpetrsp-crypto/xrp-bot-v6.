@@ -125,3 +125,13 @@ This distinct hypothesis used XRP's share of reported USDT quote volume in a fro
 Across four annual OOS folds, 172 base-cost trades lost $964.12, PF 0.7981, expectancy -$5.61. Doubled costs lost $1,570.53, PF 0.6926, expectancy -$9.13. Every OOS year and the 2022 control lost; continuous drawdown was 12.74% base and 17.18% stressed. Only sample size passed. All 89 repository tests and 5,082 independent audit checks passed, establishing mechanics rather than profitability. Full evidence is in `research/attention_share_validation_20261026/`.
 
 Reject without retuning the percentile or basket and without forward promotion. Next work must use a genuinely different information mechanism and retain independent future PAPER evidence. Production, Render and LIVE remain untouched.
+
+## XRP_SPOT_PERP_CARRY_V1: rejected (2026-10-27)
+
+The equal-notional long-spot/short-perpetual carry rules and gates were frozen in commit `995eca12a921d31bd20f2cb9b08939013ccc3524` before performance evaluation. Unlike the earlier directional funding-reversal study, this candidate attempted to collect actual subsequent funding cashflows while hedging XRP direction.
+
+Validation used 171 real Binance Vision monthly spot, mark-price, and funding archives from January 2022 through September 2026. Exact URLs, byte counts, row counts, and local SHA256 fingerprints are preserved. Exact timestamp intersection produced 41,543 aligned hours. Seventy-two spot-only and one mark-only hours were excluded; four resulting gaps were retained without imputation and no position crossed a gap.
+
+The annual OOS folds produced 139 base-cost trades and lost $3,685.19, PF 0.000, expectancy -$26.51. Doubled costs lost $4,065.49, PF 0.000, expectancy -$29.25. The separately reported continuous OOS path lost $3,471.87 base and $3,799.54 stressed, with 34.72%/38.00% conservative drawdowns. There were no profitable trades under the frozen pair-stop methodology; 2026 produced no signals. All 99 repository tests and 3,918 independent ledger checks passed, proving arithmetic consistency rather than an edge.
+
+Reject without retuning carry thresholds, holding time, or the preregistered conservative spread stop. Complete results, limitations, provenance, compressed ledger, audit, and reproduction commands are in `research/spot_perp_carry_validation_20261027/`. No forward promotion. Next investigate a separately preregistered forced-liquidation-event mechanism only if a complete, free, traceable source is available. Production, Render and LIVE remain untouched.

@@ -1,0 +1,9 @@
+Command: python -m unittest discover -s tests -v
+Date: 2026-10-27
+Result: 99 tests ran; OK.
+
+The full suite includes 10 XRP_SPOT_PERP_CARRY_V1 tests for next-open timing,
+funding inclusion boundaries, non-overlap, doubled costs, gap stop,
+conservative intrabar stop, data-gap liquidation, position cap, prefix
+invariance, and the signal threshold. Test success validates mechanics only.
+
