@@ -1,0 +1,2688 @@
+{
+  "strategy": "XRP_CROSS_EXCHANGE_RESIDUAL_CONVERGENCE_V1",
+  "status": "NEPROSEL",
+  "protocol_sha256": "f51bba837c4240e4e882266c0b4f924dfac4bf50150ef1bbcb1a3948e994ee75",
+  "manifest": [
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2023-07-01T00%3A00%3A00Z&end=2023-07-13T01%3A00%3A00Z",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "bytes": 2,
+      "rows": 0
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2023-07-13T02%3A00%3A00Z&end=2023-07-25T03%3A00%3A00Z",
+      "sha256": "9b19c4e38956e87bb60b405c890ba6e9a8fd22871f5bf60bda6dad5220bfd389",
+      "bytes": 15005,
+      "rows": 272
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2023-07-25T04%3A00%3A00Z&end=2023-08-06T05%3A00%3A00Z",
+      "sha256": "2dc8bc9e27128955826cb59a5b92a4697b03ed3bfe15e514976d14d591780764",
+      "bytes": 15905,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2023-08-06T06%3A00%3A00Z&end=2023-08-18T07%3A00%3A00Z",
+      "sha256": "dccb96cfdfd37828c4be1da08f5cde50c6828714720f957a492dc4733a09ed05",
+      "bytes": 15923,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2023-08-18T08%3A00%3A00Z&end=2023-08-30T09%3A00%3A00Z",
+      "sha256": "56117b5d914398e54f4b153bb28c5b1b4e4a8d01dca74cc8cf6e5e47facdb33d",
+      "bytes": 16010,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2023-08-30T10%3A00%3A00Z&end=2023-09-11T11%3A00%3A00Z",
+      "sha256": "0068ad13f7339fdc869d9e944c0ef97aa6380ef3769eecbe37d89bb106d7d685",
+      "bytes": 15970,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2023-09-11T12%3A00%3A00Z&end=2023-09-23T13%3A00%3A00Z",
+      "sha256": "7a68da36074ed67cec3e023039ef1183dfef7616f0c18b2558e0ebfb0f23306c",
+      "bytes": 16014,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2023-09-23T14%3A00%3A00Z&end=2023-10-05T15%3A00%3A00Z",
+      "sha256": "b392e577ce9ec52a5fef6e3ea58db305136a8eb6b3f7a2220932804493d75213",
+      "bytes": 15973,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2023-10-05T16%3A00%3A00Z&end=2023-10-17T17%3A00%3A00Z",
+      "sha256": "f755bb7ccd2ac0e20baa3169a47d286fe520a170f4f4a4c36c76ff4d99c1a9ed",
+      "bytes": 15933,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2023-10-17T18%3A00%3A00Z&end=2023-10-29T19%3A00%3A00Z",
+      "sha256": "c6be55e48355080a4b22a4284aced4211a795e3d13eb15be2b8ecf098584fcb9",
+      "bytes": 15992,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2023-10-29T20%3A00%3A00Z&end=2023-11-10T21%3A00%3A00Z",
+      "sha256": "8a747399e2e2be4bec55d94bf9afb18151dd1d1b844de041608de4925fd7dbb0",
+      "bytes": 16052,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2023-11-10T22%3A00%3A00Z&end=2023-11-22T23%3A00%3A00Z",
+      "sha256": "ab3a1e8d8d76805a5bbf61400fb1cfaff1dd252933785d1cd66c27011621428b",
+      "bytes": 16065,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2023-11-23T00%3A00%3A00Z&end=2023-12-05T01%3A00%3A00Z",
+      "sha256": "68cdba8b53eb3a72c56378af8cdfa7de51d35d9b46fb7ea86a34ed14c0e65dda",
+      "bytes": 16027,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2023-12-05T02%3A00%3A00Z&end=2023-12-17T03%3A00%3A00Z",
+      "sha256": "e0ae89bdb51519e9dbcae7afaf9f3a9526ccaa84bdcd377076b19d1bad5ba242",
+      "bytes": 16063,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2023-12-17T04%3A00%3A00Z&end=2023-12-29T05%3A00%3A00Z",
+      "sha256": "53d65dd40e44f5fa0f0aa20412fd88d8869b00e9b909f800795e935dc35f7de3",
+      "bytes": 16003,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2023-12-29T06%3A00%3A00Z&end=2024-01-10T07%3A00%3A00Z",
+      "sha256": "62928e306355c1ddeb81deb5ce3ca32e9dd915f49e00081d7ecc5da6ef2d3f21",
+      "bytes": 16051,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2024-01-10T08%3A00%3A00Z&end=2024-01-22T09%3A00%3A00Z",
+      "sha256": "0a243345170145f3dd3e2e775a29138b8fb765bf6393c5fb429b715c888626fa",
+      "bytes": 16052,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2024-01-22T10%3A00%3A00Z&end=2024-02-03T11%3A00%3A00Z",
+      "sha256": "2f1b4f14805f29f73a874665162293f4ef783b4b030e58d0597c560a9b347ca3",
+      "bytes": 16019,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2024-02-03T12%3A00%3A00Z&end=2024-02-15T13%3A00%3A00Z",
+      "sha256": "e9db732059ee426b0d1c50aa034567401d1857a1d84107e8c699c3e50ec563fa",
+      "bytes": 15985,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2024-02-15T14%3A00%3A00Z&end=2024-02-27T15%3A00%3A00Z",
+      "sha256": "e90224c808578e8431043a355f28830641fd17c21602dada97610849478db45b",
+      "bytes": 16001,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2024-02-27T16%3A00%3A00Z&end=2024-03-10T17%3A00%3A00Z",
+      "sha256": "2d27ed3b03fd9d660dc045b1e7af99fe386d97a233b82422b2b3fa0d246726c4",
+      "bytes": 16094,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2024-03-10T18%3A00%3A00Z&end=2024-03-22T19%3A00%3A00Z",
+      "sha256": "8cd97b5475672749039b75f95fc62a38f467ef251b49de79f703c8118ca735c6",
+      "bytes": 16094,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2024-03-22T20%3A00%3A00Z&end=2024-04-03T21%3A00%3A00Z",
+      "sha256": "c4840c5c97c68d92acee81da47a4812494dee50099ffd479f93b52395046acd3",
+      "bytes": 16056,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2024-04-03T22%3A00%3A00Z&end=2024-04-15T23%3A00%3A00Z",
+      "sha256": "06674e5c7680441aca48b1d830906e3dba5a6ce065899eed19008da5a6ffa641",
+      "bytes": 16056,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2024-04-16T00%3A00%3A00Z&end=2024-04-28T01%3A00%3A00Z",
+      "sha256": "f4618073ca62190a6e7db0d43c5e3931b543c2edc19dea4e01ac6d275f684a3d",
+      "bytes": 16078,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2024-04-28T02%3A00%3A00Z&end=2024-05-10T03%3A00%3A00Z",
+      "sha256": "8d6470006341dec81e1df760bbfb339563058525a55cd8f8f583682e119e308a",
+      "bytes": 16022,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2024-05-10T04%3A00%3A00Z&end=2024-05-22T05%3A00%3A00Z",
+      "sha256": "c837e1773ed015c71b404698ad94db6fa93ce5330ca50f2714719f3061be8224",
+      "bytes": 15967,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2024-05-22T06%3A00%3A00Z&end=2024-06-03T07%3A00%3A00Z",
+      "sha256": "007e840be460b823529fd68e088c6821e7cf44a31aba59a5bc18eb8969cc88ee",
+      "bytes": 15980,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2024-06-03T08%3A00%3A00Z&end=2024-06-15T09%3A00%3A00Z",
+      "sha256": "0862955b1cae8588ed1d4e1a1d171a57e4d88d22cf1d101e8cbd75614c8c914c",
+      "bytes": 16001,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2024-06-15T10%3A00%3A00Z&end=2024-06-27T11%3A00%3A00Z",
+      "sha256": "4dcc2f378e5a34ab68ac26afb0813ee1d52843f1c2ebd973872eb818828f7ecd",
+      "bytes": 15994,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2024-06-27T12%3A00%3A00Z&end=2024-07-09T13%3A00%3A00Z",
+      "sha256": "c2c9eaf937ec1ba41c6aaa824dfe511a50261c2e88c26c9da88aa36db2513f2d",
+      "bytes": 16022,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2024-07-09T14%3A00%3A00Z&end=2024-07-21T15%3A00%3A00Z",
+      "sha256": "feccad5e70f65b8f03ed274945f8557707ed9b6aa98d132910f8a75ba8fc8fd5",
+      "bytes": 16093,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2024-07-21T16%3A00%3A00Z&end=2024-08-02T17%3A00%3A00Z",
+      "sha256": "020b06dc03674e1ee8101c10596b2fa4fefb1b6066da56477f5c26bfd256e55c",
+      "bytes": 16052,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2024-08-02T18%3A00%3A00Z&end=2024-08-14T19%3A00%3A00Z",
+      "sha256": "f9f3eb92f5717135be875d73e49b613780706ccfd87e3e29eae2981a9b603367",
+      "bytes": 16067,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2024-08-14T20%3A00%3A00Z&end=2024-08-26T21%3A00%3A00Z",
+      "sha256": "e691e172088695ed184bb64589ce83075311a0bdaba0b23683dba9e8e0a44fb7",
+      "bytes": 16031,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2024-08-26T22%3A00%3A00Z&end=2024-09-07T23%3A00%3A00Z",
+      "sha256": "1701b0956cdc3fca11e4935996487fb5849b22e07ba2a56907e6daee9b9d915b",
+      "bytes": 16002,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2024-09-08T00%3A00%3A00Z&end=2024-09-20T01%3A00%3A00Z",
+      "sha256": "6cec016af0a97e0cea3b1ab48ea0ce58bc3d6f9d8528229047e7b88db75b0749",
+      "bytes": 15984,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2024-09-20T02%3A00%3A00Z&end=2024-10-02T03%3A00%3A00Z",
+      "sha256": "232589dc333b48ce390a1d1b8c5ebae6281633f771a5f81f9f9ca4a59b492d2f",
+      "bytes": 16042,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2024-10-02T04%3A00%3A00Z&end=2024-10-14T05%3A00%3A00Z",
+      "sha256": "e813b08b6afd8927761e11b61cbe48fb7ce355e2863aea93d6d95ddd68fca01d",
+      "bytes": 15983,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2024-10-14T06%3A00%3A00Z&end=2024-10-26T07%3A00%3A00Z",
+      "sha256": "9e193ea9c826334166c805a94e41d16f641dd913ab18133dc52be8b12142724a",
+      "bytes": 16002,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2024-10-26T08%3A00%3A00Z&end=2024-11-07T09%3A00%3A00Z",
+      "sha256": "49831bc474b472adf95d9e3af99b7736ff7a84fdc5aa37582e97a775a1b81684",
+      "bytes": 15980,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2024-11-07T10%3A00%3A00Z&end=2024-11-19T11%3A00%3A00Z",
+      "sha256": "de0b015bb9bd1d8c5c45f4ac2dc46f7b2fc70ff2a4ad70acfa189a1942c6ebc4",
+      "bytes": 16201,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2024-11-19T12%3A00%3A00Z&end=2024-12-01T13%3A00%3A00Z",
+      "sha256": "9829bcf680d23d5ea1145b9a63446d65c476effdfd66124cd4b9526faf86311f",
+      "bytes": 16227,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2024-12-01T14%3A00%3A00Z&end=2024-12-13T15%3A00%3A00Z",
+      "sha256": "f8ea7bca1ef1ca52fe123adb781d0086d6206dba4ccfe2be3b1c3660d062bc7b",
+      "bytes": 16186,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2024-12-13T16%3A00%3A00Z&end=2024-12-25T17%3A00%3A00Z",
+      "sha256": "724f2881bcbf6ae49ce227ab31b2606b10948d497471c857d4ae55bec03f967e",
+      "bytes": 16087,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2024-12-25T18%3A00%3A00Z&end=2025-01-06T19%3A00%3A00Z",
+      "sha256": "579b84a7e862f6530d6f714ac8ad7c72653766254d6ecc96798e334a3054648d",
+      "bytes": 16065,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2025-01-06T20%3A00%3A00Z&end=2025-01-18T21%3A00%3A00Z",
+      "sha256": "c394f9031db7aaca84a47ac4e6cbcefac79ba5867789802944a7981e905be97d",
+      "bytes": 16126,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2025-01-18T22%3A00%3A00Z&end=2025-01-30T23%3A00%3A00Z",
+      "sha256": "3cf97e7336f6427987c257dd461f375275684a796e6b520ae9a996d4d201bfa5",
+      "bytes": 16057,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2025-01-31T00%3A00%3A00Z&end=2025-02-12T01%3A00%3A00Z",
+      "sha256": "01e277823acc74e3d6f338bdec78e5dcdd6ca376516f7caaec462763c1a19ba8",
+      "bytes": 16098,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2025-02-12T02%3A00%3A00Z&end=2025-02-24T03%3A00%3A00Z",
+      "sha256": "1570486d6c1b323bf724909faa27870a0be8a87236e68583456754c15a068fc3",
+      "bytes": 16034,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2025-02-24T04%3A00%3A00Z&end=2025-03-08T05%3A00%3A00Z",
+      "sha256": "d1859e54aa537d0b09a1dd7f5e9accb6c70534019ae71b3ce87fcd5f435cbc8c",
+      "bytes": 16129,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2025-03-08T06%3A00%3A00Z&end=2025-03-20T07%3A00%3A00Z",
+      "sha256": "6d5280222a3ffc362d63687d129b1e30e121cc3eb00367a28b4ddbb1ae8c2fb8",
+      "bytes": 16086,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2025-03-20T08%3A00%3A00Z&end=2025-04-01T09%3A00%3A00Z",
+      "sha256": "1311cd2dc10febb6f38a0ac8fa9a5fc163539c05971b58f0a24defcb73e8f5b2",
+      "bytes": 16023,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2025-04-01T10%3A00%3A00Z&end=2025-04-13T11%3A00%3A00Z",
+      "sha256": "3bca009d1fa7f83d1208feb3aa1d68e678c4633f78d266bfeadde6e5e21c9470",
+      "bytes": 16145,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2025-04-13T12%3A00%3A00Z&end=2025-04-25T13%3A00%3A00Z",
+      "sha256": "c8008785f2685a044b4a39274c85e650d6a4437881dda3239e43d70914ed66dd",
+      "bytes": 16023,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2025-04-25T14%3A00%3A00Z&end=2025-05-07T15%3A00%3A00Z",
+      "sha256": "42e47fc436de59041df4e90b5e749b6f9a1db1a3bdc193f635426d70e2e245fc",
+      "bytes": 16009,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2025-05-07T16%3A00%3A00Z&end=2025-05-19T17%3A00%3A00Z",
+      "sha256": "f5f78c82691cfd45dfeae6881b555edb2d0427d657915da123059df62ea91074",
+      "bytes": 16056,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2025-05-19T18%3A00%3A00Z&end=2025-05-31T19%3A00%3A00Z",
+      "sha256": "3e5d70cc87a1303169af8facd34866d54bce2e2ac8986bda2bce5e48f51ad6d1",
+      "bytes": 16007,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2025-05-31T20%3A00%3A00Z&end=2025-06-12T21%3A00%3A00Z",
+      "sha256": "27a1224243cb6d7b23d7cd41f481fe177d50b95601214c8304826389fc2e8cff",
+      "bytes": 16037,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2025-06-12T22%3A00%3A00Z&end=2025-06-24T23%3A00%3A00Z",
+      "sha256": "6942e45e8295c1a7da858a4060c4880a199c288b5e6df7034abfb3c74662b64b",
+      "bytes": 16002,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2025-06-25T00%3A00%3A00Z&end=2025-07-07T01%3A00%3A00Z",
+      "sha256": "6f4056628d44adbd7b26a234d5d7478ee4d10dc3b0aee36643e57db9a86de16c",
+      "bytes": 15981,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2025-07-07T02%3A00%3A00Z&end=2025-07-19T03%3A00%3A00Z",
+      "sha256": "807f541c1ea2df3c54a2627ed7810a29d9297d0515373bc5a2e39d6233ff3b30",
+      "bytes": 16059,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2025-07-19T04%3A00%3A00Z&end=2025-07-31T05%3A00%3A00Z",
+      "sha256": "83259451fc34afcf92adfd28822bfbcac5efff2ca03c166db3a6ea35a661c973",
+      "bytes": 16019,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2025-07-31T06%3A00%3A00Z&end=2025-08-12T07%3A00%3A00Z",
+      "sha256": "0a788139d05a497b792eef82eadb7609124e1792fd042cd7a43ec909e205be1d",
+      "bytes": 16060,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2025-08-12T08%3A00%3A00Z&end=2025-08-24T09%3A00%3A00Z",
+      "sha256": "bea01c5340d2c602357a44dbb5f6a1a31188556b217a31b755af27e978899bc5",
+      "bytes": 16048,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2025-08-24T10%3A00%3A00Z&end=2025-09-05T11%3A00%3A00Z",
+      "sha256": "c21ce0b8a6fd9e1c442a094ab7fb648377e84140c94e655dd43c45b06d76acc9",
+      "bytes": 16055,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2025-09-05T12%3A00%3A00Z&end=2025-09-17T13%3A00%3A00Z",
+      "sha256": "6de573ca67fb03703b4e2b8eb39e708e738aa1d0feeabc2b86cebbd153cee461",
+      "bytes": 16012,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2025-09-17T14%3A00%3A00Z&end=2025-09-29T15%3A00%3A00Z",
+      "sha256": "744170610f86c1414c678a39505bf11c64e9b031317c7683d70ca76d703928bc",
+      "bytes": 16031,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2025-09-29T16%3A00%3A00Z&end=2025-10-11T17%3A00%3A00Z",
+      "sha256": "58ca345bc9becdb603e66aaf79e472f9f394bfcd346a562de784cc5ce38213af",
+      "bytes": 16058,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2025-10-11T18%3A00%3A00Z&end=2025-10-23T19%3A00%3A00Z",
+      "sha256": "aae5125b2a4cfbaddfe7e55e3733e88afc095184cd57b27484958a03fc56d30b",
+      "bytes": 16081,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2025-10-23T20%3A00%3A00Z&end=2025-11-04T21%3A00%3A00Z",
+      "sha256": "1efd4c576ba30ba733633649dcd70321e8be9409a4cee63a57fe312be4d74b40",
+      "bytes": 15732,
+      "rows": 285
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2025-11-04T22%3A00%3A00Z&end=2025-11-16T23%3A00%3A00Z",
+      "sha256": "0a45f01661dd9454a3f51aa8ce07f5abe53ff2fdf7b8e4500bd3013e294608ad",
+      "bytes": 16071,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2025-11-17T00%3A00%3A00Z&end=2025-11-29T01%3A00%3A00Z",
+      "sha256": "f9172113307959e01f0577b7fb42cca4ea33ed35248b02bc79cef77e56772140",
+      "bytes": 16091,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2025-11-29T02%3A00%3A00Z&end=2025-12-11T03%3A00%3A00Z",
+      "sha256": "a9f50fd99e392df8e43a03693ba373c92f9424af1856c81545bd9a722ae7a0d5",
+      "bytes": 16032,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2025-12-11T04%3A00%3A00Z&end=2025-12-23T05%3A00%3A00Z",
+      "sha256": "0a364c76cd95014476d2cfa5d9be6b22ddf99590cc52ef45e4b23cd9aaa7e38f",
+      "bytes": 16034,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2025-12-23T06%3A00%3A00Z&end=2026-01-04T07%3A00%3A00Z",
+      "sha256": "6d4ef59e585ccbccaf68303a097002725515ccea7c90ab5af27071bd2c769010",
+      "bytes": 15995,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2026-01-04T08%3A00%3A00Z&end=2026-01-16T09%3A00%3A00Z",
+      "sha256": "e441e67f69ff3a59bc23e56612bb39383d55cc43fb6b6ab41f0eef731c378f7e",
+      "bytes": 16058,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2026-01-16T10%3A00%3A00Z&end=2026-01-28T11%3A00%3A00Z",
+      "sha256": "a96eab9cdd100ebd9e3d1484a92e8c8ae15f200d4535b6e4fa1465cf17c4ca2c",
+      "bytes": 15994,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2026-01-28T12%3A00%3A00Z&end=2026-02-09T13%3A00%3A00Z",
+      "sha256": "96ab820bc2c4b0aa4e7687503bb9d3f05bd4735c50143e0e4665221fac735061",
+      "bytes": 16145,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2026-02-09T14%3A00%3A00Z&end=2026-02-21T15%3A00%3A00Z",
+      "sha256": "a096745cdd59ba9e78c61eb558c7a6bdea6faf673058b52e561398648b140ab8",
+      "bytes": 16113,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2026-02-21T16%3A00%3A00Z&end=2026-03-05T17%3A00%3A00Z",
+      "sha256": "689da292e0632dcf826896c59012350e7e92851aaf71b0e16021f341e92759fc",
+      "bytes": 16114,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2026-03-05T18%3A00%3A00Z&end=2026-03-17T19%3A00%3A00Z",
+      "sha256": "ff4efa18100a45e338abd567964a3c3f2434b6350321e57ca42b1b1d5b02e7ac",
+      "bytes": 16057,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2026-03-17T20%3A00%3A00Z&end=2026-03-29T21%3A00%3A00Z",
+      "sha256": "062b2e7c6cabd7a183c3bac439ccabc92a0d5b6d0a9f5c25d39bcf509b2a1cc4",
+      "bytes": 16036,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2026-03-29T22%3A00%3A00Z&end=2026-04-10T23%3A00%3A00Z",
+      "sha256": "67a7c99a9387ecec0dc9a5c2e8c43dbb6c81d66a5008d631ce9f235f5bf4325c",
+      "bytes": 16030,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2026-04-11T00%3A00%3A00Z&end=2026-04-23T01%3A00%3A00Z",
+      "sha256": "aa1dadc17410f796edd445e44bd5fa5812988caa4038cb2704aa474c00ce2491",
+      "bytes": 16040,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2026-04-23T02%3A00%3A00Z&end=2026-05-05T03%3A00%3A00Z",
+      "sha256": "408ee69339b171256ff40ea6167c11c01796379408d6505a2aa04acee9e3dc8e",
+      "bytes": 15983,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2026-05-05T04%3A00%3A00Z&end=2026-05-17T05%3A00%3A00Z",
+      "sha256": "4980c153ee36fea8a3988c02b67ef042764e43d13dfe0f4ebc8737ded8925cd8",
+      "bytes": 15716,
+      "rows": 285
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2026-05-17T06%3A00%3A00Z&end=2026-05-29T07%3A00%3A00Z",
+      "sha256": "4b7bf4afaa9c074a9418443762f70186085d23e3c5aa11f12e0cdb815f4ae490",
+      "bytes": 16018,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2026-05-29T08%3A00%3A00Z&end=2026-06-10T09%3A00%3A00Z",
+      "sha256": "3d8c6c46789a695d7c97c05c3c9f999446b7a4e403c41aa0fd7cd0a663fc7618",
+      "bytes": 16037,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2026-06-10T10%3A00%3A00Z&end=2026-06-22T11%3A00%3A00Z",
+      "sha256": "c57ae1f3a681c62cc6e71e3e27c1380ee9c9537fdc60329c1b236c027e24902b",
+      "bytes": 15987,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2026-06-22T12%3A00%3A00Z&end=2026-07-04T13%3A00%3A00Z",
+      "sha256": "da88b944a0c76a5b7b2364a7761f28642ba816460135c680ad2e68e4273407f2",
+      "bytes": 16061,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2026-07-04T14%3A00%3A00Z&end=2026-07-16T15%3A00%3A00Z",
+      "sha256": "65267c1c10d5d4373cd6e526dd5c7e7d739903df3fdb3ef2cc8ca03d356f5847",
+      "bytes": 15990,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2026-07-16T16%3A00%3A00Z&end=2026-07-28T17%3A00%3A00Z",
+      "sha256": "777c687c396a0f89ec0a3639d16493bffc3239696d253c84c9a182095873badf",
+      "bytes": 15945,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2026-07-28T18%3A00%3A00Z&end=2026-08-09T19%3A00%3A00Z",
+      "sha256": "5f3ca8cf983cbb197f81093552714732b02cad26cfcf558b8a47b68565e44d96",
+      "bytes": 15945,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2026-08-09T20%3A00%3A00Z&end=2026-08-21T21%3A00%3A00Z",
+      "sha256": "36108cdd69ad53cc4e908fbc6e0a23e052f8dfe719b8551fb1e0637beff081a4",
+      "bytes": 15977,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2026-08-21T22%3A00%3A00Z&end=2026-09-02T23%3A00%3A00Z",
+      "sha256": "a1a9adc76bead0793b1fbeba02359b326b3515609f41df2ef3e9c43d484d6ec9",
+      "bytes": 16084,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2026-09-03T00%3A00%3A00Z&end=2026-09-15T01%3A00%3A00Z",
+      "sha256": "8e576c5c66bda0d595aa86a60e62c8645178d00bd462d97bba353adeed4ddebb",
+      "bytes": 16072,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2026-09-15T02%3A00%3A00Z&end=2026-09-27T03%3A00%3A00Z",
+      "sha256": "173de4f158e563e1c7b8bb8a994d2976714a0a3b62d64b10221da858173f4103",
+      "bytes": 16076,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_XRP-USD",
+      "url": "https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=3600&start=2026-09-27T04%3A00%3A00Z&end=2026-09-30T23%3A00%3A00Z",
+      "sha256": "b30c3df078781c7d92e7e71e847537fa838ba4f0bdaa60cab9863dff69d1da8d",
+      "bytes": 5107,
+      "rows": 92
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2023-07-01T00%3A00%3A00Z&end=2023-07-13T01%3A00%3A00Z",
+      "sha256": "cdbf2ee028b42fc7ba96dde530458446a94886b9ee19a60d8fe56c6f337a33ac",
+      "bytes": 17653,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2023-07-13T02%3A00%3A00Z&end=2023-07-25T03%3A00%3A00Z",
+      "sha256": "a558ed4dec417362346e206252511eb5856187d5da2aa2b6dbe38217f81b1dcd",
+      "bytes": 17711,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2023-07-25T04%3A00%3A00Z&end=2023-08-06T05%3A00%3A00Z",
+      "sha256": "8b15ea2094481bcd990753b32bc2cd18aa80e8eaf76e72d253ef595a81681181",
+      "bytes": 17679,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2023-08-06T06%3A00%3A00Z&end=2023-08-18T07%3A00%3A00Z",
+      "sha256": "658409c18da9ca2bcbd3d6ef9852cd459846163e349e1387ef7f8eaf81b6bb17",
+      "bytes": 17671,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2023-08-18T08%3A00%3A00Z&end=2023-08-30T09%3A00%3A00Z",
+      "sha256": "d7128156fbf18fdac4e7307efedb2c4734ce52e126e2da6e6e9d9069bb5f64ea",
+      "bytes": 17710,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2023-08-30T10%3A00%3A00Z&end=2023-09-11T11%3A00%3A00Z",
+      "sha256": "4cabd9adfba4bc317d55f399ed451237eff6e8009e355d21ff28d5be636b94f3",
+      "bytes": 17696,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2023-09-11T12%3A00%3A00Z&end=2023-09-23T13%3A00%3A00Z",
+      "sha256": "7e768e5de54cfae28ed552ec6bc1a003cb17f4973041410401fcb2fdcd9d5f30",
+      "bytes": 17710,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2023-09-23T14%3A00%3A00Z&end=2023-10-05T15%3A00%3A00Z",
+      "sha256": "88560896dc3e04fdb5ff2989bd4aa223e646f951ae3462b04814e2cf78fbc41c",
+      "bytes": 17690,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2023-10-05T16%3A00%3A00Z&end=2023-10-17T17%3A00%3A00Z",
+      "sha256": "6960f36a888a11a814d8a1475525373f52ff76af325926610a5a27c7dd5b5a92",
+      "bytes": 17731,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2023-10-17T18%3A00%3A00Z&end=2023-10-29T19%3A00%3A00Z",
+      "sha256": "407eb36c177d8dfb13f23295adf91d446585b8829acf37fac8884e56f2e6ac92",
+      "bytes": 17765,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2023-10-29T20%3A00%3A00Z&end=2023-11-10T21%3A00%3A00Z",
+      "sha256": "64761c5873f794583b48d7591542b13809f533236ba1bf12e3d65c406016b6cd",
+      "bytes": 17696,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2023-11-10T22%3A00%3A00Z&end=2023-11-22T23%3A00%3A00Z",
+      "sha256": "bac83ef59dc29c2010c920396f870897ba45de25162e596f9e3e88cdfafc6637",
+      "bytes": 17693,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2023-11-23T00%3A00%3A00Z&end=2023-12-05T01%3A00%3A00Z",
+      "sha256": "35b1c0bc463fcb2ea6ecb8b1d04887bb9cf0bdc4144841999c38764e0bfd2c3b",
+      "bytes": 17665,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2023-12-05T02%3A00%3A00Z&end=2023-12-17T03%3A00%3A00Z",
+      "sha256": "c700db9f94afbd9cfc50891a33672cef7886043342a89f5a3ce3aefe9606c99c",
+      "bytes": 17685,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2023-12-17T04%3A00%3A00Z&end=2023-12-29T05%3A00%3A00Z",
+      "sha256": "22b9dfdc937175653824859efa58976caa142b4d1a35cdb2f277973338208431",
+      "bytes": 17694,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2023-12-29T06%3A00%3A00Z&end=2024-01-10T07%3A00%3A00Z",
+      "sha256": "66e45b5d332c1154e5a78359d593358d3f924676439c8c7f143225860b544c02",
+      "bytes": 17674,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2024-01-10T08%3A00%3A00Z&end=2024-01-22T09%3A00%3A00Z",
+      "sha256": "be823f884775da4c8b8e58ddab0fc6e7d2bcab0ddba15ac06185861e8552ed6d",
+      "bytes": 17716,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2024-01-22T10%3A00%3A00Z&end=2024-02-03T11%3A00%3A00Z",
+      "sha256": "aeaef57b1ecd281ac0b92ecf72d87b1e1448d9e960c6fa902ae77102df791b46",
+      "bytes": 17683,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2024-02-03T12%3A00%3A00Z&end=2024-02-15T13%3A00%3A00Z",
+      "sha256": "051c3e2a8e3e5987b7ec963a4ccee11cbbbd553c40feaf23b0f40b428b599f14",
+      "bytes": 17629,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2024-02-15T14%3A00%3A00Z&end=2024-02-27T15%3A00%3A00Z",
+      "sha256": "2ec0a38e7b10c83706ebc2682da1a98f9df76e9943d916975323a27ef0e9f4f9",
+      "bytes": 17648,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2024-02-27T16%3A00%3A00Z&end=2024-03-10T17%3A00%3A00Z",
+      "sha256": "e340d1314ea21731b5267641ae920d80e6758f0734fe621cee459b03ff97f46c",
+      "bytes": 17673,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2024-03-10T18%3A00%3A00Z&end=2024-03-22T19%3A00%3A00Z",
+      "sha256": "3b95609ed4e5f67b59e95313fe81b8f8e4d3e539837de3f900ea46349d34b983",
+      "bytes": 17762,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2024-03-22T20%3A00%3A00Z&end=2024-04-03T21%3A00%3A00Z",
+      "sha256": "161087a9f5f31d2826605b5e4bcc5fa949b26c852369edc2caa0c07f1d89fabf",
+      "bytes": 17659,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2024-04-03T22%3A00%3A00Z&end=2024-04-15T23%3A00%3A00Z",
+      "sha256": "61aa9eb88942f72fa0df0a77f1b0d8d1d5bffe9506ca56d64474483a0c0c77dd",
+      "bytes": 17592,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2024-04-16T00%3A00%3A00Z&end=2024-04-28T01%3A00%3A00Z",
+      "sha256": "e6a50b622d2bdde652471407c068d10bd792edf5d03f5de801a1f2f9466678d8",
+      "bytes": 17646,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2024-04-28T02%3A00%3A00Z&end=2024-05-10T03%3A00%3A00Z",
+      "sha256": "afd3a37ec7d092c3e14a50e4070f970e74989d161b8869a2e94482457a57ddcf",
+      "bytes": 17691,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2024-05-10T04%3A00%3A00Z&end=2024-05-22T05%3A00%3A00Z",
+      "sha256": "b766ea937b38dcbbe9a12616502b2ab67bd0db15bc52f76ad302e96db8f44b0c",
+      "bytes": 17687,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2024-05-22T06%3A00%3A00Z&end=2024-06-03T07%3A00%3A00Z",
+      "sha256": "fc74b2a8c67d1654a50238c7ce359a1f3abfae9239421808b1871b7ef3c0a2c7",
+      "bytes": 17633,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2024-06-03T08%3A00%3A00Z&end=2024-06-15T09%3A00%3A00Z",
+      "sha256": "6cd85fa297ba0d053b74d53c6ba7fe2dc7b09c40e4fb926b5b5bd6a5f699404d",
+      "bytes": 17555,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2024-06-15T10%3A00%3A00Z&end=2024-06-27T11%3A00%3A00Z",
+      "sha256": "7a3cf70af1b87672de5bda192a4ab3feccbf6596161cc22439b97abd3ce508b2",
+      "bytes": 17613,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2024-06-27T12%3A00%3A00Z&end=2024-07-09T13%3A00%3A00Z",
+      "sha256": "142c6967315ebece542c821dec9b410adae039fdb4c1a60e02d64b0dab7e4a04",
+      "bytes": 17704,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2024-07-09T14%3A00%3A00Z&end=2024-07-21T15%3A00%3A00Z",
+      "sha256": "ee9bffd0955da4d9270d2905069342387cafa31f6634a592b66917f01f61ba15",
+      "bytes": 17636,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2024-07-21T16%3A00%3A00Z&end=2024-08-02T17%3A00%3A00Z",
+      "sha256": "e0f9f951b0893c0f1409437ab00c70a7923269973d218fb2a79128798dd6f857",
+      "bytes": 17617,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2024-08-02T18%3A00%3A00Z&end=2024-08-14T19%3A00%3A00Z",
+      "sha256": "16557ae9edc3ea30f67c92d7a335a8c5f86d2243b4e48246ac0c07d1ceadd79c",
+      "bytes": 17680,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2024-08-14T20%3A00%3A00Z&end=2024-08-26T21%3A00%3A00Z",
+      "sha256": "449ab8bb8b86d58c796ace5d7cd03431cc14cc95e7bb4609383303ea14e57324",
+      "bytes": 17669,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2024-08-26T22%3A00%3A00Z&end=2024-09-07T23%3A00%3A00Z",
+      "sha256": "7fb34db5d94fa54058086db40030692195b861553158a9814f898f77e355e840",
+      "bytes": 17599,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2024-09-08T00%3A00%3A00Z&end=2024-09-20T01%3A00%3A00Z",
+      "sha256": "a2604e63e09ea9e5109395f2b76c85affd4a5b9b1d297b73a1db581a4ca03210",
+      "bytes": 17611,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2024-09-20T02%3A00%3A00Z&end=2024-10-02T03%3A00%3A00Z",
+      "sha256": "8fe3379ff26e6abaebcd24676f09b67ef38953d836190eede058314d2d3fafdd",
+      "bytes": 17590,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2024-10-02T04%3A00%3A00Z&end=2024-10-14T05%3A00%3A00Z",
+      "sha256": "b8671a07ecccdf84329a594773248b3c1de045188d64bb3e0a6aa10c20c19392",
+      "bytes": 17601,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2024-10-14T06%3A00%3A00Z&end=2024-10-26T07%3A00%3A00Z",
+      "sha256": "f0465ce1e95a598f8c8e746187d764a0f5e5d1f087e7cb38fede26eb4c11e4cf",
+      "bytes": 17629,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2024-10-26T08%3A00%3A00Z&end=2024-11-07T09%3A00%3A00Z",
+      "sha256": "3e8bae1fd335cd2b9493b5776ad35d11c6dd0c36918a9f1f8b1644d2ab67523d",
+      "bytes": 17632,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2024-11-07T10%3A00%3A00Z&end=2024-11-19T11%3A00%3A00Z",
+      "sha256": "cb34b6486fa978ed01825e3eb18c5cd28f3e81c704d9a41952f73c51bcfdcf1b",
+      "bytes": 17632,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2024-11-19T12%3A00%3A00Z&end=2024-12-01T13%3A00%3A00Z",
+      "sha256": "dbfbeb2f8d0c003d371730a2688d1a62a967d6ec18d38e51ba06c53dc83a9237",
+      "bytes": 17637,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2024-12-01T14%3A00%3A00Z&end=2024-12-13T15%3A00%3A00Z",
+      "sha256": "a74363198e76af9093ecbdaea7c9077c267723bd4096c538419b6d537276a343",
+      "bytes": 17991,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2024-12-13T16%3A00%3A00Z&end=2024-12-25T17%3A00%3A00Z",
+      "sha256": "33401ed8471f96b446b5200918f6f2c41f6700a08d8a693a9ebfc683f49d0574",
+      "bytes": 18232,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2024-12-25T18%3A00%3A00Z&end=2025-01-06T19%3A00%3A00Z",
+      "sha256": "3d0e1ce3ff7aaab227901a3ad7d381bc6c41359264ec35ddf3f508b733ac353d",
+      "bytes": 17629,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2025-01-06T20%3A00%3A00Z&end=2025-01-18T21%3A00%3A00Z",
+      "sha256": "120b7857076717a8752667e702a5b2fda426ab0ef926343193adc915225c7e62",
+      "bytes": 17830,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2025-01-18T22%3A00%3A00Z&end=2025-01-30T23%3A00%3A00Z",
+      "sha256": "d1d1b9efd29db35f19f800447f65ff3f3c65d07cd27c96dcc1996836dbc8c4e1",
+      "bytes": 18744,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2025-01-31T00%3A00%3A00Z&end=2025-02-12T01%3A00%3A00Z",
+      "sha256": "ed6eee154dd8106113cd6ebccf1b0c883162a6728104dfb1c1c801928a9e53f1",
+      "bytes": 17828,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2025-02-12T02%3A00%3A00Z&end=2025-02-24T03%3A00%3A00Z",
+      "sha256": "4bda0c0ef1b7cb737faa74c383cfb8c3c6650c0c21622accf77e048b31da734c",
+      "bytes": 17562,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2025-02-24T04%3A00%3A00Z&end=2025-03-08T05%3A00%3A00Z",
+      "sha256": "4dfa6a7d087e596297b57774d2c83b6ebd50f765303fe9fdc5e0fe4e88f0a173",
+      "bytes": 17637,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2025-03-08T06%3A00%3A00Z&end=2025-03-20T07%3A00%3A00Z",
+      "sha256": "6338ac7afb3ee53ddd7dc59d059deea083971f5f5908279469a47bc851345515",
+      "bytes": 17613,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2025-03-20T08%3A00%3A00Z&end=2025-04-01T09%3A00%3A00Z",
+      "sha256": "d28f6864e6dc2bb5922f0384c04ac0f139afea6a5d55597b79f5b0ffcc31177a",
+      "bytes": 17613,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2025-04-01T10%3A00%3A00Z&end=2025-04-13T11%3A00%3A00Z",
+      "sha256": "f35fcb43cebfef7f2a65ea25ce7281a6d48fe27f791fbb0aaee225a62b212207",
+      "bytes": 17639,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2025-04-13T12%3A00%3A00Z&end=2025-04-25T13%3A00%3A00Z",
+      "sha256": "ae0a34b74083723db7ad82e93f068495f1893d4665ac9504221d769c54451d3d",
+      "bytes": 17590,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2025-04-25T14%3A00%3A00Z&end=2025-05-07T15%3A00%3A00Z",
+      "sha256": "922a5c17ecf7799f6978918045be6c2fd2b6a39a753d97bdfa0b7f37568f34d8",
+      "bytes": 17496,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2025-05-07T16%3A00%3A00Z&end=2025-05-19T17%3A00%3A00Z",
+      "sha256": "b405ef5943a8b0ef46c107b3bd1d8504fe609e148e2224c2561fa91a5df6ab6b",
+      "bytes": 18569,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2025-05-19T18%3A00%3A00Z&end=2025-05-31T19%3A00%3A00Z",
+      "sha256": "919dda18ef0b5b81653115ad03f569d790982f58908c4ba21a1921c1dae456e4",
+      "bytes": 18760,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2025-05-31T20%3A00%3A00Z&end=2025-06-12T21%3A00%3A00Z",
+      "sha256": "81f881965e3ad9314096b8d7b7bd155db1e39a1f122efeb2267f7a2ca6fffd82",
+      "bytes": 18706,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2025-06-12T22%3A00%3A00Z&end=2025-06-24T23%3A00%3A00Z",
+      "sha256": "15eaaa9a0d418b64443a1e81a107e9bae18ba92a5cd5fc5c08a0c1479398e26a",
+      "bytes": 18659,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2025-06-25T00%3A00%3A00Z&end=2025-07-07T01%3A00%3A00Z",
+      "sha256": "c8406643ba0647d6a015929df068e0c244b92b51a207a309b04c8e30b72ecc9c",
+      "bytes": 18623,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2025-07-07T02%3A00%3A00Z&end=2025-07-19T03%3A00%3A00Z",
+      "sha256": "0c909f644f7b2bfdcd0cecb7f174483d5d092d7c18b2f33cbc968229fa412a4b",
+      "bytes": 18721,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2025-07-19T04%3A00%3A00Z&end=2025-07-31T05%3A00%3A00Z",
+      "sha256": "089154d26e6474c375b2190bc4f68003c7d0436f8e5f4caf737467fd3c93cb26",
+      "bytes": 18660,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2025-07-31T06%3A00%3A00Z&end=2025-08-12T07%3A00%3A00Z",
+      "sha256": "9ad6a571d3f651bb5148822132943364c8b57c90b15ed23525493b79cbbfac40",
+      "bytes": 18654,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2025-08-12T08%3A00%3A00Z&end=2025-08-24T09%3A00%3A00Z",
+      "sha256": "d283d2be316d606d814890a16635308621064790fdf6b35dbef212786f95da02",
+      "bytes": 18668,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2025-08-24T10%3A00%3A00Z&end=2025-09-05T11%3A00%3A00Z",
+      "sha256": "75878926b6e0eb48cb3993d17f60a7f9f66a40e764878d1f858451b3faead403",
+      "bytes": 18768,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2025-09-05T12%3A00%3A00Z&end=2025-09-17T13%3A00%3A00Z",
+      "sha256": "9ced13df6e953aa363f72749f972294bf3a48592be77e3549f2e2a05e8e6f6aa",
+      "bytes": 18619,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2025-09-17T14%3A00%3A00Z&end=2025-09-29T15%3A00%3A00Z",
+      "sha256": "914b25fc465637f17cac4a17ea9209c49fe9246c53ffb71c17b35e7ee09c0705",
+      "bytes": 18586,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2025-09-29T16%3A00%3A00Z&end=2025-10-11T17%3A00%3A00Z",
+      "sha256": "e718853144f41916a7df95c92af983f64de4f96d50c9f7fda8a60165eed5139a",
+      "bytes": 18610,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2025-10-11T18%3A00%3A00Z&end=2025-10-23T19%3A00%3A00Z",
+      "sha256": "813fea74715b1e906490afc92141c8a5d65e71efaeba019327a2909d5d297afa",
+      "bytes": 18636,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2025-10-23T20%3A00%3A00Z&end=2025-11-04T21%3A00%3A00Z",
+      "sha256": "b9fbb382d3388e84594ad1afcc730160d4a93a2bd945c9eb50a2b5e60537f917",
+      "bytes": 18220,
+      "rows": 285
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2025-11-04T22%3A00%3A00Z&end=2025-11-16T23%3A00%3A00Z",
+      "sha256": "8af7eaf2221a8ef3849ce1f348e4bfe72fea4e18a449f65621571d02efe24132",
+      "bytes": 18268,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2025-11-17T00%3A00%3A00Z&end=2025-11-29T01%3A00%3A00Z",
+      "sha256": "f5f12427eda7eb0ab72f2e16134196fe65164f9e561190420d4858913e4b3389",
+      "bytes": 17445,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2025-11-29T02%3A00%3A00Z&end=2025-12-11T03%3A00%3A00Z",
+      "sha256": "111bf5609744f6d25dc3f4f04efb6f8064f68a9f180e62c72221a575179fcab3",
+      "bytes": 17455,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2025-12-11T04%3A00%3A00Z&end=2025-12-23T05%3A00%3A00Z",
+      "sha256": "32a4c852c986f8a2059c3e263562b7d6b5188a699923391ec13a2b326f70d89e",
+      "bytes": 17229,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2025-12-23T06%3A00%3A00Z&end=2026-01-04T07%3A00%3A00Z",
+      "sha256": "7902f97471a81256d61c7b81c724eb857c4bb977ad32aad2925f923a327fcb9d",
+      "bytes": 17387,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2026-01-04T08%3A00%3A00Z&end=2026-01-16T09%3A00%3A00Z",
+      "sha256": "d688ae3c61eade8c103c1e38ac8406631521aee134cf7ee637c4fa3f1ce31593",
+      "bytes": 17368,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2026-01-16T10%3A00%3A00Z&end=2026-01-28T11%3A00%3A00Z",
+      "sha256": "32e926e9a45c85798a3a13b2d5232a3fc5aaecb1ada58546dc47059a2e59d37b",
+      "bytes": 17334,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2026-01-28T12%3A00%3A00Z&end=2026-02-09T13%3A00%3A00Z",
+      "sha256": "33fca468043f94027ff199e50d97475bb07d34b462f84d549b8e51f5b37dc609",
+      "bytes": 17474,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2026-02-09T14%3A00%3A00Z&end=2026-02-21T15%3A00%3A00Z",
+      "sha256": "fe73db3087256c20fbfa743ef5343c9d34cf06c6a46457125c65be892d362b18",
+      "bytes": 17434,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2026-02-21T16%3A00%3A00Z&end=2026-03-05T17%3A00%3A00Z",
+      "sha256": "15e49db81ebadc1010cc39fc836e00596ab7e4810668fc044ecf6c95dae96ab6",
+      "bytes": 17512,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2026-03-05T18%3A00%3A00Z&end=2026-03-17T19%3A00%3A00Z",
+      "sha256": "6e8482764e5db180149b0cb84c70734130c5e49a38eb01ccd6e1be42796d33c7",
+      "bytes": 17608,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2026-03-17T20%3A00%3A00Z&end=2026-03-29T21%3A00%3A00Z",
+      "sha256": "7ebdabe5e885ea6538c7effb408a2019390d88cfd6a15f71b68bc2d783f04adf",
+      "bytes": 17437,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2026-03-29T22%3A00%3A00Z&end=2026-04-10T23%3A00%3A00Z",
+      "sha256": "32bb31adb950d58743668095a79c89c20cde8843b8f534dfde06cac434913577",
+      "bytes": 17445,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2026-04-11T00%3A00%3A00Z&end=2026-04-23T01%3A00%3A00Z",
+      "sha256": "62367c7134c01c3185805f21177dd030d20f8a1d97e026048056735e88d6e510",
+      "bytes": 17567,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2026-04-23T02%3A00%3A00Z&end=2026-05-05T03%3A00%3A00Z",
+      "sha256": "e906bc15d7e379a0ee1403ada0be8144a5770fdb5f89741224756baed11d8197",
+      "bytes": 17471,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2026-05-05T04%3A00%3A00Z&end=2026-05-17T05%3A00%3A00Z",
+      "sha256": "546859aedae507f818ec38b2733cbef3de2382724cf4e1768a6a685e541c2ce0",
+      "bytes": 17103,
+      "rows": 285
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2026-05-17T06%3A00%3A00Z&end=2026-05-29T07%3A00%3A00Z",
+      "sha256": "e71d0b3f1a872da87535718170b37d5565337429f572ff316563ca74dc3a8706",
+      "bytes": 17510,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2026-05-29T08%3A00%3A00Z&end=2026-06-10T09%3A00%3A00Z",
+      "sha256": "9c4dab95d2066fb7e0a1fd68ee19f376870d3417331b4eb7a9bc428d73a0718a",
+      "bytes": 17504,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2026-06-10T10%3A00%3A00Z&end=2026-06-22T11%3A00%3A00Z",
+      "sha256": "617574759c48bda687debb8f454b94e504cd2ce2d8450dcecc1efaa7f1494ef3",
+      "bytes": 17515,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2026-06-22T12%3A00%3A00Z&end=2026-07-04T13%3A00%3A00Z",
+      "sha256": "9f455c84e6177d6363657692918869540feef247cc5ab310db06bb88ee774318",
+      "bytes": 17595,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2026-07-04T14%3A00%3A00Z&end=2026-07-16T15%3A00%3A00Z",
+      "sha256": "5c6391c5cadcd651164dba90d60eecbe05a07dc35ea9f1d942712e5f478f9230",
+      "bytes": 17491,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2026-07-16T16%3A00%3A00Z&end=2026-07-28T17%3A00%3A00Z",
+      "sha256": "3b89a1e0dda5ff9519e58f775a5e63dfbdeadac4ca148d26909867bfc1811329",
+      "bytes": 17448,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2026-07-28T18%3A00%3A00Z&end=2026-08-09T19%3A00%3A00Z",
+      "sha256": "451c7c503a614bd0a03a1baa1ba104c33a55d6944cf5248860456ac7cd2725ce",
+      "bytes": 17539,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2026-08-09T20%3A00%3A00Z&end=2026-08-21T21%3A00%3A00Z",
+      "sha256": "1d6a8219c08a1a46d727337799f047214273b51a9afed30693a7ab1473c91c49",
+      "bytes": 17563,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2026-08-21T22%3A00%3A00Z&end=2026-09-02T23%3A00%3A00Z",
+      "sha256": "6a6b9b99c72e9136453bdc73f32f15c961f7a0f1203629cbd1833927e79d4a75",
+      "bytes": 17557,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2026-09-03T00%3A00%3A00Z&end=2026-09-15T01%3A00%3A00Z",
+      "sha256": "18947f1f3ca11a516bbb03f9aaf5adb8b5029ee2cf5c042674ffb7e9daa7c8c3",
+      "bytes": 17462,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2026-09-15T02%3A00%3A00Z&end=2026-09-27T03%3A00%3A00Z",
+      "sha256": "86b6b9af5b6cc51aa4f1cac48ebdf5fbd9d4ba01474bfb3c34f78b65fcd21f3d",
+      "bytes": 17466,
+      "rows": 290
+    },
+    {
+      "kind": "coinbase_BTC-USD",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=3600&start=2026-09-27T04%3A00%3A00Z&end=2026-09-30T23%3A00%3A00Z",
+      "sha256": "22a8a46abc827b9c508f7c40dcf76f596cdc6854dd51ff660ad61a6643a6b68c",
+      "bytes": 5574,
+      "rows": 92
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2023-07.zip",
+      "sha256": "213fa525b5235dba3e55920edde92f3ed3d44fac229f509fd9fc20d454288936",
+      "bytes": 16653,
+      "rows": 744
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2023-08.zip",
+      "sha256": "c13281a13454f5322b120f1d5545fe459d2cdcaaff26019d7d3298f4b4e72226",
+      "bytes": 16014,
+      "rows": 744
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2023-09.zip",
+      "sha256": "4b8ebd2205a99e025c0e7f68432ba2601751d46553f7afa56f52fde06aa1232c",
+      "bytes": 14958,
+      "rows": 720
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2023-10.zip",
+      "sha256": "a60cdcb2b3ceedc3fe316a55ee271a04abbadeb6c57e587b87534e8984e09256",
+      "bytes": 15955,
+      "rows": 744
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2023-11.zip",
+      "sha256": "40f24502ccfa894da97478122538bb5d90ffcdb945c13734b0d3ccd3155d7003",
+      "bytes": 16262,
+      "rows": 720
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2023-12.zip",
+      "sha256": "7ebcea70ac94ee907f179c2d8242f0a0740b7b93a8dd915d65ab752e51905f02",
+      "bytes": 15851,
+      "rows": 744
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2024-01.zip",
+      "sha256": "24714c9b333e50b29c05247dca5c736fbe5cb1b220c0cd023e517fe7d0647afc",
+      "bytes": 16969,
+      "rows": 744
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2024-02.zip",
+      "sha256": "978bc6a299a19042917839482381eb41e585e0fda44e5e47a6dec27f83db29dc",
+      "bytes": 15021,
+      "rows": 696
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2024-03.zip",
+      "sha256": "bcb24491b75d1146f7894502464430f510279dc8504fc27f6094e3eb34c55d54",
+      "bytes": 16137,
+      "rows": 744
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2024-04.zip",
+      "sha256": "c079107464ab8bc035f0df4fd8a8171a529c1adcfe86471327c77a7b8a7c24d9",
+      "bytes": 15561,
+      "rows": 720
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2024-05.zip",
+      "sha256": "3ebf0400c4d946f7d6443fbb1b9bed3dc75bc07034adb305f3e130f2af97a5cc",
+      "bytes": 15876,
+      "rows": 744
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2024-06.zip",
+      "sha256": "e7befab97b4c2ebdb3996af9a886f1e55201f42ed2df77e040642f82aaeabda4",
+      "bytes": 15495,
+      "rows": 720
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2024-07.zip",
+      "sha256": "e01da75841d836f6b374293c52fd83a793e616e5d1d7ab1cefc6477c294f80e5",
+      "bytes": 16610,
+      "rows": 744
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2024-08.zip",
+      "sha256": "d0feaffeaeea2f63b24600a31331682500557f600c292bca6445e50318d5e517",
+      "bytes": 16295,
+      "rows": 744
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2024-09.zip",
+      "sha256": "a565bf97ae6bf07f56524cb492004c13a5c4cd5b2539bfa9b91477812efee572",
+      "bytes": 15522,
+      "rows": 720
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2024-10.zip",
+      "sha256": "3595cea813e8817b282fb301bdd7c1d78348be7a4b2f6cf8d1d13a593579475c",
+      "bytes": 16115,
+      "rows": 744
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2024-11.zip",
+      "sha256": "1ce543b279ce02484658dc113eef8376fd1ec2cacdc539d3df9902066e64bf38",
+      "bytes": 17011,
+      "rows": 720
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2024-12.zip",
+      "sha256": "a3a2e530bdf37eb31902072664073c62a3bd015ab90524cc0d16acbbe34b74a4",
+      "bytes": 17967,
+      "rows": 744
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2025-01.zip",
+      "sha256": "5ceeef29b628ef13af7fba1e85c8493eec286f43fef2144fe06791731c7bdf0f",
+      "bytes": 17778,
+      "rows": 744
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2025-02.zip",
+      "sha256": "e349688ac96d5f4982d449f3d14e1e6c39962516cb2c0e9f0dd968b6602a7cef",
+      "bytes": 16002,
+      "rows": 672
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2025-03.zip",
+      "sha256": "18a4ddd80966be247274e865a2a81aac0579745fdcc24ca4fda1efef1130ed57",
+      "bytes": 17699,
+      "rows": 744
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2025-04.zip",
+      "sha256": "3ad18dd6342926995d0bf1ea4b9bd5bca0e6a94eb4ae04ca62324723190f9c27",
+      "bytes": 16649,
+      "rows": 720
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2025-05.zip",
+      "sha256": "f28877b58e2e4f48eb37a5b3a216a0a05656f06b26a4cf78e4fc43a495ecabb1",
+      "bytes": 17187,
+      "rows": 744
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2025-06.zip",
+      "sha256": "d24e91c1ab9c26f23e5b93c468909f62501f31711b02e1d49ba2231e0fc81952",
+      "bytes": 16363,
+      "rows": 720
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2025-07.zip",
+      "sha256": "0736711aedddeca46fd6357b42320713489a608d55349a4c9812e81ab486e94f",
+      "bytes": 17908,
+      "rows": 744
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2025-08.zip",
+      "sha256": "5adac7201e43a353483aace53b8d106266db2bfc352a369018e9d1cdad387644",
+      "bytes": 17622,
+      "rows": 744
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2025-09.zip",
+      "sha256": "b3f486e2046dcbbab6071ce02d430a0c2ef221567552f82d798f92f368f87694",
+      "bytes": 16503,
+      "rows": 720
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2025-10.zip",
+      "sha256": "b69e5eeb9d60a2b2cf02f2b0e14886ff187c8fb161ba28c95a5955c18c976999",
+      "bytes": 17358,
+      "rows": 744
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2025-11.zip",
+      "sha256": "f0795fa9871d937c5e4af3b1f635b6ba4ca4b866645ef6ec2a7d3cbbfa611735",
+      "bytes": 16965,
+      "rows": 720
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2025-12.zip",
+      "sha256": "6ca206325730bbbc42db33af1d13e66f18e881e1d7ee6179789d7ef21c5b0a53",
+      "bytes": 17095,
+      "rows": 744
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2026-01.zip",
+      "sha256": "a6b5cc0d4a8ecc74c7c743b1795265a5d48159011e4d3f91a1916b5c288f50b2",
+      "bytes": 17326,
+      "rows": 744
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2026-02.zip",
+      "sha256": "023c91c5c27ef780dc9eee28acf54333aeb9e70604b100d5941c2c6c00ea8b09",
+      "bytes": 15698,
+      "rows": 672
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2026-03.zip",
+      "sha256": "076e514bd8799f4b78d63465f94eff5abb79f4c5c7104fb1e35dad9571b38f84",
+      "bytes": 17345,
+      "rows": 744
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2026-04.zip",
+      "sha256": "b5996ad3da0063138a9e77e93297618ce4adc535ce8699fecd135feeb8f4f9e5",
+      "bytes": 16130,
+      "rows": 720
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2026-05.zip",
+      "sha256": "9611a6d1948feac5e016df1bde8526d6420e8371d590bb2045376e97fd2a0d9f",
+      "bytes": 16391,
+      "rows": 744
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2026-06.zip",
+      "sha256": "3a4cc212587cd1b3825689e2648c3d7aa35520d3ad7bf00cefa623f1e1fd45f2",
+      "bytes": 15762,
+      "rows": 696
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2026-07.zip",
+      "sha256": "899276c38705d10dfece01531a63dac166aff361cffb9740a02c83d9eb1e5b97",
+      "bytes": 16295,
+      "rows": 744
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2026-08.zip",
+      "sha256": "a0ba23b5fb442fc5f158debcc0671eb3e90715c8204f4bc1993bbfa69515a939",
+      "bytes": 16624,
+      "rows": 744
+    },
+    {
+      "kind": "binance_mark_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/1h/XRPUSDT-1h-2026-09.zip",
+      "sha256": "db430fb4f0d81e842cf8802f2fb4690aa6ff2d6db181cd717b2054cc5cef3790",
+      "bytes": 16474,
+      "rows": 720
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2023-07.zip",
+      "sha256": "f49a738a793055a583784e78a54840a43861fd110118cbe1add14ef1afb63032",
+      "bytes": 42245,
+      "rows": 744
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2023-08.zip",
+      "sha256": "e983243d44536a06ff4707cf35df29f636fe788e6fb69c3b3feed2ef43d343d4",
+      "bytes": 42213,
+      "rows": 744
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2023-09.zip",
+      "sha256": "28e12ccaf15745bfe11f570b9079793750047fde3d340fe0231858b26bc0f9d9",
+      "bytes": 40962,
+      "rows": 720
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2023-10.zip",
+      "sha256": "165ec50601f914d6c41b776414096bc73974bf45fcd41aaddfedd1cf66cb6c6e",
+      "bytes": 42928,
+      "rows": 744
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2023-11.zip",
+      "sha256": "4f550d182d529839dd9cfc28ef0ecca8cd8003e991067e92a2af5b9e92762f49",
+      "bytes": 41648,
+      "rows": 720
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2023-12.zip",
+      "sha256": "6117d93e3eb6574df6b0087a45cf12e171afe91789b523b0bfcce00d8f1b6e37",
+      "bytes": 43309,
+      "rows": 744
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-01.zip",
+      "sha256": "cf873a185bd5b24b8e00034e49583fcb49928e0c3a45c6fc27a632a683655417",
+      "bytes": 43482,
+      "rows": 744
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-02.zip",
+      "sha256": "b83aa7319ef1d4baa7b923c0fe802b88dfaf241c7456af295f1f656a24379b33",
+      "bytes": 40711,
+      "rows": 696
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-03.zip",
+      "sha256": "b0851daf609d6ab82fdf8f1d1c4fbd974bc1b4e6530a832067516ac1c2be63a6",
+      "bytes": 44044,
+      "rows": 744
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-04.zip",
+      "sha256": "e266707ad2ea3cd4680bf1ac5025f0c1bfeb38e703374a91f8dc193d1ec8d48f",
+      "bytes": 42474,
+      "rows": 720
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-05.zip",
+      "sha256": "077c71eec71a8ecf2edb6e3a3927b600b8f358fd37066ce120c19fb5302a9ab8",
+      "bytes": 43425,
+      "rows": 744
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-06.zip",
+      "sha256": "2e1f968fa34b9feabfb19cc6eec47a146e20d64a706f4b17d0babf4d2f475c39",
+      "bytes": 41535,
+      "rows": 720
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-07.zip",
+      "sha256": "41fd58a70ae40bebb74682555cc5054709f8dde0f5c8193ae2103dac95274e5f",
+      "bytes": 43162,
+      "rows": 744
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-08.zip",
+      "sha256": "88521a975ee7bfdd21f891d81f4243a01b90b977cf525d11747e27c66e3bad60",
+      "bytes": 43406,
+      "rows": 744
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-09.zip",
+      "sha256": "123f402c6dbf19b9b72b4af7ad4d5325c73ba4833148cc398b803d7a34ac5c5f",
+      "bytes": 41468,
+      "rows": 720
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-10.zip",
+      "sha256": "393b18ad2634f0cd3b2fd54321c8286ea143419cf3129b4cc44e089681912b03",
+      "bytes": 42989,
+      "rows": 744
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-11.zip",
+      "sha256": "7a51fe8811c754ff43a2be0ba10e53a6d4218521e27ac765fbc9a1ca0fc15bac",
+      "bytes": 42752,
+      "rows": 720
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2024-12.zip",
+      "sha256": "dfec812f73a84257b195cbdaed34d020fa77e845625c061c13bd6a60e7ef9372",
+      "bytes": 44271,
+      "rows": 744
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-01.zip",
+      "sha256": "e7f2aaa5396a8062a57ab29ce9fab2d76b2c84ec58815d4ab7b3fe16f78c7118",
+      "bytes": 44655,
+      "rows": 744
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-02.zip",
+      "sha256": "7420f55c93f61d7e734fc9d2507c7f2fcb5eaf48112277cecd241d4e1dbf3bd5",
+      "bytes": 40203,
+      "rows": 672
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-03.zip",
+      "sha256": "b5ae8bb57e5e526c2050c9f8229b723871a5af47d80c53453abf61847a5f3aa6",
+      "bytes": 44468,
+      "rows": 744
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-04.zip",
+      "sha256": "bbec48ed5f7b603bbceff943ad0dccd3c29cae6d14161bcd2eabc9f762ff0a35",
+      "bytes": 42741,
+      "rows": 720
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-05.zip",
+      "sha256": "da6213bf4c57ea60faed3ef1f6a0ecb87f22ca7a3a67614604cf44d2d6b265fe",
+      "bytes": 44381,
+      "rows": 744
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-06.zip",
+      "sha256": "d0760943538f48032dd066401e53f46bbf4868e6545929678e23bcdee032a5e8",
+      "bytes": 42662,
+      "rows": 720
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-07.zip",
+      "sha256": "487738ee596380eaad32a2a93c75d17e1ebdd165a9b544c0e44be36079f5c02e",
+      "bytes": 43886,
+      "rows": 744
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-08.zip",
+      "sha256": "a99ec5bac64333fb521b2ab1bac5e8387eede6413cc7841656a02be95613c64f",
+      "bytes": 44104,
+      "rows": 744
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-09.zip",
+      "sha256": "b0ad5b54097f6adb440d07204fd215dae9b224fb73569fd4309a55c9234d46b3",
+      "bytes": 42491,
+      "rows": 720
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-10.zip",
+      "sha256": "5426b1b48905963d50e11d1243910b5fa05a89c9a2003bcd5082561d352a2123",
+      "bytes": 44751,
+      "rows": 744
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-11.zip",
+      "sha256": "1f28f02e33e1f19e5163cd45b67c07b3b75870e78dbbf9f861d1348ca372d942",
+      "bytes": 43273,
+      "rows": 720
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2025-12.zip",
+      "sha256": "d546c6e44b443e34cef5122043c5cdd3b9c76980e23cc408dafd9f6f76d65c05",
+      "bytes": 43894,
+      "rows": 744
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2026-01.zip",
+      "sha256": "a40e86beb4f1e6d4b19ca022c87b8b2f0e4e40874d349a5a75b27baa9634c858",
+      "bytes": 43807,
+      "rows": 744
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2026-02.zip",
+      "sha256": "0be4e5c92892495c5da5b371fe8755f2d508b28a58414b4171284480806ed6c4",
+      "bytes": 40150,
+      "rows": 672
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2026-03.zip",
+      "sha256": "44f383f9423f96cdc29e03b4ba8062296763dd740ab1d93f04b62c88bac30aa6",
+      "bytes": 44392,
+      "rows": 744
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2026-04.zip",
+      "sha256": "9f8e49b70978177414a005a6e84b1cf891f97b0196526cbd579535449c14b6f6",
+      "bytes": 42394,
+      "rows": 720
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2026-05.zip",
+      "sha256": "11b8537dc1769a7de9d6cb2e0354dd4a376018986a826c67d1078e25fbf8fb80",
+      "bytes": 43547,
+      "rows": 744
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2026-06.zip",
+      "sha256": "7c446aee297f382ee92b8d9b3300a1d7c21bed8166118f3bb261275bed5e308e",
+      "bytes": 42265,
+      "rows": 720
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2026-07.zip",
+      "sha256": "ec98553c10acdbf3f210c55045614e8d3daf616e407c36718269361b1e972b16",
+      "bytes": 43238,
+      "rows": 744
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2026-08.zip",
+      "sha256": "1fa85817e358f73e0dd9509f6f31c79bf9b23d9470971a882c8f814871a3fccf",
+      "bytes": 43110,
+      "rows": 744
+    },
+    {
+      "kind": "binance_spot_BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-2026-09.zip",
+      "sha256": "39b31046d702bd7e482e03b125d6fbfd730147aa5d9ad03d8b04bf1961a8e9bd",
+      "bytes": 41901,
+      "rows": 720
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2023-07.zip",
+      "sha256": "5348dd7a724fdb991788703b14b5c134711ec173b2bc821e13da18a46042c1f3",
+      "bytes": 792,
+      "rows": 93,
+      "adjusted": 9,
+      "max_abs_adjustment_ms": 1
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2023-08.zip",
+      "sha256": "491f029d456a47cc58f5888c4e9a91deac419c5242c27fde744a971716391fa6",
+      "bytes": 816,
+      "rows": 93,
+      "adjusted": 10,
+      "max_abs_adjustment_ms": 5
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2023-09.zip",
+      "sha256": "5a06068aef716c54685ac57fde85ca9fc3b718659fcf90e83af9350f7de05553",
+      "bytes": 868,
+      "rows": 90,
+      "adjusted": 7,
+      "max_abs_adjustment_ms": 1
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2023-10.zip",
+      "sha256": "ca0b78ee32f1b2a301e39cdeae50a466ad9bd1d153d0f7d070bbdb90d9203c30",
+      "bytes": 816,
+      "rows": 93,
+      "adjusted": 10,
+      "max_abs_adjustment_ms": 5
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2023-11.zip",
+      "sha256": "17b4f9e2a7800265378e3e293295d58ccc8875e037d4286873250541b0a196b0",
+      "bytes": 735,
+      "rows": 90,
+      "adjusted": 11,
+      "max_abs_adjustment_ms": 1
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2023-12.zip",
+      "sha256": "49fd3c811e1388693e7dd482972f8b525ba10a90c01d77b04ec9b0631d43feb8",
+      "bytes": 868,
+      "rows": 93,
+      "adjusted": 7,
+      "max_abs_adjustment_ms": 1
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2024-01.zip",
+      "sha256": "fac75e242671739980886a0f39159562dde076d49244e6f2803c407dc0112570",
+      "bytes": 673,
+      "rows": 93,
+      "adjusted": 15,
+      "max_abs_adjustment_ms": 3
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2024-02.zip",
+      "sha256": "e38e130c6361e5e9d5c67109f22f72812457f2461332a9304d715215576d2d0e",
+      "bytes": 755,
+      "rows": 87,
+      "adjusted": 11,
+      "max_abs_adjustment_ms": 4
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2024-03.zip",
+      "sha256": "31a841c4eaebbb192448838f37819fcc6263ac149df469463c11126b70717e59",
+      "bytes": 957,
+      "rows": 93,
+      "adjusted": 11,
+      "max_abs_adjustment_ms": 4
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2024-04.zip",
+      "sha256": "d7586ec30b20ca06772ac7fb52dd027e913ce0a26a93669e3a4276522bff9ab5",
+      "bytes": 881,
+      "rows": 90,
+      "adjusted": 16,
+      "max_abs_adjustment_ms": 15
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2024-05.zip",
+      "sha256": "4ca09712c976062effee663d005c27420089003ed5a1c95d8c2b4937fe05fa01",
+      "bytes": 783,
+      "rows": 93,
+      "adjusted": 7,
+      "max_abs_adjustment_ms": 4
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2024-06.zip",
+      "sha256": "fd9055cb8a05ce268c24b91800682091232f0dc285b1240f57e2d66396eb6a5f",
+      "bytes": 753,
+      "rows": 90,
+      "adjusted": 13,
+      "max_abs_adjustment_ms": 8
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2024-07.zip",
+      "sha256": "68c8ac31b16c4b1f81a3b70860175e5163e76652ddea9ef1bb6e6f01a369a33e",
+      "bytes": 786,
+      "rows": 93,
+      "adjusted": 13,
+      "max_abs_adjustment_ms": 4
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2024-08.zip",
+      "sha256": "fa1318b6213cae7ff5ead4110c4d7c97c3103203b56b2607678e4527dd8ad906",
+      "bytes": 925,
+      "rows": 93,
+      "adjusted": 15,
+      "max_abs_adjustment_ms": 8
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2024-09.zip",
+      "sha256": "69faf312921ce5c88092d8c328b04dc006ea42dabfe68ad5fee542d28c0ae2ca",
+      "bytes": 861,
+      "rows": 90,
+      "adjusted": 22,
+      "max_abs_adjustment_ms": 5
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2024-10.zip",
+      "sha256": "f9d62565da4bf7d1caddc9cb09b1a73a4a312a7419c5c0439c662fc3f58dd993",
+      "bytes": 740,
+      "rows": 93,
+      "adjusted": 14,
+      "max_abs_adjustment_ms": 13
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2024-11.zip",
+      "sha256": "95c733e5ad58f4c26c75b71a2081de8f692a4ce271006b7f5b3c87854a848c70",
+      "bytes": 771,
+      "rows": 90,
+      "adjusted": 15,
+      "max_abs_adjustment_ms": 10
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2024-12.zip",
+      "sha256": "be526ba15c6c4c3ae8cddda1411a13f665f635be444c992efd2f66e6bbfa37d8",
+      "bytes": 805,
+      "rows": 93,
+      "adjusted": 18,
+      "max_abs_adjustment_ms": 14
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2025-01.zip",
+      "sha256": "b14759b7a99d6111f819790de938b2b0f3eeeaac57402c2e1ef71fd38302d26d",
+      "bytes": 743,
+      "rows": 93,
+      "adjusted": 12,
+      "max_abs_adjustment_ms": 15
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2025-02.zip",
+      "sha256": "927da57e3d0a92fa6e024c00397abac93ab5722ca7a353e92e493cfd28de2f3c",
+      "bytes": 862,
+      "rows": 84,
+      "adjusted": 13,
+      "max_abs_adjustment_ms": 1
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2025-03.zip",
+      "sha256": "690fb0f227c2b8b1467428b2e3340ea9928d8ef81ac461bd6f641f100dd21d66",
+      "bytes": 951,
+      "rows": 93,
+      "adjusted": 19,
+      "max_abs_adjustment_ms": 5
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2025-04.zip",
+      "sha256": "d47ea402f11ad727be1c1b4adfa8483698151509d90e9cb53b84b0a43ca67de8",
+      "bytes": 907,
+      "rows": 90,
+      "adjusted": 27,
+      "max_abs_adjustment_ms": 10
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2025-05.zip",
+      "sha256": "7c664b87b0ae630b033f67ab334a46d433374927e74445c56f4b3be7b9b23092",
+      "bytes": 895,
+      "rows": 93,
+      "adjusted": 49,
+      "max_abs_adjustment_ms": 10
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2025-06.zip",
+      "sha256": "5bfb1683c2b8c738a0059ee02078706585b62c1e430685af76e3796a0ee58613",
+      "bytes": 907,
+      "rows": 90,
+      "adjusted": 49,
+      "max_abs_adjustment_ms": 16
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2025-07.zip",
+      "sha256": "039ff5c8dab9d9f2633f1bd4d191e6a727d6d169d897b6cbcd7fc162ff374723",
+      "bytes": 817,
+      "rows": 93,
+      "adjusted": 55,
+      "max_abs_adjustment_ms": 11
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2025-08.zip",
+      "sha256": "07a8182394836928094bb6b476fef9e8858e234d0ff05ef41114ff25bab923ba",
+      "bytes": 910,
+      "rows": 93,
+      "adjusted": 51,
+      "max_abs_adjustment_ms": 16
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2025-09.zip",
+      "sha256": "1f09cb45eadb64731acaaae997167c54b76c3a08b367cd5acbd89f8562593ee3",
+      "bytes": 881,
+      "rows": 90,
+      "adjusted": 44,
+      "max_abs_adjustment_ms": 10
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2025-10.zip",
+      "sha256": "3fc5b1bcac5579e6cc49e17457282c6bfb970932d2aefcbc0c896d660b81a939",
+      "bytes": 952,
+      "rows": 93,
+      "adjusted": 54,
+      "max_abs_adjustment_ms": 14
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2025-11.zip",
+      "sha256": "22040d49b1cdce5337571f5641008a81f1374680226b7c7a5ae63d37dcc449fd",
+      "bytes": 983,
+      "rows": 90,
+      "adjusted": 51,
+      "max_abs_adjustment_ms": 15
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2025-12.zip",
+      "sha256": "21c4a5933de28ec693fbe3a43d9ae4504b762e70e7cc0e0de4afd46104abe7f0",
+      "bytes": 1007,
+      "rows": 93,
+      "adjusted": 55,
+      "max_abs_adjustment_ms": 16
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2026-01.zip",
+      "sha256": "618977f8e0c4d048292fae038094ea9624c96debfbb1d2bd6463ffcdce2fcd2a",
+      "bytes": 990,
+      "rows": 93,
+      "adjusted": 56,
+      "max_abs_adjustment_ms": 11
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2026-02.zip",
+      "sha256": "8d8be995b48b2085a8384d9e417bfeef2d213b35478baa88cbe5001d0497535d",
+      "bytes": 939,
+      "rows": 84,
+      "adjusted": 48,
+      "max_abs_adjustment_ms": 14
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2026-03.zip",
+      "sha256": "e3399c2e5fd5c18a2716b26530bcedc7fb9ce8adb2641c0882c8ba6e0a336567",
+      "bytes": 999,
+      "rows": 93,
+      "adjusted": 52,
+      "max_abs_adjustment_ms": 14
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2026-04.zip",
+      "sha256": "0e586915d578a977ad69482ddc52c11d9c2c1a767d3865078553b3e91fb7716a",
+      "bytes": 974,
+      "rows": 90,
+      "adjusted": 49,
+      "max_abs_adjustment_ms": 13
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2026-05.zip",
+      "sha256": "f8c0c09953b112a7f5ac203a826811ead1ac43db8c075b17b2ca69e837828255",
+      "bytes": 1002,
+      "rows": 93,
+      "adjusted": 56,
+      "max_abs_adjustment_ms": 16
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2026-06.zip",
+      "sha256": "f5d1b51767ddc812c4608080adf54cfca0db7cba592d3e62d7416cd358a3ebde",
+      "bytes": 962,
+      "rows": 90,
+      "adjusted": 47,
+      "max_abs_adjustment_ms": 13
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2026-07.zip",
+      "sha256": "c705d06f311e974474a74dc2c5f572c9180630930cf2d5dbaf08cfb7f3d1948c",
+      "bytes": 972,
+      "rows": 93,
+      "adjusted": 34,
+      "max_abs_adjustment_ms": 10
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2026-08.zip",
+      "sha256": "7796d84350af4b2b162dd362c9d27cc79643578115f1cde3e333075085596d1c",
+      "bytes": 934,
+      "rows": 93,
+      "adjusted": 43,
+      "max_abs_adjustment_ms": 26
+    },
+    {
+      "kind": "binance_funding_XRPUSDT",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2026-09.zip",
+      "sha256": "f668315d6cd6da13cfcd5f83e4658dd4c1e9042e06f2277e804feb9d857da5b2",
+      "bytes": 904,
+      "rows": 90,
+      "adjusted": 45,
+      "max_abs_adjustment_ms": 9
+    }
+  ],
+  "data_quality": {
+    "series_counts": {
+      "coinbase_XRPUSD": 28194,
+      "coinbase_BTCUSD": 28502,
+      "binance_XRP_mark": 28488,
+      "binance_BTC_spot": 28512
+    },
+    "duplicates": {
+      "XRP-USD": 0,
+      "BTC-USD": 0,
+      "mark_XRPUSDT": 0,
+      "spot_BTCUSDT": 0
+    },
+    "funding_duplicates": 0,
+    "aligned_hours": 28170,
+    "excluded_by_series": {
+      "coinbase_XRPUSD": 24,
+      "coinbase_BTCUSD": 332,
+      "binance_XRP_mark": 318,
+      "binance_BTC_spot": 342
+    },
+    "aligned_gaps": [
+      {
+        "after": 1761404400000,
+        "before": 1761426000000,
+        "missing_hours": 5
+      },
+      {
+        "after": 1778202000000,
+        "before": 1778223600000,
+        "missing_hours": 5
+      },
+      {
+        "after": 1782687600000,
+        "before": 1782777600000,
+        "missing_hours": 24
+      }
+    ]
+  },
+  "runs": {
+    "2023_H2_control_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "net_return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0,
+      "fees": 0,
+      "slippage_cost": 0,
+      "funding_cash": 0
+    },
+    "2023_H2_control_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "net_return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0,
+      "fees": 0,
+      "slippage_cost": 0,
+      "funding_cash": 0
+    },
+    "2024_Q1_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "net_return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0,
+      "fees": 0,
+      "slippage_cost": 0,
+      "funding_cash": 0
+    },
+    "2024_Q1_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "net_return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0,
+      "fees": 0,
+      "slippage_cost": 0,
+      "funding_cash": 0
+    },
+    "2024_Q2_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "net_return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0,
+      "fees": 0,
+      "slippage_cost": 0,
+      "funding_cash": 0
+    },
+    "2024_Q2_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "net_return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0,
+      "fees": 0,
+      "slippage_cost": 0,
+      "funding_cash": 0
+    },
+    "2024_Q3_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "net_return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0,
+      "fees": 0,
+      "slippage_cost": 0,
+      "funding_cash": 0
+    },
+    "2024_Q3_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "net_return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0,
+      "fees": 0,
+      "slippage_cost": 0,
+      "funding_cash": 0
+    },
+    "2024_Q4_base": {
+      "trades": 1,
+      "net_pnl": -15.600000000000001,
+      "net_return_pct": -0.15600000000000003,
+      "profit_factor": 0.0,
+      "expectancy": -15.600000000000001,
+      "max_drawdown_pct": 0.15600000000000364,
+      "fees": 13.0,
+      "slippage_cost": 2.6000000000000023,
+      "funding_cash": 0.0
+    },
+    "2024_Q4_stress": {
+      "trades": 1,
+      "net_pnl": -31.199999999999825,
+      "net_return_pct": -0.3119999999999983,
+      "profit_factor": 0.0,
+      "expectancy": -31.199999999999825,
+      "max_drawdown_pct": 0.31200000000000727,
+      "fees": 26.000000000000004,
+      "slippage_cost": 5.1999999999998225,
+      "funding_cash": 0.0
+    },
+    "2025_Q1_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "net_return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0,
+      "fees": 0,
+      "slippage_cost": 0,
+      "funding_cash": 0
+    },
+    "2025_Q1_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "net_return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0,
+      "fees": 0,
+      "slippage_cost": 0,
+      "funding_cash": 0
+    },
+    "2025_Q2_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "net_return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0,
+      "fees": 0,
+      "slippage_cost": 0,
+      "funding_cash": 0
+    },
+    "2025_Q2_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "net_return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0,
+      "fees": 0,
+      "slippage_cost": 0,
+      "funding_cash": 0
+    },
+    "2025_Q3_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "net_return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0,
+      "fees": 0,
+      "slippage_cost": 0,
+      "funding_cash": 0
+    },
+    "2025_Q3_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "net_return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0,
+      "fees": 0,
+      "slippage_cost": 0,
+      "funding_cash": 0
+    },
+    "2025_Q4_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "net_return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0,
+      "fees": 0,
+      "slippage_cost": 0,
+      "funding_cash": 0
+    },
+    "2025_Q4_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "net_return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0,
+      "fees": 0,
+      "slippage_cost": 0,
+      "funding_cash": 0
+    },
+    "2026_Q1_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "net_return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0,
+      "fees": 0,
+      "slippage_cost": 0,
+      "funding_cash": 0
+    },
+    "2026_Q1_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "net_return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0,
+      "fees": 0,
+      "slippage_cost": 0,
+      "funding_cash": 0
+    },
+    "2026_Q2_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "net_return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0,
+      "fees": 0,
+      "slippage_cost": 0,
+      "funding_cash": 0
+    },
+    "2026_Q2_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "net_return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0,
+      "fees": 0,
+      "slippage_cost": 0,
+      "funding_cash": 0
+    },
+    "2026_Q3_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "net_return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0,
+      "fees": 0,
+      "slippage_cost": 0,
+      "funding_cash": 0
+    },
+    "2026_Q3_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "net_return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0,
+      "fees": 0,
+      "slippage_cost": 0,
+      "funding_cash": 0
+    },
+    "continuous_oos_base": {
+      "trades": 1,
+      "net_pnl": -15.600000000000001,
+      "net_return_pct": -0.15600000000000003,
+      "profit_factor": 0.0,
+      "expectancy": -15.600000000000001,
+      "max_drawdown_pct": 0.15600000000000364,
+      "fees": 13.0,
+      "slippage_cost": 2.6000000000000023,
+      "funding_cash": 0.0
+    },
+    "continuous_oos_stress": {
+      "trades": 1,
+      "net_pnl": -31.199999999999825,
+      "net_return_pct": -0.3119999999999983,
+      "profit_factor": 0.0,
+      "expectancy": -31.199999999999825,
+      "max_drawdown_pct": 0.31200000000000727,
+      "fees": 26.000000000000004,
+      "slippage_cost": 5.1999999999998225,
+      "funding_cash": 0.0
+    }
+  },
+  "aggregate_oos": {
+    "trades": 1,
+    "net_pnl": -15.600000000000001,
+    "net_return_pct": -0.15600000000000003,
+    "profit_factor": 0.0,
+    "expectancy": -15.600000000000001,
+    "max_drawdown_pct": 0.15600000000000364,
+    "fees": 13.0,
+    "slippage_cost": 2.6000000000000023,
+    "funding_cash": 0.0
+  },
+  "aggregate_stress": {
+    "trades": 1,
+    "net_pnl": -31.199999999999825,
+    "net_return_pct": -0.3119999999999983,
+    "profit_factor": 0.0,
+    "expectancy": -31.199999999999825,
+    "max_drawdown_pct": 0.31200000000000727,
+    "fees": 26.000000000000004,
+    "slippage_cost": 5.1999999999998225,
+    "funding_cash": 0.0
+  },
+  "by_quarter": {
+    "2024_Q1": 0,
+    "2024_Q2": 0,
+    "2024_Q3": 0,
+    "2024_Q4": -15.600000000000001,
+    "2025_Q1": 0,
+    "2025_Q2": 0,
+    "2025_Q3": 0,
+    "2025_Q4": 0,
+    "2026_Q1": 0,
+    "2026_Q2": 0,
+    "2026_Q3": 0
+  },
+  "stress_by_quarter": {
+    "2024_Q1": 0,
+    "2024_Q2": 0,
+    "2024_Q3": 0,
+    "2024_Q4": -31.199999999999825,
+    "2025_Q1": 0,
+    "2025_Q2": 0,
+    "2025_Q3": 0,
+    "2025_Q4": 0,
+    "2026_Q1": 0,
+    "2026_Q2": 0,
+    "2026_Q3": 0
+  },
+  "gates": {
+    "sample": false,
+    "base_net": false,
+    "base_expectancy": false,
+    "base_pf": false,
+    "stress_net": false,
+    "stress_expectancy": false,
+    "stress_pf": false,
+    "seven_positive_quarters": false,
+    "seven_positive_stress_quarters": false,
+    "final_quarter": false,
+    "drawdown": true,
+    "concentration": false
+  },
+  "historical_pass": false,
+  "limitations": [
+    "Exploratory history; dates are not untouched validation.",
+    "Coinbase candles are requested in bounded chunks; payload SHA256 values are local fingerprints, not publisher signatures.",
+    "Hourly OHLC cannot reproduce synchronized executable bid/ask or the intrabar path.",
+    "Conservative independent OHLC extremes can overstate stop loss and drawdown.",
+    "Coinbase fee is a frozen conservative taker assumption and actual account tier may differ.",
+    "No independent forward PAPER evidence exists."
+  ]
+}
