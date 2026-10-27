@@ -171,3 +171,11 @@ This genuinely different candidate used CoinMetrics Community XRP active-address
 The four annual OOS folds produced only 35 trades. They earned $221.17, PF 1.370 and $6.32 expectancy at base costs; doubled costs earned $188.37, PF 1.306 and $5.38 expectancy. Three of four years, including 2026, were positive at both cost levels, but 2025 lost. The descriptive continuous path had 35 trades, +$331.43/PF 1.537 base and +$296.86/PF 1.469 stress, with 3.75%/3.86% drawdown. The 2022 control lost at both costs.
 
 The frozen sample gate required 80 OOS trades, so the positive aggregate history is insufficient and the candidate is rejected without forward promotion. Do not lower the sample threshold or tune against 2025. All 131 repository tests and the independent ledger audit passed. Complete evidence is in `research/ledger_activity_breadth_validation_20261027/`. Next preserve this as a near-signal and seek materially more independent on-chain evidence through a separately preregistered design. Production, Render and LIVE remain untouched.
+
+## XRP_NETWORK_FEE_PRESSURE_V1: rejected (2026-10-27)
+
+This separately preregistered on-chain hypothesis used CoinMetrics Community total XRP fee burn per value-transfer transaction with a full-day publication lag, then executed on direct Binance Vision daily spot data. URLs, payload/archive sizes, local SHA256 fingerprints, counts and gaps are retained; no missing observation was fabricated.
+
+The four annual OOS folds produced 86 trades and lost $303.33, PF 0.825 and -$3.53 expectancy at base costs. Doubled costs lost $426.47, PF 0.764 and -$4.96 expectancy. Only 2023 was profitable; 2024, 2025, 2026 and the 2022 control lost. The continuous path lost $304.25 base and $423.41 stressed, with 5.50%/6.61% drawdown. Every frozen gate except drawdown failed, including the 100-trade minimum.
+
+All 137 repository tests and the independent ledger audit passed. Complete evidence is in `research/network_fee_pressure_validation_20261027/`. Reject without inversion or threshold retuning and without forward promotion. Do not mine the same fee series further; retain the separate activity-breadth near-signal only for genuinely independent future evidence. Production, Render and LIVE remain untouched.
