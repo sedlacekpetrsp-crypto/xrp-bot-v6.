@@ -179,3 +179,11 @@ This separately preregistered on-chain hypothesis used CoinMetrics Community tot
 The four annual OOS folds produced 86 trades and lost $303.33, PF 0.825 and -$3.53 expectancy at base costs. Doubled costs lost $426.47, PF 0.764 and -$4.96 expectancy. Only 2023 was profitable; 2024, 2025, 2026 and the 2022 control lost. The continuous path lost $304.25 base and $423.41 stressed, with 5.50%/6.61% drawdown. Every frozen gate except drawdown failed, including the 100-trade minimum.
 
 All 137 repository tests and the independent ledger audit passed. Complete evidence is in `research/network_fee_pressure_validation_20261027/`. Reject without inversion or threshold retuning and without forward promotion. Do not mine the same fee series further; retain the separate activity-breadth near-signal only for genuinely independent future evidence. Production, Render and LIVE remain untouched.
+
+## STABLECOIN_LIQUIDITY_IMPULSE_XRP_V1: rejected (2026-10-28)
+
+This distinct macro-liquidity hypothesis used direct CoinMetrics Community USDT+USDC circulating supply and direct Binance Vision XRP daily spot data from January 2020 through September 2026. Rules and gates were committed before evaluation. Both stablecoin observations were required on an exact date; metrics had a full-day publication lag, and no value was carried forward or interpolated. URLs, byte sizes, local SHA256 fingerprints, counts and gaps are retained.
+
+The five annual OOS folds produced 50 trades and earned $336.53, PF 1.350 and $6.73 expectancy at base costs; doubled costs earned $285.28, PF 1.289 and $5.71 expectancy. Only 2023 and 2024 were positive. Years 2022, 2025 and 2026 lost at both costs, and profit was too concentrated in 2024. The continuous path earned $328.70 base and $276.51 stress, with 3.09%/3.37% drawdown.
+
+Despite positive aggregate history, the 75-trade sample, four-positive-year, final-2026 and concentration gates failed. Reject without selecting 2024 or retuning supply/holding thresholds and without forward promotion. All 143 repository tests and the independent audit passed. Complete evidence is in `research/stablecoin_liquidity_impulse_validation_20261028/`. Next preserve this only as a near-signal pending genuinely independent evidence and move new hypotheses to another mechanism. Production, Render and LIVE remain untouched.
