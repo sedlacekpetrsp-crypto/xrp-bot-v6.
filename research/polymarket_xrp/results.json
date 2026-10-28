@@ -1,13 +1,16 @@
 {
   "strategy": "POLYMARKET_XRP_SIGNAL_V1",
   "mode": "PAPER",
-  "verdict": "TEST NEDOKONČEN",
-  "historical_backtest_executed": false,
-  "out_of_sample_executed": false,
-  "net_return_after_costs": null,
+  "verdict": "TEST NEDOKON\u010cEN",
+  "historical_backtest_executed": true,
+  "out_of_sample_executed": true,
+  "scope": "Single-day pilot; not sufficient for reliable edge assessment",
+  "net_return_after_costs": -0.017003475258098533,
   "maximum_drawdown": null,
-  "historical_trade_count": 0,
+  "max_closed_trade_drawdown": 0.017003475258098533,
+  "historical_trade_count": 11,
+  "out_of_sample_trade_count": 5,
   "synthetic_unit_tests_passed": 7,
-  "blocker": "Exact XRP token price history returns HTTP 403 from both Polymarket history hosts",
-  "production_modified": false
+  "production_modified": false,
+  "details": "sample_results.json"
 }

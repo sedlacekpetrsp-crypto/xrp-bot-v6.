@@ -1,0 +1,264 @@
+{
+  "strategy": "POLYMARKET_XRP_SIGNAL_V1",
+  "mode": "PAPER",
+  "verdict": "TEST NEDOKON\u010cEN",
+  "reason": "Exploratory result; requires provenance audit, sufficient sample and independent forward test",
+  "threshold": 0.7,
+  "cutoff": 1787484900,
+  "fee_bps_per_side": 10,
+  "slippage_bps_per_side": 5,
+  "train_rows": 29,
+  "test_rows": 14,
+  "out_of_sample": {
+    "net_return": -0.017003475258098533,
+    "max_closed_trade_drawdown": 0.017003475258098533,
+    "trade_count": 5,
+    "trades": [
+      {
+        "entry_ts": 1787485920,
+        "exit_ts": 1787486100,
+        "net_return": -0.0005958153459250104
+      },
+      {
+        "entry_ts": 1787486520,
+        "exit_ts": 1787486700,
+        "net_return": -0.004995113135988327
+      },
+      {
+        "entry_ts": 1787487720,
+        "exit_ts": 1787487900,
+        "net_return": -0.0047302383544419735
+      },
+      {
+        "entry_ts": 1787488320,
+        "exit_ts": 1787488500,
+        "net_return": -0.004196313602065516
+      },
+      {
+        "entry_ts": 1787488920,
+        "exit_ts": 1787489100,
+        "net_return": -0.0025960910113209668
+      }
+    ]
+  },
+  "double_costs": {
+    "net_return": -0.031638412307989916,
+    "max_closed_trade_drawdown": 0.031638412307989916,
+    "trade_count": 5,
+    "trades": [
+      {
+        "entry_ts": 1787485920,
+        "exit_ts": 1787486100,
+        "net_return": -0.003589540306171757
+      },
+      {
+        "entry_ts": 1787486520,
+        "exit_ts": 1787486700,
+        "net_return": -0.007975659956896086
+      },
+      {
+        "entry_ts": 1787487720,
+        "exit_ts": 1787487900,
+        "net_return": -0.0077115786103351125
+      },
+      {
+        "entry_ts": 1787488320,
+        "exit_ts": 1787488500,
+        "net_return": -0.007179253234749994
+      },
+      {
+        "entry_ts": 1787488920,
+        "exit_ts": 1787489100,
+        "net_return": -0.005583824126347614
+      }
+    ]
+  },
+  "source": "PolyOrderbooks, CC BY 4.0",
+  "source_url": "https://huggingface.co/datasets/polyorderbooks/polymarket-crypto-5min-l2",
+  "source_sha256": "999135bafbc9371e1d9ff4a255e815b707b60359279476420f23c778f397bb05",
+  "binance_sha256": "667105b58d0bcdbcd0932efc4080c43250c9828b3c3875accefdbe86349ac6c1",
+  "snapshot_count": 23478,
+  "market_count": 44,
+  "accepted_windows": 44,
+  "rejected": [],
+  "execution": "Binance 1m open at start+120s; exit at start+300s; modeled fills, no depth",
+  "limitation": "Single few-hour sample, third-party snapshot accuracy unaudited; no reliable edge verdict",
+  "training": {
+    "net_return": -0.0174194570366214,
+    "max_closed_trade_drawdown": 0.018211314527503353,
+    "trade_count": 6,
+    "trades": [
+      {
+        "entry_ts": 1787479620,
+        "exit_ts": 1787479800,
+        "net_return": -0.004940814424755469
+      },
+      {
+        "entry_ts": 1787480220,
+        "exit_ts": 1787480400,
+        "net_return": -0.004136396225186023
+      },
+      {
+        "entry_ts": 1787480520,
+        "exit_ts": 1787480700,
+        "net_return": -0.0016589485116831337
+      },
+      {
+        "entry_ts": 1787482920,
+        "exit_ts": 1787483100,
+        "net_return": -0.003937917162993854
+      },
+      {
+        "entry_ts": 1787483220,
+        "exit_ts": 1787483400,
+        "net_return": -0.003668384028719829
+      },
+      {
+        "entry_ts": 1787484120,
+        "exit_ts": 1787484300,
+        "net_return": 0.0008065457492014705
+      }
+    ]
+  },
+  "out_of_sample_zero_costs": {
+    "net_return": -0.002147381520698488,
+    "max_closed_trade_drawdown": 0.004941980369107646,
+    "trade_count": 5,
+    "trades": [
+      {
+        "entry_ts": 1787485920,
+        "exit_ts": 1787486100,
+        "net_return": 0.0024068997793675884
+      },
+      {
+        "entry_ts": 1787486520,
+        "exit_ts": 1787486700,
+        "net_return": -0.0020056157240273542
+      },
+      {
+        "entry_ts": 1787487720,
+        "exit_ts": 1787487900,
+        "net_return": -0.0017399451248075737
+      },
+      {
+        "entry_ts": 1787488320,
+        "exit_ts": 1787488500,
+        "net_return": -0.0012044161927066144
+      },
+      {
+        "entry_ts": 1787488920,
+        "exit_ts": 1787489100,
+        "net_return": 0.0004006142752219777
+      }
+    ]
+  },
+  "out_of_sample_momentum_only": {
+    "net_return": -0.027370152902773448,
+    "max_closed_trade_drawdown": 0.027370152902773448,
+    "trade_count": 8,
+    "trades": [
+      {
+        "entry_ts": 1787485620,
+        "exit_ts": 1787485800,
+        "net_return": -0.005057355767224103
+      },
+      {
+        "entry_ts": 1787485920,
+        "exit_ts": 1787486100,
+        "net_return": -0.0005958153459250104
+      },
+      {
+        "entry_ts": 1787486220,
+        "exit_ts": 1787486400,
+        "net_return": -0.004194949229516243
+      },
+      {
+        "entry_ts": 1787486520,
+        "exit_ts": 1787486700,
+        "net_return": -0.004995113135988327
+      },
+      {
+        "entry_ts": 1787487720,
+        "exit_ts": 1787487900,
+        "net_return": -0.0047302383544419735
+      },
+      {
+        "entry_ts": 1787488320,
+        "exit_ts": 1787488500,
+        "net_return": -0.004196313602065516
+      },
+      {
+        "entry_ts": 1787488620,
+        "exit_ts": 1787488800,
+        "net_return": -0.0013271576962621268
+      },
+      {
+        "entry_ts": 1787488920,
+        "exit_ts": 1787489100,
+        "net_return": -0.0025960910113209668
+      }
+    ]
+  },
+  "all_sample_at_selected_threshold_in_sample_biased": {
+    "net_return": -0.0341267409879884,
+    "max_closed_trade_drawdown": 0.0341267409879884,
+    "trade_count": 11,
+    "trades": [
+      {
+        "entry_ts": 1787479620,
+        "exit_ts": 1787479800,
+        "net_return": -0.004940814424755469
+      },
+      {
+        "entry_ts": 1787480220,
+        "exit_ts": 1787480400,
+        "net_return": -0.004136396225186023
+      },
+      {
+        "entry_ts": 1787480520,
+        "exit_ts": 1787480700,
+        "net_return": -0.0016589485116831337
+      },
+      {
+        "entry_ts": 1787482920,
+        "exit_ts": 1787483100,
+        "net_return": -0.003937917162993854
+      },
+      {
+        "entry_ts": 1787483220,
+        "exit_ts": 1787483400,
+        "net_return": -0.003668384028719829
+      },
+      {
+        "entry_ts": 1787484120,
+        "exit_ts": 1787484300,
+        "net_return": 0.0008065457492014705
+      },
+      {
+        "entry_ts": 1787485920,
+        "exit_ts": 1787486100,
+        "net_return": -0.0005958153459250104
+      },
+      {
+        "entry_ts": 1787486520,
+        "exit_ts": 1787486700,
+        "net_return": -0.004995113135988327
+      },
+      {
+        "entry_ts": 1787487720,
+        "exit_ts": 1787487900,
+        "net_return": -0.0047302383544419735
+      },
+      {
+        "entry_ts": 1787488320,
+        "exit_ts": 1787488500,
+        "net_return": -0.004196313602065516
+      },
+      {
+        "entry_ts": 1787488920,
+        "exit_ts": 1787489100,
+        "net_return": -0.0025960910113209668
+      }
+    ]
+  }
+}
