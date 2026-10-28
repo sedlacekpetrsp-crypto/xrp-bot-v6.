@@ -211,3 +211,11 @@ This separately preregistered external-macro hypothesis bought XRP after at leas
 The five annual OOS folds produced 35 trades and lost $284.45, PF 0.654 and -$8.13 expectancy. Doubled costs lost $321.63, PF 0.620 and -$9.19 expectancy. The continuous path lost $268.23 base and $304.45 stressed, with 3.92%/4.16% drawdown. Only 2023 and 2025 were positive; 2022, 2024 and final 2026 lost at both costs. Every frozen gate except drawdown failed.
 
 Reject without inverting the observed signal, selecting profitable years or tuning the macro lookback/threshold. All 161 repository tests and 1,394 independent audit checks passed. Complete evidence is in `research/broad_dollar_downtrend_validation_20261028/`. It is not promoted to forward PAPER. Next research must use a distinct mechanism or genuinely independent future observations. Production, Render and LIVE remain untouched.
+
+## XRP_VIX_SHOCK_RECOVERY_V1: rejected (2026-10-28)
+
+This separately preregistered external-risk hypothesis bought XRP after VIX had been at least 25 and then retreated at least 20% over five valid observations. Each value was delayed until the second subsequent valid FRED observation; weekends, holidays and 32 explicit missing values were not filled. Direct FRED CSV and 81 Binance Vision archives supplied 1,729 valid VIX observations and 2,465 consecutive XRP spot days. Exact URLs, byte counts, local SHA256 fingerprints and ledgers are retained.
+
+The five annual OOS folds produced only 11 trades, +$183.67, PF 2.582 and $16.70 expectancy. Doubled costs earned $174.04, PF 2.451 and $15.82 expectancy. The continuous path earned $209.64 base and $199.82 stressed, with 0.84%/0.86% drawdown. However, 2023 had no trade, 2025 lost at both cost levels, and February 2022 supplied too much of positive-month profit. The frozen 75-trade, four-positive-year and concentration gates failed.
+
+Reject despite positive aggregate history. Do not lower the sample threshold, count zero exposure as a profitable year or tune the observed VIX thresholds. All 167 repository tests and 596 independent audit checks passed. Complete evidence is in `research/vix_shock_recovery_validation_20261028/`. It is not promoted to forward PAPER; reconsideration requires genuinely new independent VIX shocks under unchanged rules. Production, Render and LIVE remain untouched.
