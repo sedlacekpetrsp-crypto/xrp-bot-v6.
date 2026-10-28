@@ -1,0 +1,13 @@
+{
+  "strategy": "POLYMARKET_XRP_SIGNAL_V1",
+  "mode": "PAPER",
+  "verdict": "TEST NEDOKONČEN",
+  "historical_backtest_executed": false,
+  "out_of_sample_executed": false,
+  "net_return_after_costs": null,
+  "maximum_drawdown": null,
+  "historical_trade_count": 0,
+  "synthetic_unit_tests_passed": 7,
+  "blocker": "Exact XRP token price history returns HTTP 403 from both Polymarket history hosts",
+  "production_modified": false
+}
