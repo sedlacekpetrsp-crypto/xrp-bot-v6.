@@ -1,0 +1,4 @@
+2026-10-28: python -m unittest discover -s tests -v
+149 tests ran in 0.292 seconds; result OK.
+This includes six XRP_REALIZED_VALUE_DISCOUNT_V1 tests covering metric lag,
+next-open entry, non-overlap, adverse costs, gap-stop and position sizing.
