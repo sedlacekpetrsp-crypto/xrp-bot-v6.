@@ -12,6 +12,7 @@ import sys
 from pathlib import Path
 import pandas as pd
 from strategy import FIELDS, evaluate, backtest
+from risk import drawdown_bounds
 
 
 def run(poly_path, binance_path, output):
@@ -63,6 +64,8 @@ def run(poly_path, binance_path, output):
     baseline=[dict(r,p_up=.999) for r in test]
     report['out_of_sample_momentum_only']=backtest(baseline,.5,10,5)
     report['all_sample_at_selected_threshold_in_sample_biased']=backtest(rows,report['threshold'],10,5)
+    report['out_of_sample_intratrade_risk']=drawdown_bounds(report['out_of_sample']['trades'],bars)
+    report['baseline_intratrade_risk']=drawdown_bounds(report['out_of_sample_momentum_only']['trades'],bars)
     output=Path(output)
     output.mkdir(exist_ok=True)
     with (output/'sample_aligned.csv').open('w',newline='') as f:

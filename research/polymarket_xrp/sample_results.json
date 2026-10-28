@@ -260,5 +260,17 @@
         "net_return": -0.0025960910113209668
       }
     ]
+  },
+  "out_of_sample_intratrade_risk": {
+    "max_drawdown_lower_bound": 0.01890949134760822,
+    "max_drawdown_upper_bound": 0.01890949134760822,
+    "final_net_return": -0.01700347525809831,
+    "method": "Minute OHLC liquidation-equity bounds; exact tick drawdown unknown"
+  },
+  "baseline_intratrade_risk": {
+    "max_drawdown_lower_bound": 0.029057957482932273,
+    "max_drawdown_upper_bound": 0.029057957482932273,
+    "final_net_return": -0.027370152902773004,
+    "method": "Minute OHLC liquidation-equity bounds; exact tick drawdown unknown"
   }
 }
