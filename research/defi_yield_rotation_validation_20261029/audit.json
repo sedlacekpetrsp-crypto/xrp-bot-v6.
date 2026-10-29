@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "checks": 2682,
+  "failed": [],
+  "method": "Independent raw-hash, chronology, fills, costs, sizing, non-overlap and equity reconciliation; no strategy module imported."
+}

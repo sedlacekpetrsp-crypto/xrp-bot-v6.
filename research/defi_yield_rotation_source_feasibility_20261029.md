@@ -9,7 +9,7 @@ Performance was not evaluated before this record.
 - Selection rule from preregistration: highest TVL ordinary Aave v3 Ethereum USDC pool. Discovery snapshot TVL was USD 136,596,536. Umbrella, Prime Instance and Horizon variants were excluded before evaluation.
 - DefiLlama history URL: `https://yields.llama.fi/chart/aa70268e-4b52-42bf-a116-608b370f9501`
 - Raw history SHA256: `d6b3af9afa3fc5148e767a52dc542ad8ed9ba9ed2076d40dd9f180b42a9b6ad1`
-- History payload size: 216,746 bytes.
+- History payload size: 216,169 bytes. (Corrected after validation from the exact locally hashed payload; the earlier preregistration commit contained a byte-count transcription error only. URL, SHA256, pool, row count, coverage and all strategy rules were unchanged.)
 - History coverage: 1,362 records / 1,362 unique UTC dates, from `2023-02-06T23:01:24.670Z` through `2026-10-29T12:01:15.647Z`; zero null total-APY values.
 - The API response is third-party public data and does not provide a publisher-signed checksum. Local SHA256 identifies the exact bytes used.
 - Price archives will be Binance Vision XRPUSDT daily ZIPs. Exact archive URLs, hashes, rows and gaps will be written by the runner.
