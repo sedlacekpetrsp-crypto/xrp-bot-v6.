@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "checks": 1320,
+  "failed": [],
+  "method": "Independent source hashes, activation membership/timing, chronology, prices, fills, costs, sizing, non-overlap, equity and report reconciliation; no strategy import."
+}

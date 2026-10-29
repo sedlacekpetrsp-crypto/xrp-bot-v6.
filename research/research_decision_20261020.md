@@ -275,3 +275,11 @@ This preregistered infrastructure-quality hypothesis used direct CoinMetrics Com
 The annual OOS folds produced 215 trades, +$202.74, PF 1.044 and +$0.94 expectancy at base costs. Doubled costs lost $24.37, PF 0.995 and -$0.11 expectancy. Only 2023–2024 were clearly positive; 2022 and 2025 lost, while 2026's $2.50 base profit became a $41.58 stressed loss. The continuous path earned $135.15 base but lost $92.63 stressed, with 6.25%/7.29% drawdown.
 
 Reject despite adequate sample and nominal base profit: PF, stressed profitability, yearly stability, final stressed year and concentration gates failed. All 211 tests and 11,506 independent audit checks passed. Complete evidence is in `research/ledger_cadence_health_validation_20261029/`. Do not tune `BlkCnt` thresholds or promote to forward PAPER. Production, Render and LIVE remain untouched.
+
+## XRP_PROTOCOL_ACTIVATION_EVENT_V1: rejected (2026-10-29)
+
+This distinct event study used official XRPL mainnet amendment activation timestamps, grouped same-date activations and entered only at the first strictly later XRP daily open. Its protocol, source feasibility and fixed 75-trade gate were stored in GitHub commit `164ddea10785c33b81da1404f5dc7d4878a0d865` before price download or performance evaluation. The official snapshot has 105 records, 94 fully dated records and local SHA256 `1fe133244756ef3fcfb4db639a27f2edcce21956682898a8d5cbbaf12036b1eb`. Eighty-one Binance Vision archives provide 2,465 consecutive daily candles with no gaps or duplicates.
+
+The annual OOS folds contain only 23 non-overlapping trades and lose $277.49, PF 0.592; double-cost stress loses $301.42, PF 0.566. Only 2024 is positive and 2026 loses at both costs. Continuous OOS also loses. The candidate fails sample, net, expectancy, PF, stability, final-year and concentration gates and has no forward PAPER evidence.
+
+Reject without reducing the sample gate or retuning this sparse event family. All 217 tests and 1,320 independent audit checks passed. Complete evidence is in `research/protocol_activation_event_validation_20261029/`. Production, Render and LIVE remain untouched.
