@@ -243,3 +243,11 @@ This genuinely different prediction-market hypothesis was preregistered before p
 Official APIs are partly usable: a resolved probe market with reported volume $8,912.92 returned 277 public trades. However, both legacy CLOB and current Data API v2 price-history probes returned zero points for the same market. Six exact direct URLs, payload byte counts and SHA256 fingerprints are saved in `research/polymarket_xrp_source_audit_20261029/`; no Binance proxy or missing odds were fabricated.
 
 No performance was evaluated, so this is not a completed failure. All 186 repository tests and 15 structural audit checks pass. Status remains **TEST NEDOKONČEN** until unchanged two-year, 95% completeness and 1,000-eligible-market gates can be met using official evidence. Next step is immutable forward capture or a complete official archive, then the already frozen chronological test. Production, Render and LIVE remain untouched.
+
+## XRP_EXTREME_FEAR_CONTRARIAN_V1: rejected (2026-10-29)
+
+This separately preregistered external-sentiment hypothesis bought XRP when the prior calendar day's Alternative.me Fear & Greed value was <=20, with entry at the following daily open. The direct sentiment API supplied 3,189 unique observations from 2018 onward; 81 Binance Vision archives supplied 2,465 consecutive XRP days. Exact-date alignment retained one explicit missing sentiment day as a gap without interpolation. URLs, byte counts and local SHA256 fingerprints are saved.
+
+The five annual OOS folds produced 41 trades, +$176.30, PF 1.288 and +$4.30 expectancy. Doubled costs earned +$138.97, PF 1.221 and +$3.39 expectancy. However, only 2022 and 2026 were profitable, 2023 had no exposure, 2024–2025 lost, September 2022 supplied excessive positive profit, and the sample missed the frozen 75-trade minimum. The 2020–2021 control lost at both costs. Positive aggregate history is not enough.
+
+All 192 repository tests and 1,714 independent audit checks passed. Complete evidence is in `research/extreme_fear_contrarian_validation_20261029/`. Reject without lowering the sample/stability/concentration gates or selecting profitable years. It is not promoted to forward PAPER; retain only as a frozen near-signal awaiting genuinely independent episodes. Production, Render and LIVE remain untouched.
