@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "checks": 7557,
+  "failed": [],
+  "method": "Independent API-page completeness, hashes, merge counts, chronology, raw fills, costs, sizing, non-overlap and equity reconciliation; no strategy import."
+}
