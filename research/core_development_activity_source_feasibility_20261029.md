@@ -10,7 +10,7 @@ Merged PR counts:
 - 2026 January–September: 112, 82, 165, 125, 127, 145, 168, 138, 107.
 - Total: 2,262 unique PR numbers, coverage from `2020-01-02T07:08:15Z` through `2026-09-30T20:43:16Z`.
 - 36 additional events share a public merge second with a different PR and are retained under the separately committed ingestion amendment.
-- 32 exact API response payloads total 15,510,003 bytes. The SHA256 of the sorted provisional manifest (including every query URL, page hash, bytes, rows and reported total) is `d28da86bc006a1976f6d671b0cfcaa690e4bf23ee78985d0125ff9f4f1444c34`.
+- 32 exact API response payloads total 15,510,003 bytes. The SHA256 of the sorted exact-URL provisional manifest (including every query URL, page hash, bytes, rows and reported total) is `bc2b176a3926ca334be0ef49231234788a4278bd98204ccec1d9d662508f1513`.
 
 A direct source probe and complete pagination used only `pull_request.merged_at` and PR number. No commit date, issue close time, comment, code-size estimate or market return was inspected. Exact per-page URLs and SHA256 fingerprints will be written to the final result manifest.
 
