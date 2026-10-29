@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "checks": 11506,
+  "failed": [],
+  "method": "Independent hashes, metric lag/features, chronology, fills, costs, sizing, non-overlap and equity reconciliation; no strategy import."
+}

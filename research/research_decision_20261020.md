@@ -267,3 +267,11 @@ This separately preregistered fundamental-development hypothesis used public `me
 The five annual OOS folds produced 105 trades and lost $114.81, PF 0.951 and -$1.09 expectancy. Doubled costs lost $229.27, PF 0.905 and -$2.18 expectancy. Only 2023 and 2024 were positive; 2022 had no exposure, while 2025 and final 2026 lost at both cost levels. The descriptive continuous path lost $123.61 base and $237.11 stressed, with 7.86%/8.66% drawdown. Only sample size and drawdown passed.
 
 Reject without reversing the observed signal, selecting 2023–2024 or changing merge thresholds. All 206 repository tests and 7,557 independent audit checks passed, establishing mechanics rather than future profitability. Complete evidence is in `research/core_development_activity_validation_20261029/`. It is not promoted to forward PAPER. Next research must use a genuinely different preregistered mechanism rather than another core-merge-count window. Production, Render and LIVE remain untouched.
+
+## XRP_LEDGER_CADENCE_HEALTH_V1: rejected (2026-10-29)
+
+This preregistered infrastructure-quality hypothesis used direct CoinMetrics Community XRP daily ledger count with a conservative full-calendar-day publication lag, then direct Binance Vision daily execution. The metric and price windows each contain 2,465 consecutive exact dates from January 2020 through September 2026 without gaps or duplicates. Exact URLs, bytes, local SHA256 fingerprints and ledgers are retained; no observation was filled or invented.
+
+The annual OOS folds produced 215 trades, +$202.74, PF 1.044 and +$0.94 expectancy at base costs. Doubled costs lost $24.37, PF 0.995 and -$0.11 expectancy. Only 2023–2024 were clearly positive; 2022 and 2025 lost, while 2026's $2.50 base profit became a $41.58 stressed loss. The continuous path earned $135.15 base but lost $92.63 stressed, with 6.25%/7.29% drawdown.
+
+Reject despite adequate sample and nominal base profit: PF, stressed profitability, yearly stability, final stressed year and concentration gates failed. All 211 tests and 11,506 independent audit checks passed. Complete evidence is in `research/ledger_cadence_health_validation_20261029/`. Do not tune `BlkCnt` thresholds or promote to forward PAPER. Production, Render and LIVE remain untouched.
