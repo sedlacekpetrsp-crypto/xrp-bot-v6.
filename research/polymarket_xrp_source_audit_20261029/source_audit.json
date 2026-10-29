@@ -1,0 +1,89 @@
+{
+  "strategy": "POLYMARKET_XRP_SIGNAL_V1",
+  "status": "TEST NEDOKONCEN: official five-minute XRP series has less than two years of history and price-history probes are empty",
+  "performance_evaluated": false,
+  "as_of": "2026-10-29T00:00:00Z",
+  "series": {
+    "id": "10685",
+    "created_at": "2025-11-21T21:46:35.505410+00:00",
+    "active": true
+  },
+  "first_page": {
+    "events": 100,
+    "first_start": "2025-12-18T04:30:00+00:00",
+    "last_start": "2025-12-18T13:20:00+00:00",
+    "ordered_five_minute_events": true
+  },
+  "probe_market": {
+    "slug": "xrp-updown-5m-1776494100",
+    "start": "2026-04-18T06:35:00+00:00",
+    "end": "2026-04-18T06:40:00+00:00",
+    "reported_volume": 8912.919903000004,
+    "trade_records": 277,
+    "legacy_price_points": 0,
+    "v2_price_points": 0
+  },
+  "coverage": {
+    "available_days": 314,
+    "series_age_days": 341,
+    "gates": {
+      "two_calendar_years": false,
+      "series_age_730_days": false
+    },
+    "source_pass": false
+  },
+  "gates": {
+    "two_calendar_years": false,
+    "series_age_730_days": false,
+    "official_trade_probe_nonempty": true,
+    "price_history_probe_nonempty": false,
+    "daily_95pct_completeness": false,
+    "one_thousand_eligible_markets": false
+  },
+  "source_pass": false,
+  "manifest": [
+    {
+      "name": "series",
+      "url": "https://gamma-api.polymarket.com/series?slug=xrp-up-or-down-5m",
+      "bytes": 62749,
+      "sha256": "8df777a66bd941a76a1d82ca2e53629aa5b5385c25fa630e5d77c64bb2affa30"
+    },
+    {
+      "name": "first_events",
+      "url": "https://gamma-api.polymarket.com/events?series_id=10685&closed=true&limit=100&offset=0&order=startTime&ascending=true",
+      "bytes": 638811,
+      "sha256": "e1505be833e99c82129093c3b42ebb9a69fecd5471034a8a2c66b1957dbcac7a"
+    },
+    {
+      "name": "probe_market",
+      "url": "https://gamma-api.polymarket.com/markets/slug/xrp-updown-5m-1776494100",
+      "bytes": 4549,
+      "sha256": "0708baad942519bc838a5d738dbf5033fe4713c5ea50af52db3aeb5003b81c64"
+    },
+    {
+      "name": "legacy_price_history",
+      "url": "https://clob.polymarket.com/prices-history?market=108093109271095766248383096595340881558420166757670558980334463221453601828528&interval=max&fidelity=1",
+      "bytes": 15,
+      "sha256": "7f8b497c3d718d756d8c2130e657c4c414d5da9bed777aa29bc3221fdbcf0dc5"
+    },
+    {
+      "name": "v2_price_history",
+      "url": "https://data-api.polymarket.com/v2/prices-history?token_id=108093109271095766248383096595340881558420166757670558980334463221453601828528&interval=max&fidelity=60",
+      "bytes": 87,
+      "sha256": "880a1478ec35082a1ca8e7771f23b0736997b6c85e5fb13a73096a0b46309c4c"
+    },
+    {
+      "name": "probe_trades",
+      "url": "https://data-api.polymarket.com/trades?market=0x35b8d233d0976609f91f947cb970b67d05330bf8925edf6f9ae13bf3e5a03365&limit=10000",
+      "bytes": 202690,
+      "sha256": "697e62bb248a98aec8731a11569ca0a57b1b7b3aa0ca430a78c4f38337c5611e"
+    }
+  ],
+  "limitations": [
+    "The official series creation time is 2025-11-21 and the earliest ordered closed event page begins 2025-12-18, less than the frozen two-year requirement.",
+    "Both official price-history probes returned zero points for a resolved market with reported volume and nonempty public trades; trades can reconstruct matched prices but not historical best bid/ask or unfilled liquidity.",
+    "A complete event/trade crawl and Binance join were deliberately not treated as a backtest because the frozen multi-year source gate already fails.",
+    "No Binance proxy, resolved outcome, webpage odds or missing Polymarket price was fabricated."
+  ],
+  "next_step": "Accumulate immutable forward snapshots and trade records until the unchanged two-year source gate is met, or obtain a complete official archive; only then run the preregistered chronological performance test."
+}

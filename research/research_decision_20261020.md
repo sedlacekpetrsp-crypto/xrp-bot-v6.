@@ -235,3 +235,11 @@ This preregistered external credit/risk/leverage hypothesis required the weekly 
 The annual OOS folds produced only 5 base-cost trades and lost $65.70, PF 0.351 and -$13.14 expectancy. The doubled-cost path produced 6 path-dependent trades and lost $39.56, PF 0.578 and -$6.59 expectancy. Only 2025 had one profitable trade; 2022, 2024 and 2026 had no exposure, while 2023 lost. The separate continuous path also lost at both cost levels. Every frozen gate except drawdown failed.
 
 All 180 repository tests and 404 independent audit checks passed, establishing mechanics rather than profitability. Complete evidence is in `research/financial_conditions_easing_validation_20261029/`. Reject without threshold relaxation, inversion or selection of the positive control/2025 trade. Do not promote to forward PAPER. Next research must leave external easing variants and use a genuinely different mechanism. Production, Render and LIVE remain untouched.
+
+## POLYMARKET_XRP_SIGNAL_V1: historical test not completed (2026-10-29)
+
+This genuinely different prediction-market hypothesis was preregistered before performance evaluation. The official Gamma series `xrp-up-or-down-5m` was created only on 2025-11-21 and the first ascending closed-event page begins 2025-12-18. At the fixed audit date this is only 341 days of series age and 314 days from the earliest returned event, below the frozen two-calendar-year source gate required for a multi-year test.
+
+Official APIs are partly usable: a resolved probe market with reported volume $8,912.92 returned 277 public trades. However, both legacy CLOB and current Data API v2 price-history probes returned zero points for the same market. Six exact direct URLs, payload byte counts and SHA256 fingerprints are saved in `research/polymarket_xrp_source_audit_20261029/`; no Binance proxy or missing odds were fabricated.
+
+No performance was evaluated, so this is not a completed failure. All 186 repository tests and 15 structural audit checks pass. Status remains **TEST NEDOKONČEN** until unchanged two-year, 95% completeness and 1,000-eligible-market gates can be met using official evidence. Next step is immutable forward capture or a complete official archive, then the already frozen chronological test. Production, Render and LIVE remain untouched.
