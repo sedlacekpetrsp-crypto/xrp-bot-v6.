@@ -299,3 +299,11 @@ This compositional on-chain hypothesis used direct CoinMetrics `TxTfrCnt/TxCnt`,
 The retained metric and XRP price calendars are consecutive and fully hashed. The five annual OOS folds produce 68 trades, -$40.46, PF 0.967 and -$0.59 expectancy. Double-cost stress loses $113.34, PF 0.910 and -$1.67 expectancy. Only 2023 and marginally 2025 are positive; 2022, 2024 and final 2026 lose. Continuous OOS also loses.
 
 Reject: sample, net, expectancy, PF, stability, final-year and concentration gates fail. All 228 tests and 4,290 independent audit checks pass. Complete evidence is in `research/transfer_utilization_share_validation_20261030/`. Do not mine transaction-count composition further or combine it post hoc with the prior breadth signal. Production, Render and LIVE remain untouched.
+
+## XRP_FLOAT_EXPANSION_SLOWDOWN_V1: rejected (2026-10-30)
+
+This distinct tokenomics hypothesis used the price-cancelling ratio of CoinMetrics estimated circulating capitalization to current/full capitalization, then selected low 30-day float-expansion pace versus a past-only 365-day percentile. Rules were frozen in GitHub commit `e43e883463d15d5acc383b66cf1c2f4e0bb92808` before performance. The metric and XRP price calendars are consecutive and hash-preserved without imputation.
+
+The five annual OOS folds produce 56 trades, +$78.49, PF 1.060 and +$1.40 expectancy; doubled costs retain only +$19.86, PF 1.015 and +$0.35 expectancy. Four years lose at both costs. The entire aggregate profit is concentrated in 2024; 2025 and final 2026 lose. Continuous stress is slightly negative.
+
+Reject despite nominal aggregate profit: sample, PF, stability, final-year and concentration gates fail and there is no forward PAPER evidence. All 233 tests and 2,794 independent audit checks pass. Complete evidence is in `research/float_expansion_slowdown_validation_20261030/`. Do not select 2024 or tune estimated-float windows. Production, Render and LIVE remain untouched.

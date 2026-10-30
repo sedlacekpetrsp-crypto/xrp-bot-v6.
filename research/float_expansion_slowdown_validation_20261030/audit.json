@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "checks": 2794,
+  "failed": [],
+  "method": "Independent hashes, price-cancelling float ratio, 30-day change, past-only percentile, lag, chronology, fills, costs, sizing, non-overlap, equity and reports; no strategy import."
+}
