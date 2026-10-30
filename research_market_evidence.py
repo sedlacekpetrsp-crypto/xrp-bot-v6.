@@ -22,12 +22,12 @@ import news_signal
 from market_data import market
 from swing_paper import connect
 
-BUILD = 'research-market-evidence-20261017-2'
+BUILD = 'research-market-evidence-20261030-archive-cap-256m'
 SYMBOLS = ('XRPUSDC', 'ETHUSDC', 'SOLUSDC')
 FRAMES = tuple((s, i, 250) for s in SYMBOLS for i in ('1m', '5m')) + (
     ('BTCUSDC', '1m', 10), ('BTCUSDT', '1m', 90), ('ETHUSDT', '1m', 90))
 INTERVAL_SECONDS = 60
-MAX_ARCHIVE_BYTES = 128 * 1024 * 1024
+MAX_ARCHIVE_BYTES = 256 * 1024 * 1024
 MAX_SAMPLE_BYTES = 256 * 1024
 CONSTANTS = ('BOOK_LONG_MIN', 'BOOK_SHORT_MAX', 'BREAKOUT_LOOKBACK', 'EMA_SEP_MIN',
              'ENABLED_SETUPS', 'MIN_BREAKOUT_VOLUME', 'MIN_EDGE_MULTIPLE', 'MIN_SCORE',
