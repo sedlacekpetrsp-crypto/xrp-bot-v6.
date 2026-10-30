@@ -283,3 +283,11 @@ This distinct event study used official XRPL mainnet amendment activation timest
 The annual OOS folds contain only 23 non-overlapping trades and lose $277.49, PF 0.592; double-cost stress loses $301.42, PF 0.566. Only 2024 is positive and 2026 loses at both costs. Continuous OOS also loses. The candidate fails sample, net, expectancy, PF, stability, final-year and concentration gates and has no forward PAPER evidence.
 
 Reject without reducing the sample gate or retuning this sparse event family. All 217 tests and 1,320 independent audit checks passed. Complete evidence is in `research/protocol_activation_event_validation_20261029/`. Production, Render and LIVE remain untouched.
+
+## BTC_VARIANCE_RISK_PREMIUM_XRP_V1: rejected (2026-10-30)
+
+This distinct crypto-options hypothesis bought XRP when official Deribit BTC DVOL exceeded annualized 20-day realized BTC volatility by at least 15 points, using an extra full-day causal delay. Rules and gates were frozen in GitHub commit `8014a45b4b8f20ce803c7aacaaf94fc9da6a453f`. The first ingestion exposed two omitted Deribit pagination boundaries; the inclusive-cursor correction was documented in `caf38944599ea898ce66811b7c645b01b91c1b50` before the corrected run, with no strategy change.
+
+The corrected data contain 2,017 consecutive DVOL days and 2,465 consecutive BTC and XRP daily candles, without gaps, duplicates or imputation. The five annual OOS folds produce 98 trades, -$250.69, PF 0.881 and -$2.56 expectancy. Double-cost stress loses $355.51, PF 0.835 and -$3.63 expectancy. Only 2023, 2025 and 2026 are positive; large 2022 and 2024 losses dominate. Continuous OOS also loses.
+
+Reject independently of missing the 100-trade gate by two: profitability, expectancy, PF, stability and concentration fail at both costs. All 223 tests and 5,033 independent audit checks pass. Complete evidence is in `research/btc_variance_risk_premium_validation_20261030/`. Do not invert or tune this options-volatility family. Production, Render and LIVE remain untouched.

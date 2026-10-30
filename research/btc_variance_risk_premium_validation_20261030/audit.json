@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "checks": 5033,
+  "failed": [],
+  "method": "Independent source hashes, DVOL/BTC population-volatility features, lag, chronology, prices, fills, costs, sizing, non-overlap, equity and reports; no strategy import."
+}
