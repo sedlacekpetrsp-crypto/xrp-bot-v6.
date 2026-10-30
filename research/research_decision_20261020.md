@@ -333,3 +333,9 @@ This network-security hypothesis used a recovery after the prior day's BTC hashr
 The 132 annual-reset OOS trades lose $911.20, PF 0.623 and $6.90 per trade at base costs. Doubled costs lose $1,051.24, PF 0.579 and $7.96 per trade. Only 2024 is profitable; 2022, 2023, 2025 and final 2026 lose. Continuous OOS loses at both costs and stressed drawdown exceeds 10%.
 
 Reject with no threshold or window adjustment. Adequate sample cannot override failed net, expectancy, PF, yearly stability, final-year, stress drawdown and concentration gates. All 254 tests and 5,214 independent audit checks pass. Complete evidence is in `research/btc_hashrate_shock_recovery_validation_20261030/`. Next step is a source feasibility check for date-stamped US spot BTC ETF primary-market flows, not another hashrate variant. Production, Render, LIVE, main and `v8-fly-layer-test` remain untouched.
+
+## BTC_ETF_CREATION_IMPULSE_XRP_V1: preregistered (2026-10-30)
+
+The feasibility check found a free, date-stamped Farside Investors all-data page reporting per-fund and total US spot-Bitcoin ETF daily flows from 11 January 2024. The exact HTML response will be retained with URL, bytes and local SHA256; dashes remain missing and no flow is inferred from AUM. Farside is a third-party compilation rather than an issuer filing or audited primary source, which is a permanent limitation.
+
+The distinct frozen rule buys XRP at D+2 UTC open after any reported positive total flow, then applies past-only ATR14, a 2 ATR stop, 3R target and five-candle maximum hold with one non-overlapping position. Full rules, cost assumptions, chronological half-year/quarter folds, gates and forward-PAPER requirement are in `research/btc_etf_creation_impulse_protocol_20261030.md`. Performance has not been evaluated. Next action is to commit this registration remotely, then download and test the unchanged design. Production, Render, LIVE, main and `v8-fly-layer-test` remain untouched.
