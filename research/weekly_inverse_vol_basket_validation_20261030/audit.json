@@ -1,0 +1,7 @@
+{
+  "strategy": "CRYPTO_WEEKLY_INVERSE_VOL_BASKET_V1",
+  "passed": true,
+  "checks": 43923,
+  "trade_checks": 3288,
+  "failures": []
+}

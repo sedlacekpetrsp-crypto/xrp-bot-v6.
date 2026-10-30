@@ -1,0 +1,348 @@
+{
+  "strategy": "CRYPTO_WEEKLY_INVERSE_VOL_BASKET_V1",
+  "status": "NEPROSEL",
+  "protocol_sha256": "d9d1a2f14d933baf71854746488732b1fbd2ffc063323e206df8d29def0b94a6",
+  "manifest": [
+    {
+      "symbol": "XRPUSDT",
+      "url": "https://data-api.binance.vision/api/v3/klines?symbol=XRPUSDT&interval=1d&startTime=1577836800000&endTime=1790812799999&limit=1000",
+      "cache_file": "XRPUSDT-1d-api-0.json",
+      "sha256": "5e26d5bbc3b504fd180a26b43dc2f3f59c71bca777d1de7fd5570beb943c18d9",
+      "bytes": 175813,
+      "rows": 1000
+    },
+    {
+      "symbol": "XRPUSDT",
+      "url": "https://data-api.binance.vision/api/v3/klines?symbol=XRPUSDT&interval=1d&startTime=1664236800000&endTime=1790812799999&limit=1000",
+      "cache_file": "XRPUSDT-1d-api-1.json",
+      "sha256": "addf5a6ec2bc2c42a8de1482c963d64917c7158cae81b8bbd210b0a1f83a1eb1",
+      "bytes": 176206,
+      "rows": 1000
+    },
+    {
+      "symbol": "XRPUSDT",
+      "url": "https://data-api.binance.vision/api/v3/klines?symbol=XRPUSDT&interval=1d&startTime=1750636800000&endTime=1790812799999&limit=1000",
+      "cache_file": "XRPUSDT-1d-api-2.json",
+      "sha256": "6e75274b2dcb3d8c9d988824f274256caa79f9122f3bbd9c57d119f5e17d5469",
+      "bytes": 81579,
+      "rows": 465
+    },
+    {
+      "symbol": "BTCUSDT",
+      "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1d&startTime=1577836800000&endTime=1790812799999&limit=1000",
+      "cache_file": "BTCUSDT-1d-api-0.json",
+      "sha256": "9bd4ab414dd7fd9a268851320326af7719eeb8a8a18f73e676d10fa245b69580",
+      "bytes": 186222,
+      "rows": 1000
+    },
+    {
+      "symbol": "BTCUSDT",
+      "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1d&startTime=1664236800000&endTime=1790812799999&limit=1000",
+      "cache_file": "BTCUSDT-1d-api-1.json",
+      "sha256": "f43a8091a548c49a12b230d181fcc98d7d55ead88b7398032f43aac50f7ef7e9",
+      "bytes": 187470,
+      "rows": 1000
+    },
+    {
+      "symbol": "BTCUSDT",
+      "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1d&startTime=1750636800000&endTime=1790812799999&limit=1000",
+      "cache_file": "BTCUSDT-1d-api-2.json",
+      "sha256": "eed28def7a22e89f1adb6d9f37e3c3c39fa671a5cdb056cfa4231792d9d698ab",
+      "bytes": 87078,
+      "rows": 465
+    },
+    {
+      "symbol": "ETHUSDT",
+      "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1d&startTime=1577836800000&endTime=1790812799999&limit=1000",
+      "cache_file": "ETHUSDT-1d-api-0.json",
+      "sha256": "28f1bd5d1150193f2b21e2ddaaad79333b2985467e4622b00261ee31ec80c199",
+      "bytes": 182669,
+      "rows": 1000
+    },
+    {
+      "symbol": "ETHUSDT",
+      "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1d&startTime=1664236800000&endTime=1790812799999&limit=1000",
+      "cache_file": "ETHUSDT-1d-api-1.json",
+      "sha256": "1b940267526709c71e2a7e19ae34c2b6e122df2478792a2a97c6228e0156d49f",
+      "bytes": 183815,
+      "rows": 1000
+    },
+    {
+      "symbol": "ETHUSDT",
+      "url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1d&startTime=1750636800000&endTime=1790812799999&limit=1000",
+      "cache_file": "ETHUSDT-1d-api-2.json",
+      "sha256": "5b9eaacc59e39f3434406191a63223f6c04d70a3f2131c5c065a136356ee18a0",
+      "bytes": 85756,
+      "rows": 465
+    }
+  ],
+  "data_quality": {
+    "symbols": [
+      "XRPUSDT",
+      "BTCUSDT",
+      "ETHUSDT"
+    ],
+    "rows": {
+      "XRPUSDT": 2465,
+      "BTCUSDT": 2465,
+      "ETHUSDT": 2465
+    },
+    "start": {
+      "XRPUSDT": 1577836800000,
+      "BTCUSDT": 1577836800000,
+      "ETHUSDT": 1577836800000
+    },
+    "end": {
+      "XRPUSDT": 1790726400000,
+      "BTCUSDT": 1790726400000,
+      "ETHUSDT": 1790726400000
+    },
+    "exact_alignment": true,
+    "gaps": []
+  },
+  "runs": {
+    "2021_control_base": {
+      "trades": 156,
+      "net_pnl": 16076.2062655072,
+      "net_return_pct": 160.76206265507201,
+      "profit_factor": 1.2471741280468385,
+      "expectancy": 103.0526042660718,
+      "max_drawdown_pct": 57.53799356574517,
+      "fees": 2538.9138237971038,
+      "slippage_cost": 534.5089394160638,
+      "gross_profit": 81116.21021956515,
+      "gross_loss": 65040.00395405795
+    },
+    "2021_control_stress": {
+      "trades": 156,
+      "net_pnl": 13169.041405081525,
+      "net_return_pct": 131.69041405081526,
+      "profit_factor": 1.210995233065619,
+      "expectancy": 84.41693208385593,
+      "max_drawdown_pct": 58.579029205858355,
+      "fees": 4756.129003189872,
+      "slippage_cost": 1001.2933446951238,
+      "gross_profit": 75582.96997467146,
+      "gross_loss": 62413.92856958994
+    },
+    "2022_base": {
+      "trades": 156,
+      "net_pnl": -6023.972341766367,
+      "net_return_pct": -60.23972341766367,
+      "profit_factor": 0.5646557823999244,
+      "expectancy": -38.61520731901518,
+      "max_drawdown_pct": 67.62712683457698,
+      "fees": 562.5720060467269,
+      "slippage_cost": 118.43599808072386,
+      "gross_profit": 7813.290445309921,
+      "gross_loss": 13837.262787076288
+    },
+    "2022_stress": {
+      "trades": 156,
+      "net_pnl": -6466.7694265784385,
+      "net_return_pct": -64.66769426578438,
+      "profit_factor": 0.5269976013028199,
+      "expectancy": -41.45365017037461,
+      "max_drawdown_pct": 69.6175806920052,
+      "fees": 1072.460532581952,
+      "slippage_cost": 225.78033778950518,
+      "gross_profit": 7204.978210199438,
+      "gross_loss": 13671.747636777876
+    },
+    "2023_base": {
+      "trades": 156,
+      "net_pnl": 9502.782908615896,
+      "net_return_pct": 95.02782908615896,
+      "profit_factor": 1.6809484814944085,
+      "expectancy": 60.915275055230104,
+      "max_drawdown_pct": 24.838675995415308,
+      "fees": 1437.8456636583799,
+      "slippage_cost": 302.70479997716063,
+      "gross_profit": 23457.99856275922,
+      "gross_loss": 13955.215654143325
+    },
+    "2023_stress": {
+      "trades": 156,
+      "net_pnl": 7317.390055800116,
+      "net_return_pct": 73.17390055800116,
+      "profit_factor": 1.5224074279614321,
+      "expectancy": 46.906346511539205,
+      "max_drawdown_pct": 26.362803377108047,
+      "fees": 2699.148482174665,
+      "slippage_cost": 568.2434792860433,
+      "gross_profit": 21324.4459745003,
+      "gross_loss": 14007.055918700184
+    },
+    "2024_base": {
+      "trades": 159,
+      "net_pnl": 6943.531870138365,
+      "net_return_pct": 69.43531870138365,
+      "profit_factor": 1.3769711344565945,
+      "expectancy": 43.67001176187651,
+      "max_drawdown_pct": 48.172720026990156,
+      "fees": 1149.9384367721887,
+      "slippage_cost": 242.09263590084475,
+      "gross_profit": 25362.79858706484,
+      "gross_loss": 18419.266716926475
+    },
+    "2024_stress": {
+      "trades": 159,
+      "net_pnl": 5022.203270184505,
+      "net_return_pct": 50.222032701845045,
+      "profit_factor": 1.2795511521414125,
+      "expectancy": 31.58618408921072,
+      "max_drawdown_pct": 51.01778493793561,
+      "fees": 2160.7452224829008,
+      "slippage_cost": 454.89495310394454,
+      "gross_profit": 22987.44230323273,
+      "gross_loss": 17965.239033048223
+    },
+    "2025_base": {
+      "trades": 156,
+      "net_pnl": -4376.028170581588,
+      "net_return_pct": -43.76028170581588,
+      "profit_factor": 0.6994994595506248,
+      "expectancy": -28.051462631933255,
+      "max_drawdown_pct": 55.47720396998432,
+      "fees": 747.2953029059602,
+      "slippage_cost": 157.3251880712396,
+      "gross_profit": 10186.435391173001,
+      "gross_loss": 14562.463561754588
+    },
+    "2025_stress": {
+      "trades": 156,
+      "net_pnl": -5003.435636429685,
+      "net_return_pct": -50.03435636429685,
+      "profit_factor": 0.649890680694812,
+      "expectancy": -32.07330536172875,
+      "max_drawdown_pct": 56.66387080294214,
+      "fees": 1411.3569542199277,
+      "slippage_cost": 297.1272526435151,
+      "gross_profit": 9287.63106913328,
+      "gross_loss": 14291.066705562966
+    },
+    "2026_base": {
+      "trades": 117,
+      "net_pnl": -1899.1090768697443,
+      "net_return_pct": -18.991090768697443,
+      "profit_factor": 0.7650402854065123,
+      "expectancy": -16.231701511707215,
+      "max_drawdown_pct": 48.60928557519691,
+      "fees": 524.6977347220547,
+      "slippage_cost": 110.46263043615905,
+      "gross_profit": 6183.591739121036,
+      "gross_loss": 8082.70081599078
+    },
+    "2026_stress": {
+      "trades": 117,
+      "net_pnl": -2587.8312942207804,
+      "net_return_pct": -25.878312942207803,
+      "profit_factor": 0.6845107155447042,
+      "expectancy": -22.1182161899212,
+      "max_drawdown_pct": 51.252721356461116,
+      "fees": 1005.7543282927633,
+      "slippage_cost": 211.73753407045666,
+      "gross_profit": 5614.765186001261,
+      "gross_loss": 8202.59648022204
+    },
+    "continuous_oos_base": {
+      "trades": 744,
+      "net_pnl": -3023.9221755053168,
+      "net_return_pct": -30.23922175505317,
+      "profit_factor": 0.9506379636323986,
+      "expectancy": -4.064411526216824,
+      "max_drawdown_pct": 69.77111088469671,
+      "fees": 3546.6086392996576,
+      "slippage_cost": 746.654501152419,
+      "gross_profit": 58236.1553663941,
+      "gross_loss": 61260.07754189942
+    },
+    "continuous_oos_stress": {
+      "trades": 744,
+      "net_pnl": -6032.74328935366,
+      "net_return_pct": -60.327432893536596,
+      "profit_factor": 0.8746934960427888,
+      "expectancy": -8.108525926550618,
+      "max_drawdown_pct": 74.68583976372597,
+      "fees": 5299.562748620437,
+      "slippage_cost": 1115.6974819647967,
+      "gross_profit": 42111.15266846253,
+      "gross_loss": 48143.89595781619
+    }
+  },
+  "aggregate_oos": {
+    "trades": 744,
+    "net_pnl": 4147.205189536562,
+    "net_return_pct": 41.47205189536562,
+    "profit_factor": 1.0602293250959054,
+    "expectancy": 5.5742005235706475,
+    "max_drawdown_pct": null,
+    "fees": 4422.34914410531,
+    "slippage_cost": 931.0212524661279,
+    "gross_profit": 73004.11472542802,
+    "gross_loss": 68856.90953589146
+  },
+  "aggregate_stress": {
+    "trades": 744,
+    "net_pnl": -1718.4430312442832,
+    "net_return_pct": -17.184430312442835,
+    "profit_factor": 0.9747798518938077,
+    "expectancy": -2.309735257048768,
+    "max_drawdown_pct": null,
+    "fees": 8349.465519752208,
+    "slippage_cost": 1757.7835568934647,
+    "gross_profit": 66419.26274306701,
+    "gross_loss": 68137.7057743113
+  },
+  "by_year": {
+    "2022": -6023.972341766367,
+    "2023": 9502.782908615896,
+    "2024": 6943.531870138365,
+    "2025": -4376.028170581588,
+    "2026": -1899.1090768697443
+  },
+  "stress_by_year": {
+    "2022": -6466.7694265784385,
+    "2023": 7317.390055800116,
+    "2024": 5022.203270184505,
+    "2025": -5003.435636429685,
+    "2026": -2587.8312942207804
+  },
+  "by_asset": {
+    "XRPUSDT": 4937.88230535483,
+    "BTCUSDT": 1058.4516081143609,
+    "ETHUSDT": -1849.1287239326289
+  },
+  "stress_by_asset": {
+    "XRPUSDT": 2841.31899048343,
+    "BTCUSDT": -1104.2652819080915,
+    "ETHUSDT": -3455.496739819622
+  },
+  "positive_year_profit_concentration": 0.577806215948865,
+  "gates": {
+    "sample": true,
+    "base_net": true,
+    "base_expectancy": true,
+    "base_pf": false,
+    "stress_net": false,
+    "stress_expectancy": false,
+    "stress_pf": false,
+    "every_asset": false,
+    "every_asset_stress": false,
+    "four_years": false,
+    "four_years_stress": false,
+    "final_year": false,
+    "drawdown": false,
+    "concentration": false,
+    "audit": true,
+    "forward_paper": false
+  },
+  "historical_pass_before_audit": false,
+  "limitations": [
+    "Long-only results include broad crypto beta and are not proof of alpha.",
+    "Weekly full liquidation and repurchase is conservative but actual liquidity, latency and taxes can differ.",
+    "Daily OHLC cannot reconstruct intraday paths; stop-first and adverse gap rules are fixed approximations.",
+    "Local SHA256 values are not publisher signatures.",
+    "No independent forward PAPER evidence exists."
+  ]
+}

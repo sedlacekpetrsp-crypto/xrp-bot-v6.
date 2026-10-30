@@ -307,3 +307,13 @@ This distinct tokenomics hypothesis used the price-cancelling ratio of CoinMetri
 The five annual OOS folds produce 56 trades, +$78.49, PF 1.060 and +$1.40 expectancy; doubled costs retain only +$19.86, PF 1.015 and +$0.35 expectancy. Four years lose at both costs. The entire aggregate profit is concentrated in 2024; 2025 and final 2026 lose. Continuous stress is slightly negative.
 
 Reject despite nominal aggregate profit: sample, PF, stability, final-year and concentration gates fail and there is no forward PAPER evidence. All 233 tests and 2,794 independent audit checks pass. Complete evidence is in `research/float_expansion_slowdown_validation_20261030/`. Do not select 2024 or tune estimated-float windows. Production, Render and LIVE remain untouched.
+
+## CRYPTO_WEEKLY_INVERSE_VOL_BASKET_V1: rejected (2026-10-30)
+
+The fixed rules and gates were saved remotely before performance evaluation in commit `961aa4365a8f702af2cb64fb78dc17ffa0cce859`. This was a genuinely different portfolio-risk hypothesis: XRP, BTC and ETH were held concurrently and weighted only by inverse trailing realized-volatility magnitude, with no return direction, relative-strength selection, volume, flow, derivatives, macro or on-chain signal.
+
+Nine direct Binance Data API responses supplied 2,465 exactly aligned daily spot candles per market from 2020-01-01 through 2026-09-30. No gaps or imputation. Full URLs, byte counts and local SHA256 values are in `weekly_inverse_vol_basket_validation_20261030/results.json`; the complete ledger is in `trades.json.gz`. All 240 repository tests passed. An independent implementation-free audit passed 43,923 checks over 3,288 ledger records.
+
+The 744 annual-reset OOS sleeve trades earned +$4,147.21 at base costs, PF 1.060, but lost $1,718.44 under doubled costs, PF 0.975. Only 2023 and 2024 were profitable; 2022, 2025 and 2026 lost. ETH lost at base costs, BTC and ETH lost under stress, and 2023 supplied 57.78% of positive annual profit. The separate continuous OOS run lost $3,023.92 base and $6,032.74 stress, with 69.77%/74.69% conservative drawdown. It therefore failed the frozen PF, cost-stress, asset stability, annual stability, final-year, drawdown and concentration gates despite an adequate sample and a positive annual-reset base sum.
+
+Do not tune the universe, 30-day window, Monday schedule, 50% cap or 3 ATR stop on these dates, and do not promote to forward PAPER. Next concrete step is a source-coverage feasibility check for an official multi-year BTC options 25-delta risk-reversal surface; preregister an asymmetric tail-risk hypothesis only if actual timestamped quotes can be reproduced without filling missing observations. Production, Render, LIVE, main and `v8-fly-layer-test` remain untouched.
