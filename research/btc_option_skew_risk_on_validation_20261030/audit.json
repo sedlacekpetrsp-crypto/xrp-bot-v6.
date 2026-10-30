@@ -1,0 +1,7 @@
+{
+  "strategy": "BTC_OPTION_SKEW_RISK_ON_XRP_V1",
+  "passed": true,
+  "checks": 5912,
+  "trade_checks": 302,
+  "failures": []
+}
