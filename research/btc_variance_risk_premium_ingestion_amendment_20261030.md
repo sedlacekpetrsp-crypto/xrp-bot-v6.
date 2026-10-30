@@ -1,0 +1,5 @@
+# BTC_VARIANCE_RISK_PREMIUM_XRP_V1 — pre-rerun pagination amendment
+
+The first complete ingestion attempt revealed one-day DVOL gaps exactly at both backward-pagination boundaries: 2021-04-08 and 2024-01-04. Investigation of the official response shows that Deribit's `continuation` value is the next inclusive end timestamp, not a cursor to decrement by one millisecond. The initial runner incorrectly requested `end_timestamp=continuation-1`, omitting each boundary day.
+
+Before accepting or rerunning performance, fix pagination to request `end_timestamp=continuation`. Retain exact-deduplication and require the corrected DVOL series to be consecutive; any remaining gap is fatal. Delete only the two cached pages whose request URL changes, refetch them, and preserve new URLs/hashes. No DVOL or price is imputed. Signal threshold, lookback, two-day lag, execution, costs, sizing, folds and acceptance gates are unchanged. The initial output is invalidated and must be overwritten; it is not evidence for parameter selection.
