@@ -1,0 +1,7 @@
+{
+  "strategy": "BTC_ETF_CREATION_IMPULSE_XRP_V1",
+  "passed": true,
+  "checks": 4689,
+  "trade_checks": 520,
+  "failures": []
+}
