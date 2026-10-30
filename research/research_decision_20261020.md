@@ -291,3 +291,11 @@ This distinct crypto-options hypothesis bought XRP when official Deribit BTC DVO
 The corrected data contain 2,017 consecutive DVOL days and 2,465 consecutive BTC and XRP daily candles, without gaps, duplicates or imputation. The five annual OOS folds produce 98 trades, -$250.69, PF 0.881 and -$2.56 expectancy. Double-cost stress loses $355.51, PF 0.835 and -$3.63 expectancy. Only 2023, 2025 and 2026 are positive; large 2022 and 2024 losses dominate. Continuous OOS also loses.
 
 Reject independently of missing the 100-trade gate by two: profitability, expectancy, PF, stability and concentration fail at both costs. All 223 tests and 5,033 independent audit checks pass. Complete evidence is in `research/btc_variance_risk_premium_validation_20261030/`. Do not invert or tune this options-volatility family. Production, Render and LIVE remain untouched.
+
+## XRP_TRANSFER_UTILIZATION_SHARE_V1: rejected (2026-10-30)
+
+This compositional on-chain hypothesis used direct CoinMetrics `TxTfrCnt/TxCnt`, compared with a past-only 180-day 80th percentile and entered after a conservative two-day lag. It is scale invariant and uses no active-address or absolute activity threshold. Rules were frozen in GitHub commit `925282d4d3016688bf6ab56edb95526782cf00e8`. The first ingestion stopped before signals on a zero-denominator 2013 genesis row; `98070281cd4e7b928cf12e56e38c1c8e6c64aa41` froze the 2019-start warm-up window before rerun, without imputation or strategy change.
+
+The retained metric and XRP price calendars are consecutive and fully hashed. The five annual OOS folds produce 68 trades, -$40.46, PF 0.967 and -$0.59 expectancy. Double-cost stress loses $113.34, PF 0.910 and -$1.67 expectancy. Only 2023 and marginally 2025 are positive; 2022, 2024 and final 2026 lose. Continuous OOS also loses.
+
+Reject: sample, net, expectancy, PF, stability, final-year and concentration gates fail. All 228 tests and 4,290 independent audit checks pass. Complete evidence is in `research/transfer_utilization_share_validation_20261030/`. Do not mine transaction-count composition further or combine it post hoc with the prior breadth signal. Production, Render and LIVE remain untouched.

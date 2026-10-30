@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "checks": 4290,
+  "failed": [],
+  "method": "Independent hashes, transfer-share and nearest-rank percentile, lag, chronology, fills, costs, sizing, non-overlap, equity and reports; no strategy import."
+}
