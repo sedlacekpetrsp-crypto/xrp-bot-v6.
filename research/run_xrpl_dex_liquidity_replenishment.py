@@ -26,7 +26,7 @@ def snapshot(cache,idx):
     return idx,summarize(base,a,b),[lm,am,bm],base
 def load_snapshots(cache):
     indices=list(range(60_000_000,107_400_001,STRIDE));got={}
-    with concurrent.futures.ThreadPoolExecutor(max_workers=8) as ex:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=16) as ex:
         fs={ex.submit(snapshot,cache,i):i for i in indices}
         for n,f in enumerate(concurrent.futures.as_completed(fs),1):
             i,o,m,b=f.result();got[i]=(o,m,b)
