@@ -1,0 +1,26 @@
+name: PAPER portfolio guard tests
+on:
+  pull_request:
+    paths:
+      - 'app_v8_fly.py'
+      - 'tests/test_portfolio_guard_*.py'
+      - '.github/workflows/paper-guard-tests.yml'
+  push:
+    branches:
+      - paper-risk-review-20261019
+jobs:
+  guard-tests:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check Python syntax
+        run: python -m py_compile app_v8_fly.py
+      - name: Install test runner
+        run: python -m pip install pytest
+      - name: Run isolated tests
+        run: python -m pytest -q tests/test_portfolio_guard_*.py
