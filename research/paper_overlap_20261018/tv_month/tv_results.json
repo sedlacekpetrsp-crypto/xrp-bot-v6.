@@ -1,0 +1,64 @@
+[
+  {
+    "variant": "production_baseline",
+    "development": {
+      "net_pnl": -108.74075050871397,
+      "trades": 39,
+      "profit_factor": 0.505363242441902,
+      "max_drawdown": 112.81144849309567,
+      "fees": 95.93311609448207,
+      "wins": 12,
+      "window_end_closes": 0
+    },
+    "chronological_check": {
+      "net_pnl": -53.649997243319376,
+      "trades": 14,
+      "profit_factor": 0.2096087822926797,
+      "max_drawdown": 54.44999724331865,
+      "fees": 36.119639531657064,
+      "wins": 4,
+      "window_end_closes": 0
+    },
+    "double_slippage": {
+      "net_pnl": -51.003763559021536,
+      "trades": 14,
+      "profit_factor": 0.30542940873915464,
+      "max_drawdown": 51.80376355902081,
+      "fees": 34.518804494521135,
+      "wins": 4,
+      "window_end_closes": 0
+    },
+    "passes_numeric_gate": false
+  },
+  {
+    "variant": "closed_1h_alignment",
+    "development": {
+      "net_pnl": -113.21805594671969,
+      "trades": 23,
+      "profit_factor": 0.2739387319303745,
+      "max_drawdown": 125.14406532544854,
+      "fees": 56.85377097473403,
+      "wins": 4,
+      "window_end_closes": 0
+    },
+    "chronological_check": {
+      "net_pnl": -28.12567914275678,
+      "trades": 9,
+      "profit_factor": 0.32328553538346877,
+      "max_drawdown": 28.12567914275678,
+      "fees": 23.44092734629407,
+      "wins": 3,
+      "window_end_closes": 0
+    },
+    "double_slippage": {
+      "net_pnl": -24.703178795865824,
+      "trades": 9,
+      "profit_factor": 0.46697453253286847,
+      "max_drawdown": 24.703178795865824,
+      "fees": 22.35645014113375,
+      "wins": 3,
+      "window_end_closes": 0
+    },
+    "passes_numeric_gate": false
+  }
+]

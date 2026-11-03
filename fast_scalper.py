@@ -265,9 +265,9 @@ def _fast_signal(row):
     price = float(row.get("price") or 0)
     news = row.get("news") or {}
 
-    # Use several minutes of ATR as the realistic reversion travel budget.
+    # Candidate: ATR is a ceiling, never invent an edge larger than the signal estimate.
     atr_rate = atr / price if atr > 0 and price > 0 else 0.0
-    reversion_edge = max(edge, atr_rate * 4.5)
+    reversion_edge = min(edge, atr_rate * 4.5)
     threshold_z = TRANSITION_Z if regime == "TRANSITION" else MIN_Z
     common = [
         ("REGIME", regime in ("RANGE", "TRANSITION")),

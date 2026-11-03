@@ -19,6 +19,7 @@ import liquidity_monitor
 import legacy_fly_recovery
 import fly_accounting_reconcile
 import research_market_evidence
+import paper_overlap_guard
 from v8_fly_layer import install
 
 install(base)
@@ -60,7 +61,21 @@ def portfolio_entry_allowed(bot_name, symbol, side):
     """Paused bots cannot enter; existing positions retain their exit management."""
     if bot_name in PAUSED_BOTS:
         return False, "USER_PAUSED"
-    return True,"parallel positions allowed"
+    if bot_name not in {"FLY", "FAST", "LEADLAG", "TV", "WHALE", "WHALE_TRENDLINE"}:
+        return True, "outside candidate policy scope"
+    positions = []
+    if getattr(base, "paper_position", None):
+        positions.append(base.paper_position)
+    for module in (fast, leadlag, tv):
+        position = module.state.get("open_position")
+        if position:
+            position = dict(position)
+            if module is leadlag:
+                position.setdefault("symbol", leadlag.TRADE_SYMBOL)
+            positions.append(position)
+    positions.extend(whale.state.get("open_positions") or
+                     ([whale.state["open_position"]] if whale.state.get("open_position") else []))
+    return paper_overlap_guard.entry_allowed(symbol, side, positions)
 
 def _same_direction_fly_exposure(symbol, side):
     """Count existing FLY exposure in the same crypto direction, excluding this asset."""

@@ -331,6 +331,8 @@ def entry_blocker(a):
     if side == 'LONG' and (a.get('news') or {}).get('bearish'):
         return 'NEGATIVE_NEWS_BLOCK'
     z = float(a.get('z_momentum') or 0)
+    if not __import__('math').isfinite(z) or abs(z) > 3.0:
+        return 'OVEREXTENDED_MOMENTUM'
     if (side == 'LONG' and z < Z_ARMED) or (side == 'SHORT' and z > -Z_ARMED):
         return 'WEAK_MOMENTUM'
     if _ensemble_score(a) < ENSEMBLE_MIN_SCORE:
