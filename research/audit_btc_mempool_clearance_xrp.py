@@ -95,7 +95,10 @@ def main():
             pnl = trade["qty"] * (trade["exit"] - trade["entry"]) - fees
             check("cost_" + str(trade_checks), close(trade["fees"], fees) and close(trade["pnl"], pnl) and close(trade["equity"], trade["entry_equity"] + pnl))
             entry_fee = trade["qty"] * trade["entry"] * fee
-            for k in range(i, j):
+            # The simulator records a conservative low mark on the final fold
+            # candle before realizing its close at the same timestamp.
+            mark_end = j + 1 if reason == "FOLD_END" else j
+            for k in range(i, mark_end):
                 mark = prices[k]["low"] * (1 - slip)
                 curve_equities.append(trade["entry_equity"] + trade["qty"] * (mark - trade["entry"]) - entry_fee - trade["qty"] * mark * fee)
             curve_equities.append(trade["equity"])
