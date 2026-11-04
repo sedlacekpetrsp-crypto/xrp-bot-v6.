@@ -172,5 +172,34 @@ def backtest(rows, start, end, c=Config(), initial=10_000.0):
             i = ei + 1
             break
         else:
-            i += 1
+            # A chronological fold must not silently discard a still-open trade.
+            # Liquidate at the last real candle before the fold boundary.
+            ei = min(j - 1, len(rows) - 1)
+            if ei < i:
+                i += 1
+                continue
+            et = rows[ei]["timestamp"]
+            raw_exit = rows[ei]["close"]
+            reason = "FOLD_END"
+            fill = raw_exit * (1 - c.slippage)
+            exit_fee = qty * fill * c.fee
+            gross = qty * (raw_exit - raw_entry)
+            fill_pnl = qty * (fill - entry)
+            fees = entry_fee + exit_fee
+            pnl = fill_pnl - fees
+            equity += pnl
+            trades.append(
+                dict(
+                    metric_timestamp=signal["metric_timestamp"],
+                    entry_timestamp=bar["timestamp"], exit_timestamp=et,
+                    entry_index=i, exit_index=ei, entry_equity=before,
+                    mempool_bytes=signal["mempool_bytes"], cutoff365=signal["cutoff365"], samples=signal["samples"],
+                    raw_entry=raw_entry, raw_exit=raw_exit, entry=entry, exit=fill,
+                    qty=qty, atr=av, stop=stop, target=target, leg_notional=qty * entry,
+                    gross=gross, slippage_cost=gross - fill_pnl, fees=fees, pnl=pnl,
+                    equity=equity, reason=reason, cost_fee=c.fee, cost_slippage=c.slippage,
+                )
+            )
+            curve.append(dict(timestamp=et, equity=equity))
+            i = ei + 1
     return trades, curve

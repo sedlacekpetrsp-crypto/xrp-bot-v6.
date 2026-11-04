@@ -87,6 +87,19 @@ class Tests(unittest.TestCase):
         self.assertTrue(all(a["exit_timestamp"] < b["entry_timestamp"] for a,b in zip(trades,trades[1:])))
         self.assertTrue(all(x["reason"] == "TIME" for x in trades))
 
+    def test_fold_end_is_realized_not_discarded(self):
+        m = metric()
+        friday = next(i for i in range(365, 372) if i % 7 == 1)
+        m[friday]["mempool_bytes"] = 10.0
+        entry_day = friday + 3
+        r = bars(entry_day + 3)
+        r[entry_day]["mempool_signal"] = make_signals(m)[entry_day * DAY]
+        trades, curve = backtest(r, 0, (entry_day + 3) * DAY)
+        self.assertEqual(len(trades), 1)
+        self.assertEqual(trades[0]["reason"], "FOLD_END")
+        self.assertEqual(trades[0]["exit_timestamp"], (entry_day + 2) * DAY)
+        self.assertEqual(curve[-1]["equity"], trades[0]["equity"])
+
 
 if __name__ == "__main__":
     unittest.main()

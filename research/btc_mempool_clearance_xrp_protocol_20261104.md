@@ -16,6 +16,8 @@ Consider Friday UTC days only. Compare the Friday daily median with the empirica
 
 Long XRPUSDT spot, zero leverage, one position. ATR14 uses preceding closed daily Binance candles. Stop two ATR below adverse entry fill, target 3R, maximum five candles including entry. Stop wins same-candle ambiguity; a stop gap fills at the worse open and an upward target gap is capped at target. Fee 9.5 bps and adverse slippage 2 bps per side; stress doubles both. Risk 0.5% current equity at stop and cap notional at 20%. A price-data gap exits at the last actual pre-gap close. No synthetic prices, borrowing or funding.
 
+Post-first-run correctness clarification, committed before rerun: an audit exposed that a position opened during a fold's final partial week contributed mark-to-market drawdown but was silently omitted from trades and realized PnL. This invalidates the first output. The corrected simulator liquidates any such position at the last real candle close strictly before the fold boundary, charges normal exit slippage and fees, and records reason `FOLD_END`. Signal, source, parameters, gates and date ranges are unchanged. Only the corrected rerun may be evaluated.
+
 ## Locked evaluation and gates
 
 Use actual Binance XRPUSDT daily prices from 2020-01-01 through 2026-09-30. Calendar 2020–2021 is control. Annual-reset OOS folds are 2022, 2023, 2024, 2025 and 2026 through September; a separate continuous OOS path is descriptive. Preserve derived daily metrics, exact source provenance, all trade ledgers and an implementation-independent audit. No tuning follows results.
