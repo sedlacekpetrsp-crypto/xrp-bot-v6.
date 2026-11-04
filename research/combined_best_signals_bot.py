@@ -14,7 +14,7 @@ from urllib.request import Request, urlopen
 
 from research.combined_best_signals_paper import select_candidates
 from research.volatility_managed_momentum_v1 import SYMBOLS
-from research.combined_paper_execution import fresh, step
+from research.combined_paper_postgres import apply
 
 POLL_SECONDS = max(300, int(os.getenv("COMBINED_PAPER_POLL_SECONDS", "900")))
 STATE_PATH = Path(os.getenv("COMBINED_PAPER_STATE", "combined_paper_state.json"))
@@ -78,15 +78,6 @@ def fetch_prices():
     return result
 
 
-def load_ledger():
-    if not LEDGER_PATH.exists():
-        return fresh()
-    ledger = json.loads(LEDGER_PATH.read_text(encoding="utf-8"))
-    if ledger.get("mode") != "PAPER_ONLY":
-        raise ValueError("Unexpected portfolio mode; refusing to trade")
-    return ledger
-
-
 def save_atomic(path, state):
     path.parent.mkdir(parents=True, exist_ok=True)
     temp = path.with_suffix(path.suffix + ".tmp")
@@ -100,11 +91,8 @@ def run_forever():
             result = snapshot()
             # Simulated fills use fresh observed ticker prices, never historical closes.
             prices = fetch_prices()
-            ledger = step(load_ledger(), result["last_completed_day"],
-                          result["candidates"], prices)
-            save_atomic(LEDGER_PATH, ledger)
-            result["paper_portfolio"] = ledger
-            result["note"] = "Simulated PAPER fills only; no exchange orders."
+            result = apply(result, prices)
+            # Local snapshot is only a non-authoritative cache; PostgreSQL is canonical.
             save_atomic(STATE_PATH, result)
             print(json.dumps({"event": "PAPER_SCAN", **result}), flush=True)
         except Exception as exc:
