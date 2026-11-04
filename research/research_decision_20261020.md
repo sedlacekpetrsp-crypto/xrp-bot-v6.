@@ -397,3 +397,9 @@ The protocol, exact CFTC contract selection, strict past-only signal, publicatio
 Across five annual-reset OOS folds, 94 base-cost trades lose $501.70, PF 0.7289 and $5.34 per trade. Doubled costs lose $599.27, PF 0.6860 and $6.38 per trade. Only incomplete 2026 is positive; 2022–2025 all lose at both costs. Continuous OOS loses $420.78 base and $515.03 stressed with 6.33%/7.07% drawdown. Positive monthly profit concentration is 27.71%, above the frozen 25% cap. The control loses and no forward PAPER evidence exists.
 
 Reject without selecting 2026 or changing participant classification, median, momentum lag, holding period or direction. The independent audit passes 4,134 checks including 456 trade checks, and all 282 repository tests pass. Complete evidence is in `research/btc_asset_manager_accumulation_xrp_validation_20261104/`. Close this institutional-futures positioning family; next work must use a genuinely different, point-in-time reproducible observable. Production, Render, LIVE, main and `v8-fly-layer-test` remain untouched.
+
+## XRP_ASIA_EUROPE_HANDOFF_REVERSAL_V1: preregistered (2026-11-04)
+
+This distinct intraday inventory-transfer hypothesis buys XRP at the fixed 08:00 UTC European handoff only after a <=-1.50% return across the complete closed 00:00–08:00 UTC Asian session. It is not a weekend, relative-strength, cross-market, flow/volume, derivatives, macro, on-chain, order-book or volatility-compression variant. The source, exact session, next-open timing, ATR execution, annual folds, costs, doubled-cost stress and gates are frozen in `research/xrp_session_handoff_reversal_protocol_20261104.md` before performance.
+
+Next action: remotely verify this preregistration commit, then download the fixed official Binance archives and run repository tests, the unchanged OOS validation and an independent audit. No historical return has been inspected.
