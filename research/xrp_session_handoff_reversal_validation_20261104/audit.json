@@ -1,0 +1,7 @@
+{
+  "strategy": "XRP_ASIA_EUROPE_HANDOFF_REVERSAL_V1",
+  "passed": true,
+  "checks": 60886,
+  "trade_checks": 1298,
+  "failures": []
+}

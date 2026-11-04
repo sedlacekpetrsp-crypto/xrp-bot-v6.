@@ -405,3 +405,11 @@ This distinct intraday inventory-transfer hypothesis buys XRP at the fixed 08:00
 Next action: remotely verify this preregistration commit, then download the fixed official Binance archives and run repository tests, the unchanged OOS validation and an independent audit. No historical return has been inspected.
 
 Pre-performance test-fixture correction: the first unit-test command stopped before any source download or performance output because three synthetic execution cases placed their signal in the first UTC day, before the frozen ATR24 warm-up could exist. Move only those synthetic signals to the second day and adjust their expected timestamps. Strategy code, real-data source, session, threshold, execution and gates are unchanged. Commit this fixture-only correction remotely before rerunning tests or downloading data.
+
+## XRP_ASIA_EUROPE_HANDOFF_REVERSAL_V1: rejected (2026-11-04)
+
+The frozen strategy was remotely preregistered in `e6c97553b0cc7f2f885f2397734e8e1dc74329e7`; the fixture-only warm-up correction was remotely committed as `3646e5a292ca7681027b4ee3e721096e24d431e8` before any archive download or performance output. Sixty-nine official Binance Vision archives supply 50,362 unique hourly XRP candles from January 2021 through September 2026. Exact URLs, byte counts and SHA256 fingerprints are retained. Seven observed gaps totaling 14 hours were preserved, affected sessions suppressed, and no price was invented.
+
+Across five annual-reset OOS folds, 280 base trades lose $1,152.94, PF 0.7673 and $4.12 per trade. Doubled costs lose $2,336.29, PF 0.5862 and $8.34 per trade. Every OOS year and the 2021 control lose at both costs. Continuous OOS loses $1,104.15 base and $2,130.04 stressed; drawdown is 12.57%/22.52%. Only sample size passes.
+
+Reject without changing the -1.50% threshold, session boundary, direction or hold. The independent audit passes 60,886 checks including 1,298 trade checks, and all 288 repository tests pass. Complete evidence is in `research/xrp_session_handoff_reversal_validation_20261104/`. Close this session-handoff mean-reversion design. Production, Render, LIVE, main and `v8-fly-layer-test` remain untouched.
