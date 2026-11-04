@@ -701,6 +701,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 </script></body>""")
     html = news_dashboard.enhance(html)
     html = swing_dashboard.enhance(html)
+    html = __import__('elite_paper_dashboard').enhance(html)
     html = lh_whale_dashboard.enhance(html)
     # Force both liquidity cards into the same visible grid, independent of legacy injection points.
     if 'id="lhWhaleStatus"' not in html:
@@ -1011,6 +1012,10 @@ async def liquidity_hunter_status():
 swing_paper.install(app, bestof.core)
 lh_whale.install(app, bestof.core, local_only=True)
 research_market_evidence.install(app, base)
+
+# Separate virtual accounts; user-authorized experimental forward test, PAPER only.
+import elite_paper
+elite_paper.install(app, base)
 liquidity_monitor.install(app, bestof.core)
 
 # News refresh and trading stay active independently of paused FLY.
