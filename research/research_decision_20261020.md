@@ -413,3 +413,9 @@ The frozen strategy was remotely preregistered in `e6c97553b0cc7f2f885f2397734e8
 Across five annual-reset OOS folds, 280 base trades lose $1,152.94, PF 0.7673 and $4.12 per trade. Doubled costs lose $2,336.29, PF 0.5862 and $8.34 per trade. Every OOS year and the 2021 control lose at both costs. Continuous OOS loses $1,104.15 base and $2,130.04 stressed; drawdown is 12.57%/22.52%. Only sample size passes.
 
 Reject without changing the -1.50% threshold, session boundary, direction or hold. The independent audit passes 60,886 checks including 1,298 trade checks, and all 288 repository tests pass. Complete evidence is in `research/xrp_session_handoff_reversal_validation_20261104/`. Close this session-handoff mean-reversion design. Production, Render, LIVE, main and `v8-fly-layer-test` remain untouched.
+
+## XRP_REVERSE_REPO_LIQUIDITY_RELEASE_V1: preregistered (2026-11-04)
+
+This distinct monetary-plumbing hypothesis buys XRP only after the Federal Reserve's overnight reverse-repo balance has fallen at least 10% over 20 actual FRED observations from a starting balance of at least USD 100 billion. It uses a two-observation publication lag and no crypto-derived signal input. It is not a price, flow, relative-strength, volatility, sentiment, derivatives, on-chain, calendar, broad-dollar, real-yield or financial-conditions modification. Source, lag, thresholds, next-open execution, annual folds, costs, doubled-cost stress and gates are frozen in `research/xrp_reverse_repo_liquidity_release_protocol_20261104.md` before performance.
+
+Next action: remotely verify this preregistration commit, then download the fixed FRED and Binance sources and run all repository tests, the unchanged historical evaluation and an independent audit. No historical XRP performance has been inspected.
