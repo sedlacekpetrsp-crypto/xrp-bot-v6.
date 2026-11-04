@@ -1036,21 +1036,19 @@ async def stop_loss_policy_status():
 # Combined PAPER portfolio visibility. Read-only; never triggers trading.
 @app.get("/combined/status")
 async def combined_paper_status():
-    import json as _json
-    from research.combined_best_signals_bot import STATE_PATH, LEDGER_PATH
-    result = {"strategy": "COMBINED_BEST_SIGNALS_V1", "mode": "PAPER_ONLY",
-              "execution_enabled": False, "status": "AWAITING_FIRST_SCAN",
-              "persistence": "local_ephemeral"}
+    from research.combined_paper_postgres import read
     try:
-        if STATE_PATH.exists():
-            result.update(_json.loads(STATE_PATH.read_text(encoding="utf-8")))
-            result["status"] = "RUNNING"
-        if LEDGER_PATH.exists():
-            result["paper_portfolio"] = _json.loads(LEDGER_PATH.read_text(encoding="utf-8"))
-    except (OSError, ValueError) as exc:
-        result["status"] = "STATE_READ_ERROR"
-        result["error"] = str(exc)
-    return JSONResponse(result, headers={"Cache-Control": "no-store"})
+        state = read()
+        result = {"strategy": "COMBINED_BEST_SIGNALS_V1", "mode": "PAPER_ONLY",
+                  "execution_enabled": False, **(state.get("snapshot") or {})}
+        result.update({key: value for key, value in state.items() if key != "snapshot"})
+        return JSONResponse(result, headers={"Cache-Control": "no-store"})
+    except Exception as exc:
+        return JSONResponse({"strategy": "COMBINED_BEST_SIGNALS_V1",
+                             "mode": "PAPER_ONLY", "execution_enabled": False,
+                             "status": "DATABASE_UNAVAILABLE", "error": type(exc).__name__,
+                             "persistence": "postgres"}, status_code=503,
+                            headers={"Cache-Control": "no-store"})
 
 
 @app.get("/combined", response_class=HTMLResponse)
@@ -1072,7 +1070,7 @@ strong{font-size:23px}</style></head><body><main>
 <div class="card">Uzavřené obchody<br><strong id="count">—</strong></div></div>
 <div class="card"><h2>Pozice</h2><pre id="positions">—</pre></div>
 <div class="card"><h2>Historie simulovaných obchodů</h2><pre id="trades">—</pre></div>
-<small>Data z lokálního souboru Renderu mohou být při restartu ztracena. Údaje nejsou skutečné burzovní obchody.</small>
+<small>Historie je ukládána do PostgreSQL. Údaje nejsou skutečné burzovní obchody.</small>
 <script>
 async function refresh(){
 try{
