@@ -1030,3 +1030,17 @@ async def stop_loss_policy_status():
         "bots": ["BEST", "BEST EMA 4h", "BLUE WHALE", "NEWS LONG", "LH WHALE",
                  "AROON", "SUPERTREND", "FLY", "FAST", "LEADLAG", "TV"],
         "paused_bots": sorted(PAUSED_BOTS)}, headers={"Cache-Control": "no-store"})
+
+
+# Isolated combined PAPER signal monitor. No order execution or account credentials.
+# A background daemon thread keeps the existing bot event loop unblocked.
+import os as _combined_os
+import threading as _combined_threading
+
+@app.on_event("startup")
+async def _start_combined_paper_monitor():
+    if _combined_os.getenv("COMBINED_PAPER_ENABLED", "1") != "1":
+        return
+    from research.combined_best_signals_bot import run_forever
+    _combined_threading.Thread(target=run_forever,
+                               name="combined-paper-signals", daemon=True).start()
