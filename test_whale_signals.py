@@ -52,23 +52,59 @@ class WhaleSignals(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(w.open_paper(s,'LONG',80000))
         self.assertEqual(w.state['balance'],10000)
 
-    async def test_transient_filter_retries_then_no_duplicate(self):
-        s=signal()
-        with patch.object(w,'latest_signals',AsyncMock(return_value=[s])),patch.object(w,'technical_confirmation',AsyncMock(side_effect=[(False,{}),(True,{})])) as confirm:
-            await w.scan_entries(None,80000)
-            self.assertNotIn(1,w.state['seen_signal_ids'])
-            await w.scan_entries(None,80000)
-            self.assertIn(1,w.state['seen_signal_ids'])
-            await w.scan_entries(None,80000)
-            self.assertEqual(len(w.state['open_positions']),1)
-            self.assertEqual(confirm.await_count,2)
+    # The scanner no longer consumes Telegram posts (latest_signals is not called by
+    # scan_entries). The three obsolete Telegram-flow tests are replaced by the same
+    # properties on the current candle scanner: retry, isolation and no consumption.
+    def scanner(self, confirm, symbols=('BTCUSDT',), broken=()):
+        class Response:
+            def __init__(self, params): self.params=params or {}
+            def json(self):
+                return 'BROKEN' if self.params.get('symbol') in broken and 'interval' in self.params else {'price':'100'}
+        async def get(client,url,params=None,timeout=None): return Response(params)
+        def closed(raw,now,minutes):
+            if raw=='BROKEN': raise ValueError('stale candles')
+            return []
+        cand=lambda _: (dict(side='LONG',entry=100,stop=99,tp=104,key='swing-1',strategy='FIB_618_786',confirmation={}),
+                        {'strategy':'FIB_618_786','reason':'ready'})
+        return [patch.object(w,'SYMBOLS',symbols),patch.object(w,'market_get',new=get),
+                patch.object(w,'closed_candles',side_effect=closed),patch.object(w,'fib_candidate',side_effect=cand),
+                patch.object(w,'vwap_candidate',return_value=(None,{'strategy':'VWAP_REVERSION','reason':'waiting'})),
+                patch.object(w,'technical_confirmation',new=confirm),
+                patch.object(w,'scan_trendline',new=AsyncMock(return_value={'symbol':'XRPUSDT','strategy':'TRENDLINE_4H_LONG','reason':'mock'}))]
 
-    async def test_newer_incomplete_post_does_not_hide_valid_signal(self):
-        s=signal();bad=signal(2);bad['stop']=None
-        with patch.object(w,'latest_signals',AsyncMock(return_value=[s,bad])),patch.object(w,'technical_confirmation',AsyncMock(return_value=(True,{}))):
-            await w.scan_entries(None,80000)
+    async def run_scan(self, patches):
+        for p in patches: p.start()
+        try: await w.scan_entries(None)
+        finally:
+            for p in reversed(patches): p.stop()
+
+    async def test_transient_mtf_rejection_retries_then_no_duplicate(self):
+        w.state.update(persistence='postgres',persistence_error=None)
+        confirm=AsyncMock(side_effect=[(False,{'score':1,'min_score':3}),(True,{'score':3})])
+        patches=self.scanner(confirm)
+        await self.run_scan(patches)
+        self.assertEqual(w.state['open_positions'],[]); self.assertEqual(w.state['seen_signal_ids'],[])
+        await self.run_scan(patches)
+        self.assertEqual(len(w.state['open_positions']),1); self.assertEqual(len(w.state['seen_signal_ids']),1)
+        await self.run_scan(patches)
         self.assertEqual(len(w.state['open_positions']),1)
-        self.assertEqual(w.state['open_positions'][0]['signal_id'],1)
+        self.assertEqual(confirm.await_count,2)
+
+    async def test_broken_market_does_not_hide_valid_setup_elsewhere(self):
+        w.state.update(persistence='postgres',persistence_error=None)
+        await self.run_scan(self.scanner(AsyncMock(return_value=(True,{'score':3})),
+                                         symbols=('BTCUSDT','ETHUSDT'),broken=('BTCUSDT',)))
+        self.assertEqual([p['symbol'] for p in w.state['open_positions']],['ETHUSDT'])
+        errors=[d for d in w.state['signal_checks'] if d.get('error')]
+        self.assertEqual([d['symbol'] for d in errors],['BTCUSDT'])
+
+    async def test_unconfirmed_wait_does_not_consume_setup(self):
+        w.state.update(persistence='postgres',persistence_error=None)
+        await self.run_scan(self.scanner(AsyncMock(return_value=(False,{'score':2,'min_score':3}))))
+        self.assertEqual(w.state['open_positions'],[]); self.assertEqual(w.state['seen_signal_ids'],[])
+        self.assertIn('MTF',w.state['signal_checks'][0]['reason'])
+        await self.run_scan(self.scanner(AsyncMock(return_value=(True,{'score':3}))))
+        self.assertEqual(len(w.state['open_positions']),1)
 
     async def test_expired_and_future_signals_never_open(self):
         for minutes in [-20,5]:
@@ -77,13 +113,6 @@ class WhaleSignals(unittest.IsolatedAsyncioTestCase):
                 await w.scan_entries(None,80000)
                 confirm.assert_not_awaited()
             self.assertFalse(w.state['open_positions'])
-
-    async def test_price_wait_does_not_consume_signal(self):
-        with patch.object(w,'latest_signals',AsyncMock(return_value=[signal()])),patch.object(w,'technical_confirmation',AsyncMock(return_value=(True,{}))):
-            await w.scan_entries(None,80500)
-            self.assertNotIn(1,w.state['seen_signal_ids'])
-            await w.scan_entries(None,80000)
-            self.assertEqual(len(w.state['open_positions']),1)
 
     async def test_source_returns_all_candidates(self):
         s=signal();text=''.join(f'<div class="tgme_widget_message_wrap"><div data-post="BlueWhaleCryptoTrading/{i}"><div class="tgme_widget_message_text">{s["text"]}</div><time datetime="{s["posted_at"]}"></time></div></div>' for i in [10,11])

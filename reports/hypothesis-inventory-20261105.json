@@ -1,0 +1,3104 @@
+[
+ {
+  "hypothesis": "elite/V12",
+  "first_seen": "2026-10-14",
+  "first_commit": "2f72287",
+  "first_branch": "origin/elite-research-v1",
+  "branches": [
+   "origin/elite-research-v1"
+  ],
+  "decision": "zamítnuti",
+  "ledger_files": [
+   "elite/results/20261014_v12/evidence.tar.gz"
+  ],
+  "files_with_sha256": [
+   "elite/results/20261014_v12/summary.json"
+  ],
+  "files": [
+   "elite/PROTOCOL_V12_V14.md",
+   "elite/REPORT_V12_V14_20261014.md",
+   "elite/batch_v12.py",
+   "elite/candidates_v12.py",
+   "elite/results/20261014_v12/evidence.tar.gz",
+   "elite/results/20261014_v12/robustness.json",
+   "elite/results/20261014_v12/summary.json",
+   "elite/robustness_v12.py",
+   "elite/test_candidates_v12.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "elite/V15",
+  "first_seen": "2026-10-14",
+  "first_commit": "3f766ee",
+  "first_branch": "origin/elite-research-v1",
+  "branches": [
+   "origin/elite-research-v1"
+  ],
+  "decision": "neprošel",
+  "ledger_files": [
+   "elite/results/20261014_v15/evidence.tar.gz"
+  ],
+  "files_with_sha256": [
+   "elite/results/20261014_v15/summary.json"
+  ],
+  "files": [
+   "elite/PROTOCOL_V15_V17.md",
+   "elite/REPORT_V15_V17_20261014.md",
+   "elite/batch_v15.py",
+   "elite/portfolio_v15.py",
+   "elite/results/20261014_v15/evidence.tar.gz",
+   "elite/results/20261014_v15/standalone_controls.json",
+   "elite/results/20261014_v15/summary.json",
+   "elite/test_portfolio_v15.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "elite/V18",
+  "first_seen": "2026-10-14",
+  "first_commit": "763d412",
+  "first_branch": "origin/elite-research-v1",
+  "branches": [
+   "origin/elite-research-v1"
+  ],
+  "decision": "neprošla",
+  "ledger_files": [
+   "elite/results/20261014_v18/evidence.tar.gz"
+  ],
+  "files_with_sha256": [
+   "elite/results/20261014_v18/summary.json"
+  ],
+  "files": [
+   "elite/PROTOCOL_V18_V20.md",
+   "elite/REPORT_V18_V20_20261014.md",
+   "elite/batch_v18.py",
+   "elite/cross_market_v18.py",
+   "elite/results/20261014_v18/concentration.json",
+   "elite/results/20261014_v18/evidence.tar.gz",
+   "elite/results/20261014_v18/summary.json",
+   "elite/test_cross_market_v18.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "elite/V21",
+  "first_seen": "2026-10-14",
+  "first_commit": "40d2508",
+  "first_branch": "origin/elite-research-v1",
+  "branches": [
+   "origin/elite-research-v1"
+  ],
+  "decision": "neprošly",
+  "ledger_files": [
+   "elite/results/20261014_v21/evidence.tar.gz"
+  ],
+  "files_with_sha256": [
+   "elite/results/20261014_v21/summary.json"
+  ],
+  "files": [
+   "elite/PROTOCOL_V21_V23.md",
+   "elite/REPORT_V21_V23_20261014.md",
+   "elite/batch_v21.py",
+   "elite/exit_v21.py",
+   "elite/results/20261014_v21/concentration.json",
+   "elite/results/20261014_v21/evidence.tar.gz",
+   "elite/results/20261014_v21/summary.json",
+   "elite/test_exit_v21.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "elite/V24",
+  "first_seen": "2026-10-14",
+  "first_commit": "e740632",
+  "first_branch": "origin/elite-research-v1",
+  "branches": [
+   "origin/elite-research-v1"
+  ],
+  "decision": "zamítnuty",
+  "ledger_files": [
+   "elite/results/20261014_v24/evidence.tar.gz"
+  ],
+  "files_with_sha256": [
+   "elite/results/20261014_v24/summary.json"
+  ],
+  "files": [
+   "elite/PROTOCOL_V24_V25.md",
+   "elite/REPORT_V24_V25_20261014.md",
+   "elite/batch_v24.py",
+   "elite/candidates_v24.py",
+   "elite/results/20261014_v24/evidence.tar.gz",
+   "elite/results/20261014_v24/robustness.json",
+   "elite/results/20261014_v24/summary.json",
+   "elite/robustness_v24.py",
+   "elite/test_candidates_v24.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "elite/V26",
+  "first_seen": "2026-10-14",
+  "first_commit": "3d5fa3e",
+  "first_branch": "origin/elite-research-v1",
+  "branches": [
+   "origin/elite-research-v1"
+  ],
+  "decision": "zamítnuty",
+  "ledger_files": [
+   "elite/results/20261014_v26/evidence.tar.gz"
+  ],
+  "files_with_sha256": [
+   "elite/results/20261014_v26/summary.json"
+  ],
+  "files": [
+   "elite/PROTOCOL_V26_V27.md",
+   "elite/REPORT_V26_V27_20261014.md",
+   "elite/batch_v26.py",
+   "elite/candidates_v26.py",
+   "elite/results/20261014_v26/diagnostics.json",
+   "elite/results/20261014_v26/evidence.tar.gz",
+   "elite/results/20261014_v26/summary.json",
+   "elite/test_volume_v26.py",
+   "elite/volume_v26.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "elite/V28",
+  "first_seen": "2026-10-14",
+  "first_commit": "22d46ab",
+  "first_branch": "origin/elite-research-v1",
+  "branches": [
+   "origin/elite-research-v1"
+  ],
+  "decision": "neprošly",
+  "ledger_files": [
+   "elite/results/20261014_v28/evidence.tar.gz"
+  ],
+  "files_with_sha256": [
+   "elite/results/20261014_v28/summary.json"
+  ],
+  "files": [
+   "elite/PROTOCOL_V28_V29.md",
+   "elite/REPORT_V28_V29_20261014.md",
+   "elite/batch_v28.py",
+   "elite/candidates_v28.py",
+   "elite/flow_v28.py",
+   "elite/results/20261014_v28/diagnostics.json",
+   "elite/results/20261014_v28/evidence.tar.gz",
+   "elite/results/20261014_v28/summary.json",
+   "elite/test_flow_v28.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "elite/V30",
+  "first_seen": "2026-10-14",
+  "first_commit": "3155222",
+  "first_branch": "origin/elite-research-v1",
+  "branches": [
+   "origin/elite-research-v1"
+  ],
+  "decision": "zamítnuty",
+  "ledger_files": [
+   "elite/results/20261014_v30/evidence.tar.gz"
+  ],
+  "files_with_sha256": [
+   "elite/results/20261014_v30/summary.json"
+  ],
+  "files": [
+   "elite/PROTOCOL_V30_V31.md",
+   "elite/REPORT_V30_V31_20261014.md",
+   "elite/batch_v30.py",
+   "elite/results/20261014_v30/diagnostics.json",
+   "elite/results/20261014_v30/evidence.tar.gz",
+   "elite/results/20261014_v30/selection_scores.json.gz",
+   "elite/results/20261014_v30/summary.json",
+   "elite/selector_v30.py",
+   "elite/test_selector_v30.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "elite/V32",
+  "first_seen": "2026-10-14",
+  "first_commit": "4e7e039",
+  "first_branch": "origin/elite-research-v1",
+  "branches": [
+   "origin/elite-research-v1"
+  ],
+  "decision": "zamítnuty",
+  "ledger_files": [
+   "elite/results/20261014_v32/evidence.tar.gz"
+  ],
+  "files_with_sha256": [
+   "elite/results/20261014_v32/summary.json"
+  ],
+  "files": [
+   "elite/PROTOCOL_V32_V33.md",
+   "elite/REPORT_V32_V33_20261014.md",
+   "elite/batch_v32.py",
+   "elite/candidates_v32.py",
+   "elite/results/20261014_v32/diagnostics.json",
+   "elite/results/20261014_v32/evidence.tar.gz",
+   "elite/results/20261014_v32/robustness.json",
+   "elite/results/20261014_v32/summary.json",
+   "elite/robustness_v32.py",
+   "elite/test_candidates_v32.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "elite/V34",
+  "first_seen": "2026-10-14",
+  "first_commit": "18bbba8",
+  "first_branch": "origin/elite-research-v1",
+  "branches": [
+   "origin/elite-research-v1"
+  ],
+  "decision": "zamítnuty",
+  "ledger_files": [
+   "elite/results/20261014_v34/evidence.tar.gz"
+  ],
+  "files_with_sha256": [
+   "elite/results/20261014_v34/summary.json"
+  ],
+  "files": [
+   "elite/PROTOCOL_V34_V35.md",
+   "elite/REPORT_V34_V35_20261014.md",
+   "elite/batch_v34.py",
+   "elite/candidates_v34.py",
+   "elite/results/20261014_v34/diagnostics.json",
+   "elite/results/20261014_v34/evidence.tar.gz",
+   "elite/results/20261014_v34/robustness.json",
+   "elite/results/20261014_v34/summary.json",
+   "elite/robustness_v34.py",
+   "elite/test_vwap_v34.py",
+   "elite/turnover_v34.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "elite/V36",
+  "first_seen": "2026-10-15",
+  "first_commit": "d5c44b0",
+  "first_branch": "origin/elite-research-v1",
+  "branches": [
+   "origin/elite-research-v1"
+  ],
+  "decision": "zamítnuty",
+  "ledger_files": [
+   "elite/results/20261015_v36/evidence.tar.gz"
+  ],
+  "files_with_sha256": [
+   "elite/results/20261015_v36/summary.json"
+  ],
+  "files": [
+   "elite/PROTOCOL_V36_V37.md",
+   "elite/REPORT_V36_V37_20261015.md",
+   "elite/batch_v36.py",
+   "elite/combine_v36.py",
+   "elite/results/20261015_v36/diagnostics.json",
+   "elite/results/20261015_v36/evidence.tar.gz",
+   "elite/results/20261015_v36/summary.json",
+   "elite/test_combine_v36.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "elite/V38",
+  "first_seen": "2026-10-15",
+  "first_commit": "3b75f06",
+  "first_branch": "origin/elite-research-v1",
+  "branches": [
+   "origin/elite-research-v1"
+  ],
+  "decision": "neprošla",
+  "ledger_files": [
+   "elite/results/20261015_v38/evidence.tar.gz",
+   "elite/results/20261015_v38_challenge/evidence.tar.gz"
+  ],
+  "files_with_sha256": [
+   "elite/results/20261015_v38/summary.json",
+   "elite/results/20261015_v38_challenge/summary.json"
+  ],
+  "files": [
+   "elite/PROTOCOL_CHALLENGE_V38.md",
+   "elite/PROTOCOL_V38_V39.md",
+   "elite/REPORT_V38_V39_20261015.md",
+   "elite/batch_v38.py",
+   "elite/challenge_v38.py",
+   "elite/loss_overlay_v38.py",
+   "elite/results/20261015_v38/diagnostics.json",
+   "elite/results/20261015_v38/evidence.tar.gz",
+   "elite/results/20261015_v38/summary.json",
+   "elite/results/20261015_v38_challenge/audit_checks.json",
+   "elite/results/20261015_v38_challenge/evidence.tar.gz",
+   "elite/results/20261015_v38_challenge/summary.json",
+   "elite/test_loss_overlay_v38.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "elite/V4",
+  "first_seen": "2026-10-13",
+  "first_commit": "162b5cf",
+  "first_branch": "origin/elite-research-v1",
+  "branches": [
+   "origin/elite-research-v1"
+  ],
+  "decision": "ruční: elite/RESEARCH_PROTOCOL_V5.md „V4 is rejected“; v4_audit.json vývoj 228 obchodů, −1 242,88, PF 0,646",
+  "ledger_files": [],
+  "files_with_sha256": [],
+  "files": [
+   "elite/audit_v4.py",
+   "elite/results/20261013/v4_audit.json",
+   "elite/test_v4_candidate.py",
+   "elite/v4_candidate.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "elite/V40",
+  "first_seen": "2026-10-15",
+  "first_commit": "849fff4",
+  "first_branch": "origin/elite-research-v1",
+  "branches": [
+   "origin/elite-research-v1"
+  ],
+  "decision": "zamítnuty",
+  "ledger_files": [
+   "elite/results/20261015_v40/evidence.tar.gz"
+  ],
+  "files_with_sha256": [
+   "elite/results/20261015_v40/summary.json"
+  ],
+  "files": [
+   "elite/PROTOCOL_V40_V41.md",
+   "elite/REPORT_V40_V41_20261015.md",
+   "elite/batch_v40.py",
+   "elite/daily_v40.py",
+   "elite/diagnostics_v40.py",
+   "elite/results/20261015_v40/diagnostics.json",
+   "elite/results/20261015_v40/evidence.tar.gz",
+   "elite/results/20261015_v40/summary.json",
+   "elite/test_daily_v40.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "elite/V42",
+  "first_seen": "2026-10-15",
+  "first_commit": "ecfe715",
+  "first_branch": "origin/elite-research-v1",
+  "branches": [
+   "origin/elite-research-v1"
+  ],
+  "decision": "zamítnuty",
+  "ledger_files": [
+   "elite/results/20261015_v42/evidence.tar.gz"
+  ],
+  "files_with_sha256": [
+   "elite/results/20261015_v42/summary.json"
+  ],
+  "files": [
+   "elite/PROTOCOL_V42_V43.md",
+   "elite/REPORT_V42_V43_20261015.md",
+   "elite/batch_v42.py",
+   "elite/diagnostics_v42.py",
+   "elite/impulse_v42.py",
+   "elite/results/20261015_v42/diagnostics.json",
+   "elite/results/20261015_v42/evidence.tar.gz",
+   "elite/results/20261015_v42/summary.json",
+   "elite/test_impulse_v42.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "elite/V44",
+  "first_seen": "2026-10-15",
+  "first_commit": "dba67ed",
+  "first_branch": "origin/elite-research-v1",
+  "branches": [
+   "origin/elite-research-v1"
+  ],
+  "decision": "zamítnuty",
+  "ledger_files": [
+   "elite/results/20261015_v44/evidence.tar.gz"
+  ],
+  "files_with_sha256": [
+   "elite/results/20261015_v44/summary.json"
+  ],
+  "files": [
+   "elite/PROTOCOL_V44_V45.md",
+   "elite/REPORT_V44_V45_20261015.md",
+   "elite/batch_v44.py",
+   "elite/diagnostics_v44.py",
+   "elite/relative_v44.py",
+   "elite/results/20261015_v44/diagnostics.json",
+   "elite/results/20261015_v44/evidence.tar.gz",
+   "elite/results/20261015_v44/summary.json",
+   "elite/test_relative_v44.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "elite/V46",
+  "first_seen": "2026-10-15",
+  "first_commit": "b11dae0",
+  "first_branch": "origin/elite-research-v1",
+  "branches": [
+   "origin/elite-research-v1"
+  ],
+  "decision": "zamítnuty",
+  "ledger_files": [
+   "elite/results/20261015_v46/evidence.tar.gz"
+  ],
+  "files_with_sha256": [
+   "elite/results/20261015_v46/summary.json"
+  ],
+  "files": [
+   "elite/PROTOCOL_V46_V47.md",
+   "elite/REPORT_V46_V47_20261015.md",
+   "elite/batch_v46.py",
+   "elite/diagnostics_v46.py",
+   "elite/funnel_v46.py",
+   "elite/regime_v46.py",
+   "elite/results/20261015_v46/diagnostics.json",
+   "elite/results/20261015_v46/evidence.tar.gz",
+   "elite/results/20261015_v46/signal_counts.json",
+   "elite/results/20261015_v46/summary.json",
+   "elite/test_regime_v46.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "elite/V48",
+  "first_seen": "2026-10-15",
+  "first_commit": "585448d",
+  "first_branch": "origin/elite-research-v1",
+  "branches": [
+   "origin/elite-research-v1"
+  ],
+  "decision": "zamítnuta",
+  "ledger_files": [
+   "elite/results/20261015_v48/evidence.tar.gz"
+  ],
+  "files_with_sha256": [
+   "elite/results/20261015_v48/summary.json"
+  ],
+  "files": [
+   "elite/PROTOCOL_V48.md",
+   "elite/REPORT_V48_20261015.md",
+   "elite/batch_v48.py",
+   "elite/diagnostics_v48.py",
+   "elite/results/20261015_v48/control_check.json",
+   "elite/results/20261015_v48/diagnostics.json",
+   "elite/results/20261015_v48/evidence.tar.gz",
+   "elite/results/20261015_v48/summary.json",
+   "elite/staged_v48.py",
+   "elite/test_staged_v48.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "elite/V49",
+  "first_seen": "2026-10-15",
+  "first_commit": "31e49a7",
+  "first_branch": "origin/elite-research-v1",
+  "branches": [
+   "origin/elite-research-v1"
+  ],
+  "decision": "zamítnuty",
+  "ledger_files": [
+   "elite/results/20261015_v49/evidence.tar.gz"
+  ],
+  "files_with_sha256": [
+   "elite/results/20261015_v49/summary.json"
+  ],
+  "files": [
+   "elite/PROTOCOL_V49_V50.md",
+   "elite/REPORT_V49_V50_20261015.md",
+   "elite/batch_v49.py",
+   "elite/diagnostics_v49.py",
+   "elite/results/20261015_v49/diagnostics.json",
+   "elite/results/20261015_v49/evidence.tar.gz",
+   "elite/results/20261015_v49/summary.json",
+   "elite/session_v49.py",
+   "elite/test_session_v49.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "elite/V5",
+  "first_seen": "2026-10-13",
+  "first_commit": "71729de",
+  "first_branch": "origin/elite-research-v1",
+  "branches": [
+   "origin/elite-research-v1"
+  ],
+  "decision": "ruční: jen protokol dávky V5; samostatné rozhodnutí nenalezeno",
+  "ledger_files": [],
+  "files_with_sha256": [],
+  "files": [
+   "elite/RESEARCH_PROTOCOL_V5.md"
+  ],
+  "class": "NEDOHLEDÁNO"
+ },
+ {
+  "hypothesis": "elite/V51",
+  "first_seen": "2026-10-16",
+  "first_commit": "7498a3d",
+  "first_branch": "origin/elite-research-v1",
+  "branches": [
+   "origin/elite-research-v1"
+  ],
+  "decision": "Rozhodnutí: zamítnuta pro další rezervované ověření i PAPER. Souhrnný zisk není",
+  "ledger_files": [
+   "elite/results/20261016_v51/evidence.tar.gz"
+  ],
+  "files_with_sha256": [
+   "elite/results/20261016_v51/summary.json"
+  ],
+  "files": [
+   "elite/PROTOCOL_V51.md",
+   "elite/REPORT_V51_20261016.md",
+   "elite/batch_v51.py",
+   "elite/diagnostics_v51.py",
+   "elite/episode_v51.py",
+   "elite/results/20261016_v51/diagnostics.json",
+   "elite/results/20261016_v51/evidence.tar.gz",
+   "elite/results/20261016_v51/summary.json",
+   "elite/test_episode_v51.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "elite/V52",
+  "first_seen": "2026-10-16",
+  "first_commit": "5f9f429",
+  "first_branch": "origin/elite-research-v1",
+  "branches": [
+   "origin/elite-research-v1"
+  ],
+  "decision": "Rozhodnutí: zamítnuta. Nová strategie odlišná od V18; nepoužívá její průraz",
+  "ledger_files": [
+   "elite/results/20261016_v52/evidence.tar.gz"
+  ],
+  "files_with_sha256": [
+   "elite/results/20261016_v52/summary.json"
+  ],
+  "files": [
+   "elite/PROTOCOL_V52.md",
+   "elite/REPORT_V52_20261016.md",
+   "elite/batch_v52.py",
+   "elite/diagnostics_v52.py",
+   "elite/double_bottom_v52.py",
+   "elite/results/20261016_v52/diagnostics.json",
+   "elite/results/20261016_v52/evidence.tar.gz",
+   "elite/results/20261016_v52/summary.json",
+   "elite/test_double_bottom_v52.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "elite/V53",
+  "first_seen": "2026-10-16",
+  "first_commit": "808f90c",
+  "first_branch": "origin/elite-research-v1",
+  "branches": [
+   "origin/elite-research-v1"
+  ],
+  "decision": "Rozhodnutí: zamítnuta pro rezervované ověření i PAPER. Tři kladné bloky a",
+  "ledger_files": [
+   "elite/results/20261016_v53/evidence.tar.gz"
+  ],
+  "files_with_sha256": [
+   "elite/results/20261016_v53/summary.json"
+  ],
+  "files": [
+   "elite/PROTOCOL_V53.md",
+   "elite/REPORT_V53_20261016.md",
+   "elite/batch_v53.py",
+   "elite/diagnostics_v53.py",
+   "elite/regression_v53.py",
+   "elite/results/20261016_v53/diagnostics.json",
+   "elite/results/20261016_v53/evidence.tar.gz",
+   "elite/results/20261016_v53/summary.json",
+   "elite/test_regression_v53.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "elite/V54",
+  "first_seen": "2026-10-16",
+  "first_commit": "8b617db",
+  "first_branch": "origin/elite-research-v1",
+  "branches": [
+   "origin/elite-research-v1"
+  ],
+  "decision": "Rozhodnutí: zamítnuta pro rezervované ověření i PAPER. Kladný souhrn nesplňuje",
+  "ledger_files": [
+   "elite/results/20261016_v54/evidence.tar.gz"
+  ],
+  "files_with_sha256": [
+   "elite/results/20261016_v54/summary.json"
+  ],
+  "files": [
+   "elite/PROTOCOL_V54.md",
+   "elite/REPORT_V54_20261016.md",
+   "elite/batch_v54.py",
+   "elite/diagnostics_v54.py",
+   "elite/imbalance_v54.py",
+   "elite/results/20261016_v54/diagnostics.json",
+   "elite/results/20261016_v54/evidence.tar.gz",
+   "elite/results/20261016_v54/summary.json",
+   "elite/test_imbalance_v54.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "elite/V55",
+  "first_seen": "2026-10-16",
+  "first_commit": "e9d8766",
+  "first_branch": "origin/elite-research-v1",
+  "branches": [
+   "origin/elite-research-v1"
+  ],
+  "decision": "Rozhodnutí: zamítnuta. Výprodej s mimořádným objemem a následné překřížení",
+  "ledger_files": [
+   "elite/results/20261016_v55/evidence.tar.gz"
+  ],
+  "files_with_sha256": [
+   "elite/results/20261016_v55/summary.json"
+  ],
+  "files": [
+   "elite/PROTOCOL_V55.md",
+   "elite/REPORT_V55_20261016.md",
+   "elite/batch_v55.py",
+   "elite/climax_v55.py",
+   "elite/diagnostics_v55.py",
+   "elite/results/20261016_v55/diagnostics.json",
+   "elite/results/20261016_v55/evidence.tar.gz",
+   "elite/results/20261016_v55/summary.json",
+   "elite/test_climax_v55.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "elite/V56",
+  "first_seen": "2026-10-16",
+  "first_commit": "fe8eb84",
+  "first_branch": "origin/elite-research-v1",
+  "branches": [
+   "origin/elite-research-v1"
+  ],
+  "decision": "Rozhodnutí: zamítnuta pro rezervované ověření i PAPER. Kladný výnos a malý",
+  "ledger_files": [
+   "elite/results/20261016_v56/evidence.tar.gz"
+  ],
+  "files_with_sha256": [
+   "elite/results/20261016_v56/summary.json"
+  ],
+  "files": [
+   "elite/PROTOCOL_V56.md",
+   "elite/REPORT_V56_20261017.md",
+   "elite/adaptive_v56.py",
+   "elite/batch_v56.py",
+   "elite/diagnostics_v56.py",
+   "elite/results/20261016_v56/diagnostics.json",
+   "elite/results/20261016_v56/evidence.tar.gz",
+   "elite/results/20261016_v56/summary.json",
+   "elite/test_adaptive_v56.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "elite/V57",
+  "first_seen": "2026-10-17",
+  "first_commit": "4336773",
+  "first_branch": "origin/elite-research-v1",
+  "branches": [
+   "origin/elite-research-v1"
+  ],
+  "decision": "Rozhodnutí: obě zamítnuty. Nové minimum aktivity splnily, finanční brány ne.",
+  "ledger_files": [
+   "elite/results/20261017_v57/evidence.tar.gz"
+  ],
+  "files_with_sha256": [
+   "elite/results/20261017_v57/summary.json"
+  ],
+  "files": [
+   "elite/PROTOCOL_V57_V58.md",
+   "elite/REPORT_V57_V58_20261017.md",
+   "elite/batch_v57.py",
+   "elite/diagnostics_v57.py",
+   "elite/faster_v57.py",
+   "elite/results/20261017_v57/diagnostics.json",
+   "elite/results/20261017_v57/evidence.tar.gz",
+   "elite/results/20261017_v57/summary.json",
+   "elite/test_faster_v57.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "elite/V59",
+  "first_seen": "2026-10-17",
+  "first_commit": "fb4e9dc",
+  "first_branch": "origin/elite-research-v1",
+  "branches": [
+   "origin/elite-research-v1"
+  ],
+  "decision": "Rozhodnutí: zamítnuta. Výnos po základních nákladech vzrostl, ale propad",
+  "ledger_files": [
+   "elite/results/20261017_v59/evidence.tar.gz"
+  ],
+  "files_with_sha256": [
+   "elite/results/20261017_v59/summary.json"
+  ],
+  "files": [
+   "elite/PROTOCOL_V59.md",
+   "elite/REPORT_V59_20261017.md",
+   "elite/batch_v59.py",
+   "elite/buffered_v59.py",
+   "elite/diagnostics_v59.py",
+   "elite/results/20261017_v59/diagnostics.json",
+   "elite/results/20261017_v59/evidence.tar.gz",
+   "elite/results/20261017_v59/summary.json",
+   "elite/test_buffered_v59.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "elite/V60",
+  "first_seen": "2026-10-18",
+  "first_commit": "01c3070",
+  "first_branch": "origin/elite-research-v1",
+  "branches": [
+   "origin/elite-research-v1"
+  ],
+  "decision": "ruční: protokol zmrazen 01c3070 (2026-10-18), výsledky necommitnuty",
+  "ledger_files": [],
+  "files_with_sha256": [],
+  "files": [
+   "elite/PROTOCOL_V60.md",
+   "elite/active_v60.py",
+   "elite/batch_v60.py",
+   "elite/test_active_v60.py"
+  ],
+  "class": "NEDOKONČENO"
+ },
+ {
+  "hypothesis": "elite/V8",
+  "first_seen": "2026-10-14",
+  "first_commit": "3b29796",
+  "first_branch": "origin/elite-research-v1",
+  "branches": [
+   "origin/elite-research-v1"
+  ],
+  "decision": "Rozhodnutí: žádný kandidát zatím nesplnil předem stanovené podmínky pro další",
+  "ledger_files": [],
+  "files_with_sha256": [],
+  "files": [
+   "elite/PROTOCOL_V8_V11.md",
+   "elite/REPORT_V8_V11_20261014.md",
+   "elite/batch_v8.py",
+   "elite/candidates_v8.py",
+   "elite/test_candidates_v8.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/ada_state_classifier",
+  "first_seen": "2026-10-24",
+  "first_commit": "0337a19",
+  "first_branch": "origin/ada-state-classifier-research-20261024, origin/triangular-parity-research-20261024",
+  "branches": [
+   "origin/ada-state-classifier-research-20261024",
+   "origin/triangular-parity-research-20261024"
+  ],
+  "decision": "passes_historical_gate\": false",
+  "ledger_files": [],
+  "files_with_sha256": [
+   "research/ada_state_classifier_results_20261024.json"
+  ],
+  "files": [
+   "research/ada_state_classifier_protocol_20261024.md",
+   "research/ada_state_classifier_results_20261024.json",
+   "research/ada_state_classifier_v1.py",
+   "research/run_ada_state_classifier_history.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/aggressor_sell_burst",
+  "first_seen": "2026-10-27",
+  "first_commit": "27dd042",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Decision: **NEPROŠEL**. The tick-sequence sell-exhaustion reversal loses in every locked control/OOS year and fails every profitability, stability, drawdown, an",
+  "ledger_files": [
+   "research/aggressor_sell_burst_validation_20261027/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/aggressor_sell_burst_validation_20261027/results.json"
+  ],
+  "files": [
+   "research/aggressor_sell_burst_dedup_amendment_20261027.md",
+   "research/aggressor_sell_burst_methodology_amendment_20261027.md",
+   "research/aggressor_sell_burst_protocol.md",
+   "research/aggressor_sell_burst_v1.py",
+   "research/aggressor_sell_burst_validation_20261027/README.md",
+   "research/aggressor_sell_burst_validation_20261027/audit.json",
+   "research/aggressor_sell_burst_validation_20261027/results.json",
+   "research/aggressor_sell_burst_validation_20261027/trades.json.gz",
+   "research/audit_aggressor_sell_burst.py",
+   "research/run_aggressor_sell_burst.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/attention_share",
+  "first_seen": "2026-10-26",
+  "first_commit": "a9b4c46",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Decision: **NEPROŠEL**. The protocol, code and gates were frozen in GitHub commit `a9b4c46350b4e88401646e1bb57608778d22f3f3` before performance evaluation.",
+  "ledger_files": [
+   "research/attention_share_validation_20261026/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/attention_share_validation_20261026/audit.json",
+   "research/attention_share_validation_20261026/results.json"
+  ],
+  "files": [
+   "research/attention_share_protocol.md",
+   "research/attention_share_v1.py",
+   "research/attention_share_validation_20261026/README.md",
+   "research/attention_share_validation_20261026/audit.json",
+   "research/attention_share_validation_20261026/results.json",
+   "research/attention_share_validation_20261026/trades.json.gz",
+   "research/audit_attention_share.py",
+   "research/run_attention_share.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/autocorr",
+  "first_seen": "2026-10-24",
+  "first_commit": "97857ed",
+  "first_branch": "origin/autocorr-regime-research-20261024, origin/research/cross-market-dispersion-20261026",
+  "branches": [
+   "origin/autocorr-regime-research-20261024",
+   "origin/research/cross-market-dispersion-20261026"
+  ],
+  "decision": "NEPROSEL",
+  "ledger_files": [
+   "research/autocorr_validation_20261024/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/autocorr_validation_20261024/results.json"
+  ],
+  "files": [
+   "research/autocorr_validation_20261024/results.json",
+   "research/autocorr_validation_20261024/trades.json.gz",
+   "research/run_autocorr_history.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/autocorr_regime",
+  "first_seen": "2026-10-24",
+  "first_commit": "fbc2c1d",
+  "first_branch": "origin/autocorr-regime-research-20261024, origin/research/cross-market-dispersion-20261026",
+  "branches": [
+   "origin/autocorr-regime-research-20261024",
+   "origin/research/cross-market-dispersion-20261026"
+  ],
+  "decision": "rejected",
+  "ledger_files": [],
+  "files_with_sha256": [],
+  "files": [
+   "research/autocorr_regime_decision_20261024.md",
+   "research/autocorr_regime_v1.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/best",
+  "first_seen": "2026-10-11",
+  "first_commit": "edbcadb",
+  "first_branch": "origin/research/best-validation-20261010",
+  "branches": [
+   "origin/research/best-validation-20261010"
+  ],
+  "decision": "Rozhodnutí: **žádná testovaná varianta nesplnila podmínky pro přechod do kandidátního PAPER provozu. Produkční strategie se nemění.**",
+  "ledger_files": [
+   "research/best_validation/results/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/best_validation/results/data_manifest.json"
+  ],
+  "files": [
+   "research/best_validation/README.md",
+   "research/best_validation/download_data.py",
+   "research/best_validation/known_issues.md",
+   "research/best_validation/protocol.json",
+   "research/best_validation/replay.py",
+   "research/best_validation/results/data_manifest.json",
+   "research/best_validation/results/decision.json",
+   "research/best_validation/results/results.json",
+   "research/best_validation/results/runtime_parameters.json",
+   "research/best_validation/results/trades.json.gz",
+   "research/best_validation/test_replay.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/best_exits",
+  "first_seen": "2026-10-11",
+  "first_commit": "54b918c",
+  "first_branch": "origin/research/best-validation-20261010",
+  "branches": [
+   "origin/research/best-validation-20261010"
+  ],
+  "decision": "NEPROŠLA",
+  "ledger_files": [
+   "research/best_exits_20261011/results/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/best_exits_20261011/protocol.json",
+   "research/best_exits_20261011/results/data_manifest.json"
+  ],
+  "files": [
+   "research/best_exits_20261011/README.md",
+   "research/best_exits_20261011/protocol.json",
+   "research/best_exits_20261011/results/data_manifest.json",
+   "research/best_exits_20261011/results/decision.json",
+   "research/best_exits_20261011/results/deployment_verification.json",
+   "research/best_exits_20261011/results/results.json",
+   "research/best_exits_20261011/results/trades.json.gz",
+   "research/best_exits_20261011/run.py",
+   "research/best_exits_20261011/test_exits.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/beta_hedged_residual",
+  "first_seen": "2026-10-23",
+  "first_commit": "c77ee30",
+  "first_branch": "origin/ada-state-classifier-research-20261024, origin/beta-hedged-residual-research-20261023, origin/bnb-volume-dryup-research-20261024 (+5)",
+  "branches": [
+   "origin/ada-state-classifier-research-20261024",
+   "origin/beta-hedged-residual-research-20261023",
+   "origin/bnb-volume-dryup-research-20261024",
+   "origin/btc-quarterly-carry-research-20261024",
+   "origin/eth-funding-extreme-research-20261024",
+   "origin/range-harvest-limit-research-20261023",
+   "origin/sol-basis-convergence-research-20261024",
+   "origin/triangular-parity-research-20261024"
+  ],
+  "decision": "passes_historical_gate\": false",
+  "ledger_files": [],
+  "files_with_sha256": [
+   "research/beta_hedged_residual_results_20261023.json"
+  ],
+  "files": [
+   "research/beta_hedged_residual_protocol_20261023.md",
+   "research/beta_hedged_residual_results_20261023.json",
+   "research/run_beta_hedged_residual_history.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/bnb_volume_dryup",
+  "first_seen": "2026-10-24",
+  "first_commit": "ae42b18",
+  "first_branch": "origin/ada-state-classifier-research-20261024, origin/bnb-volume-dryup-research-20261024, origin/btc-quarterly-carry-research-20261024 (+3)",
+  "branches": [
+   "origin/ada-state-classifier-research-20261024",
+   "origin/bnb-volume-dryup-research-20261024",
+   "origin/btc-quarterly-carry-research-20261024",
+   "origin/eth-funding-extreme-research-20261024",
+   "origin/sol-basis-convergence-research-20261024",
+   "origin/triangular-parity-research-20261024"
+  ],
+  "decision": "passes_historical_gate\": false",
+  "ledger_files": [],
+  "files_with_sha256": [
+   "research/bnb_volume_dryup_results_20261024.json"
+  ],
+  "files": [
+   "research/bnb_volume_dryup_protocol_20261024.md",
+   "research/bnb_volume_dryup_results_20261024.json",
+   "research/bnb_volume_dryup_v1.py",
+   "research/run_bnb_volume_dryup_history.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/breadth_capitulation",
+  "first_seen": "2026-10-26",
+  "first_commit": "ba2d668",
+  "first_branch": "origin/autocorr-regime-research-20261024, origin/research/cross-market-dispersion-20261026",
+  "branches": [
+   "origin/autocorr-regime-research-20261024",
+   "origin/research/cross-market-dispersion-20261026"
+  ],
+  "decision": "NEPROSEL",
+  "ledger_files": [
+   "research/breadth_capitulation_validation_20261026/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/breadth_capitulation_validation_20261026/results.json"
+  ],
+  "files": [
+   "research/audit_breadth_capitulation.py",
+   "research/breadth_capitulation_protocol.md",
+   "research/breadth_capitulation_v1.py",
+   "research/breadth_capitulation_validation_20261026/audit.json",
+   "research/breadth_capitulation_validation_20261026/results.json",
+   "research/breadth_capitulation_validation_20261026/trades.json.gz",
+   "research/run_breadth_capitulation.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/broad_dollar_downtrend",
+  "first_seen": "2026-10-28",
+  "first_commit": "47254e8",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Decision: **NEPROŠEL**. The external fiat-macro hypothesis, execution rules and",
+  "ledger_files": [
+   "research/broad_dollar_downtrend_validation_20261028/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/broad_dollar_downtrend_validation_20261028/results.json"
+  ],
+  "files": [
+   "research/audit_broad_dollar_downtrend.py",
+   "research/broad_dollar_downtrend_protocol.md",
+   "research/broad_dollar_downtrend_v1.py",
+   "research/broad_dollar_downtrend_validation_20261028/README.md",
+   "research/broad_dollar_downtrend_validation_20261028/audit.json",
+   "research/broad_dollar_downtrend_validation_20261028/results.json",
+   "research/broad_dollar_downtrend_validation_20261028/trades.json.gz",
+   "research/run_broad_dollar_downtrend.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/broad_shock_rebound",
+  "first_seen": "2026-10-21",
+  "first_commit": "4d02355",
+  "first_branch": "origin/ada-state-classifier-research-20261024, origin/beta-hedged-residual-research-20261023, origin/bnb-volume-dryup-research-20261024 (+12)",
+  "branches": [
+   "origin/ada-state-classifier-research-20261024",
+   "origin/beta-hedged-residual-research-20261023",
+   "origin/bnb-volume-dryup-research-20261024",
+   "origin/broad-shock-rebound-research-20261021",
+   "origin/btc-quarterly-carry-research-20261024",
+   "origin/downside-imbalance-short-research-20261022",
+   "origin/eth-funding-extreme-research-20261024",
+   "origin/range-harvest-limit-research-20261023",
+   "origin/research/combined-best-signals-paper-20261104",
+   "origin/session-transfer-research-20261023",
+   "origin/sol-basis-convergence-research-20261024",
+   "origin/triangular-parity-research-20261024",
+   "origin/volatility-contraction-spot-research-20261023",
+   "origin/volatility-managed-momentum-research-20261022",
+   "origin/weekend-carry-research-20261023"
+  ],
+  "decision": "passes_historical_gate\": false",
+  "ledger_files": [],
+  "files_with_sha256": [
+   "research/broad_shock_rebound_results_20261021.json"
+  ],
+  "files": [
+   "research/broad_shock_rebound_protocol_20261021.md",
+   "research/broad_shock_rebound_results_20261021.json",
+   "research/broad_shock_rebound_v1.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/btc_asset_manager_accumulation_xrp",
+  "first_seen": "2026-11-04",
+  "first_commit": "2ed883d",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Final decision on 2026-11-04: **NEPROSEL**. Offline research only; no forward PAPER promotion or deployment.",
+  "ledger_files": [
+   "research/btc_asset_manager_accumulation_xrp_validation_20261104/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/btc_asset_manager_accumulation_xrp_validation_20261104/results.json"
+  ],
+  "files": [
+   "research/audit_btc_asset_manager_accumulation_xrp.py",
+   "research/btc_asset_manager_accumulation_xrp_protocol_20261104.md",
+   "research/btc_asset_manager_accumulation_xrp_v1.py",
+   "research/btc_asset_manager_accumulation_xrp_validation_20261104/README.md",
+   "research/btc_asset_manager_accumulation_xrp_validation_20261104/audit.json",
+   "research/btc_asset_manager_accumulation_xrp_validation_20261104/reports.json.gz",
+   "research/btc_asset_manager_accumulation_xrp_validation_20261104/results.json",
+   "research/btc_asset_manager_accumulation_xrp_validation_20261104/trades.json.gz",
+   "research/run_btc_asset_manager_accumulation_xrp.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/btc_etf_creation_impulse",
+  "first_seen": "2026-10-30",
+  "first_commit": "9cdfe5e",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Decision: **NEPROŠEL**. The protocol and code were saved remotely in commit `9cdfe5e2edfbe68b99f3e2611f67428b09979bc1` before performance evaluation. No thresho",
+  "ledger_files": [
+   "research/btc_etf_creation_impulse_validation_20261030/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/btc_etf_creation_impulse_validation_20261030/results.json"
+  ],
+  "files": [
+   "research/audit_btc_etf_creation_impulse.py",
+   "research/btc_etf_creation_impulse_protocol_20261030.md",
+   "research/btc_etf_creation_impulse_v1.py",
+   "research/btc_etf_creation_impulse_validation_20261030/README.md",
+   "research/btc_etf_creation_impulse_validation_20261030/audit.json",
+   "research/btc_etf_creation_impulse_validation_20261030/results.json",
+   "research/btc_etf_creation_impulse_validation_20261030/trades.json.gz",
+   "research/run_btc_etf_creation_impulse.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/btc_hashrate_shock_recovery",
+  "first_seen": "2026-10-30",
+  "first_commit": "e806f36",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Decision: **NEPROŠEL**. The completed strategy loses at both cost levels and in four of five OOS years. Do not tune the z-score, lookback or recovery rule and d",
+  "ledger_files": [
+   "research/btc_hashrate_shock_recovery_validation_20261030/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/btc_hashrate_shock_recovery_validation_20261030/results.json"
+  ],
+  "files": [
+   "research/audit_btc_hashrate_shock_recovery.py",
+   "research/btc_hashrate_shock_recovery_protocol_20261030.md",
+   "research/btc_hashrate_shock_recovery_v1.py",
+   "research/btc_hashrate_shock_recovery_validation_20261030/README.md",
+   "research/btc_hashrate_shock_recovery_validation_20261030/audit.json",
+   "research/btc_hashrate_shock_recovery_validation_20261030/results.json",
+   "research/btc_hashrate_shock_recovery_validation_20261030/trades.json.gz",
+   "research/run_btc_hashrate_shock_recovery.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/btc_lead_lag",
+  "first_seen": "2026-10-25",
+  "first_commit": "4f8ba1c",
+  "first_branch": "origin/autocorr-regime-research-20261024, origin/research/cross-market-dispersion-20261026",
+  "branches": [
+   "origin/autocorr-regime-research-20261024",
+   "origin/research/cross-market-dispersion-20261026"
+  ],
+  "decision": "NEPROSEL",
+  "ledger_files": [
+   "research/btc_lead_lag_validation_20261025/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/btc_lead_lag_validation_20261025/results.json"
+  ],
+  "files": [
+   "research/audit_btc_lead_lag.py",
+   "research/btc_lead_lag_protocol.md",
+   "research/btc_lead_lag_v1.py",
+   "research/btc_lead_lag_validation_20261025/audit.json",
+   "research/btc_lead_lag_validation_20261025/results.json",
+   "research/btc_lead_lag_validation_20261025/trades.json.gz",
+   "research/run_btc_lead_lag.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/btc_mempool_clearance_xrp",
+  "first_seen": "2026-11-04",
+  "first_commit": "d6aaf02",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Final decision on 2026-11-04: **NEPROSEL**. Offline research only; no forward PAPER promotion or deployment.",
+  "ledger_files": [
+   "research/btc_mempool_clearance_xrp_validation_20261104/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/btc_mempool_clearance_xrp_validation_20261104/results.json"
+  ],
+  "files": [
+   "research/audit_btc_mempool_clearance_xrp.py",
+   "research/btc_mempool_clearance_xrp_protocol_20261104.md",
+   "research/btc_mempool_clearance_xrp_v1.py",
+   "research/btc_mempool_clearance_xrp_validation_20261104/README.md",
+   "research/btc_mempool_clearance_xrp_validation_20261104/audit.json",
+   "research/btc_mempool_clearance_xrp_validation_20261104/daily_metric.json.gz",
+   "research/btc_mempool_clearance_xrp_validation_20261104/results.json",
+   "research/btc_mempool_clearance_xrp_validation_20261104/trades.json.gz",
+   "research/run_btc_mempool_clearance_xrp.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/btc_option_skew_risk_on",
+  "first_seen": "2026-10-30",
+  "first_commit": "c115dfb",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Decision: **NEPROŠEL**. The profitable aggregate does not override failed frozen sample, stability, final-year and concentration gates. Do not tune or invert th",
+  "ledger_files": [
+   "research/btc_option_skew_risk_on_validation_20261030/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/btc_option_skew_risk_on_validation_20261030/results.json"
+  ],
+  "files": [
+   "research/audit_btc_option_skew_risk_on.py",
+   "research/btc_option_skew_risk_on_protocol_20261030.md",
+   "research/btc_option_skew_risk_on_v1.py",
+   "research/btc_option_skew_risk_on_validation_20261030/README.md",
+   "research/btc_option_skew_risk_on_validation_20261030/audit.json",
+   "research/btc_option_skew_risk_on_validation_20261030/observations.json.gz",
+   "research/btc_option_skew_risk_on_validation_20261030/results.json",
+   "research/btc_option_skew_risk_on_validation_20261030/trades.json.gz",
+   "research/run_btc_option_skew_risk_on.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/btc_quarterly_carry",
+  "first_seen": "2026-10-24",
+  "first_commit": "546f057",
+  "first_branch": "origin/ada-state-classifier-research-20261024, origin/btc-quarterly-carry-research-20261024, origin/triangular-parity-research-20261024",
+  "branches": [
+   "origin/ada-state-classifier-research-20261024",
+   "origin/btc-quarterly-carry-research-20261024",
+   "origin/triangular-parity-research-20261024"
+  ],
+  "decision": "passes_historical_gate\": false",
+  "ledger_files": [],
+  "files_with_sha256": [
+   "research/btc_quarterly_carry_results_20261024.json"
+  ],
+  "files": [
+   "research/btc_quarterly_carry_protocol_20261024.md",
+   "research/btc_quarterly_carry_results_20261024.json",
+   "research/btc_quarterly_carry_v1.py",
+   "research/run_btc_quarterly_carry_history.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/btc_variance_risk_premium",
+  "first_seen": "2026-10-30",
+  "first_commit": "caf3894",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Decision: **NEPROŠEL**. The fixed hypothesis, threshold, timing, execution and gates were stored in GitHub commit `8014a45b4b8f20ce803c7aacaaf94fc9da6a453f` bef",
+  "ledger_files": [
+   "research/btc_variance_risk_premium_validation_20261030/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/btc_variance_risk_premium_validation_20261030/results.json"
+  ],
+  "files": [
+   "research/audit_btc_variance_risk_premium.py",
+   "research/btc_variance_risk_premium_ingestion_amendment_20261030.md",
+   "research/btc_variance_risk_premium_protocol_20261030.md",
+   "research/btc_variance_risk_premium_v1.py",
+   "research/btc_variance_risk_premium_validation_20261030/README.md",
+   "research/btc_variance_risk_premium_validation_20261030/audit.json",
+   "research/btc_variance_risk_premium_validation_20261030/results.json",
+   "research/btc_variance_risk_premium_validation_20261030/trades.json.gz",
+   "research/run_btc_variance_risk_premium.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/candle",
+  "first_seen": "2026-10-19",
+  "first_commit": "abe5dd7",
+  "first_branch": "origin/research/candle-validation-20261019",
+  "branches": [
+   "origin/research/candle-validation-20261019"
+  ],
+  "decision": "ruční: candle_validation_20261019/README „Neither candidate is approved“, breakout/retest nesplnil PF ≥ 1,2",
+  "ledger_files": [],
+  "files_with_sha256": [
+   "research/candle_validation_20261019/data_manifest.json"
+  ],
+  "files": [
+   "research/candle_validation_20261019/README.md",
+   "research/candle_validation_20261019/data_manifest.json",
+   "research/candle_validation_20261019/development_results.json",
+   "research/candle_validation_20261019/download.py",
+   "research/candle_validation_20261019/engine.py",
+   "research/candle_validation_20261019/holdout_results.json",
+   "research/candle_validation_20261019/protocol.json",
+   "research/candle_validation_20261019/run.py",
+   "research/candle_validation_20261019/source_hashes.json"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/combined_selection_replay",
+  "first_seen": "2026-11-05",
+  "first_commit": "2fad28a",
+  "first_branch": "origin/claude/xrp-bot-strategy-backtest-7hu2l1, origin/research/combined-selection-replay-20261105, origin/v8-fly-layer-test",
+  "branches": [
+   "origin/claude/xrp-bot-strategy-backtest-7hu2l1",
+   "origin/research/combined-selection-replay-20261105",
+   "origin/v8-fly-layer-test"
+  ],
+  "decision": "neprošel",
+  "ledger_files": [],
+  "files_with_sha256": [
+   "research/combined_selection_replay/reference_vmm_20261022.json",
+   "research/combined_selection_replay/results.json"
+  ],
+  "files": [
+   "research/combined_selection_replay/README.md",
+   "research/combined_selection_replay/RESULTS_20261105.md",
+   "research/combined_selection_replay/__init__.py",
+   "research/combined_selection_replay/reference_vmm_20261022.json",
+   "research/combined_selection_replay/results.json",
+   "research/combined_selection_replay/run.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/core_development_activity",
+  "first_seen": "2026-10-29",
+  "first_commit": "664a9b9",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Decision: **NEPROŠEL**.",
+  "ledger_files": [
+   "research/core_development_activity_validation_20261029/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/core_development_activity_validation_20261029/results.json"
+  ],
+  "files": [
+   "research/audit_core_development_activity.py",
+   "research/core_development_activity_ingestion_amendment_20261029.md",
+   "research/core_development_activity_protocol_20261029.md",
+   "research/core_development_activity_source_feasibility_20261029.md",
+   "research/core_development_activity_v1.py",
+   "research/core_development_activity_validation_20261029/README.md",
+   "research/core_development_activity_validation_20261029/audit.json",
+   "research/core_development_activity_validation_20261029/results.json",
+   "research/core_development_activity_validation_20261029/trades.json.gz",
+   "research/run_core_development_activity.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/cross_exchange_residual",
+  "first_seen": "2026-10-27",
+  "first_commit": "9276eb8",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Decision: **NEPROŠEL**. Rules and gates were frozen on GitHub before historical",
+  "ledger_files": [
+   "research/cross_exchange_residual_validation_20261027/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/cross_exchange_residual_validation_20261027/results.json"
+  ],
+  "files": [
+   "research/audit_cross_exchange_residual.py",
+   "research/cross_exchange_residual_protocol.md",
+   "research/cross_exchange_residual_v1.py",
+   "research/cross_exchange_residual_validation_20261027/README.md",
+   "research/cross_exchange_residual_validation_20261027/audit.json",
+   "research/cross_exchange_residual_validation_20261027/results.json",
+   "research/cross_exchange_residual_validation_20261027/trades.json.gz",
+   "research/run_cross_exchange_residual.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/cross_market_dispersion",
+  "first_seen": "2026-10-26",
+  "first_commit": "6ab022f",
+  "first_branch": "origin/research/cross-market-dispersion-20261026",
+  "branches": [
+   "origin/research/cross-market-dispersion-20261026"
+  ],
+  "decision": "NEPROŠEL",
+  "ledger_files": [],
+  "files_with_sha256": [
+   "research/cross_market_dispersion_20261026/audit.json",
+   "research/cross_market_dispersion_20261026/execution_metadata.json",
+   "research/cross_market_dispersion_20261026/results.json"
+  ],
+  "files": [
+   "research/cross_market_dispersion_20261026/DECISION.md",
+   "research/cross_market_dispersion_20261026/EXECUTION_REPORT.md",
+   "research/cross_market_dispersion_20261026/audit.json",
+   "research/cross_market_dispersion_20261026/execution_metadata.json",
+   "research/cross_market_dispersion_20261026/results.json",
+   "research/cross_market_dispersion_20261026/run_history.py",
+   "research/cross_market_dispersion_20261026/strategy.py",
+   "research/cross_market_dispersion_20261026/trades_base.json.gz",
+   "research/cross_market_dispersion_20261026/trades_stress.json.gz"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/cross_sectional_rotation",
+  "first_seen": "2026-10-20",
+  "first_commit": "f2dac06",
+  "first_branch": "origin/ada-state-classifier-research-20261024, origin/beta-hedged-residual-research-20261023, origin/bnb-volume-dryup-research-20261024 (+14)",
+  "branches": [
+   "origin/ada-state-classifier-research-20261024",
+   "origin/beta-hedged-residual-research-20261023",
+   "origin/bnb-volume-dryup-research-20261024",
+   "origin/broad-shock-rebound-research-20261021",
+   "origin/btc-quarterly-carry-research-20261024",
+   "origin/cross-sectional-rotation-research-20261020",
+   "origin/downside-imbalance-short-research-20261022",
+   "origin/eth-funding-extreme-research-20261024",
+   "origin/range-harvest-limit-research-20261023",
+   "origin/research/combined-best-signals-paper-20261104",
+   "origin/session-transfer-research-20261023",
+   "origin/sol-basis-convergence-research-20261024",
+   "origin/sol-eth-pairs-research-20261021",
+   "origin/triangular-parity-research-20261024",
+   "origin/volatility-contraction-spot-research-20261023",
+   "origin/volatility-managed-momentum-research-20261022",
+   "origin/weekend-carry-research-20261023"
+  ],
+  "decision": "passes_historical_gate\": false",
+  "ledger_files": [],
+  "files_with_sha256": [
+   "research/cross_sectional_rotation_results_20261020.json"
+  ],
+  "files": [
+   "research/cross_sectional_rotation_protocol_20261020.md",
+   "research/cross_sectional_rotation_results_20261020.json",
+   "research/cross_sectional_rotation_v1.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/defi_yield_rotation",
+  "first_seen": "2026-10-29",
+  "first_commit": "d1e3090",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Decision: **NEPROŠEL**. Positive aggregate history is not sufficient evidence for promotion.",
+  "ledger_files": [
+   "research/defi_yield_rotation_validation_20261029/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/defi_yield_rotation_validation_20261029/results.json"
+  ],
+  "files": [
+   "research/audit_defi_yield_rotation.py",
+   "research/defi_yield_rotation_protocol_20261029.md",
+   "research/defi_yield_rotation_source_feasibility_20261029.md",
+   "research/defi_yield_rotation_v1.py",
+   "research/defi_yield_rotation_validation_20261029/README.md",
+   "research/defi_yield_rotation_validation_20261029/audit.json",
+   "research/defi_yield_rotation_validation_20261029/results.json",
+   "research/defi_yield_rotation_validation_20261029/trades.json.gz",
+   "research/run_defi_yield_rotation.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/downside_imbalance_short",
+  "first_seen": "2026-10-22",
+  "first_commit": "0da15ae",
+  "first_branch": "origin/ada-state-classifier-research-20261024, origin/beta-hedged-residual-research-20261023, origin/bnb-volume-dryup-research-20261024 (+9)",
+  "branches": [
+   "origin/ada-state-classifier-research-20261024",
+   "origin/beta-hedged-residual-research-20261023",
+   "origin/bnb-volume-dryup-research-20261024",
+   "origin/btc-quarterly-carry-research-20261024",
+   "origin/downside-imbalance-short-research-20261022",
+   "origin/eth-funding-extreme-research-20261024",
+   "origin/range-harvest-limit-research-20261023",
+   "origin/session-transfer-research-20261023",
+   "origin/sol-basis-convergence-research-20261024",
+   "origin/triangular-parity-research-20261024",
+   "origin/volatility-contraction-spot-research-20261023",
+   "origin/weekend-carry-research-20261023"
+  ],
+  "decision": "passes_historical_gate\": false",
+  "ledger_files": [],
+  "files_with_sha256": [
+   "research/downside_imbalance_short_results_20261022.json"
+  ],
+  "files": [
+   "research/downside_imbalance_short_protocol_20261022.md",
+   "research/downside_imbalance_short_results_20261022.json",
+   "research/downside_imbalance_short_v1.py",
+   "research/run_downside_imbalance_short_history.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/eth_funding_extreme",
+  "first_seen": "2026-10-24",
+  "first_commit": "6b7e254",
+  "first_branch": "origin/ada-state-classifier-research-20261024, origin/btc-quarterly-carry-research-20261024, origin/eth-funding-extreme-research-20261024 (+2)",
+  "branches": [
+   "origin/ada-state-classifier-research-20261024",
+   "origin/btc-quarterly-carry-research-20261024",
+   "origin/eth-funding-extreme-research-20261024",
+   "origin/sol-basis-convergence-research-20261024",
+   "origin/triangular-parity-research-20261024"
+  ],
+  "decision": "passes_historical_gate\": false",
+  "ledger_files": [],
+  "files_with_sha256": [
+   "research/eth_funding_extreme_results_20261024.json"
+  ],
+  "files": [
+   "research/eth_funding_extreme_protocol_20261024.md",
+   "research/eth_funding_extreme_results_20261024.json",
+   "research/run_eth_funding_extreme_history.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/extreme_fear_contrarian",
+  "first_seen": "2026-10-29",
+  "first_commit": "0230553",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Decision: **NEPROŠEL**. The frozen sentiment candidate is not promoted to forward PAPER despite positive aggregate history.",
+  "ledger_files": [
+   "research/extreme_fear_contrarian_validation_20261029/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/extreme_fear_contrarian_validation_20261029/results.json"
+  ],
+  "files": [
+   "research/audit_extreme_fear_contrarian.py",
+   "research/extreme_fear_contrarian_protocol_20261029.md",
+   "research/extreme_fear_contrarian_source_20261029.md",
+   "research/extreme_fear_contrarian_v1.py",
+   "research/extreme_fear_contrarian_validation_20261029/README.md",
+   "research/extreme_fear_contrarian_validation_20261029/audit.json",
+   "research/extreme_fear_contrarian_validation_20261029/results.json",
+   "research/extreme_fear_contrarian_validation_20261029/trades.json.gz",
+   "research/run_extreme_fear_contrarian.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/fib_timeframe",
+  "first_seen": "2026-10-20",
+  "first_commit": "05fca8b",
+  "first_branch": "origin/research/fib-timeframe-20261020",
+  "branches": [
+   "origin/research/fib-timeframe-20261020"
+  ],
+  "decision": "Decision: no production filter/timeframe change. PAPER v13 remains deployed. Paused strategies remain paused.",
+  "ledger_files": [
+   "research/fib_timeframe_20261020/extension_trades.json.gz",
+   "research/fib_timeframe_20261020/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/fib_timeframe_20261020/datasets.json",
+   "research/fib_timeframe_20261020/manifest.json"
+  ],
+  "files": [
+   "research/fib_timeframe_20261020/README.md",
+   "research/fib_timeframe_20261020/datasets.json",
+   "research/fib_timeframe_20261020/download.py",
+   "research/fib_timeframe_20261020/extension.py",
+   "research/fib_timeframe_20261020/extension_protocol.json",
+   "research/fib_timeframe_20261020/extension_results.json",
+   "research/fib_timeframe_20261020/extension_trades.json.gz",
+   "research/fib_timeframe_20261020/manifest.json",
+   "research/fib_timeframe_20261020/protocol.json",
+   "research/fib_timeframe_20261020/results.json",
+   "research/fib_timeframe_20261020/run.py",
+   "research/fib_timeframe_20261020/source_hashes.json",
+   "research/fib_timeframe_20261020/summarize.py",
+   "research/fib_timeframe_20261020/test_replay.py",
+   "research/fib_timeframe_20261020/trades.json.gz"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/financial_conditions_easing",
+  "first_seen": "2026-10-29",
+  "first_commit": "1721c42",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Decision: **NEPROŠEL**. The frozen external financial-conditions hypothesis is rejected and is not promoted to forward PAPER.",
+  "ledger_files": [
+   "research/financial_conditions_easing_validation_20261029/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/financial_conditions_easing_validation_20261029/results.json"
+  ],
+  "files": [
+   "research/audit_financial_conditions_easing.py",
+   "research/financial_conditions_easing_protocol_20261029.md",
+   "research/financial_conditions_easing_source_20261029.md",
+   "research/financial_conditions_easing_v1.py",
+   "research/financial_conditions_easing_validation_20261029/README.md",
+   "research/financial_conditions_easing_validation_20261029/audit.json",
+   "research/financial_conditions_easing_validation_20261029/results.json",
+   "research/financial_conditions_easing_validation_20261029/trades.json.gz",
+   "research/run_financial_conditions_easing.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/float_expansion_slowdown",
+  "first_seen": "2026-10-30",
+  "first_commit": "19e0645",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Decision: **NEPROŠEL**. The tokenomics hypothesis, 30-day change, past-only 365-day nearest-rank 20th percentile, two-day lag, execution and gates were stored i",
+  "ledger_files": [
+   "research/float_expansion_slowdown_validation_20261030/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/float_expansion_slowdown_validation_20261030/results.json"
+  ],
+  "files": [
+   "research/audit_float_expansion_slowdown.py",
+   "research/float_expansion_slowdown_protocol_20261030.md",
+   "research/float_expansion_slowdown_v1.py",
+   "research/float_expansion_slowdown_validation_20261030/README.md",
+   "research/float_expansion_slowdown_validation_20261030/audit.json",
+   "research/float_expansion_slowdown_validation_20261030/results.json",
+   "research/float_expansion_slowdown_validation_20261030/trades.json.gz",
+   "research/run_float_expansion_slowdown.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/flow_pressure",
+  "first_seen": "2026-10-20",
+  "first_commit": "0337a0e",
+  "first_branch": "origin/ada-state-classifier-research-20261024, origin/autocorr-regime-research-20261024, origin/beta-hedged-residual-research-20261023 (+17)",
+  "branches": [
+   "origin/ada-state-classifier-research-20261024",
+   "origin/autocorr-regime-research-20261024",
+   "origin/beta-hedged-residual-research-20261023",
+   "origin/bnb-volume-dryup-research-20261024",
+   "origin/broad-shock-rebound-research-20261021",
+   "origin/btc-quarterly-carry-research-20261024",
+   "origin/cross-sectional-rotation-research-20261020",
+   "origin/downside-imbalance-short-research-20261022",
+   "origin/eth-funding-extreme-research-20261024",
+   "origin/flow-pressure-research-20261020",
+   "origin/range-harvest-limit-research-20261023",
+   "origin/research/combined-best-signals-paper-20261104",
+   "origin/research/cross-market-dispersion-20261026",
+   "origin/session-transfer-research-20261023",
+   "origin/sol-basis-convergence-research-20261024",
+   "origin/sol-eth-pairs-research-20261021",
+   "origin/triangular-parity-research-20261024",
+   "origin/volatility-contraction-spot-research-20261023",
+   "origin/volatility-managed-momentum-research-20261022",
+   "origin/weekend-carry-research-20261023"
+  ],
+  "decision": "ruční: research_decision_20261020.md „rejected on XRP 15m“; test PF 0,82 (2×: 0,38)",
+  "ledger_files": [],
+  "files_with_sha256": [
+   "research/flow_pressure_results_20261020.json"
+  ],
+  "files": [
+   "research/flow_pressure_results_20261020.json",
+   "research/flow_pressure_v1.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/funding_reversal",
+  "first_seen": "2026-10-25",
+  "first_commit": "39b2eb1",
+  "first_branch": "origin/autocorr-regime-research-20261024, origin/research/cross-market-dispersion-20261026",
+  "branches": [
+   "origin/autocorr-regime-research-20261024",
+   "origin/research/cross-market-dispersion-20261026"
+  ],
+  "decision": "NEPROSEL",
+  "ledger_files": [
+   "research/funding_reversal_validation_20261025/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/funding_reversal_validation_20261025/results.json"
+  ],
+  "files": [
+   "research/audit_funding_reversal.py",
+   "research/funding_reversal_protocol.md",
+   "research/funding_reversal_v1.py",
+   "research/funding_reversal_validation_20261025/audit.json",
+   "research/funding_reversal_validation_20261025/results.json",
+   "research/funding_reversal_validation_20261025/trades.json.gz",
+   "research/run_funding_reversal.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/holder_growth_divergence",
+  "first_seen": "2026-10-28",
+  "first_commit": "79d33ec",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Decision: **NEPROŠEL**. The holder-stock/price-divergence hypothesis, rules and",
+  "ledger_files": [
+   "research/holder_growth_divergence_validation_20261028/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/holder_growth_divergence_validation_20261028/results.json"
+  ],
+  "files": [
+   "research/audit_holder_growth_divergence.py",
+   "research/holder_growth_divergence_protocol.md",
+   "research/holder_growth_divergence_v1.py",
+   "research/holder_growth_divergence_validation_20261028/README.md",
+   "research/holder_growth_divergence_validation_20261028/audit.json",
+   "research/holder_growth_divergence_validation_20261028/results.json",
+   "research/holder_growth_divergence_validation_20261028/trades.json.gz",
+   "research/run_holder_growth_divergence.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/hourly_retest",
+  "first_seen": "2026-10-19",
+  "first_commit": "9eec861",
+  "first_branch": "origin/research/candle-validation-20261019",
+  "branches": [
+   "origin/research/candle-validation-20261019"
+  ],
+  "decision": "ruční: protokol zmrazen 9eec861 (2026-10-19), výsledky necommitnuty",
+  "ledger_files": [],
+  "files_with_sha256": [],
+  "files": [
+   "research/hourly_retest_20261019/download.py",
+   "research/hourly_retest_20261019/protocol.json",
+   "research/hourly_retest_20261019/run.py",
+   "research/hourly_retest_20261019/strategy.py",
+   "research/hourly_retest_20261019/test_strategy.py"
+  ],
+  "class": "NEDOKONČENO"
+ },
+ {
+  "hypothesis": "research/illiquidity_reversal",
+  "first_seen": "2026-10-26",
+  "first_commit": "0217569",
+  "first_branch": "origin/autocorr-regime-research-20261024, origin/research/cross-market-dispersion-20261026",
+  "branches": [
+   "origin/autocorr-regime-research-20261024",
+   "origin/research/cross-market-dispersion-20261026"
+  ],
+  "decision": "Decision: **NEPROŠEL**. Rules and gates were frozen in GitHub commit `02175691272e35c5614ae8f1204b1ab7226b2403`. The zero-volume/no-imputation ingestion amendme",
+  "ledger_files": [
+   "research/illiquidity_reversal_validation_20261026/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/illiquidity_reversal_validation_20261026/audit.json",
+   "research/illiquidity_reversal_validation_20261026/results.json"
+  ],
+  "files": [
+   "research/audit_illiquidity_reversal.py",
+   "research/illiquidity_reversal_protocol.md",
+   "research/illiquidity_reversal_v1.py",
+   "research/illiquidity_reversal_validation_20261026/README.md",
+   "research/illiquidity_reversal_validation_20261026/audit.json",
+   "research/illiquidity_reversal_validation_20261026/results.json",
+   "research/illiquidity_reversal_validation_20261026/trades.json.gz",
+   "research/run_illiquidity_reversal.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/large_trade_followthrough",
+  "first_seen": "2026-10-25",
+  "first_commit": "466679c",
+  "first_branch": "origin/autocorr-regime-research-20261024, origin/research/cross-market-dispersion-20261026",
+  "branches": [
+   "origin/autocorr-regime-research-20261024",
+   "origin/research/cross-market-dispersion-20261026"
+  ],
+  "decision": "NEPROSEL",
+  "ledger_files": [
+   "research/large_trade_followthrough_validation_20261025/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/large_trade_followthrough_validation_20261025/results.json"
+  ],
+  "files": [
+   "research/large_trade_followthrough_protocol.md",
+   "research/large_trade_followthrough_v1.py",
+   "research/large_trade_followthrough_validation_20261025/audit.json",
+   "research/large_trade_followthrough_validation_20261025/results.json",
+   "research/large_trade_followthrough_validation_20261025/trades.json.gz",
+   "research/run_large_trade_followthrough.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/ledger_activity_breadth",
+  "first_seen": "2026-10-27",
+  "first_commit": "9d1676a",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Decision: **NEPROŠEL**. The on-chain rules, percentile definition and gates were",
+  "ledger_files": [
+   "research/audit_ledger_activity_breadth.py",
+   "research/ledger_activity_breadth_protocol.md",
+   "research/ledger_activity_breadth_v1.py",
+   "research/ledger_activity_breadth_validation_20261027/README.md",
+   "research/ledger_activity_breadth_validation_20261027/audit.json",
+   "research/ledger_activity_breadth_validation_20261027/results.json",
+   "research/ledger_activity_breadth_validation_20261027/trades.json.gz",
+   "research/run_ledger_activity_breadth.py"
+  ],
+  "files_with_sha256": [
+   "research/ledger_activity_breadth_validation_20261027/results.json"
+  ],
+  "files": [
+   "research/audit_ledger_activity_breadth.py",
+   "research/ledger_activity_breadth_protocol.md",
+   "research/ledger_activity_breadth_v1.py",
+   "research/ledger_activity_breadth_validation_20261027/README.md",
+   "research/ledger_activity_breadth_validation_20261027/audit.json",
+   "research/ledger_activity_breadth_validation_20261027/results.json",
+   "research/ledger_activity_breadth_validation_20261027/trades.json.gz",
+   "research/run_ledger_activity_breadth.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/ledger_cadence_health",
+  "first_seen": "2026-10-29",
+  "first_commit": "384ccca",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Decision: **NEPROŠEL**. A small positive base-cost aggregate is not robust evidence.",
+  "ledger_files": [
+   "research/audit_ledger_cadence_health.py",
+   "research/ledger_cadence_health_protocol_20261029.md",
+   "research/ledger_cadence_health_source_feasibility_20261029.md",
+   "research/ledger_cadence_health_v1.py",
+   "research/ledger_cadence_health_validation_20261029/README.md",
+   "research/ledger_cadence_health_validation_20261029/audit.json",
+   "research/ledger_cadence_health_validation_20261029/results.json",
+   "research/ledger_cadence_health_validation_20261029/trades.json.gz",
+   "research/run_ledger_cadence_health.py"
+  ],
+  "files_with_sha256": [
+   "research/ledger_cadence_health_validation_20261029/results.json"
+  ],
+  "files": [
+   "research/audit_ledger_cadence_health.py",
+   "research/ledger_cadence_health_protocol_20261029.md",
+   "research/ledger_cadence_health_source_feasibility_20261029.md",
+   "research/ledger_cadence_health_v1.py",
+   "research/ledger_cadence_health_validation_20261029/README.md",
+   "research/ledger_cadence_health_validation_20261029/audit.json",
+   "research/ledger_cadence_health_validation_20261029/results.json",
+   "research/ledger_cadence_health_validation_20261029/trades.json.gz",
+   "research/run_ledger_cadence_health.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/network_fee_pressure",
+  "first_seen": "2026-10-27",
+  "first_commit": "531d1ba",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Decision: **NEPROŠEL**. The fee-pressure rules and gates were committed before",
+  "ledger_files": [
+   "research/network_fee_pressure_validation_20261027/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/network_fee_pressure_validation_20261027/results.json"
+  ],
+  "files": [
+   "research/audit_network_fee_pressure.py",
+   "research/network_fee_pressure_protocol.md",
+   "research/network_fee_pressure_v1.py",
+   "research/network_fee_pressure_validation_20261027/README.md",
+   "research/network_fee_pressure_validation_20261027/audit.json",
+   "research/network_fee_pressure_validation_20261027/results.json",
+   "research/network_fee_pressure_validation_20261027/trades.json.gz",
+   "research/run_network_fee_pressure.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/oi_crowding",
+  "first_seen": "2026-10-25",
+  "first_commit": "4acf42b",
+  "first_branch": "origin/autocorr-regime-research-20261024, origin/research/cross-market-dispersion-20261026",
+  "branches": [
+   "origin/autocorr-regime-research-20261024",
+   "origin/research/cross-market-dispersion-20261026"
+  ],
+  "decision": "NEPROSEL",
+  "ledger_files": [
+   "research/oi_crowding_validation_20261025/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/oi_crowding_validation_20261025/results.json"
+  ],
+  "files": [
+   "research/audit_oi_crowding.py",
+   "research/oi_crowding_protocol.md",
+   "research/oi_crowding_v1.py",
+   "research/oi_crowding_validation_20261025/audit.json",
+   "research/oi_crowding_validation_20261025/results.json",
+   "research/oi_crowding_validation_20261025/trades.json.gz",
+   "research/run_oi_crowding.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/orderbook_depth",
+  "first_seen": "2026-10-26",
+  "first_commit": "d5fa1c2",
+  "first_branch": "origin/autocorr-regime-research-20261024, origin/research/cross-market-dispersion-20261026",
+  "branches": [
+   "origin/autocorr-regime-research-20261024",
+   "origin/research/cross-market-dispersion-20261026"
+  ],
+  "decision": "Decision: **NEPROŠEL**. The fixed protocol was stored in commit `d5fa1c2b17a07aa6d4119ba3142ba4a9a15ed8bc`; the missing-archive rule was stored in `8317b33bb5cf",
+  "ledger_files": [
+   "research/orderbook_depth_validation_20261026/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/orderbook_depth_validation_20261026/audit.json",
+   "research/orderbook_depth_validation_20261026/results.json"
+  ],
+  "files": [
+   "research/audit_orderbook_depth.py",
+   "research/orderbook_depth_protocol.md",
+   "research/orderbook_depth_v1.py",
+   "research/orderbook_depth_validation_20261026/README.md",
+   "research/orderbook_depth_validation_20261026/audit.json",
+   "research/orderbook_depth_validation_20261026/results.json",
+   "research/orderbook_depth_validation_20261026/trades.json.gz",
+   "research/run_orderbook_depth.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/paper_overlap",
+  "first_seen": "2026-10-18",
+  "first_commit": "bfd4be5",
+  "first_branch": "origin/research/candle-validation-20261019, origin/research/paper-filters-20261018",
+  "branches": [
+   "origin/research/candle-validation-20261019",
+   "origin/research/paper-filters-20261018"
+  ],
+  "decision": "reject",
+  "ledger_files": [
+   "research/paper_overlap_20261018/tv_month/tv_trades.json.gz",
+   "research/paper_overlap_20261018/tv_trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/paper_overlap_20261018/data_manifest.json",
+   "research/paper_overlap_20261018/tv_month/data_manifest.json"
+  ],
+  "files": [
+   "research/paper_overlap_20261018/README.md",
+   "research/paper_overlap_20261018/audit.py",
+   "research/paper_overlap_20261018/data_manifest.json",
+   "research/paper_overlap_20261018/protocol.json",
+   "research/paper_overlap_20261018/run_tv.py",
+   "research/paper_overlap_20261018/tv_month/data_manifest.json",
+   "research/paper_overlap_20261018/tv_month/download.py",
+   "research/paper_overlap_20261018/tv_month/protocol.json",
+   "research/paper_overlap_20261018/tv_month/run_tv.py",
+   "research/paper_overlap_20261018/tv_month/source_hashes.json",
+   "research/paper_overlap_20261018/tv_month/tv_results.json",
+   "research/paper_overlap_20261018/tv_month/tv_trades.json.gz",
+   "research/paper_overlap_20261018/tv_results.json",
+   "research/paper_overlap_20261018/tv_trades.json.gz"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/polymarket_xrp",
+  "first_seen": "2026-10-28",
+  "first_commit": "09c2476",
+  "first_branch": "origin/research/polymarket-xrp-signal-v1-20261028",
+  "branches": [
+   "origin/autocorr-regime-research-20261024",
+   "origin/research/polymarket-xrp-signal-v1-20261028"
+  ],
+  "decision": "TEST NEDOKONČEN",
+  "ledger_files": [],
+  "files_with_sha256": [
+   "research/polymarket_xrp_source_audit_20261029/source_audit.json",
+   "research/polymarket_xrp/sample_results.json"
+  ],
+  "files": [
+   "research/audit_polymarket_xrp_source.py",
+   "research/polymarket_xrp/EXPANDED_DATA_SEARCH.md",
+   "research/polymarket_xrp/README.md",
+   "research/polymarket_xrp/RISK_AND_COLLECTION_UPDATE.md",
+   "research/polymarket_xrp/SAMPLE_REPORT.md",
+   "research/polymarket_xrp/api_probe.json",
+   "research/polymarket_xrp/collect_snapshot.py",
+   "research/polymarket_xrp/probe.py",
+   "research/polymarket_xrp/results.json",
+   "research/polymarket_xrp/risk.py",
+   "research/polymarket_xrp/sample_backtest.py",
+   "research/polymarket_xrp/sample_results.json",
+   "research/polymarket_xrp/strategy.py",
+   "research/polymarket_xrp/test_collector.py",
+   "research/polymarket_xrp/test_risk.py",
+   "research/polymarket_xrp/test_strategy.py",
+   "research/polymarket_xrp_source.py",
+   "research/polymarket_xrp_source_audit_20261029/README.md",
+   "research/polymarket_xrp_source_audit_20261029/audit.json",
+   "research/polymarket_xrp_source_audit_20261029/source_audit.json",
+   "research/run_polymarket_xrp_source_audit.py"
+  ],
+  "class": "NEDOKONČENO"
+ },
+ {
+  "hypothesis": "research/polymarket_xrp_signal",
+  "first_seen": "2026-10-29",
+  "first_commit": "6aa6d86",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "ruční: protokol 6aa6d86; audit zdroje „TEST NEDOKONČEN“",
+  "ledger_files": [],
+  "files_with_sha256": [],
+  "files": [
+   "research/polymarket_xrp_signal_protocol_20261029.md"
+  ],
+  "class": "NEDOKONČENO"
+ },
+ {
+  "hypothesis": "research/premium_recovery",
+  "first_seen": "2026-10-26",
+  "first_commit": "879655d",
+  "first_branch": "origin/autocorr-regime-research-20261024, origin/research/cross-market-dispersion-20261026",
+  "branches": [
+   "origin/autocorr-regime-research-20261024",
+   "origin/research/cross-market-dispersion-20261026"
+  ],
+  "decision": "NEPROSEL",
+  "ledger_files": [
+   "research/premium_recovery_validation_20261026/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/premium_recovery_validation_20261026/results.json"
+  ],
+  "files": [
+   "research/audit_premium_recovery.py",
+   "research/premium_recovery_protocol.md",
+   "research/premium_recovery_v1.py",
+   "research/premium_recovery_validation_20261026/audit.json",
+   "research/premium_recovery_validation_20261026/results.json",
+   "research/premium_recovery_validation_20261026/trades.json.gz",
+   "research/run_premium_recovery.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/prospective_market_evidence",
+  "first_seen": "2026-10-17",
+  "first_commit": "87477ce",
+  "first_branch": "origin/ada-state-classifier-research-20261024, origin/autocorr-regime-research-20261024, origin/beta-hedged-residual-research-20261023 (+27)",
+  "branches": [
+   "origin/ada-state-classifier-research-20261024",
+   "origin/autocorr-regime-research-20261024",
+   "origin/beta-hedged-residual-research-20261023",
+   "origin/bnb-volume-dryup-research-20261024",
+   "origin/broad-shock-rebound-research-20261021",
+   "origin/btc-quarterly-carry-research-20261024",
+   "origin/claude/xrp-bot-strategy-backtest-7hu2l1",
+   "origin/cross-sectional-rotation-research-20261020",
+   "origin/downside-imbalance-short-research-20261022",
+   "origin/eth-funding-extreme-research-20261024",
+   "origin/flow-pressure-research-20261020",
+   "origin/paper-risk-review-20261019",
+   "origin/range-harvest-limit-research-20261023",
+   "origin/research/candle-validation-20261019",
+   "origin/research/combined-best-signals-paper-20261104",
+   "origin/research/combined-selection-replay-20261105",
+   "origin/research/cross-market-dispersion-20261026",
+   "origin/research/evidence-verification-20261017",
+   "origin/research/fib-timeframe-20261020",
+   "origin/research/paper-filters-20261018",
+   "origin/session-transfer-research-20261023",
+   "origin/sol-basis-convergence-research-20261024",
+   "origin/sol-eth-pairs-research-20261021",
+   "origin/sweep-trend-research-20261020",
+   "origin/triangular-parity-research-20261024",
+   "origin/v8-fly-layer-test",
+   "origin/volatility-contraction-spot-research-20261023",
+   "origin/volatility-managed-momentum-research-20261022",
+   "origin/weekend-carry-research-20261023",
+   "origin/whale-filter-research-20261020"
+  ],
+  "decision": "ruční: archiv tržních snímků, ne obchodní strategie",
+  "ledger_files": [],
+  "files_with_sha256": [
+   "research/prospective_market_evidence_20261017/verification.json"
+  ],
+  "files": [
+   "research/prospective_market_evidence_20261017/README.md",
+   "research/prospective_market_evidence_20261017/verification.json",
+   "research/prospective_market_evidence_20261017/verify_sample.py"
+  ],
+  "class": "SBĚR DAT"
+ },
+ {
+  "hypothesis": "research/protocol_activation_event",
+  "first_seen": "2026-10-29",
+  "first_commit": "187157d",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Decision: **NEPROŠEL**. The fixed protocol, source feasibility, code and gates were stored in GitHub commit `164ddea10785c33b81da1404f5dc7d4878a0d865` before an",
+  "ledger_files": [
+   "research/protocol_activation_event_validation_20261029/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/protocol_activation_event_validation_20261029/results.json"
+  ],
+  "files": [
+   "research/audit_protocol_activation_event.py",
+   "research/protocol_activation_event_protocol_20261029.md",
+   "research/protocol_activation_event_v1.py",
+   "research/protocol_activation_event_validation_20261029/README.md",
+   "research/protocol_activation_event_validation_20261029/audit.json",
+   "research/protocol_activation_event_validation_20261029/results.json",
+   "research/protocol_activation_event_validation_20261029/trades.json.gz",
+   "research/run_protocol_activation_event.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/range_harvest_limit",
+  "first_seen": "2026-10-23",
+  "first_commit": "ccdc5af",
+  "first_branch": "origin/ada-state-classifier-research-20261024, origin/bnb-volume-dryup-research-20261024, origin/btc-quarterly-carry-research-20261024 (+4)",
+  "branches": [
+   "origin/ada-state-classifier-research-20261024",
+   "origin/bnb-volume-dryup-research-20261024",
+   "origin/btc-quarterly-carry-research-20261024",
+   "origin/eth-funding-extreme-research-20261024",
+   "origin/range-harvest-limit-research-20261023",
+   "origin/sol-basis-convergence-research-20261024",
+   "origin/triangular-parity-research-20261024"
+  ],
+  "decision": "passes_historical_gate\": false",
+  "ledger_files": [],
+  "files_with_sha256": [
+   "research/range_harvest_limit_results_20261023.json"
+  ],
+  "files": [
+   "research/range_harvest_limit_protocol_20261023.md",
+   "research/range_harvest_limit_results_20261023.json",
+   "research/range_harvest_limit_v1.py",
+   "research/run_range_harvest_limit_history.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/real_yield_easing",
+  "first_seen": "2026-10-29",
+  "first_commit": "a01bce1",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Decision: **NEPROŠEL**. The frozen external real-rate hypothesis does not qualify for forward PAPER promotion.",
+  "ledger_files": [
+   "research/real_yield_easing_validation_20261029/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/real_yield_easing_validation_20261029/results.json"
+  ],
+  "files": [
+   "research/audit_real_yield_easing.py",
+   "research/real_yield_easing_protocol_20261029.md",
+   "research/real_yield_easing_source_20261029.md",
+   "research/real_yield_easing_v1.py",
+   "research/real_yield_easing_validation_20261029/README.md",
+   "research/real_yield_easing_validation_20261029/audit.json",
+   "research/real_yield_easing_validation_20261029/results.json",
+   "research/real_yield_easing_validation_20261029/trades.json.gz",
+   "research/run_real_yield_easing.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/realized_value_discount",
+  "first_seen": "2026-10-28",
+  "first_commit": "05a522e",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Decision: **NEPROŠEL**. The cost-basis valuation hypothesis, rules and gates",
+  "ledger_files": [
+   "research/realized_value_discount_validation_20261028/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/realized_value_discount_validation_20261028/results.json"
+  ],
+  "files": [
+   "research/audit_realized_value_discount.py",
+   "research/realized_value_discount_protocol.md",
+   "research/realized_value_discount_v1.py",
+   "research/realized_value_discount_validation_20261028/README.md",
+   "research/realized_value_discount_validation_20261028/audit.json",
+   "research/realized_value_discount_validation_20261028/results.json",
+   "research/realized_value_discount_validation_20261028/trades.json.gz",
+   "research/run_realized_value_discount.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/recommendations",
+  "first_seen": "2026-10-17",
+  "first_commit": "4f455cf",
+  "first_branch": "origin/research/recommendations-20261017",
+  "branches": [
+   "origin/research/recommendations-20261017"
+  ],
+  "decision": "neprošla",
+  "ledger_files": [
+   "research/recommendations_20261017/ledger_cohorts.json",
+   "research/recommendations_20261017/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/recommendations_20261017/candidate_manifest.json",
+   "research/recommendations_20261017/data_manifest.json"
+  ],
+  "files": [
+   "research/recommendations_20261017/README.md",
+   "research/recommendations_20261017/candidate_manifest.json",
+   "research/recommendations_20261017/candidate_snapshot.json.gz",
+   "research/recommendations_20261017/candidate_summary.json",
+   "research/recommendations_20261017/data_manifest.json",
+   "research/recommendations_20261017/download.py",
+   "research/recommendations_20261017/leadlag_signal_coverage.json",
+   "research/recommendations_20261017/ledger_cohorts.json",
+   "research/recommendations_20261017/protocol.json",
+   "research/recommendations_20261017/results.json",
+   "research/recommendations_20261017/run.py",
+   "research/recommendations_20261017/summarize_candidates.py",
+   "research/recommendations_20261017/trades.json.gz"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/relative_strength",
+  "first_seen": "2026-10-24",
+  "first_commit": "81fd0d7",
+  "first_branch": "origin/autocorr-regime-research-20261024, origin/research/cross-market-dispersion-20261026",
+  "branches": [
+   "origin/autocorr-regime-research-20261024",
+   "origin/research/cross-market-dispersion-20261026"
+  ],
+  "decision": "Decision: **NEPROŠEL**. Historical net profit is not sufficient evidence for promotion.",
+  "ledger_files": [
+   "research/relative_strength_validation_20261024/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/relative_strength_validation_20261024/results.json"
+  ],
+  "files": [
+   "research/audit_relative_strength.py",
+   "research/relative_strength_protocol.md",
+   "research/relative_strength_v1.py",
+   "research/relative_strength_validation_20261024/README.md",
+   "research/relative_strength_validation_20261024/audit.json",
+   "research/relative_strength_validation_20261024/results.json",
+   "research/relative_strength_validation_20261024/trades.json.gz",
+   "research/run_relative_strength.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/research",
+  "first_seen": "2026-10-20",
+  "first_commit": "1754513",
+  "first_branch": "origin/ada-state-classifier-research-20261024, origin/autocorr-regime-research-20261024, origin/beta-hedged-residual-research-20261023 (+17)",
+  "branches": [
+   "origin/ada-state-classifier-research-20261024",
+   "origin/autocorr-regime-research-20261024",
+   "origin/beta-hedged-residual-research-20261023",
+   "origin/bnb-volume-dryup-research-20261024",
+   "origin/broad-shock-rebound-research-20261021",
+   "origin/btc-quarterly-carry-research-20261024",
+   "origin/cross-sectional-rotation-research-20261020",
+   "origin/downside-imbalance-short-research-20261022",
+   "origin/eth-funding-extreme-research-20261024",
+   "origin/flow-pressure-research-20261020",
+   "origin/range-harvest-limit-research-20261023",
+   "origin/research/combined-best-signals-paper-20261104",
+   "origin/research/cross-market-dispersion-20261026",
+   "origin/session-transfer-research-20261023",
+   "origin/sol-basis-convergence-research-20261024",
+   "origin/sol-eth-pairs-research-20261021",
+   "origin/triangular-parity-research-20261024",
+   "origin/volatility-contraction-spot-research-20261023",
+   "origin/volatility-managed-momentum-research-20261022",
+   "origin/weekend-carry-research-20261023"
+  ],
+  "decision": "rejected",
+  "ledger_files": [],
+  "files_with_sha256": [],
+  "files": [
+   "research/research_decision_20261020.md"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/residual_snapback",
+  "first_seen": "2026-10-25",
+  "first_commit": "88f4039",
+  "first_branch": "origin/autocorr-regime-research-20261024, origin/research/cross-market-dispersion-20261026",
+  "branches": [
+   "origin/autocorr-regime-research-20261024",
+   "origin/research/cross-market-dispersion-20261026"
+  ],
+  "decision": "NEPROSEL",
+  "ledger_files": [
+   "research/residual_snapback_validation_20261025/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/residual_snapback_validation_20261025/results.json"
+  ],
+  "files": [
+   "research/residual_snapback_protocol.md",
+   "research/residual_snapback_v1.py",
+   "research/residual_snapback_validation_20261025/audit.json",
+   "research/residual_snapback_validation_20261025/results.json",
+   "research/residual_snapback_validation_20261025/trades.json.gz",
+   "research/run_residual_snapback.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/retest_cost_review",
+  "first_seen": "2026-10-19",
+  "first_commit": "aef9ceb",
+  "first_branch": "origin/research/candle-validation-20261019",
+  "branches": [
+   "origin/research/candle-validation-20261019"
+  ],
+  "decision": "Decision: REJECT FOR DEPLOYMENT. This is offline research, not a change to any running bot.",
+  "ledger_files": [],
+  "files_with_sha256": [
+   "research/retest_cost_review_20261019/data_manifest.json"
+  ],
+  "files": [
+   "research/retest_cost_review_20261019/README.md",
+   "research/retest_cost_review_20261019/audit.py",
+   "research/retest_cost_review_20261019/data_manifest.json",
+   "research/retest_cost_review_20261019/development_cohorts.json",
+   "research/retest_cost_review_20261019/download.py",
+   "research/retest_cost_review_20261019/protocol.json",
+   "research/retest_cost_review_20261019/results.json",
+   "research/retest_cost_review_20261019/run.py",
+   "research/retest_cost_review_20261019/source_hashes.json",
+   "research/retest_cost_review_20261019/test_variant.py",
+   "research/retest_cost_review_20261019/variant.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/session_transfer",
+  "first_seen": "2026-10-23",
+  "first_commit": "1466809",
+  "first_branch": "origin/ada-state-classifier-research-20261024, origin/beta-hedged-residual-research-20261023, origin/bnb-volume-dryup-research-20261024 (+7)",
+  "branches": [
+   "origin/ada-state-classifier-research-20261024",
+   "origin/beta-hedged-residual-research-20261023",
+   "origin/bnb-volume-dryup-research-20261024",
+   "origin/btc-quarterly-carry-research-20261024",
+   "origin/eth-funding-extreme-research-20261024",
+   "origin/range-harvest-limit-research-20261023",
+   "origin/session-transfer-research-20261023",
+   "origin/sol-basis-convergence-research-20261024",
+   "origin/triangular-parity-research-20261024",
+   "origin/volatility-contraction-spot-research-20261023"
+  ],
+  "decision": "passes_historical_gate\": false",
+  "ledger_files": [],
+  "files_with_sha256": [
+   "research/session_transfer_results_20261023.json"
+  ],
+  "files": [
+   "research/run_session_transfer_history.py",
+   "research/session_transfer_protocol_20261023.md",
+   "research/session_transfer_results_20261023.json",
+   "research/session_transfer_v1.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/sol_basis_convergence",
+  "first_seen": "2026-10-24",
+  "first_commit": "718f81f",
+  "first_branch": "origin/ada-state-classifier-research-20261024, origin/btc-quarterly-carry-research-20261024, origin/sol-basis-convergence-research-20261024 (+1)",
+  "branches": [
+   "origin/ada-state-classifier-research-20261024",
+   "origin/btc-quarterly-carry-research-20261024",
+   "origin/sol-basis-convergence-research-20261024",
+   "origin/triangular-parity-research-20261024"
+  ],
+  "decision": "passes_historical_gate\": false",
+  "ledger_files": [],
+  "files_with_sha256": [
+   "research/sol_basis_convergence_results_20261024.json"
+  ],
+  "files": [
+   "research/run_sol_basis_convergence_history.py",
+   "research/sol_basis_convergence_protocol_20261024.md",
+   "research/sol_basis_convergence_results_20261024.json",
+   "research/sol_basis_convergence_v1.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/sol_eth_pairs",
+  "first_seen": "2026-10-21",
+  "first_commit": "38a8f54",
+  "first_branch": "origin/ada-state-classifier-research-20261024, origin/beta-hedged-residual-research-20261023, origin/bnb-volume-dryup-research-20261024 (+13)",
+  "branches": [
+   "origin/ada-state-classifier-research-20261024",
+   "origin/beta-hedged-residual-research-20261023",
+   "origin/bnb-volume-dryup-research-20261024",
+   "origin/broad-shock-rebound-research-20261021",
+   "origin/btc-quarterly-carry-research-20261024",
+   "origin/downside-imbalance-short-research-20261022",
+   "origin/eth-funding-extreme-research-20261024",
+   "origin/range-harvest-limit-research-20261023",
+   "origin/research/combined-best-signals-paper-20261104",
+   "origin/session-transfer-research-20261023",
+   "origin/sol-basis-convergence-research-20261024",
+   "origin/sol-eth-pairs-research-20261021",
+   "origin/triangular-parity-research-20261024",
+   "origin/volatility-contraction-spot-research-20261023",
+   "origin/volatility-managed-momentum-research-20261022",
+   "origin/weekend-carry-research-20261023"
+  ],
+  "decision": "passes_historical_gate\": false",
+  "ledger_files": [],
+  "files_with_sha256": [
+   "research/sol_eth_pairs_results_20261021.json"
+  ],
+  "files": [
+   "research/run_sol_eth_pairs_history.py",
+   "research/sol_eth_pairs_protocol_20261021.md",
+   "research/sol_eth_pairs_results_20261021.json",
+   "research/sol_eth_pairs_v1.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/spot_perp_carry",
+  "first_seen": "2026-10-27",
+  "first_commit": "066f649",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Decision: **NEPROŠEL**. The market-neutral funding-carry hypothesis failed the frozen historical gates and is not eligible for forward PAPER promotion.",
+  "ledger_files": [
+   "research/spot_perp_carry_validation_20261027/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/spot_perp_carry_validation_20261027/results.json"
+  ],
+  "files": [
+   "research/audit_spot_perp_carry.py",
+   "research/run_spot_perp_carry.py",
+   "research/spot_perp_carry_protocol.md",
+   "research/spot_perp_carry_v1.py",
+   "research/spot_perp_carry_validation_20261027/README.md",
+   "research/spot_perp_carry_validation_20261027/audit.json",
+   "research/spot_perp_carry_validation_20261027/results.json",
+   "research/spot_perp_carry_validation_20261027/trades.json.gz"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/stable_peg",
+  "first_seen": "2026-10-25",
+  "first_commit": "5d69d98",
+  "first_branch": "origin/autocorr-regime-research-20261024, origin/research/cross-market-dispersion-20261026",
+  "branches": [
+   "origin/autocorr-regime-research-20261024",
+   "origin/research/cross-market-dispersion-20261026"
+  ],
+  "decision": "NEPROSEL",
+  "ledger_files": [
+   "research/stable_peg_validation_20261025/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/stable_peg_validation_20261025/results.json"
+  ],
+  "files": [
+   "research/audit_stable_peg.py",
+   "research/run_stable_peg.py",
+   "research/stable_peg_protocol.md",
+   "research/stable_peg_v1.py",
+   "research/stable_peg_validation_20261025/audit.json",
+   "research/stable_peg_validation_20261025/results.json",
+   "research/stable_peg_validation_20261025/trades.json.gz"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/stablecoin_liquidity_impulse",
+  "first_seen": "2026-10-28",
+  "first_commit": "5a908b5",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Decision: **NEPROŠEL**. The external-liquidity hypothesis, execution rules and",
+  "ledger_files": [
+   "research/stablecoin_liquidity_impulse_validation_20261028/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/stablecoin_liquidity_impulse_validation_20261028/results.json"
+  ],
+  "files": [
+   "research/audit_stablecoin_liquidity_impulse.py",
+   "research/run_stablecoin_liquidity_impulse.py",
+   "research/stablecoin_liquidity_impulse_protocol.md",
+   "research/stablecoin_liquidity_impulse_v1.py",
+   "research/stablecoin_liquidity_impulse_validation_20261028/README.md",
+   "research/stablecoin_liquidity_impulse_validation_20261028/audit.json",
+   "research/stablecoin_liquidity_impulse_validation_20261028/results.json",
+   "research/stablecoin_liquidity_impulse_validation_20261028/trades.json.gz"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/transfer_utilization_share",
+  "first_seen": "2026-10-30",
+  "first_commit": "9807028",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Decision: **NEPROŠEL**. The compositional hypothesis, 180-day lookback, nearest-rank 80th percentile, two-day lag, execution and gates were stored in GitHub com",
+  "ledger_files": [
+   "research/transfer_utilization_share_validation_20261030/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/transfer_utilization_share_validation_20261030/results.json"
+  ],
+  "files": [
+   "research/audit_transfer_utilization_share.py",
+   "research/run_transfer_utilization_share.py",
+   "research/transfer_utilization_share_ingestion_amendment_20261030.md",
+   "research/transfer_utilization_share_protocol_20261030.md",
+   "research/transfer_utilization_share_v1.py",
+   "research/transfer_utilization_share_validation_20261030/README.md",
+   "research/transfer_utilization_share_validation_20261030/audit.json",
+   "research/transfer_utilization_share_validation_20261030/results.json",
+   "research/transfer_utilization_share_validation_20261030/trades.json.gz"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/triangular_parity",
+  "first_seen": "2026-10-24",
+  "first_commit": "32c7c7a",
+  "first_branch": "origin/triangular-parity-research-20261024",
+  "branches": [
+   "origin/triangular-parity-research-20261024"
+  ],
+  "decision": "passes_historical_gate\": false",
+  "ledger_files": [],
+  "files_with_sha256": [
+   "research/triangular_parity_results_20261024.json"
+  ],
+  "files": [
+   "research/run_triangular_parity_history.py",
+   "research/triangular_parity_protocol_20261024.md",
+   "research/triangular_parity_results_20261024.json",
+   "research/triangular_parity_v1.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/tv",
+  "first_seen": "2026-10-12",
+  "first_commit": "3dc3e48",
+  "first_branch": "origin/ada-state-classifier-research-20261024, origin/autocorr-regime-research-20261024, origin/beta-hedged-residual-research-20261023 (+29)",
+  "branches": [
+   "origin/ada-state-classifier-research-20261024",
+   "origin/autocorr-regime-research-20261024",
+   "origin/beta-hedged-residual-research-20261023",
+   "origin/bnb-volume-dryup-research-20261024",
+   "origin/broad-shock-rebound-research-20261021",
+   "origin/btc-quarterly-carry-research-20261024",
+   "origin/claude/xrp-bot-strategy-backtest-7hu2l1",
+   "origin/cross-sectional-rotation-research-20261020",
+   "origin/downside-imbalance-short-research-20261022",
+   "origin/eth-funding-extreme-research-20261024",
+   "origin/flow-pressure-research-20261020",
+   "origin/paper-risk-review-20261019",
+   "origin/range-harvest-limit-research-20261023",
+   "origin/research/candle-validation-20261019",
+   "origin/research/combined-best-signals-paper-20261104",
+   "origin/research/combined-selection-replay-20261105",
+   "origin/research/cross-market-dispersion-20261026",
+   "origin/research/evidence-verification-20261017",
+   "origin/research/fib-timeframe-20261020",
+   "origin/research/paper-filters-20261018",
+   "origin/research/recommendations-20261017",
+   "origin/research/whale-vwap-validation-20261013",
+   "origin/session-transfer-research-20261023",
+   "origin/sol-basis-convergence-research-20261024",
+   "origin/sol-eth-pairs-research-20261021",
+   "origin/sweep-trend-research-20261020",
+   "origin/triangular-parity-research-20261024",
+   "origin/v8-fly-layer-test",
+   "origin/volatility-contraction-spot-research-20261023",
+   "origin/volatility-managed-momentum-research-20261022",
+   "origin/weekend-carry-research-20261023",
+   "origin/whale-filter-research-20261020"
+  ],
+  "decision": "ruční: tv_validation_20261012/README — všech 9 variant záporných, TV pozastaven",
+  "ledger_files": [
+   "research/tv_validation_20261012/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/tv_validation_20261012/data_manifest.json"
+  ],
+  "files": [
+   "research/tv_validation_20261012/README.md",
+   "research/tv_validation_20261012/data_manifest.json",
+   "research/tv_validation_20261012/download.py",
+   "research/tv_validation_20261012/protocol.json",
+   "research/tv_validation_20261012/results.json",
+   "research/tv_validation_20261012/run.py",
+   "research/tv_validation_20261012/trades.json.gz"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/vix_shock_recovery",
+  "first_seen": "2026-10-28",
+  "first_commit": "c45b1a4",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Decision: **NEPROŠEL**. The external equity-volatility recovery hypothesis,",
+  "ledger_files": [
+   "research/vix_shock_recovery_validation_20261028/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/vix_shock_recovery_validation_20261028/results.json"
+  ],
+  "files": [
+   "research/audit_vix_shock_recovery.py",
+   "research/run_vix_shock_recovery.py",
+   "research/vix_shock_recovery_protocol.md",
+   "research/vix_shock_recovery_v1.py",
+   "research/vix_shock_recovery_validation_20261028/README.md",
+   "research/vix_shock_recovery_validation_20261028/audit.json",
+   "research/vix_shock_recovery_validation_20261028/results.json",
+   "research/vix_shock_recovery_validation_20261028/trades.json.gz"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/volatility_compression",
+  "first_seen": "2026-10-27",
+  "first_commit": "8688cb5",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Decision: **NEPROŠEL**. The low-volatility-to-breakout hypothesis fails the frozen sample, aggregate profitability, stress, annual-stability, and concentration ",
+  "ledger_files": [
+   "research/volatility_compression_validation_20261027/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/volatility_compression_validation_20261027/results.json"
+  ],
+  "files": [
+   "research/audit_volatility_compression.py",
+   "research/run_volatility_compression.py",
+   "research/volatility_compression_protocol.md",
+   "research/volatility_compression_v1.py",
+   "research/volatility_compression_validation_20261027/README.md",
+   "research/volatility_compression_validation_20261027/audit.json",
+   "research/volatility_compression_validation_20261027/results.json",
+   "research/volatility_compression_validation_20261027/trades.json.gz"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/volatility_contraction_spot",
+  "first_seen": "2026-10-23",
+  "first_commit": "42b3249",
+  "first_branch": "origin/ada-state-classifier-research-20261024, origin/beta-hedged-residual-research-20261023, origin/bnb-volume-dryup-research-20261024 (+6)",
+  "branches": [
+   "origin/ada-state-classifier-research-20261024",
+   "origin/beta-hedged-residual-research-20261023",
+   "origin/bnb-volume-dryup-research-20261024",
+   "origin/btc-quarterly-carry-research-20261024",
+   "origin/eth-funding-extreme-research-20261024",
+   "origin/range-harvest-limit-research-20261023",
+   "origin/sol-basis-convergence-research-20261024",
+   "origin/triangular-parity-research-20261024",
+   "origin/volatility-contraction-spot-research-20261023"
+  ],
+  "decision": "passes_historical_gate\": false",
+  "ledger_files": [],
+  "files_with_sha256": [
+   "research/volatility_contraction_spot_results_20261023.json"
+  ],
+  "files": [
+   "research/run_volatility_contraction_spot_history.py",
+   "research/volatility_contraction_spot_protocol_20261023.md",
+   "research/volatility_contraction_spot_results_20261023.json",
+   "research/volatility_contraction_spot_v1.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/volatility_managed_momentum",
+  "first_seen": "2026-10-22",
+  "first_commit": "bdb7d8b",
+  "first_branch": "origin/ada-state-classifier-research-20261024, origin/beta-hedged-residual-research-20261023, origin/bnb-volume-dryup-research-20261024 (+11)",
+  "branches": [
+   "origin/ada-state-classifier-research-20261024",
+   "origin/beta-hedged-residual-research-20261023",
+   "origin/bnb-volume-dryup-research-20261024",
+   "origin/btc-quarterly-carry-research-20261024",
+   "origin/claude/xrp-bot-strategy-backtest-7hu2l1",
+   "origin/downside-imbalance-short-research-20261022",
+   "origin/eth-funding-extreme-research-20261024",
+   "origin/range-harvest-limit-research-20261023",
+   "origin/research/combined-best-signals-paper-20261104",
+   "origin/research/combined-selection-replay-20261105",
+   "origin/session-transfer-research-20261023",
+   "origin/sol-basis-convergence-research-20261024",
+   "origin/triangular-parity-research-20261024",
+   "origin/v8-fly-layer-test",
+   "origin/volatility-contraction-spot-research-20261023",
+   "origin/volatility-managed-momentum-research-20261022",
+   "origin/weekend-carry-research-20261023"
+  ],
+  "decision": "passes_historical_gate\": false",
+  "ledger_files": [],
+  "files_with_sha256": [
+   "research/volatility_managed_momentum_results_20261022.json"
+  ],
+  "files": [
+   "research/run_volatility_managed_momentum_history.py",
+   "research/volatility_managed_momentum_protocol_20261022.md",
+   "research/volatility_managed_momentum_results_20261022.json",
+   "research/volatility_managed_momentum_v1.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/weekend",
+  "first_seen": "2026-10-24",
+  "first_commit": "97857ed",
+  "first_branch": "origin/autocorr-regime-research-20261024, origin/research/cross-market-dispersion-20261026",
+  "branches": [
+   "origin/autocorr-regime-research-20261024",
+   "origin/research/cross-market-dispersion-20261026"
+  ],
+  "decision": "NEPROSEL",
+  "ledger_files": [
+   "research/weekend_validation_20261024/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/weekend_validation_20261024/results.json"
+  ],
+  "files": [
+   "research/weekend_validation_20261024/results.json",
+   "research/weekend_validation_20261024/trades.json.gz"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/weekend_carry",
+  "first_seen": "2026-10-23",
+  "first_commit": "55dd7c3",
+  "first_branch": "origin/ada-state-classifier-research-20261024, origin/beta-hedged-residual-research-20261023, origin/bnb-volume-dryup-research-20261024 (+8)",
+  "branches": [
+   "origin/ada-state-classifier-research-20261024",
+   "origin/beta-hedged-residual-research-20261023",
+   "origin/bnb-volume-dryup-research-20261024",
+   "origin/btc-quarterly-carry-research-20261024",
+   "origin/eth-funding-extreme-research-20261024",
+   "origin/range-harvest-limit-research-20261023",
+   "origin/session-transfer-research-20261023",
+   "origin/sol-basis-convergence-research-20261024",
+   "origin/triangular-parity-research-20261024",
+   "origin/volatility-contraction-spot-research-20261023",
+   "origin/weekend-carry-research-20261023"
+  ],
+  "decision": "passes_historical_gate\": false",
+  "ledger_files": [],
+  "files_with_sha256": [
+   "research/weekend_carry_results_20261023.json"
+  ],
+  "files": [
+   "research/run_weekend_carry_history.py",
+   "research/weekend_carry_protocol_20261023.md",
+   "research/weekend_carry_results_20261023.json",
+   "research/weekend_carry_v1.py"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/weekly_inverse_vol_basket",
+  "first_seen": "2026-10-30",
+  "first_commit": "961aa43",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Decision: **NEPROŠEL**. Do not tune the universe, volatility window, cap, stop or rebalance schedule on these observations, and do not start forward PAPER.",
+  "ledger_files": [
+   "research/weekly_inverse_vol_basket_validation_20261030/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/weekly_inverse_vol_basket_validation_20261030/results.json"
+  ],
+  "files": [
+   "research/audit_weekly_inverse_vol_basket.py",
+   "research/run_weekly_inverse_vol_basket.py",
+   "research/weekly_inverse_vol_basket_protocol_20261030.md",
+   "research/weekly_inverse_vol_basket_v1.py",
+   "research/weekly_inverse_vol_basket_validation_20261030/README.md",
+   "research/weekly_inverse_vol_basket_validation_20261030/audit.json",
+   "research/weekly_inverse_vol_basket_validation_20261030/results.json",
+   "research/weekly_inverse_vol_basket_validation_20261030/trades.json.gz"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/whale_vwap",
+  "first_seen": "2026-10-13",
+  "first_commit": "175de78",
+  "first_branch": "origin/research/whale-vwap-validation-20261013",
+  "branches": [
+   "origin/research/whale-vwap-validation-20261013"
+  ],
+  "decision": "Decision: **no tested replacement is eligible for promotion; VWAP_REVERSION remains paused.**",
+  "ledger_files": [
+   "research/whale_vwap_validation_20261013/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/whale_vwap_validation_20261013/data_manifest.json"
+  ],
+  "files": [
+   "research/whale_vwap_validation_20261013/README.md",
+   "research/whale_vwap_validation_20261013/data_manifest.json",
+   "research/whale_vwap_validation_20261013/decision.json",
+   "research/whale_vwap_validation_20261013/download.py",
+   "research/whale_vwap_validation_20261013/point_checks.json",
+   "research/whale_vwap_validation_20261013/protocol.json",
+   "research/whale_vwap_validation_20261013/results.json",
+   "research/whale_vwap_validation_20261013/run.py",
+   "research/whale_vwap_validation_20261013/trades.json.gz"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/xrp_bank_credit_expansion",
+  "first_seen": "2026-11-05",
+  "first_commit": "1824cff",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "ruční: předregistrováno 1824cff (2026-11-05), výsledky zatím nejsou",
+  "ledger_files": [],
+  "files_with_sha256": [],
+  "files": [
+   "research/audit_xrp_bank_credit_expansion.py",
+   "research/run_xrp_bank_credit_expansion.py",
+   "research/xrp_bank_credit_expansion_protocol_20261105.md",
+   "research/xrp_bank_credit_expansion_v1.py"
+  ],
+  "class": "NEDOKONČENO"
+ },
+ {
+  "hypothesis": "research/xrp_reverse_repo_liquidity_release",
+  "first_seen": "2026-11-04",
+  "first_commit": "6c5f1c7",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Final decision on 2026-11-04: **NEPROSEL**. Offline research only; no forward",
+  "ledger_files": [
+   "research/xrp_reverse_repo_liquidity_release_validation_20261104/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/xrp_reverse_repo_liquidity_release_validation_20261104/results.json"
+  ],
+  "files": [
+   "research/audit_xrp_reverse_repo_liquidity_release.py",
+   "research/run_xrp_reverse_repo_liquidity_release.py",
+   "research/xrp_reverse_repo_liquidity_release_protocol_20261104.md",
+   "research/xrp_reverse_repo_liquidity_release_v1.py",
+   "research/xrp_reverse_repo_liquidity_release_validation_20261104/README.md",
+   "research/xrp_reverse_repo_liquidity_release_validation_20261104/audit.json",
+   "research/xrp_reverse_repo_liquidity_release_validation_20261104/results.json",
+   "research/xrp_reverse_repo_liquidity_release_validation_20261104/trades.json.gz"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/xrp_session_handoff_reversal",
+  "first_seen": "2026-11-04",
+  "first_commit": "e6c9755",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Final decision on 2026-11-04: **NEPROSEL**. Offline research only; no forward PAPER promotion or deployment.",
+  "ledger_files": [
+   "research/xrp_session_handoff_reversal_validation_20261104/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/xrp_session_handoff_reversal_validation_20261104/results.json"
+  ],
+  "files": [
+   "research/audit_xrp_session_handoff_reversal.py",
+   "research/run_xrp_session_handoff_reversal.py",
+   "research/xrp_session_handoff_reversal_protocol_20261104.md",
+   "research/xrp_session_handoff_reversal_v1.py",
+   "research/xrp_session_handoff_reversal_validation_20261104/README.md",
+   "research/xrp_session_handoff_reversal_validation_20261104/audit.json",
+   "research/xrp_session_handoff_reversal_validation_20261104/results.json",
+   "research/xrp_session_handoff_reversal_validation_20261104/trades.json.gz"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/xrp_yield_curve_steepening",
+  "first_seen": "2026-11-05",
+  "first_commit": "4f8cec6",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Final decision on 2026-11-05: **NEPROSEL**. Offline research only; no forward",
+  "ledger_files": [
+   "research/xrp_yield_curve_steepening_validation_20261105/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/xrp_yield_curve_steepening_validation_20261105/results.json"
+  ],
+  "files": [
+   "research/audit_xrp_yield_curve_steepening.py",
+   "research/run_xrp_yield_curve_steepening.py",
+   "research/xrp_yield_curve_steepening_protocol_20261105.md",
+   "research/xrp_yield_curve_steepening_v1.py",
+   "research/xrp_yield_curve_steepening_validation_20261105/README.md",
+   "research/xrp_yield_curve_steepening_validation_20261105/audit.json",
+   "research/xrp_yield_curve_steepening_validation_20261105/results.json",
+   "research/xrp_yield_curve_steepening_validation_20261105/trades.json.gz"
+  ],
+  "class": "NEPROŠEL"
+ },
+ {
+  "hypothesis": "research/xrpl_dex_liquidity_replenishment",
+  "first_seen": "2026-10-30",
+  "first_commit": "110b578",
+  "first_branch": "origin/autocorr-regime-research-20261024",
+  "branches": [
+   "origin/autocorr-regime-research-20261024"
+  ],
+  "decision": "Final decision on 2026-11-04: **NEPROSEL**. Offline research only; no deployment or forward PAPER promotion.",
+  "ledger_files": [
+   "research/xrpl_dex_liquidity_replenishment_validation_20261030/trades.json.gz"
+  ],
+  "files_with_sha256": [
+   "research/xrpl_dex_liquidity_replenishment_validation_20261030/results.json"
+  ],
+  "files": [
+   "research/audit_xrpl_dex_liquidity_replenishment.py",
+   "research/run_xrpl_dex_liquidity_replenishment.py",
+   "research/xrpl_dex_liquidity_replenishment_protocol_20261030.md",
+   "research/xrpl_dex_liquidity_replenishment_v1.py",
+   "research/xrpl_dex_liquidity_replenishment_validation_20261030/README.md",
+   "research/xrpl_dex_liquidity_replenishment_validation_20261030/audit.json",
+   "research/xrpl_dex_liquidity_replenishment_validation_20261030/observations.json.gz",
+   "research/xrpl_dex_liquidity_replenishment_validation_20261030/results.json",
+   "research/xrpl_dex_liquidity_replenishment_validation_20261030/trades.json.gz"
+  ],
+  "class": "NEPROŠEL"
+ }
+]
