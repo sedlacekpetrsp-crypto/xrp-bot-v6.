@@ -19,7 +19,7 @@ class BankCreditTests(unittest.TestCase):
         x=bars(); x[14].update(macro_signal=True,metric_timestamp=12*DAY,earlier_timestamp=0,earlier_credit=100,latest_credit=102,credit_growth=.02); x[15]['high']=110
         trades,_=backtest(x,0,40*DAY,Config(atr_n=14)); self.assertEqual(len(trades),1); self.assertEqual(trades[0]['entry_timestamp'],15*DAY); self.assertLessEqual(trades[0]['leg_notional'],2000.000001)
     def test_stop_first_and_gap_stop(self):
-        x=bars(); x[14].update(macro_signal=True,metric_timestamp=12*DAY,earlier_timestamp=0,earlier_credit=100,latest_credit=102,credit_growth=.02); x[15].update(open=90,high=101,low=89,close=100)
+        x=bars(); x[14].update(macro_signal=True,metric_timestamp=12*DAY,earlier_timestamp=0,earlier_credit=100,latest_credit=102,credit_growth=.02); x[16].update(open=90,high=101,low=89,close=100)
         t,_=backtest(x,0,40*DAY,Config(atr_n=14)); self.assertEqual(t[0]['reason'],'GAP_STOP')
     def test_stress_costs_are_worse(self):
         x=bars(); x[14].update(macro_signal=True,metric_timestamp=12*DAY,earlier_timestamp=0,earlier_credit=100,latest_credit=102,credit_growth=.02); x[22].update(open=102,high=103,low=101,close=102)
