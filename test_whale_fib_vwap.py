@@ -50,29 +50,54 @@ class WhaleTests(unittest.TestCase):
             self.assertIsNotNone(sig,d)
             self.assertEqual(sig['side'],'SHORT' if short else 'LONG')
             self.assertEqual(sig['tp'],d['vwap'])
-    def test_vwap_strong_trend_waits_for_pullback_instead_of_veto(self):
-        rs=[row(i,100+i*.1) for i in range(70)]
-        sig,d=w.vwap_candidate(rs)
+    # Replaces the obsolete VWAP_TREND_PULLBACK tests: strong trends now use
+    # VWAP_TREND_RECLAIM, which requires an aligned closed 5m structure.
+    @staticmethod
+    def reclaim_rows():
+        def r1(i,c,o,spread=.08,v=10):
+            return [i*60000,o,max(c,o)+spread,min(c,o)-spread,c,v,(i+1)*60000-1]
+        closes=[100+i*.01 for i in range(69)]
+        rows=[r1(i,c,c-.01) for i,c in enumerate(closes)]
+        rows.append(r1(69,closes[-1]+.1,closes[-1],v=25))  # breakout bar, volume ratio 2.5
+        trend5=[[i*300000,90+i*.1,90+i*.1+.05,90+i*.1-.05,90+i*.1,10,(i+1)*300000-1] for i in range(100)]
+        return rows,trend5
+    @staticmethod
+    def mirror(rows,k=400):
+        return [[r[0],k-r[1],k-r[3],k-r[2],k-r[4],r[5],r[6]] for r in rows]
+    def test_strong_trend_without_5m_structure_waits(self):
+        rows,_=self.reclaim_rows()
+        sig,d=w.vwap_candidate(rows)
         self.assertIsNone(sig)
-        self.assertEqual(d['strategy'],'VWAP_TREND_PULLBACK')
+        self.assertEqual(d['strategy'],'VWAP_TREND_RECLAIM')
+        self.assertGreater(d['trend_efficiency'],w.WHALE_TREND_EFFICIENCY)
+        self.assertIn('5m',d['reason'])
+    def test_strong_trend_rejects_misaligned_5m_structure(self):
+        rows,trend5=self.reclaim_rows()
+        sig,d=w.vwap_candidate(rows,self.mirror(trend5))
+        self.assertIsNone(sig)
         self.assertEqual(d['trend_side'],'LONG')
-        self.assertIn('pullback',d['reason'])
-
-    def test_vwap_strong_trend_pullback_long_and_short(self):
-        prices=[100+i*.1 for i in range(68)]+[105.9,106.25]
-        rs=[row(i,c) for i,c in enumerate(prices)]
-        rs[-1]=row(69,106.25,106.05)
+        self.assertEqual(d['trend_5m'],'SHORT')
+    def test_vwap_trend_reclaim_long_and_short(self):
+        rows,trend5=self.reclaim_rows()
         for short in (False,True):
-            r=rs if not short else [[x[0],212-x[1],212-x[3],212-x[2],212-x[4],x[5],x[6]] for x in rs]
-            sig,d=w.vwap_candidate(r)
+            r,t=(self.mirror(rows),self.mirror(trend5)) if short else (rows,trend5)
+            sig,d=w.vwap_candidate(r,t)
             self.assertIsNotNone(sig,d)
-            self.assertEqual(sig['strategy'],'VWAP_TREND_PULLBACK')
+            self.assertEqual(sig['strategy'],'VWAP_TREND_RECLAIM')
             self.assertEqual(sig['side'],'SHORT' if short else 'LONG')
             self.assertEqual(d['trend_side'],sig['side'])
-            if sig['side']=='LONG':
-                self.assertGreater(sig['tp'],sig['entry'])
+            self.assertGreaterEqual(d['volume_ratio'],1.10)
+            risk=abs(sig['entry']-sig['stop']); reward=abs(sig['tp']-sig['entry'])
+            if short:
+                self.assertGreater(sig['stop'],sig['entry']); self.assertLess(sig['tp'],sig['entry'])
             else:
-                self.assertLess(sig['tp'],sig['entry'])
+                self.assertLess(sig['stop'],sig['entry']); self.assertGreater(sig['tp'],sig['entry'])
+            self.assertGreaterEqual(reward,2*risk-1e-12)
+            # Target must clear modeled round-trip costs by the configured net R:R.
+            rt=2*(w.FEE_RATE+w.SLIPPAGE_RATE)
+            self.assertGreaterEqual(reward/sig['entry'],w.WHALE_MIN_NET_RR*(risk/sig['entry']+rt)+rt-1e-12)
+            # The breakout candle itself is required: without it there is no signal.
+            self.assertIsNone(w.vwap_candidate(r[:-1],t)[0])
     def test_live_and_stale_candles(self):
         rs=[row(i,100) for i in range(70)]
         self.assertEqual(len(w.closed_candles(rs,rs[-1][0]+1000,5)),69)
@@ -115,10 +140,17 @@ class WhaleTests(unittest.TestCase):
         self.assertEqual(payload['open_positions'][0]['strategy'],'FIB_618_786')
         self.assertEqual(payload['seen_signal_ids'],[1])
     def test_scanner_opens_once_and_rejects_unavailable_persistence(self):
+        # Current scanner: MTF technical_confirmation is mandatory and the 4h
+        # trendline scan runs after the symbol loop; both are mocked here.
         class Response:
             def json(self):return {'price':'100'}
         candidate=dict(side='LONG',entry=100,stop=99,tp=104,key='test-swing',strategy='FIB_618_786',confirmation={})
-        with patch.object(w,'SYMBOLS',('BTCUSDT',)), patch.object(w,'market_get',new=AsyncMock(return_value=Response())), patch.object(w,'closed_candles',return_value=[]), patch.object(w,'fib_candidate',side_effect=lambda _: (copy.deepcopy(candidate),{'strategy':'FIB_618_786','reason':'ready'})), patch.object(w,'vwap_candidate',return_value=(None,{'strategy':'VWAP_REVERSION','reason':'waiting'})):
+        with patch.object(w,'SYMBOLS',('BTCUSDT',)), patch.object(w,'market_get',new=AsyncMock(return_value=Response())), \
+             patch.object(w,'closed_candles',return_value=[]), \
+             patch.object(w,'fib_candidate',side_effect=lambda _: (copy.deepcopy(candidate),{'strategy':'FIB_618_786','reason':'ready'})), \
+             patch.object(w,'vwap_candidate',return_value=(None,{'strategy':'VWAP_REVERSION','reason':'waiting'})), \
+             patch.object(w,'technical_confirmation',new=AsyncMock(return_value=(True,{'score':3}))) as confirm, \
+             patch.object(w,'scan_trendline',new=AsyncMock(return_value={'symbol':'XRPUSDT','strategy':'TRENDLINE_4H_LONG','reason':'mock'})):
             asyncio.run(w.scan_entries(None))
             self.assertEqual(len(w.state['open_positions']),1)
             p=w.state['open_positions'][0]
@@ -126,6 +158,7 @@ class WhaleTests(unittest.TestCase):
             asyncio.run(w.scan_entries(None))
             self.assertEqual(w.state['open_positions'],[])
             self.assertIn('již',w.state['signal_checks'][0]['reason'])
+            self.assertEqual(confirm.await_count,1)
             w.state['seen_signal_ids']=[];w.state['persistence_error']='db unavailable'
             asyncio.run(w.scan_entries(None))
             self.assertEqual(w.state['open_positions'],[])
