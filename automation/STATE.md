@@ -44,8 +44,8 @@ Plánovaná úloha: `trig_01PCaCadnJSZo5XYuLEdH8uR`, cron `44 */3 * * *` UTC, na
 
 ## Čeká na vlastníka
 
-- **PR #7 (draft)**: Whale trendline riziko 3 % → 0,1 %, notional max 35 %, celkový strop 0,24 %.
-  Testy 241/0. Po schválení: sloučit + RUČNÍ deploy na Renderu, pak ověřit restart a pozice Whale.
+- **PR #7 SLOUČEN** (`edaa938`, schváleno vlastníkem): Whale trendline 0,1 % / 35 % / 0,24 %.
+  Čeká na RUČNÍ deploy na Renderu; pak ověřit restart (`process_started_utc`) a stav Whale.
 
 ## Blokace a co je potřeba od vlastníka
 
