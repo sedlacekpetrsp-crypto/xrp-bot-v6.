@@ -143,4 +143,8 @@ Pole: hypotéza | první větev | první výskyt (commit) | soubor s obchody/evi
 
 ## C. Nové testy autopilota
 
-_(zatím žádné; každý nový test: protokol commitnout před výsledkem, data, parametry, soubor obchodů, výsledek po nákladech, stav)_
+Každý nový test: protokol commitnout před výsledkem, data, parametry, soubor obchodů, výsledek po nákladech, stav.
+
+| Datum | Strategie / test | Větev | Data | Parametry | Obchody | Výsledek po nákladech (1× / 2× / 3×) | Stav |
+|---|---|---|---|---|---|---|---|
+| 2026-11-05 | COMBINED_BEST_SIGNALS_V1 replay — export ledgeru (bez změny pravidel) | research/combined-trade-ledger-20261105 (PR #9) | Binance Vision 1h BTC/ETH/SOL/XRP 2020-09…2026-10, SHA-256 v `data_source.json` | zmrazené (`run.py`, VMM 90d/30d, top 2, ≤10 %/aktivum, ≤20 %, stop 12 %), fee 0,095 % + skluz 0,02 % | `research/combined_selection_replay/trades/trades.csv` (300 legů) | 2023–26/09: +1 605,07 / +1 513,86 / +1 423,37, bez top 3 −171,79; čistá 2026-10: −209,89 / −213,26 / −216,63 (2 legy) | zamítnuto (NEPROŠEL); forward PAPER běží jen jako monitor |

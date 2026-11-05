@@ -1,6 +1,6 @@
 # Autopilot STATE — přepisuje se každým během
 
-Poslední aktualizace: 2026-11-05 10:10 UTC (autopilot běh #8, run 42006901448).
+Poslední aktualizace: 2026-11-05 10:15 UTC (autopilot běh #9 — zkušební, run 42007725592; produkce beze změny proti #8).
 
 Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h). Vypnout/změnit: claude.ai → plánované úlohy.
 
@@ -23,6 +23,7 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h)
 | UTC | Velikost | % z 1 GB | Top tabulky |
 |---|---|---|---|
 | 2026-11-05 09:59 | 201 MB | 19,6 % | research_market_samples 182 MB, blue_whale_state 3,9 MB, v8fixed_signals 1,7 MB |
+| 2026-11-05 10:05 | 201 MB (210 646 719 B) | 19,6 % | beze změny pořadí |
 
 Trend: research_market_samples ~1 438 vzorků/den, ~6,9 kB/vzorek ⇒ ~9,7 MB/den (jediný významný růst).
 Odhad: 85 % ≈ 2027-01-13 (~69 dní), 100 % ≈ 2027-01-29 (~85 dní). Zatím bez varování.
@@ -45,8 +46,9 @@ souborů/artefaktů a archivace, nebo zvětšení disku. Nic se nemaže.
 1. PR #8 čeká na review/schválení vlastníka (merge = deploy). Po nasazení ověřit, že při dalším
    deployi nevznikne duplikát. Zvážit obecnější ochranu (leader lock pro celý obchodní loop, ostatní boty).
 2. Kontrola duplicit při každém běhu (SELECT na `*_trades` group by opened_at) — přidat do workflow/RUNBOOK.
-3. Combined replay: měsíčně doplnit nový měsíc čistých dat jako NOVÝ běh se stejným protokolem;
-   přidat export ledgeru obchodů do runneru BEZ změny pravidel.
+3. Combined replay: export ledgeru HOTOVO (draft PR #9 → research/autopilot, `research/combined_selection_replay/trades/`,
+   CONSISTENT, 300 legů). Dál: 1. 12. 2026 spustit NOVÝ běh s `--end 2026-12-01` (stejný protokol + export),
+   výsledky přidat jako nový řádek, předchozí nepřepisovat.
 4. Forward PAPER evidence: týdně souhrn ELITE V18/V56, Combined, LH-WHALE, LIQUIDITY, Swing
    (počet, P/L, PF); ≥ 30 nových obchodů na strategii před závěrem. Registr: `automation/STRATEGY_REGISTRY.md`.
 5. `test_expired_and_future_signals_never_open` prochází jen formálně — přepsat v PR.
@@ -55,6 +57,7 @@ souborů/artefaktů a archivace, nebo zvětšení disku. Nic se nemaže.
 ## Čeká na vlastníka
 
 - Draft PR #8 (BEST-OF duplicitní zápis) — schválit/zamítnout; rozhodnout o korekci řádku id 129.
+- Draft PR #9 (Combined ledger export, cíl research/autopilot) — review; produkce se nemění.
 
 ## Blokace
 
