@@ -1,6 +1,7 @@
 """Risk/exit regression scenarios. These are NOT a profitability backtest."""
 import asyncio
 import copy
+import inspect
 import unittest
 from datetime import timedelta
 from unittest.mock import patch, AsyncMock
@@ -20,13 +21,27 @@ class RiskTests(unittest.TestCase):
             p = patch.object(tv, name, value)
             p.start()
             self.addCleanup(p.stop)
+        # app_v8_fly (imported by other test modules) injects the shared USER_PAUSED
+        # entry guard and wraps cycle() with the pause. These risk tests exercise
+        # the strategy itself, so isolate them from that global, order-dependent state.
+        for name in ('portfolio_entry_allowed', 'portfolio_risk_allowance'):
+            p = patch.object(tv, name, None, create=True)
+            p.start()
+            self.addCleanup(p.stop)
+        original = inspect.getclosurevars(tv.cycle).nonlocals.get('original_cycle')
+        if original is not None:
+            p = patch.object(tv, 'cycle', original)
+            p.start()
+            self.addCleanup(p.stop)
 
     def row(self, side, counter=False):
         return dict(signal=side, candle_time=int(self.now.timestamp()//60*60000)-60000, atr1=.002, atr5=.006,
                    closed_price=1.5, swing_low=1.496, swing_high=1.504,
-                   fast_long=True, fast_short=True, long_score=80 if side=="LONG" else 20,
-                   short_score=80 if side=="SHORT" else 20, adx5=25, volume_ratio=1.5,
-                   setup_long="TREND_PULLBACK", setup_short="TREND_PULLBACK", score=80,
+                   fast_long=True, fast_short=True, long_score=90 if side=="LONG" else 20,
+                   short_score=90 if side=="SHORT" else 20, adx5=25, volume_ratio=1.5,
+                   # Fields required by the stricter entry gate (entry_blockers).
+                   fresh_long=True, fresh_short=True, trend_5m=side,
+                   setup_long="CONSENSUS_IMPULSE", setup_short="CONSENSUS_IMPULSE", score=90,
                    opposing_score=20, score_accel=3, trend_15m=side, countertrend=counter)
 
     def open(self, side, counter=False):
@@ -64,7 +79,7 @@ class RiskTests(unittest.TestCase):
         for side in ('LONG', 'SHORT'):
             tv.state.update(open_position=None, last_entry_candle=None)
             p = self.open(side)
-            self.manage(self.price_at_r(p, .8))
+            self.manage(self.price_at_r(p, tv.BREAK_EVEN_TRIGGER_R + .05))
             self.assertAlmostEqual(tv.net_pnl_for_exit(p, p['stop'])[-1], tv.MIN_LOCKED_NET_R*p['risk_dollars'], places=7)
             stop = p['stop']
             self.manage(self.price_at_r(p, .5))
@@ -74,8 +89,11 @@ class RiskTests(unittest.TestCase):
         for side in ('LONG', 'SHORT'):
             tv.state.update(open_position=None, last_entry_candle=None)
             p = self.open(side)
-            self.manage(self.price_at_r(p, 1.1))
-            self.assertAlmostEqual(tv.net_pnl_for_exit(p, p['stop'])[-1], .6*p['risk_dollars'])
+            peak_r = tv.TRAIL_TRIGGER_R + .1
+            self.assertLess(peak_r, tv.NET_RR)
+            self.manage(self.price_at_r(p, peak_r))
+            self.assertAlmostEqual(tv.net_pnl_for_exit(p, p['stop'])[-1],
+                                   (peak_r - tv.TRAIL_GIVEBACK_R)*p['risk_dollars'])
             self.manage(self.price_at_r(p, .5))
             self.assertIsNone(tv.state['open_position'])
             self.assertGreater(tv.state['trades'][-1]['net_pnl'], 0)
@@ -88,8 +106,12 @@ class RiskTests(unittest.TestCase):
 
     def test_stale_loser_still_exits(self):
         p = self.open('SHORT')
-        p['opened_at'] = (self.now-timedelta(minutes=50)).isoformat()
-        self.manage(self.price_at_r(p, -.2), dict(long_score=20, short_score=80, trend_15m='NEUTRAL'))
+        p['opened_at'] = (self.now-timedelta(minutes=tv.STALE_HOLD_MINUTES+5)).isoformat()
+        row = dict(long_score=90, short_score=20, trend_15m='NEUTRAL', candle_time=1)
+        self.manage(self.price_at_r(p, -.2), row)
+        self.manage(self.price_at_r(p, -.2), row)  # same candle is not a 2nd confirmation
+        self.assertIsNotNone(tv.state['open_position'])
+        self.manage(self.price_at_r(p, -.2), dict(row, candle_time=2))
         self.assertIsNone(tv.state['open_position'])
         self.assertEqual(tv.state['trades'][-1]['reason'], 'TV STALE TRADE')
 
@@ -173,11 +195,15 @@ class RiskTests(unittest.TestCase):
         self.assertIsNotNone(tv.state['open_position'])
         row['candle_time']=12
         self.manage(self.price_at_r(p,-.1),row)
+        self.assertIsNotNone(tv.state['open_position'])  # 2 confirmations < 3
+        row['candle_time']=13
+        self.manage(self.price_at_r(p,-.1),row)
         self.assertIsNone(tv.state['open_position'])
+        self.assertEqual(tv.state['trades'][-1]['reason'], 'TV CONFIRMED TREND FLIP')
 
     def test_stop_gap_is_recorded_honestly(self):
         p=self.open('LONG')
-        self.manage(self.price_at_r(p,.8))
+        self.manage(self.price_at_r(p,tv.BREAK_EVEN_TRIGGER_R+.05))
         price=self.price_at_r(p,-.2)
         expected=tv.net_pnl_for_exit(p,price)[-1]
         self.manage(price)

@@ -39,6 +39,34 @@ class CombinedPaperExecutionTests(unittest.TestCase):
                          next_day["positions"]["BTCUSDT"]["qty"])
         self.assertEqual(next_day["trade_count"], 0)
 
+    def test_pnl_identity_includes_open_entry_fees(self):
+        day = 1793664000000
+        state = step(fresh(), day, [{"symbol": "BTCUSDT", "weight": 0.1},
+                                    {"symbol": "ETHUSDT", "weight": 0.1}],
+                     {"BTCUSDT": 100, "ETHUSDT": 50}, "entry")
+        for prices in ({"BTCUSDT": 100, "ETHUSDT": 50}, {"BTCUSDT": 93, "ETHUSDT": 47},
+                       {"BTCUSDT": 85, "ETHUSDT": 55}):
+            state = step(state, day + 86400000, [], prices, "mark")
+            self.assertAlmostEqual(state["equity"] - 10000,
+                                   state["realized_pnl"] + state["unrealized_pnl"], places=9)
+        self.assertEqual(state["trade_count"], 1)  # BTC stop at 85 < 88 stop
+
+    def test_rebalance_executes_on_first_utc_day_like_research_backtest(self):
+        oct31 = 1793404800000  # 2026-10-31T00:00Z, last completed day on 1 Nov
+        oct30 = oct31 - 86400000
+        first = step(fresh(), oct30, [{"symbol": "BTCUSDT", "weight": 0.1}],
+                     {"BTCUSDT": 100, "ETHUSDT": 50}, "2026-10-31T00:15Z")
+        # First scan on 1 November: decision from data through 31 October.
+        nov1 = step(first, oct31, [{"symbol": "ETHUSDT", "weight": 0.1}],
+                    {"BTCUSDT": 100, "ETHUSDT": 50}, "2026-11-01T00:15Z")
+        self.assertEqual(list(nov1["positions"]), ["ETHUSDT"])
+        self.assertEqual(nov1["trades"][0]["reason"], "MONTHLY_REBALANCE")
+        # Next day in the same execution month must not churn again.
+        nov2 = step(nov1, oct31 + 86400000, [{"symbol": "BTCUSDT", "weight": 0.1}],
+                    {"BTCUSDT": 100, "ETHUSDT": 50}, "2026-11-02T00:15Z")
+        self.assertEqual(nov2["positions"], nov1["positions"])
+        self.assertEqual(nov2["trade_count"], 1)
+
 
 if __name__ == "__main__":
     unittest.main()
