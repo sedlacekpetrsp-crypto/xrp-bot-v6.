@@ -1,0 +1,12 @@
+{
+  "strategy": "BTC_MINER_REVENUE_RECOVERY_XRP_V1",
+  "status": "AWAITING_POST_PREREGISTRATION_OBSERVATIONS",
+  "preregistration_commit": "fc9526123d5b6a820b44ea58fdd1c20e0d9309a2",
+  "started_at_utc": "2026-11-05T19:58:57Z",
+  "historical_cutoff_utc": "2026-10-01T00:00:00Z",
+  "backfilled_forward_trades": 0,
+  "prospective_closed_trades": 0,
+  "prospective_net_pnl": 0.0,
+  "prospective_stress_net_pnl": 0.0,
+  "note": "Only observations first available after preregistration may enter this ledger. Historical October data is not forward evidence. No production or LIVE process is enabled."
+}
