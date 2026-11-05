@@ -31,8 +31,17 @@ def execution_config(multiplier=1):
     return replace(base,fee=base.fee*multiplier,slippage=base.slippage*multiplier)
 
 def backtest(rows,start,end,config,initial=10000.):
-    trades,curve=_base_backtest(rows,start,end,config,initial)
-    signals={x['timestamp']:x for x in rows if x.get('macro_signal')}
+    normalized=[]
+    for original in rows:
+        row=dict(original)
+        if row.get('macro_signal'):
+            row.setdefault('earlier_timestamp',row['metric_timestamp'])
+            row.setdefault('earlier_credit',row['previous4_mean'])
+            row.setdefault('latest_credit',row['latest_claims'])
+            row.setdefault('credit_growth',(row['previous4_mean']-row['recent4_mean'])/row['previous4_mean'])
+        normalized.append(row)
+    trades,curve=_base_backtest(normalized,start,end,config,initial)
+    signals={x['timestamp']:x for x in normalized if x.get('macro_signal')}
     for trade in trades:
         source=signals[trade['signal_timestamp']]
         for key in ('median_start_timestamp','prior_median','latest_claims','recent4_mean','previous4_mean'):
