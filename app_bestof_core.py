@@ -71,6 +71,7 @@ SIGNAL_SCAN_SECONDS = 60
 ENABLED_SETUPS = {"BREAKOUT"}
 BREAKEVEN_TRIGGER_R = 0.60
 TRADE_TABLE = "bestof_trades"
+EXCLUSION_TABLE = "bestof_trade_exclusions"
 STATE_TABLE = "bestof_state"
 
 PAPER_BALANCE = STARTING_BALANCE
@@ -130,6 +131,16 @@ def init_db():
                     state JSONB NOT NULL
                 )
             """)
+            # Vyloučené duplicitní zápisy (vzor fly_trade_exclusions). Řádek v TRADE_TABLE zůstává,
+            # jen se nepočítá do historie a statistik. Návrat = DELETE z této tabulky.
+            cur.execute(f"""
+                CREATE TABLE IF NOT EXISTS {EXCLUSION_TABLE} (
+                    trade_id INTEGER PRIMARY KEY,
+                    canonical_trade_id INTEGER NOT NULL,
+                    reason TEXT NOT NULL,
+                    authorized_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+                )
+            """)
         conn.commit()
 
 
@@ -174,7 +185,8 @@ def load_state():
                     SELECT symbol, side, setup, entry_market, entry_price,
                            exit_market, exit_price, qty, gross_pnl, slippage,
                            fees, pnl, reason, opened_at, closed_at
-                    FROM {TRADE_TABLE}
+                    FROM {TRADE_TABLE} t
+                    WHERE NOT EXISTS (SELECT 1 FROM {EXCLUSION_TABLE} e WHERE e.trade_id = t.id)
                     ORDER BY id DESC LIMIT 500
                 """)
                 rows = cur.fetchall()

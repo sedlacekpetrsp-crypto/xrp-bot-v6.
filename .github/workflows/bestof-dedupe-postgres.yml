@@ -5,9 +5,9 @@ name: BEST-OF dedupe (PostgreSQL)
 # nikdy proti produkci. Nic nenasazuje.
 on:
   push:
-    branches: ["research/bestof-dedupe-*"]
+    branches: ["research/bestof-dedupe-*", "research/bestof-exclusions-*"]
   pull_request:
-    paths: ["app_bestof_core.py", "test_bestof*.py"]
+    paths: ["app_bestof_core.py", "test_bestof*.py", "research/bestof_exclusions/**"]
   workflow_dispatch:
 
 permissions:
