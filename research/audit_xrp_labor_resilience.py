@@ -9,7 +9,7 @@ def check(v,m):
 macro={}; prices={}; page=0
 for source in result['manifest']:
     if source['kind']=='FRED_ICSA': path=cache/'fred-ICSA.csv'
-    else: path=cache/f'XRPUSDT-1d-curve-api-{page}.json'; page+=1
+    else: path=cache/f'XRPUSDT-1d-credit-api-{page}.json'; page+=1
     payload=path.read_bytes(); check(hashlib.sha256(payload).hexdigest()==source['sha256'],'hash:'+path.name)
     if source['kind']=='FRED_ICSA':
         for x in csv.DictReader(io.StringIO(payload.decode())):
