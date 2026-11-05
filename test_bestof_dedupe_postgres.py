@@ -337,5 +337,73 @@ class BestofDedupePostgres(unittest.TestCase):
         self.assertEqual(rows_for(), 1)
 
 
+EXCL_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "research", "bestof_exclusions")
+
+
+def run_sql_file(name):
+    sql = open(os.path.join(EXCL_DIR, name)).read()
+    sql = "\n".join(line for line in sql.splitlines() if not line.strip().startswith("--"))
+    with connect() as c:
+        with c.cursor() as cur:
+            for stmt in [s.strip() for s in sql.split(";") if s.strip()]:
+                if stmt.upper() in ("BEGIN", "COMMIT"):
+                    continue  # transakci řídí spojení
+                cur.execute(stmt)
+
+
+@unittest.skipUnless(DSN and HAVE_PSYCOPG, "potřebuje PostgreSQL a psycopg (CI)")
+class BestofExclusions(unittest.TestCase):
+    """Návrh opravy id 129: vyloučení z historie/statistik bez mazání, vratné."""
+
+    def setUp(self):
+        self.p = patch.multiple(core, DATABASE_URL=DSN, get_db=connect)
+        self.p.start()
+        core.init_db()
+        cols = ("id, symbol, side, setup, entry_market, entry_price, exit_market, exit_price, qty, "
+                "gross_pnl, slippage, fees, pnl, reason, opened_at, closed_at")
+        with connect() as c:
+            with c.cursor() as cur:
+                cur.execute(f"TRUNCATE {TABLE}, {core.EXCLUSION_TABLE}")
+                cur.execute(f"DELETE FROM {core.STATE_TABLE}")
+                for i, opened, closed in (
+                        (127, "2026-11-05T03:20:21+00:00", "2026-11-05T04:04:48+00:00"),
+                        (128, OPENED, "2026-11-05T09:14:07.761682+00:00"),
+                        (129, OPENED, "2026-11-05T09:14:10.872418+00:00")):
+                    t = trade(opened_at=opened, closed_at=closed)
+                    cur.execute(f"INSERT INTO {TABLE} ({cols}) VALUES ({','.join(['%s'] * 16)})",
+                                (i, t["symbol"], t["side"], t["setup"], t["entry_market"], t["entry_price"],
+                                 t["exit_market"], t["exit_price"], t["qty"], t["gross_pnl"], t["slippage"],
+                                 t["fees"], t["pnl"], t["reason"], t["opened_at"], t["closed_at"]))
+        core.PAPER_BALANCE, core.positions = 9617.002714565086, {}
+        core.save_state()
+
+    def tearDown(self):
+        self.p.stop()
+
+    def loaded(self):
+        core.trade_history, core.PAPER_BALANCE = [], 0.0
+        core.load_state()
+        return (len(core.trade_history), round(sum(t["pnl"] for t in core.trade_history), 4),
+                core.PAPER_BALANCE)
+
+    def test_apply_hides_duplicate_keeps_row_and_balance_rollback_restores(self):
+        self.assertEqual(self.loaded(), (3, -30.93, 9617.002714565086))
+        run_sql_file("apply_exclude_129.sql")
+        self.assertEqual(self.loaded(), (2, -20.62, 9617.002714565086))
+        self.assertEqual(int(scalar(f"SELECT count(*) FROM {TABLE}")), 3)  # nic nesmazáno
+        run_sql_file("apply_exclude_129.sql")  # opakované spuštění je neškodné
+        self.assertEqual(int(scalar(f"SELECT count(*) FROM {core.EXCLUSION_TABLE}")), 1)
+        run_sql_file("rollback_exclude_129.sql")
+        self.assertEqual(self.loaded(), (3, -30.93, 9617.002714565086))
+
+    def test_apply_refuses_when_rows_are_not_the_same_opening(self):
+        with connect() as c:
+            with c.cursor() as cur:
+                cur.execute(f"UPDATE {TABLE} SET qty = qty + 1 WHERE id = 129")
+        run_sql_file("apply_exclude_129.sql")
+        self.assertEqual(int(scalar(f"SELECT count(*) FROM {core.EXCLUSION_TABLE}")), 0)
+        self.assertEqual(self.loaded()[0], 3)
+
+
 if __name__ == "__main__":
     unittest.main()
