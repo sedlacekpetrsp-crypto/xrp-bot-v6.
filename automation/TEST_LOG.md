@@ -7,3 +7,4 @@
 | 2026-11-05 08:23 | 5db2686 | Combined replay (CI) | EVALUATED, NEPROŠEL; SHA-256 8da9517f… | actions/runs/41993843175 |
 | 2026-11-05 08:35 | e9f3917 | pytest lokálně | 238 / 0 | reports/followup-20261105.md |
 | 2026-11-05 08:39 | aec6baa | status snapshot (CI) | 6× HTTP 200, P/L součet −3 170,34, PR #5 nenasazen | actions/runs/41996097278 |
+| 2026-11-05 08:44 | 550bc81 | autopilot checks #1 (CI) | 6× HTTP 200; tests 238 passed; proces od 2026-11-04 19:58 UTC (PR #5 nenasazen); P/L součet −3 170,35; extra_rebalance false | actions/runs/41996806445 |

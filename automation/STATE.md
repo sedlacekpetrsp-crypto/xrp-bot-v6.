@@ -1,6 +1,9 @@
 # Autopilot STATE — přepisuje se každým během
 
-Poslední aktualizace: 2026-11-05 ~08:45 UTC (ruční založení, session Claude Code).
+Poslední aktualizace: 2026-11-05 08:46 UTC (založení + autopilot běh #1, run 41996806445).
+
+Plánovaná úloha: `trig_01PCaCadnJSZo5XYuLEdH8uR`, cron `44 */3 * * *` UTC, navazuje v session
+`session_01SUMe5gCQBc55fV2C6FFoZu`. Vypnout/změnit: claude.ai → plánované úlohy, nebo požádat Claude.
 
 ## Produkce (poslední známé hodnoty)
 
