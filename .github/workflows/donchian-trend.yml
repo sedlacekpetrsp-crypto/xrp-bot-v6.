@@ -1,0 +1,43 @@
+name: Donchian trend backtest (PAPER research, public data only)
+# Jen výzkumná větev. Žádné secrets, žádný Render, žádné objednávky.
+# Výsledky (trades.csv, results.json, RESULTS.md, data_source.json) commitne zpět do stejné větve.
+on:
+  push:
+    branches: ["research/donchian-trend-*"]
+    paths:
+      - ".github/workflows/donchian-trend.yml"
+      - "research/donchian_trend/run.py"
+      - "tests/test_donchian_trend.py"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install pytest
+      - name: Mechanics tests (synthetic, not profitability evidence)
+        run: python -m pytest -q -p no:cacheprovider tests/test_donchian_trend.py
+      - name: Backtest per PROTOCOL.md
+        run: |
+          set -o pipefail
+          python -m research.donchian_trend.run --cache /tmp/vision-1d --outdir research/donchian_trend | tee summary.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: donchian-trend
+          path: research/donchian_trend/
+      - name: Commit results to this research branch
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          git add research/donchian_trend/
+          git diff --cached --quiet && exit 0
+          git commit -m "Donchian trend: backtest results (run ${GITHUB_RUN_ID}) [skip ci]"
+          git push origin HEAD:${GITHUB_REF_NAME}
