@@ -1,6 +1,6 @@
 # Autopilot STATE — přepisuje se každým během
 
-Poslední aktualizace: 2026-11-05 13:12 UTC (autopilot běh #10, run 42032804006; produkce beze změny proti #8/#9).
+Poslední aktualizace: 2026-11-05 15:12 UTC (autopilot běh #12, run 42051247147; produkce beze změny; výzkum: Turn-of-month zamítnut, PR #12).
 
 Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h). Vypnout/změnit: claude.ai → plánované úlohy.
 
@@ -24,6 +24,8 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h)
 - Combined: 0 pozic, 0 obchodů, `extra_rebalance_caused_by_pr5` false. ELITE V18/V56 0 obchodů.
 
 ## Databáze `xrp-bot-db` (1 GB, bez auto-zvětšení)
+
+Poslední kontrola 15:04 UTC: 212,8 MB = 19,8 % (+0,8 MB za 2 h, trend beze změny). Produkce 15:04: beze změny (live edaa938, 0 událostí, 0 error logů, BEST-OF 130 obchodů = nový obchod, dup_groups jen známý id 129).
 
 | UTC | Velikost | % z 1 GB | Top tabulky |
 |---|---|---|---|
@@ -73,8 +75,9 @@ Společný protokol (zapsat do `research/<název>/PROTOCOL.md` a commitnout PŘE
 
 Fronta:
 1. ~~Donchian trend 20/55~~ — HOTOVO 2026-11-05 14:00 UTC: **ZAMÍTNUTO** (validace Sharpe 1,35 < B&H 1,94; závěrečný test −21 % po nákladech ×2). PR #11, `research/donchian_trend/RESULTS.md`.
-2. **Turn-of-month** BTC/ETH (drž posledních 2 + první 3 dny měsíce, jinak hotovost).
-3. **RSI(2) pullback v uptrendu** (close > SMA200, vstup RSI2 < 10, výstup close > SMA5), BTC/ETH denně.
+2. ~~Turn-of-month BTC/ETH~~ — HOTOVO 2026-11-05 15:10 UTC: **ZAMÍTNUTO** (ladění +242 %, ale validace −32,6 % vs B&H +321 %, placebo ToM nejhorší z 28 oken; závěrečný ×2 −16,7 %). PR #12, `research/turn_of_month/RESULTS.md`.
+   Poučení: kalendářní efekt z 2020–22 se mimo vzorek obrátil ⇒ jednoduché anomálie z ladicího období nepřenášet.
+3. **DALŠÍ NA ŘADĚ → RSI(2) pullback v uptrendu** (close > SMA200, vstup RSI2 < 10, výstup close > SMA5), BTC/ETH denně.
 4. **SMA200 risk-off overlay** na buy & hold BTC/ETH (nad SMA200 držet, pod ní hotovost) — srovnání s B&H.
 5. Combined replay: 1. 12. 2026 nový běh s daty za listopad (viz bod 3 níže).
 
