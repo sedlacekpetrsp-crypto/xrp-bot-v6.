@@ -1,0 +1,21 @@
+name: PAPER status snapshot (read-only public GET)
+# Reads public status endpoints of the PAPER service. No secrets, no writes, no deploy.
+on:
+  push:
+    branches: [research/combined-selection-replay-20261105]
+    paths: ['.github/workflows/paper-status-snapshot.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: GET status endpoints
+        run: |
+          BASE=https://xrp-fly-whale-24-7.onrender.com
+          for p in /health /combined/health /combined/status /elite-paper/status /swing/status /news-paper/status; do
+            echo "=====ENDPOINT $p FETCHED_AT $(date -u +%Y-%m-%dT%H:%M:%SZ)====="
+            curl -sS --max-time 60 -w '\n=====HTTP %{http_code} TIME %{time_total}s=====\n' "$BASE$p" || echo "=====CURL_FAILED====="
+          done
