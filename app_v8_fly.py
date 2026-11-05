@@ -37,7 +37,7 @@ PORTFOLIO_RISK_SHARES={
     "LEADLAG":0.0010,
     "TV":0.0008,
     "WHALE":0.0010,
-    "WHALE_TRENDLINE":0.03,
+    "WHALE_TRENDLINE":0.001,
     "BEST":0.0010,
 }
 
@@ -401,7 +401,7 @@ async function refreshWhale(){
   const nt=ts.filter(t=>t.strategy==='TRENDLINE_4H_LONG');
   const nw=nt.filter(t=>Number(t.net_pnl)>0).length;
   const np=nt.reduce((a,t)=>a+Number(t.net_pnl||0),0);
-  document.getElementById('whaleTrendline').innerHTML=`<b>Nová strategie: Trendline 4h · XRP LONG</b><br>Uzavřené: ${nt.length} • Win rate: ${nt.length?f(100*nw/nt.length,1)+' %':'— (zatím bez obchodů)'} • Čisté P/L: ${f(np,2)} USD<br><span class="muted">PAPER • cílové riziko 3 % (omezeno dostupným kapitálem, bez páky) • pevný SL 2 ATR a TP 2R • bez časového výstupu</span>`;
+  document.getElementById('whaleTrendline').innerHTML=`<b>Nová strategie: Trendline 4h · XRP LONG</b><br>Uzavřené: ${nt.length} • Win rate: ${nt.length?f(100*nw/nt.length,1)+' %':'— (zatím bez obchodů)'} • Čisté P/L: ${f(np,2)} USD<br><span class="muted">PAPER • cílové riziko 0,1 % (max. 35 % kapitálu, bez páky) • pevný SL 2 ATR a TP 2R • bez časového výstupu</span>`;
   document.getElementById('whalePosition').innerHTML=ps.length
    ? ps.map((p,i)=>`<div style="${i?'margin-top:10px;padding-top:10px;border-top:1px solid #29343e':''}"><b>#${i+1} ${p.symbol||'BTCUSDT'} ${p.side} · ${p.strategy||'Původní signál'}</b> • entry ${f(p.entry,6)} • SL ${f(p.stop,6)} • TP ${f(p.tp,6)} • risk ${f(p.risk_dollars,2)} USD</div>`).join('')+`<div style="margin-top:8px">Celkové uPnL <b class="${unreal>=0?'green':'red'}">${unreal>=0?'+':''}${f(unreal,2)} USD</b></div>`
    : (p

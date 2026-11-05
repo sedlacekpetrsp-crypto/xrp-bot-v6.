@@ -40,22 +40,45 @@ class TrendlineTests(unittest.TestCase):
         rs=candles();rs[210][3]=103.4
         rs[-3][3]=101 # two right-hand candles: cannot become a confirmed anchor
         self.assertIsNone(t.candidate(rs)[0])
-    def test_3_percent_risk_including_costs_and_2r_target(self):
+    def test_tested_risk_including_costs_and_2r_target(self):
+        # 0.1 % target risk = configuration of the historical 15-trade sample.
+        self.assertEqual(w.TRENDLINE_RISK_RATE,.001)
         self.assertTrue(w.open_paper(self.signal(),'LONG',100))
         p=w.state['open_positions'][0]
-        self.assertAlmostEqual(p['risk_dollars'],300)
+        self.assertAlmostEqual(p['risk_dollars'],10)
+        self.assertEqual(p['target_risk_rate'],.001)
         self.assertAlmostEqual(p['actual_risk_rate'],w.paper_stop_policy.net_stop_risk(p,w.FEE_RATE,w.SLIPPAGE_RATE)/10000)
-        self.assertLessEqual(p['actual_risk_rate'],.03)
+        self.assertLessEqual(p['actual_risk_rate'],.001+1e-12)
         self.assertAlmostEqual(p['tp']-p['entry'],2*(p['entry']-p['stop']))
         w.close_paper(p,p['stop'],'SL')
-        self.assertLessEqual(-w.state['trades'][0]['net_pnl'],300)
+        self.assertLessEqual(-w.state['trades'][0]['net_pnl'],10+1e-9)
         self.assertAlmostEqual(w.state['balance'],10000+w.state['trades'][0]['net_pnl'])
     def test_no_leverage_and_symbol_guard(self):
         self.assertTrue(w.open_paper(self.signal(99),'LONG',100))
         p=w.state['open_positions'][0]
-        self.assertLessEqual(p['notional'],10000)
-        self.assertLess(p['actual_risk_rate'],.03)
+        self.assertLessEqual(p['notional'],10000*w.TRENDLINE_MAX_NOTIONAL_SHARE)
+        self.assertLessEqual(p['actual_risk_rate'],.001+1e-12)
         self.assertFalse(w.open_paper(self.signal(),'SHORT',100))
+    def test_notional_cap_35_percent_binds_for_tight_stop(self):
+        # With a high hypothetical risk target the 35 % notional cap must bind.
+        # Isolate from the shared coordinator injected by app_v8_fly (it caps at 0.1 % too).
+        with patch.object(w,'TRENDLINE_RISK_RATE',.03), patch.object(w,'MAX_TOTAL_RISK_RATE',.05), \
+             patch.object(w,'portfolio_risk_allowance',None,create=True):
+            self.assertTrue(w.open_paper(self.signal(99),'LONG',100))
+        p=w.state['open_positions'][0]
+        self.assertAlmostEqual(p['notional'],10000*.35)
+    def test_hypothetical_3_percent_is_blocked_by_total_whale_risk(self):
+        with patch.object(w,'TRENDLINE_RISK_RATE',.03), patch.object(w,'portfolio_risk_allowance',None,create=True):
+            self.assertFalse(w.open_paper(self.signal(99),'LONG',100))
+        self.assertEqual(w.state['last_signal']['rejected'],'max total risk')
+    def test_trendline_respects_total_whale_risk_limit(self):
+        # A legacy position plus a trendline entry must stay within MAX_TOTAL_RISK_RATE.
+        s=self.signal(99);s['strategy']='FIB_618_786';s['symbol']='BTCUSDT';s['id']=7
+        w.state['market_prices']['BTCUSDT']=100
+        self.assertTrue(w.open_paper(s,'LONG',100))
+        self.assertTrue(w.open_paper(self.signal(96),'LONG',100))
+        total=sum(w.paper_stop_policy.net_stop_risk(p,w.FEE_RATE,w.SLIPPAGE_RATE) for p in w.state['open_positions'])
+        self.assertLessEqual(total,10000*w.MAX_TOTAL_RISK_RATE+1e-6)
     def test_legacy_risk_and_history_unchanged(self):
         s=self.signal(99);s['strategy']='FIB_618_786'
         w.state['trades']=[dict(signal_id=1,strategy='LEGACY_TELEGRAM',net_pnl=-30)]

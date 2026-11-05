@@ -1,5 +1,12 @@
 # Blue Whale: XRP 4h trendline PAPER addition (2026-10-07)
 
+> **Update 2026-11-05 (owner-approved):** risk reduced from 3 % to **0.1 %** of the Whale account
+> and notional capped at **35 %** — the configuration of the historical 15-trade sample. The
+> special 3.12 % mixed-risk budget is removed; all Whale entries share `MAX_TOTAL_RISK_RATE`
+> (0.24 %). Constants: `TRENDLINE_RISK_RATE`, `TRENDLINE_MAX_NOTIONAL_SHARE` in
+> `app_blue_whale_mirror.py`; coordinator share `WHALE_TRENDLINE` 0.001 in `app_v8_fly.py`.
+> The text below describes the original 3 % implementation and is kept for history.
+
 Adds the previously tested 4h LONG support-bounce rule to the existing Whale
 worker and Postgres state. Original FIB/VWAP positions and history are preserved.
 No new service, subscription, exchange credentials, or real orders.

@@ -32,6 +32,10 @@ SYMBOLS=("BTCUSDT","ETHUSDT","SOLUSDT","XRPUSDT")
 MAX_SIGNAL_AGE_MINUTES=float(os.getenv("MAX_SIGNAL_AGE_MINUTES","15"))
 MAX_OPEN_POSITIONS=2
 MAX_TOTAL_RISK_RATE=0.0024
+# 4h trendline: risk and size of the historically tested configuration (WHALE_TRENDLINE.md:
+# 15 trades at 0.1% target risk and 35% maximum notional). Was 3% / 100% since 2026-10-07.
+TRENDLINE_RISK_RATE=0.001
+TRENDLINE_MAX_NOTIONAL_SHARE=0.35
 SAME_SIDE_COOLDOWN_MINUTES=float(os.getenv("SAME_SIDE_COOLDOWN_MINUTES","30"))
 DATABASE_URL=os.getenv("DATABASE_URL")
 WHALE_TECH_CONFIRM=os.getenv("WHALE_TECH_CONFIRM","1")=="1"
@@ -380,21 +384,21 @@ def open_paper(signal,side,market_price):
         state["last_signal"]={"id":signal["id"],"side":side,"stop_raw":signal["stop"]["raw"],"rejected":"stop distance outside quality band","stop_rate":stop_rate,"seen_at":utcnow().isoformat()}
         return False
     account_basis=state["balance"]+sum(float(p.get("entry_fee",0.0)) for p in positions)
-    risk=account_basis*(0.03 if trendline else RISK_PER_TRADE)
+    risk=account_basis*(TRENDLINE_RISK_RATE if trendline else RISK_PER_TRADE)
     risk_meta=None
     allowance=globals().get("portfolio_risk_allowance")
     if callable(allowance):
         risk,risk_meta=allowance("WHALE_TRENDLINE" if trendline else "WHALE",signal.get("symbol",SYMBOL),side,risk)
     risk_budget=risk
     open_risk=sum(paper_stop_policy.net_stop_risk(p,FEE_RATE,SLIPPAGE_RATE) for p in positions)
-    total_limit=0.0312 if trendline or any(p.get("strategy")==whale_trendline.STRATEGY for p in positions) else MAX_TOTAL_RISK_RATE
+    total_limit=MAX_TOTAL_RISK_RATE
     if open_risk+risk > account_basis*total_limit+1e-9:
         state["last_signal"]={"id":signal["id"],"side":side,"stop_raw":signal["stop"]["raw"],"rejected":"max total risk","seen_at":utcnow().isoformat()}
         return False
     eff=stop_rate+2*(FEE_RATE+SLIPPAGE_RATE)
     available=max(0.0, account_basis-sum(float(p.get("notional",0)) for p in positions))
     if trendline:available=max(0.0,state["balance"]-sum(float(p.get("notional",0)) for p in positions))/(1+FEE_RATE)
-    notional=min(risk/eff, available, account_basis*(1.0 if trendline else 0.5))
+    notional=min(risk/eff, available, account_basis*(TRENDLINE_MAX_NOTIONAL_SHARE if trendline else 0.5))
     if notional<=0:return False
     risk=notional*eff
     qty=notional/entry
@@ -404,10 +408,10 @@ def open_paper(signal,side,market_price):
         state["last_signal"]={"id":signal["id"],"rejected":"Nedostatečný poměr zisku k riziku po poplatcích"}
         return False
     entry_fee=entry*qty*FEE_RATE
-    position={"symbol":signal.get("symbol",SYMBOL),"strategy":signal.get("strategy","LEGACY_TELEGRAM"),"signal_policy":SIGNAL_POLICY_VERSION,"confirmation":signal.get("confirmation"),"source_entry":signal["entry"],"signal_id":signal["id"],"signal_text":signal["text"],"side":side,"entry":entry,"stop":stop,"initial_stop":stop,"tp":tp,"qty":qty,"notional":notional,"risk_dollars":risk,"portfolio_risk":risk_meta,"target_risk_rate":0.03 if trendline else RISK_PER_TRADE,"actual_risk_rate":risk/account_basis,"opened_at":utcnow().isoformat(),"entry_fee":entry_fee,"breakeven":False,"profit_lock":False}
+    position={"symbol":signal.get("symbol",SYMBOL),"strategy":signal.get("strategy","LEGACY_TELEGRAM"),"signal_policy":SIGNAL_POLICY_VERSION,"confirmation":signal.get("confirmation"),"source_entry":signal["entry"],"signal_id":signal["id"],"signal_text":signal["text"],"side":side,"entry":entry,"stop":stop,"initial_stop":stop,"tp":tp,"qty":qty,"notional":notional,"risk_dollars":risk,"portfolio_risk":risk_meta,"target_risk_rate":TRENDLINE_RISK_RATE if trendline else RISK_PER_TRADE,"actual_risk_rate":risk/account_basis,"opened_at":utcnow().isoformat(),"entry_fee":entry_fee,"breakeven":False,"profit_lock":False}
     paper_stop_policy.apply(position, FEE_RATE, SLIPPAGE_RATE)
     actual_risk=paper_stop_policy.net_stop_risk(position,FEE_RATE,SLIPPAGE_RATE)
-    cap=min(account_basis*(0.03 if trendline else RISK_PER_TRADE),float((risk_meta or {}).get("risk_cap_usdc",risk_budget)))
+    cap=min(account_basis*(TRENDLINE_RISK_RATE if trendline else RISK_PER_TRADE),float((risk_meta or {}).get("risk_cap_usdc",risk_budget)))
     remaining=account_basis*total_limit-open_risk
     budget=min(cap,remaining)
     if not math.isfinite(budget) or budget<=0 or actual_risk<=0:
