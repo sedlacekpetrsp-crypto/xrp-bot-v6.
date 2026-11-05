@@ -1,0 +1,45 @@
+name: Combined selection replay (PAPER research, public data only)
+# Runs ONLY on pushes to this research branch. No secrets, no Render, no orders.
+on:
+  push:
+    branches: [research/combined-selection-replay-20261105]
+    paths:
+      - '.github/workflows/combined-selection-replay.yml'
+      - 'research/combined_selection_replay/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install test dependencies
+        run: pip install -r requirements-dev.txt
+      - name: Mechanics tests (synthetic, not profitability evidence)
+        run: python -m pytest -q -p no:cacheprovider tests/test_combined_selection_replay.py tests/test_combined_paper_execution.py
+      - name: Replay with frozen protocol (unchanged)
+        run: |
+          set -o pipefail
+          python -m research.combined_selection_replay.run \
+            --cache /tmp/vision-1h --end 2026-11-01 \
+            --out results.json | tee summary.txt
+      - name: Print full results (incl. SHA256 manifest) for retrieval from log
+        if: always()
+        run: |
+          echo "=====RESULTS_JSON_BEGIN====="
+          cat results.json || true
+          echo "=====RESULTS_JSON_END====="
+          sha256sum results.json || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: combined-selection-replay-results
+          path: |
+            results.json
+            summary.txt
+          if-no-files-found: warn
