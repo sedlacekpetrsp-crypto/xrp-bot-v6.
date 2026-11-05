@@ -2,7 +2,7 @@ name: Combined selection replay (PAPER research, public data only)
 # Runs ONLY on pushes to this research branch. No secrets, no Render, no orders.
 on:
   push:
-    branches: [research/combined-selection-replay-20261105]
+    branches: [research/combined-selection-replay-20261105, research/autopilot]
     paths:
       - '.github/workflows/combined-selection-replay.yml'
       - 'research/combined_selection_replay/**'

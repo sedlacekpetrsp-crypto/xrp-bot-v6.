@@ -1,0 +1,33 @@
+name: Autopilot checks (PAPER, read-only)
+# Triggered by the scheduled Claude run committing automation/RUN_REQUEST on research/autopilot.
+# Public GET status snapshot + full unit test suite. No secrets, no deploy, no LIVE.
+on:
+  push:
+    branches: [research/autopilot]
+    paths: ['automation/RUN_REQUEST', '.github/workflows/autopilot-checks.yml', 'tools/autopilot/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  status:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.13'}
+      - name: Status snapshot (public GET only)
+        run: python tools/autopilot/status_snapshot.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: status-raw, path: status_raw.json, if-no-files-found: warn}
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.13'}
+      - run: pip install -r requirements-dev.txt
+      - name: Full test suite
+        run: python -m pytest -q -p no:cacheprovider 2>&1 | tee pytest.txt; echo "AUTOPILOT_TESTS $(tail -1 pytest.txt)"
