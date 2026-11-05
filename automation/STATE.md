@@ -59,8 +59,20 @@ souborů/artefaktů a archivace, nebo zvětšení disku. Nic se nemaže.
 5. `test_expired_and_future_signals_never_open` prochází jen formálně — přepsat v PR.
 6. `render.yaml` neodpovídá službě (`app_v8_ui` vs `app_v8_fly`) — opravit v PR.
 
+## Rozhodnutí vlastníka 2026-11-05 (11:47 SEČ) — priority dalších běhů
+
+- PR #8: připravit bezpečný plán nasazení (HOTOVO, report výše) — **sloučení ani deploy NESCHVÁLENO**.
+- Id 129: návrh tabulky výjimek jen ve výzkumné větvi (HOTOVO: draft PR #10 → research/bestof-dedupe-20261105,
+  `b7a77af`, CI 25 passed). **Žádné změny produkční DB ani historických obchodů.**
+- Priority: (1) vývoj a testování PAPER strategií, hledání prokazatelně ziskových po VŠECH nákladech
+  (nezávislá validace mimo vzorek); (2) Combined replay; (3) kontrola BEST-OF (duplicity, statistiky).
+- Šetřit limity: neopakovat úspěšné testy bez důvodu; jeden konkrétní úkol na běh, výsledky hned commitnout.
+- Blokace 2026-11-05 11:04 UTC: plánovaný běh selhal — **limit využití účtu (usage limit)**. Při dalším
+  selhání to nahlásit vlastníkovi a zkrátit běh na kontrolu + jeden malý úkol.
+
 ## Čeká na vlastníka
 
+- Draft PR #10 (návrh výjimky id 129) — review; neprovádět bez souhlasu.
 - Draft PR #8 (BEST-OF duplicitní zápis) — vlastník 2026-11-05 10:42 UTC: **ZATÍM NESLUČOVAT**; připraven
   plán nasazení v `reports/bestof-duplicate-129-and-pr8-deploy-plan-20261105.md`, čeká na schválení.
 - Id 129: vlastník **NEMAZAT ani NEUPRAVOVAT**. Čtecí analýza hotová (týž report): duplicitní zápis
