@@ -1,6 +1,6 @@
 # Autopilot STATE — přepisuje se každým během
 
-Poslední aktualizace: 2026-11-05 21:15 UTC (autopilot běh #15, run 42109108382; produkce beze změny; výzkum: vol breakout zamítnut, PR #15; protokol #6 commitnut).
+Poslední aktualizace: 2026-11-05 23:15 UTC (autopilot běh #16, run 42126620749; produkce beze změny; výzkum: TS momentum vote zamítnut, PR #16; protokol #7 ETHBTC commitnut).
 
 Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h). Vypnout/změnit: claude.ai → plánované úlohy.
 
@@ -25,7 +25,7 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h)
 
 ## Databáze `xrp-bot-db` (1 GB, bez auto-zvětšení)
 
-Poslední kontrola 21:03 UTC: 215,6 MB = 20,1 % (+1,0 MB za 2 h, trend beze změny). Produkce 21:03 beze změny (live edaa938, 0 událostí od 19:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 166,91, 238 passed). Předchozí 19:04: beze změny (live edaa938 = HEAD, obsahuje da2f665, 0 událostí od 17:00, 0 error logů 17:05–19:05, BEST-OF 131 obchodů, dup_groups jen známý id 129, P/L součet −3 197,26, tests OK).
+Poslední kontrola 23:03 UTC: 216,5 MB = 20,2 % (+0,9 MB za 2 h, trend beze změny); produkce 23:03 beze změny (live edaa938, 0 událostí od 21:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 166,91). Předchozí 21:03: 215,6 MB = 20,1 %. Produkce 21:03 beze změny (live edaa938, 0 událostí od 19:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 166,91, 238 passed). Předchozí 19:04: beze změny (live edaa938 = HEAD, obsahuje da2f665, 0 událostí od 17:00, 0 error logů 17:05–19:05, BEST-OF 131 obchodů, dup_groups jen známý id 129, P/L součet −3 197,26, tests OK).
 
 | UTC | Velikost | % z 1 GB | Top tabulky |
 |---|---|---|---|
@@ -83,12 +83,14 @@ Fronta:
    Poučení: overlay ~půlí drawdown, ale v býčím období ztrácí Sharpe a mění stav zřídka (< 30 obchodů) ⇒ režimové filtry na B&H podle těchto kritérií neprojdou; další hypotézy s vyšší frekvencí.
 5. ~~Denní volatilitní průraz k=0,5 BTC/ETH~~ — HOTOVO 2026-11-05 21:10 UTC: **ZAMÍTNUTO** (krit. 1, 3, 5: validace ×1 +58,8 %, Sharpe 1,02, 607 obch. vs B&H +321 %, 1,71; validace ×2 −21 %, PF 0,91; závěrečný ×2 −66 % vs B&H −25 %). PR #15, `research/vol_breakout/RESULTS.md`.
    Poučení: hrubá hrana ~40 bps/obchod při ~23 bps nákladů na kolo ⇒ vysokofrekvenční denní obchodování spot s 0,095% poplatkem nepřežije stres ×2; další hypotézy s nízkým obratem.
-6. **DALŠÍ NA ŘADĚ →** Hlasování časového momenta 1/3/6/12 měsíců (BTC/ETH, expozice = podíl kladných horizontů 0/25/50/75/100 %, měsíční rebalance).
-   Proč nové: částečná expozice z více horizontů; SMA200 overlay (PR #14) = binární 1 horizont, `volatility_managed_momentum` = škálování volatilitou.
-   Pozor: málo obchodů ⇒ v protokolu počítat „obchod“ = změna expozice; kritérium ≥ 30 ponechat.
-   PROTOKOL UŽ COMMITNUT (`research/ts-momentum-vote-20261105`, `a74c3fa`, `research/ts_momentum_vote/PROTOCOL.md`). Pokračovat: `run.py` (loader/metriky/verdikt z `research/vol_breakout/run.py`, PR #15; nová `simulate` s měsíční rebalancí a částečnou vahou), testy `tests/test_ts_momentum_vote.py`, workflow `.github/workflows/ts-momentum-vote.yml` (vzor `vol-breakout.yml`), spustit, ověřit, PR.
-7. Přepínání BTC ↔ ETH podle trendu ETHBTC (close ETHBTC > SMA50 ⇒ ETH, jinak BTC; vždy investováno), měřítko B&H 50/50.
-   Před zápisem protokolu přečíst README `research/relative_strength` (inventář #85), aby nešlo o opakování.
+6. ~~Hlasování časového momenta 1/3/6/12 m BTC/ETH~~ — HOTOVO 2026-11-05 23:10 UTC: **ZAMÍTNUTO** (krit. 1, 5: validace ×1 +108 %, Sharpe 1,14, DD 32,4 %, 34 obch. vs B&H +321 %, 1,71, 34,0 %; závěrečný ×2 −22,0 % vs B&H −25,1 %, DD 33 vs 60 %). PR #16, `research/ts_momentum_vote/RESULTS.md`.
+   Poučení: stejný vzor jako SMA200 (PR #14) — časování trhu půlí DD v medvědím trhu, ale v býčím ztrácí Sharpe; info: týdenní varianta Sharpe 1,44 (pořád < 1,71). Časování trhu proti B&H dál netestovat.
+7. **DALŠÍ NA ŘADĚ →** Přepínání BTC ↔ ETH podle trendu ETHBTC (close ETHBTC > SMA50 ⇒ ETH, jinak BTC; vždy investováno), měřítko B&H 50/50.
+   Ověřeno: `research/relative_strength` (#85) = XRP vs BTC+ETH 7d, 1h, jen XRP s hotovostí ⇒ není opakování.
+   PROTOKOL UŽ COMMITNUT (`research/ethbtc-switch-20261105`, `9febba3`, `research/ethbtc_switch/PROTOCOL.md`). Pokračovat: `run.py`
+   (loader/metriky z `research/ts_momentum_vote/run.py`, PR #16; přidat symbol ETHBTC; nová `simulate` přepínání 100 % mezi BTC/ETH),
+   testy `tests/test_ethbtc_switch.py`, workflow `.github/workflows/ethbtc-switch.yml` (vzor `ts-momentum-vote.yml`), spustit, ověřit, PR.
+   Pozn. pro kód: po prodeji na váhu 0 nulovat zbytkovou qty (artefakt ~1e-18 v PR #16).
 8. Combined replay: 1. 12. 2026 nový běh s daty za listopad (viz bod 3 níže).
 
 ## Otevřené úkoly (priorita shora)
