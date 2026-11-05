@@ -8,7 +8,7 @@ Plánovaná úloha: `trig_01PCaCadnJSZo5XYuLEdH8uR`, cron `44 */3 * * *` UTC, na
 ## Produkce (poslední známé hodnoty)
 
 - Služba `xrp-fly-whale-24-7` (`srv-dang770ae00c73em1sm0`), start `uvicorn app_v8_fly:app`,
-  větev `v8-fly-layer-test`, Auto Deploy zapnut — **podle předání ChatGPT**, neověřeno Claude.
+  větev `v8-fly-layer-test`. Auto Deploy v praxi nereaguje na merge (merge PR #5/#6 nespustily deploy) ⇒ deploy ručně.
 - `v8-fly-layer-test` = `9b41f6d` (PR #5 + PR #6). **Nasazeno ručně 2026-11-05 09:01 UTC**, proces
   běží od 09:01:52 UTC; předtím `bd55352` od 2026-11-04 19:58 UTC.
 - Snapshot 08:39 UTC (run 41996097278): všechny endpointy 200, `paused_bots` FAST/FLY/LEADLAG/TV,
@@ -41,6 +41,11 @@ Plánovaná úloha: `trig_01PCaCadnJSZo5XYuLEdH8uR`, cron `44 */3 * * *` UTC, na
    odstranění/přepsání v PR.
 6. `render.yaml` neodpovídá skutečné službě (`app_v8_ui` vs `app_v8_fly`) — opravit v PR (nemá vliv,
    pokud Render nepoužívá Blueprint; ověřit přes Render).
+
+## Čeká na vlastníka
+
+- **PR #7 (draft)**: Whale trendline riziko 3 % → 0,1 %, notional max 35 %, celkový strop 0,24 %.
+  Testy 241/0. Po schválení: sloučit + RUČNÍ deploy na Renderu, pak ověřit restart a pozice Whale.
 
 ## Blokace a co je potřeba od vlastníka
 
