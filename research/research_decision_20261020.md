@@ -483,3 +483,11 @@ Reject: only sample, final-year and drawdown gates pass; net, expectancy, PF, an
 This distinct news-based hypothesis uses only the FRED daily U.S. Economic Policy Uncertainty Index (`USEPUINDXD`). After a two-actual-observation lag, it requires the available value to be at or below the strictly preceding 90-observation median and the latest five-observation mean to be below the immediately preceding five. It is not a VIX, financial-conditions, labor, credit, rates, crypto price/flow/volume/volatility, derivatives, calendar or on-chain modification.
 
 Source, missing-data policy, strict-past window, lag, execution, costs, folds, stress and gates are frozen in `research/xrp_policy_uncertainty_easing_protocol_20261105.md`. No historical index value or XRP performance for this hypothesis has been inspected. Next remotely verify this preregistration commit, then retrieve fixed sources and evaluate once. Production, Render, LIVE, main and `v8-fly-layer-test` remain untouched.
+
+## XRP_POLICY_UNCERTAINTY_EASING_V1: rejected (2026-11-05)
+
+The fixed evaluation uses 2,831 ordered FRED `USEPUINDXD` observations and 2,465 consecutive Binance XRP daily candles through 2026-09-30. Exact URLs, bytes, rows and SHA256 fingerprints are retained. No index observation, price, weekend or holiday was filled; eligible source dates beyond the market cutoff were counted but never mapped.
+
+Across five annual-reset OOS folds, 175 trades lose USD 619.91, PF 0.7689 and USD 3.54 per trade at base costs. Doubled costs lose USD 813.18, PF 0.7089 and USD 4.65 per trade. Only 2024 is positive; 2022, 2023, 2025 and final 2026 lose. Continuous OOS loses USD 567.75 base and USD 750.03 stressed with 8.58%/10.27% marked drawdown.
+
+Reject: only sample size passes; net, expectancy, PF, annual stability, final-year, stress drawdown and concentration fail. The independent audit passes 11,736 checks and all 324 repository tests pass. Complete evidence is in `research/xrp_policy_uncertainty_easing_validation_20261105/`. Do not invert or retune the median, trend, lag or hold. Close this news-policy-uncertainty design. Next perform source feasibility for a non-macro, point-in-time observable before preregistering another candidate. Production, Render, LIVE, main and `v8-fly-layer-test` remain untouched.
