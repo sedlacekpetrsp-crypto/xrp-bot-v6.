@@ -1,0 +1,38 @@
+name: BEST-OF dedupe (PostgreSQL)
+
+# Regresní test: stejná PAPER pozice se do bestof_trades zapíše právě jednou,
+# i při překrývajících se instancích. Spouští se proti dočasné testovací DB,
+# nikdy proti produkci. Nic nenasazuje.
+on:
+  push:
+    branches: ["research/bestof-dedupe-*"]
+  pull_request:
+    paths: ["app_bestof_core.py", "test_bestof*.py"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt pytest
+      - name: BEST-OF testy (vč. souběhu proti PostgreSQL)
+        env:
+          BESTOF_PG_TEST_DSN: postgresql://postgres:test@localhost:5432/postgres
+        run: |
+          python -m pytest -v test_bestof*.py
+          for i in 1 2 3 4 5; do python -m pytest -q -p no:cacheprovider test_bestof_dedupe_postgres.py; done
