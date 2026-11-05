@@ -3,6 +3,14 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## 2026-11-05 22:15 SEČ (běh #15)
+- Nasazeno: `edaa938` – PR #5 ano. Produkce beze změny (6× HTTP 200, 238 testů OK, 0 chyb, 0 nových duplicit, P/L součet −3 166,91).
+- Výzkum: **Denní volatilitní průraz k=0,5 BTC/ETH — ZAMÍTNUTO** ([PR #15](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/15)).
+  Validace 2023–24 ×1: +58,8 % (Sharpe 1,02, DD 24 %, 607 obchodů) vs buy & hold +321 % (Sharpe 1,71, DD 34 %); při nákladech ×2 už −21 % (PF 0,91).
+  Závěrečný test ×2: −66 % vs B&H −25 % ⇒ náklady sežerou hranu. Obchody přepočteny: 9 bloků, 0 neshod.
+- DB 20,1 %. Další: hlasování časového momenta 1/3/6/12 m (protokol už commitnut).
+- Od vás nic nového; PR #8/#9/#10 dál čekají na review.
+
 ## 2026-11-05 20:20 SEČ (běh #14)
 - Nasazeno: `edaa938` – PR #5 ano. Produkce beze změny (6× HTTP 200, 0 chyb, 0 nových duplicit, P/L součet −3 197,26).
 - Výzkum: **SMA200 risk-off overlay BTC/ETH — ZAMÍTNUTO** ([PR #14](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/14)).
