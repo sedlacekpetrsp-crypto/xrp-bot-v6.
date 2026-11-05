@@ -5,6 +5,18 @@ FEE = 0.00095
 SLIPPAGE = 0.00020
 STOP_PCT = 0.12
 START_BALANCE = 10000.0
+DAY_MS = 86_400_000
+
+
+def execution_month(last_completed_day_ms):
+    """Month in which a rebalance decided on this completed day is executed.
+
+    The researched rule (volatility_managed_momentum_v1.backtest) rebalances at
+    the first open of a UTC month using data through the previous month's last
+    completed day. The execution day is therefore last_completed_day + 1 day.
+    """
+    return datetime.fromtimestamp((last_completed_day_ms + DAY_MS) / 1000,
+                                  timezone.utc).strftime("%Y-%m")
 
 
 def fresh():
@@ -46,9 +58,8 @@ def step(state, day, targets, prices, now=None):
         if prices[symbol] <= pos["stop"]:
             close(symbol, "STOP")
     # Monthly portfolio reset only. No daily churn and no reentry after stop that day.
-    month = datetime.fromtimestamp(day / 1000, timezone.utc).strftime("%Y-%m")
-    if s["last_rebalance_day"] is None or month != datetime.fromtimestamp(
-            s["last_rebalance_day"] / 1000, timezone.utc).strftime("%Y-%m"):
+    if s["last_rebalance_day"] is None or execution_month(day) != execution_month(
+            s["last_rebalance_day"]):
         for symbol in list(s["positions"]):
             close(symbol, "MONTHLY_REBALANCE")
         equity = s["cash"]
@@ -69,7 +80,10 @@ def step(state, day, targets, prices, now=None):
         s["last_rebalance_day"] = day
     marked = s["cash"] + sum(p["qty"] * prices[sym] for sym, p in s["positions"].items())
     s["equity"] = marked
-    s["unrealized_pnl"] = sum(p["qty"] * (prices[sym] - p["entry"]) for sym, p in s["positions"].items())
+    # Net of the already paid entry fee so that, at all times,
+    # equity - initial_equity == realized_pnl + unrealized_pnl.
+    s["unrealized_pnl"] = sum(p["qty"] * (prices[sym] - p["entry"]) - p["entry_fee"]
+                              for sym, p in s["positions"].items())
     s["realized_pnl"] = sum(t["net_pnl"] for t in s["trades"])
     s["trade_count"] = len(s["trades"])
     s["open_count"] = len(s["positions"])
