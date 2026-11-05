@@ -39,6 +39,11 @@ souborů/artefaktů a archivace, nebo zvětšení disku. Nic se nemaže.
 - Oprava: **draft PR #8** (`research/bestof-dedupe-20261105`, `418f897`): idempotentní `save_trade`
   (advisory lock + kontrola symbol+setup+opened_at) + test. Data se nemění; případná korekce id 129
   (např. tabulka výjimek jako u FLY) jen se souhlasem vlastníka.
+- Regresní test proti skutečnému PostgreSQL (`139d8b5`, `test_bestof_dedupe_postgres.py` + workflow
+  `bestof-dedupe-postgres.yml`): opakované zpracování i 8 souběžných instancí ⇒ 1 řádek; bez zámku duplikát
+  vznikne (síla testu); zámek drží celou transakci; chyba uvnitř = žádný řádek, zámek uvolněn. Bez opravy
+  (`edaa938`) test selže. CI run 42008665479: 23 passed + 5× 6 passed. Riziko: samotný deploy opravy může
+  ještě jednou zdvojit zápis (stará instance bez zámku) ⇒ nasadit bez otevřené BEST-OF pozice.
 - Riziko trvá u každého deploye: i ostatní boty bez ochrany mohou zapsat duplikát při překryvu instancí.
 
 ## Otevřené úkoly (priorita shora)
@@ -47,7 +52,7 @@ souborů/artefaktů a archivace, nebo zvětšení disku. Nic se nemaže.
    deployi nevznikne duplikát. Zvážit obecnější ochranu (leader lock pro celý obchodní loop, ostatní boty).
 2. Kontrola duplicit při každém běhu (SELECT na `*_trades` group by opened_at) — přidat do workflow/RUNBOOK.
 3. Combined replay: export ledgeru HOTOVO (draft PR #9 → research/autopilot, `research/combined_selection_replay/trades/`,
-   CONSISTENT, 300 legů). Dál: 1. 12. 2026 spustit NOVÝ běh s `--end 2026-12-01` (stejný protokol + export),
+   CONSISTENT, 300 legů; nezávisle přepočteno z trades.csv: 24 bloků, 0 neshod — komentář v PR #9). Dál: 1. 12. 2026 spustit NOVÝ běh s `--end 2026-12-01` (stejný protokol + export),
    výsledky přidat jako nový řádek, předchozí nepřepisovat.
 4. Forward PAPER evidence: týdně souhrn ELITE V18/V56, Combined, LH-WHALE, LIQUIDITY, Swing
    (počet, P/L, PF); ≥ 30 nových obchodů na strategii před závěrem. Registr: `automation/STRATEGY_REGISTRY.md`.
