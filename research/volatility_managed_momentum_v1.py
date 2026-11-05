@@ -93,7 +93,11 @@ def allocation(daily, completed_day_index, config=Config()):
             for symbol, value in inverse_vol.items()}
 
 
-def backtest(market, start_ts, end_ts, config=Config()):
+def backtest(market, start_ts, end_ts, config=Config(), weights_fn=None):
+    """Hourly replay. weights_fn(daily, completed_day_index, config) -> {symbol: weight};
+    defaults to the preregistered allocation(). It only ever receives the index of
+    the last COMPLETED day before the rebalance hour (no look-ahead)."""
+    weights_fn = weights_fn or allocation
     validate(market)
     daily = daily_market(market)
     daily_stamps = [day["timestamp"] for day in daily[SYMBOLS[0]]]
@@ -137,7 +141,7 @@ def backtest(market, start_ts, end_ts, config=Config()):
             for symbol in list(legs):
                 close_leg(symbol, market[symbol][i]["open"], timestamp, "REBALANCE")
             completed = bisect_left(daily_stamps, timestamp) - 1
-            weights = allocation(daily, completed, config) if completed >= 0 else {}
+            weights = weights_fn(daily, completed, config) if completed >= 0 else {}
             for symbol, weight in weights.items():
                 raw = market[symbol][i]["open"]
                 fill = raw * (1.0 + config.slippage)
