@@ -1,0 +1,112 @@
+{
+ "strategy": "COMBINED_BEST_SIGNALS_V1 (live selection) historical replay",
+ "end_exclusive": "2026-11-01",
+ "rules_changed": false,
+ "control_mismatches": [],
+ "summary_mismatches": [],
+ "manifest_mismatches_vs_results_json": [],
+ "legs_total": 300,
+ "files_sha256": {
+  "trades.csv": "1953b5b9a9500c88a64f689c8002551f0ab7bb59f23b833a45f434fb8ce53715",
+  "trades.json": "3be2d2e66f2faec2a8898cd1721c193d3f7382f2cd28924ba50190e408d9dad3"
+ },
+ "per_block": {
+  "cost_x1/2021": {
+   "legs": 15,
+   "net_pnl": 4802.764129709794
+  },
+  "cost_x1/2022": {
+   "legs": 1,
+   "net_pnl": -30.28215376103431
+  },
+  "cost_x1/2023": {
+   "legs": 13,
+   "net_pnl": 1513.0642031747489
+  },
+  "cost_x1/2024": {
+   "legs": 16,
+   "net_pnl": 205.15751638182246
+  },
+  "cost_x1/2025": {
+   "legs": 10,
+   "net_pnl": -308.57580196624474
+  },
+  "cost_x1/2026_JAN_SEP": {
+   "legs": 2,
+   "net_pnl": 191.77117464323217
+  },
+  "cost_x1/CONTAMINATED_2023_2026SEP_CONTINUOUS": {
+   "legs": 41,
+   "net_pnl": 1605.07379853563
+  },
+  "cost_x1/FORWARD_UNUSED": {
+   "legs": 2,
+   "net_pnl": -209.8918904089141
+  },
+  "cost_x2/2021": {
+   "legs": 15,
+   "net_pnl": 4754.646596714715
+  },
+  "cost_x2/2022": {
+   "legs": 1,
+   "net_pnl": -106.04724984337531
+  },
+  "cost_x2/2023": {
+   "legs": 13,
+   "net_pnl": 1480.9783285543294
+  },
+  "cost_x2/2024": {
+   "legs": 16,
+   "net_pnl": 173.41340639266866
+  },
+  "cost_x2/2025": {
+   "legs": 10,
+   "net_pnl": -323.94609167493286
+  },
+  "cost_x2/2026_JAN_SEP": {
+   "legs": 2,
+   "net_pnl": 187.72573524931246
+  },
+  "cost_x2/CONTAMINATED_2023_2026SEP_CONTINUOUS": {
+   "legs": 41,
+   "net_pnl": 1513.864496395758
+  },
+  "cost_x2/FORWARD_UNUSED": {
+   "legs": 2,
+   "net_pnl": -213.2590694992411
+  },
+  "cost_x3/2021": {
+   "legs": 15,
+   "net_pnl": 4706.68747740718
+  },
+  "cost_x3/2022": {
+   "legs": 1,
+   "net_pnl": -107.72551370763662
+  },
+  "cost_x3/2023": {
+   "legs": 13,
+   "net_pnl": 1448.983663725434
+  },
+  "cost_x3/2024": {
+   "legs": 16,
+   "net_pnl": 141.76736971522462
+  },
+  "cost_x3/2025": {
+   "legs": 10,
+   "net_pnl": -339.29128796951
+  },
+  "cost_x3/2026_JAN_SEP": {
+   "legs": 2,
+   "net_pnl": 183.68229379820158
+  },
+  "cost_x3/CONTAMINATED_2023_2026SEP_CONTINUOUS": {
+   "legs": 41,
+   "net_pnl": 1423.3743659238403
+  },
+  "cost_x3/FORWARD_UNUSED": {
+   "legs": 2,
+   "net_pnl": -216.62540442743364
+  }
+ },
+ "status": "CONSISTENT"
+}
