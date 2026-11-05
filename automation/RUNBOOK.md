@@ -38,6 +38,6 @@ Tento dokument řídí každý automatický běh. Platí pro Claude i pro dalš�
 | Kód, PR, Actions | GitHub MCP v session | funguje |
 | Tržní data (Binance Vision) | GitHub Actions runner | funguje |
 | Stavové endpointy služby | GitHub Actions runner (GET) | funguje |
-| Render deploye/logy/nastavení | Render konektor | **blokováno**: konektor `needs_reconnect` |
-| PostgreSQL přímo | — | **blokováno**; čte se nepřímo přes `/combined/status` apod. |
+| Render deploye/události/logy/metriky | Render konektor (jen čtení, workspaceId `tea-daar0pcs728c73fjrhkg`) | funguje (od 2026-11-05 10:00 UTC) |
+| PostgreSQL přímo | Render `query_render_postgres` (jen SELECT) | funguje |
 | Síť ze session | — | blokována pro Render/Binance (zamítnuto rozšíření prostředí) |
