@@ -52,7 +52,7 @@ def _trade(signal, entry_bar, rows, i, end, equity, config, volatility):
     raw_entry=entry_bar['open']; entry=raw_entry*(1+config.slippage); stop=entry-config.stop_atr*volatility
     if stop <= 0: return None
     qty=min(equity*config.risk_fraction/(entry-stop),equity*config.notional_cap/entry); target=entry+config.reward_r*(entry-stop)
-    entry_fee=qty*entry*config.fee; j=i+1
+    entry_fee=qty*entry*config.fee; j=i+1; minimum_equity=equity-entry_fee; minimum_timestamp=entry_bar['timestamp']
     while j < len(rows) and rows[j]['timestamp'] < end:
         bar=rows[j]
         if j>i+1 and bar['timestamp']-rows[j-1]['timestamp']!=DAY: raw_exit,reason,exit_i,exit_time=rows[j-1]['close'],'DATA_GAP',j-1,rows[j-1]['timestamp']
@@ -60,13 +60,16 @@ def _trade(signal, entry_bar, rows, i, end, equity, config, volatility):
         elif bar['low']<=stop: raw_exit,reason,exit_i,exit_time=stop,'STOP',j,bar['timestamp']
         elif bar['open']>=target or bar['high']>=target: raw_exit,reason,exit_i,exit_time=target,'TARGET',j,bar['timestamp']
         elif j-(i+1)>=config.max_hold: raw_exit,reason,exit_i,exit_time=bar['open'],'TIME',j,bar['timestamp']
-        else: j+=1; continue
+        else:
+            mark=bar['low']*(1-config.slippage); marked=equity+qty*(mark-entry)-entry_fee-qty*mark*config.fee
+            if marked < minimum_equity: minimum_equity,minimum_timestamp=marked,bar['timestamp']
+            j+=1; continue
         break
     else:
         exit_i=min(j-1,len(rows)-1); bar=rows[exit_i]; raw_exit,reason,exit_time=bar['close'],'FOLD_END',bar['timestamp']
     exit_fill=raw_exit*(1-config.slippage); exit_fee=qty*exit_fill*config.fee
     gross=qty*(raw_exit-raw_entry); fill=qty*(exit_fill-entry); fees=entry_fee+exit_fee; pnl=fill-fees
-    return dict(signal_timestamp=signal['timestamp'],metric_timestamp=signal['metric_timestamp'],earlier_timestamp=signal['earlier_timestamp'],entry_timestamp=entry_bar['timestamp'],exit_timestamp=exit_time,entry_index=i+1,exit_index=exit_i,entry_equity=equity,raw_entry=raw_entry,raw_exit=raw_exit,entry=entry,exit=exit_fill,qty=qty,atr=volatility,stop=stop,target=target,earlier_credit=signal['earlier_credit'],latest_credit=signal['latest_credit'],credit_growth=signal['credit_growth'],leg_notional=qty*entry,gross=gross,slippage_cost=gross-fill,fees=fees,pnl=pnl,equity=equity+pnl,reason=reason)
+    return dict(signal_timestamp=signal['timestamp'],metric_timestamp=signal['metric_timestamp'],earlier_timestamp=signal['earlier_timestamp'],entry_timestamp=entry_bar['timestamp'],exit_timestamp=exit_time,entry_index=i+1,exit_index=exit_i,entry_equity=equity,raw_entry=raw_entry,raw_exit=raw_exit,entry=entry,exit=exit_fill,qty=qty,atr=volatility,stop=stop,target=target,earlier_credit=signal['earlier_credit'],latest_credit=signal['latest_credit'],credit_growth=signal['credit_growth'],leg_notional=qty*entry,gross=gross,slippage_cost=gross-fill,fees=fees,pnl=pnl,equity=equity+pnl,intratrade_min_equity=minimum_equity,intratrade_min_timestamp=minimum_timestamp,reason=reason)
 
 def backtest(rows,start,end,config=Config(),initial=10_000.):
     validate_prices(rows); equity=initial; trades=[]; curve=[{'timestamp':start,'equity':initial}]; i=0
@@ -76,6 +79,6 @@ def backtest(rows,start,end,config=Config(),initial=10_000.):
         if not eligible: i+=1; continue
         trade=_trade(signal,entry,rows,i,end,equity,config,volatility)
         if trade:
-            trades.append(trade); equity=trade['equity']; curve.append({'timestamp':trade['exit_timestamp'],'equity':equity}); i=trade['exit_index']
+            trades.append(trade); curve.append({'timestamp':trade['intratrade_min_timestamp'],'equity':trade['intratrade_min_equity']}); equity=trade['equity']; curve.append({'timestamp':trade['exit_timestamp'],'equity':equity}); i=trade['exit_index']
         i+=1
     return trades,curve

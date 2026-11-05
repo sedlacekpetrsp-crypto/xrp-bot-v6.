@@ -24,4 +24,7 @@ class BankCreditTests(unittest.TestCase):
     def test_stress_costs_are_worse(self):
         x=bars(); x[14].update(macro_signal=True,metric_timestamp=12*DAY,earlier_timestamp=0,earlier_credit=100,latest_credit=102,credit_growth=.02); x[22].update(open=102,high=103,low=101,close=102)
         a,_=backtest(x,0,40*DAY,Config(atr_n=14)); b,_=backtest(x,0,40*DAY,replace(Config(atr_n=14),fee=.0019,slippage=.0004)); self.assertLess(b[0]['pnl'],a[0]['pnl'])
+    def test_intratrade_drawdown_is_marked(self):
+        x=bars(); x[14].update(macro_signal=True,metric_timestamp=12*DAY,earlier_timestamp=0,earlier_credit=100,latest_credit=102,credit_growth=.02); x[15].update(low=98,high=101)
+        trades,curve=backtest(x,0,40*DAY,Config(atr_n=14)); self.assertLess(trades[0]['intratrade_min_equity'],trades[0]['entry_equity']); self.assertIn(trades[0]['intratrade_min_equity'],[p['equity'] for p in curve])
 if __name__=='__main__': unittest.main()
