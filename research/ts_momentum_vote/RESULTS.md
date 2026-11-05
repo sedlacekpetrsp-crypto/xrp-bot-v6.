@@ -35,3 +35,17 @@ Průměrná cílová váha (měsíce, oba symboly): tuning 59 %, validation 71 %
 
 Pozn.: data navíc 2019-09…2019-12 jen jako zahřátí 365denního horizontu pro ladicí období.
 Výhradně PAPER výzkum. Ani kladný verdikt neznamená ziskovou strategii — jen kandidáta na forward PAPER.
+
+## Nezávislá kontrola (autopilot běh #16, 2026-11-05 23:10 UTC)
+- Přepočet jen z `trades.csv` (bez kódu backtestu): 11 bloků (9 × hlavní varianta + 2 informační), 355 řádků,
+  počet obchodů, součet `net_pnl` i `fees` = `results.json` (tolerance 1e-6), **0 neshod**; u každého řádku
+  `gross − fees = net` a `end_value − start_value = net`.
+- Data: 172 archivů Binance Vision (SHA-256 v `data_source.json`), z toho 8 navíc 2019-09…12 jen pro zahřátí ladění.
+- Známý artefakt: ladění ×3 má 27 místo 26 záznamů — 1 řádek ETH 2022-12 s `weight_held 0`, `net_pnl 0,0`
+  (zbytková pozice ~1e-18 z plovoucí čárky po prodeji na 0). Na P/L ani na kritéria (validace/závěrečný test) vliv nemá;
+  kód se po výsledku neupravuje.
+
+## Závěr
+Validace ×1: Sharpe 1,14 / DD 32,4 % vs B&H 1,71 / 34,0 % ⇒ krit. 1 nesplněno (DD lepší jen o 1,6 b.).
+Závěrečný test ×2: −22,0 % (DD 33 %) vs B&H −25,1 % (DD 60 %) ⇒ krit. 5 nesplněno (ztráta, Sharpe −0,38 < −0,04).
+Hlasování ~půlí drawdown v medvědím trhu, ale v býčím trhu ztrácí Sharpe — stejný vzor jako SMA200 overlay (PR #14).
