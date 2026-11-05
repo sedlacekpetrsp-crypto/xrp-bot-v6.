@@ -420,6 +420,14 @@ This distinct monetary-plumbing hypothesis buys XRP only after the Federal Reser
 
 Next action: remotely verify this preregistration commit, then download the fixed FRED and Binance sources and run all repository tests, the unchanged historical evaluation and an independent audit. No historical XRP performance has been inspected.
 
+## XRP_YIELD_CURVE_STEEPENING_V1: rejected (2026-11-05)
+
+The complete protocol, implementation and mechanics tests were remotely preregistered in commit `4f8cec6b7de096ffdc9e1b8517ad2fd3b9e3fdbf` before any performance evaluation. The direct FRED file supplies 1,689 valid T10Y2Y observations after excluding 72 explicit missing-value rows; three direct Binance Vision responses supply 2,465 consecutive XRP daily candles. Exact URLs, bytes, rows and SHA256 fingerprints are preserved. No FRED value, weekend, holiday or price was filled.
+
+Across five annual-reset OOS folds, only 27 base trades earn USD 339.56, PF 2.2020 and USD 12.58 expectancy. Doubled costs retain USD 309.70, PF 2.0489 and USD 11.47 expectancy. This positive history is insufficient: the frozen minimum is 75 trades, 2022 loses, 2026 has no trade, only three of five folds are positive, and March 2023 supplies 39.78% of positive-month profit versus the 25% cap. Continuous OOS is positive with 1.21%/1.27% base/stress drawdown, but it repeats the same observations and is not independent evidence.
+
+Reject without lowering the sample gate, selecting 2023–2025, treating no exposure as a profitable year, or changing the 0.25-point steepening, lookback, lag, direction or exit. The independent audit passes 1,768 checks over 124 recorded trade instances, and all 302 repository tests pass. Complete evidence is in `research/xrp_yield_curve_steepening_validation_20261105/`. Preserve only as an unapproved near-signal pending genuinely independent evidence; do not deploy or retune it. Production, Render, LIVE, main and `v8-fly-layer-test` remain untouched.
+
 ## XRP_REVERSE_REPO_LIQUIDITY_RELEASE_V1: rejected (2026-11-04)
 
 The complete protocol, implementation and mechanics tests were remotely preregistered in commit `6c5f1c7364827a8da797cde82d6a7e5aff56a361` before any performance evaluation. The direct FRED file supplies 1,686 valid RRP observations after excluding 75 explicit missing-value rows; three direct Binance Vision responses supply 2,465 consecutive XRP daily candles. Exact URLs, bytes, rows and SHA256 fingerprints are preserved. No FRED value, weekend, holiday or price was filled.

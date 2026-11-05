@@ -1,0 +1,7 @@
+{
+  "strategy": "XRP_YIELD_CURVE_STEEPENING_V1",
+  "passed": true,
+  "checks": 1768,
+  "trade_checks": 124,
+  "failures": []
+}
