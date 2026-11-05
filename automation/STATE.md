@@ -61,7 +61,12 @@ souborů/artefaktů a archivace, nebo zvětšení disku. Nic se nemaže.
 
 ## Čeká na vlastníka
 
-- Draft PR #8 (BEST-OF duplicitní zápis) — schválit/zamítnout; rozhodnout o korekci řádku id 129.
+- Draft PR #8 (BEST-OF duplicitní zápis) — vlastník 2026-11-05 10:42 UTC: **ZATÍM NESLUČOVAT**; připraven
+  plán nasazení v `reports/bestof-duplicate-129-and-pr8-deploy-plan-20261105.md`, čeká na schválení.
+- Id 129: vlastník **NEMAZAT ani NEUPRAVOVAT**. Čtecí analýza hotová (týž report): duplicitní zápis
+  uzavření id 128 starou instancí 9r8m5 v 09:14:11 při překryvu deploye; `paper_balance` správně,
+  chybně jen statistiky (129/−393,31 místo 128/−383,00). Návrh: tabulka `bestof_trade_exclusions`
+  (vzor FLY), vratné DELETE. Neprovedeno — čeká na souhlas.
 - Draft PR #9 (Combined ledger export, cíl research/autopilot) — review; produkce se nemění.
 
 ## Blokace
