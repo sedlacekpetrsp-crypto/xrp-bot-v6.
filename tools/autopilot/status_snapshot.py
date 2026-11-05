@@ -27,6 +27,17 @@ def get(path):
         return None, {"error": type(exc).__name__ + ": " + str(exc)}, round(time.time() - t0, 3)
 
 
+def code_markers():
+    """Text markers in the served dashboard that identify deployed code versions."""
+    try:
+        with urllib.request.urlopen(BASE + "/", timeout=60) as r:
+            html = r.read().decode(errors="replace")
+    except Exception as exc:
+        return {"error": type(exc).__name__}
+    return {"trendline_risk_0_1pct": "cílové riziko 0,1 %" in html,
+            "trendline_risk_3pct": "cílové riziko 3 %" in html, "dashboard_bytes": len(html)}
+
+
 def main():
     now = datetime.now(timezone.utc)
     raw = {p: dict(zip(("http", "body", "seconds"), get(p))) for p in PATHS}
@@ -64,6 +75,7 @@ def main():
         "total_net": round(sum(a["net"] for a in accounts.values()), 2),
         "combined_ledger_check": analyse(pp, now) if pp else None,
         "combined_updated_at": (cs or {}).get("updated_at"),
+        "code_markers": code_markers(),
         "elite_last_tick_ms": max([a.get("last_tick") or 0 for a in ((el or {}).get("accounts") or {}).values()] or [0]),
     }
     print("AUTOPILOT_SUMMARY " + json.dumps(summary, separators=(",", ":"), default=str))
