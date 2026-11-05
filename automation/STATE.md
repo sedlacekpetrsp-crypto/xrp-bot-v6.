@@ -9,8 +9,8 @@ Plánovaná úloha: `trig_01PCaCadnJSZo5XYuLEdH8uR`, cron `44 */3 * * *` UTC, na
 
 - Služba `xrp-fly-whale-24-7` (`srv-dang770ae00c73em1sm0`), start `uvicorn app_v8_fly:app`,
   větev `v8-fly-layer-test`, Auto Deploy zapnut — **podle předání ChatGPT**, neověřeno Claude.
-- `v8-fly-layer-test` = `da2f665` (PR #5). Proces běží od 2026-11-04 ~19:58 UTC (uptime
-  ze `/health`) ⇒ **PR #5 není nasazen**; produkce běží na `bd55352` (shoda s ChatGPT).
+- `v8-fly-layer-test` = `9b41f6d` (PR #5 + PR #6). **Nasazeno ručně 2026-11-05 09:01 UTC**, proces
+  běží od 09:01:52 UTC; předtím `bd55352` od 2026-11-04 19:58 UTC.
 - Snapshot 08:39 UTC (run 41996097278): všechny endpointy 200, `paused_bots` FAST/FLY/LEADLAG/TV,
   vše `persistence: postgres`, žádné chyby. Součet P/L 14 PAPER účtů −3 170,34 USDT
   (detail `reports/paper-status-snapshot-20261105.md`).
@@ -27,13 +27,11 @@ Plánovaná úloha: `trig_01PCaCadnJSZo5XYuLEdH8uR`, cron `44 */3 * * *` UTC, na
 
 ## Otevřené úkoly (priorita shora)
 
-1. **Proč se nenasazuje** — PR #5 (merge 07:40 UTC) ani PR #6 (merge `9b41f6d`, 08:48 UTC) nespustily restart:
-   proces běží od 2026-11-04 19:58 UTC (kontrola 08:53 UTC). Vlastník nasazení schválil 2026-11-05 ~08:47 UTC.
-   Pravděpodobné příčiny (neověřeno): Auto Deploy vypnut / nastaven „po CI“, Render ztratil webhook
-   GitHubu, nebo služba sleduje jinou větev. Řešení: Render → Manual Deploy → Deploy latest commit.
-   Původní bod: **Proč se `da2f665` nenasadil** — potřebuje Render (deploy events). BLOKOVÁNO: konektor Render
-   `needs_reconnect`. Do té doby sledovat `process_started_utc`.
-2. Po souhlasu vlastníka: PR s Whale testy + `tools/` do `v8-fly-layer-test` (spustí deploy PR #5).
+1. VYŘEŠENO 2026-11-05 09:01 UTC: vlastník ručně nasadil `9b41f6d` (Render Manual Deploy, 1 min 13 s,
+   úspěšný). Restart potvrzen (`process_started_utc` 09:01:52). Příčina: předchozí deploy měl
+   Trigger „API“ a merge PR #5/#6 auto deploy nespustily ⇒ Auto Deploy pravděpodobně vypnutý
+   (neověřeno v nastavení). **Každá další změna v `v8-fly-layer-test` vyžaduje ruční deploy.**
+2. HOTOVO: PR #6 (Whale testy) sloučen 08:48 UTC a nasazen spolu s PR #5.
 3. Combined replay: každý měsíc doplnit nový měsíc čistých dat (`--end` = 1. den dalšího měsíce)
    jako NOVÝ běh se stejným protokolem; evidovat obchody (`trades` v results.json) — runner zatím
    ukládá jen souhrny ⇒ přidat export ledgeru obchodů BEZ změny pravidel (samostatný commit + test).
@@ -47,4 +45,4 @@ Plánovaná úloha: `trig_01PCaCadnJSZo5XYuLEdH8uR`, cron `44 */3 * * *` UTC, na
 ## Blokace a co je potřeba od vlastníka
 
 - Render konektor: claude.ai → Settings → Connectors → Render → Reconnect.
-- Souhlas k nasazení PR #5 (zatím nedán).
+- Nasazení PR #5/#6: schváleno a provedeno (09:01 UTC).
