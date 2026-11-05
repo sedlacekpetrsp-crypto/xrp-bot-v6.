@@ -124,21 +124,46 @@ Očekávání: čistá data od 10/2026 dají jen 1 rebalance → výsledek bude 
   endpointy vrací 404), dokumentace i ELITE modul počítají se sdílenou službou `app_v8_fly`
   (`srv-dang770ae00c73em1sm0`). Skutečný start command je nutné ověřit v Render dashboardu.
 
-### Lokální smoke test sloučeného kódu `da2f665` (bez produkčních dat)
+### Lokální smoke test sloučeného kódu (opakováno a zpřesněno)
 
-- `uvicorn app_v8_ui:app`: start OK, `/` a `/health` 200, bez Traceback.
-- `uvicorn app_v8_fly:app` bez `DATABASE_URL`: start záměrně odmítnut
-  (`Persisted ledger required`, fail-closed, existuje i před PR #5).
-- `uvicorn app_v8_fly:app` s dočasnou lokální PostgreSQL 16 (prázdná DB + marker
-  `fly-ledger-reconcile-20261011`, který v produkci existuje): start OK,
-  `FLY LEGACY RECOVERY nothing_to_recover`, `FLY ACCOUNTING RECONCILIATION already_applied`;
-  200 na `/`, `/health`, `/combined`, `/combined/status`, `/combined/health`, `/elite-paper/status`,
-  `/swing/status`, `/news-paper/status`, `/bestof/status`, `/lh-whale/status`,
-  `/research/market-evidence/status`. Combined worker běží, skeny končí `PAPER_SCAN_ERROR`
-  (proxy 403 na Binance) → lokálně žádný zápis. ELITE lokálně `disabled_other_service`
-  (spouští se jen pod produkčním `RENDER_SERVICE_ID`).
-- Kompatibilita stavu Combined v PostgreSQL (simulované ceny): ledger vytvořený kódem
-  `bd55352` 4. 11. → sken novým kódem 5. 11.: 0 obchodů, pozice a qty beze změny, identita
-  P/L platí (nerealizovaný P/L +17,70 místo dřívějších +19,60 USDT = rozdíl vstupních
-  poplatků), opakovaný sken idempotentní, první sken 1. 12. provede `MONTHLY_REBALANCE`.
-  Lokální DB poté smazána.
+**Zdroj dat — rozlišení:**
+
+| Kategorie | Stav |
+|---|---|
+| Aktuální produkční PostgreSQL (Render) | **NEOVĚŘENO** — session k ní nemá přístup; nebyla čtena ani jednou. |
+| Uložený snapshot produkční DB | **Žádný není k dispozici** — nebyl použit. |
+| Testovací data | Dočasná prázdná PostgreSQL 16 v kontejneru + stub marker + syntetický ledger/ceny. Po testu smazáno. |
+
+Předpoklady, které NEJSOU ověřené: že produkční `fly_accounting_reconciliations` obsahuje marker
+`fly-ledger-reconcile-20261011` (odvozeno z kódu a reportu z 12. 10.) a že produkční
+`combined_best_paper_state.last_rebalance_day` je 2026-11-03 nebo 2026-11-04 (odvozeno z časů
+commitů 2026-11-04 ~19:35 UTC). Test 5 proto zkouší obě varianty.
+
+**Testovaný commit:** `da2f6659f0bb42e54be7c97a4b7d64bc9998bd14` (samostatný git worktree, detached).
+Skript: `bash run_smoke.sh da2f6659f0bb42e54be7c97a4b7d64bc9998bd14` (dočasný, mimo repozitář).
+Přesné příkazy uvnitř:
+
+1. `python -m pytest -q -p no:cacheprovider` → **231 prošlo / 6 selhalo** (známé Whale testy).
+2. `env -u DATABASE_URL uvicorn app_v8_ui:app --port 8801` (příkaz z `render.yaml`) → start OK,
+   `/` 200, `/health` 200, `/combined/status` **404**, 0× Traceback. Tato aplikace PAPER workery nemá.
+3. `env -u DATABASE_URL uvicorn app_v8_fly:app --port 8802` → start odmítnut (exit 3,
+   `ValueError: Persisted ledger required`) — záměrné fail-closed chování, existuje i před PR #5.
+4. Prázdná lokální PostgreSQL 16, `DATABASE_URL=postgresql://postgres@/xrpsmoke?host=/var/tmp&port=5434`:
+   - 4a bez markeru: start odmítnut (exit 3, `TypeError` v `fly_accounting_reconcile` — chybí řádek `v8fixed_state`).
+   - 4b se stub markerem: `uvicorn app_v8_fly:app --port 8804` → start OK, 0× Traceback,
+     `FLY LEGACY RECOVERY nothing_to_recover`, `FLY ACCOUNTING RECONCILIATION already_applied (test_stub)`.
+     HTTP 200: `/`, `/health`, `/combined`, `/combined/status`, `/combined/health`, `/elite-paper/status`,
+     `/swing/status`, `/news-paper/status`, `/bestof/status`, `/lh-whale/status`,
+     `/research/market-evidence/status`. Vytvořeno 27 tabulek. `/combined/status` = `AWAITING_FIRST_SCAN`,
+     `combined_best_paper_state` 0 řádků (sken skončil `PAPER_SCAN_ERROR`: proxy 403 na Binance).
+     ELITE `disabled_other_service` (běží jen pod produkčním `RENDER_SERVICE_ID`).
+5. Kompatibilita Combined ledgeru — **syntetický ledger a ceny** vytvořené kódem `bd55352`, poté
+   `research.combined_paper_postgres.apply` z `da2f665` (obě varianty `last_rebalance_day`):
+   sken 2026-11-05 → 0 obchodů, pozice a qty beze změny; identita
+   `equity − 10000 = realized + unrealized` platí (nový unrealized 17,6961 vs. starý vzorec 19,5961
+   USDT na syntetických cenách); opakovaný sken nemění ledger; první sken 2026-12-01 → `MONTHLY_REBALANCE`.
+
+**Omezení:** bez produkční DB nelze ověřit skutečný ledger, otevřené pozice, počty obchodů ani
+časy zápisů; bez burzy neproběhl žádný skutečný sken, vstup ani výstup žádného workeru; ELITE
+worker lokálně neběží; synchronní zápisy pod souběhem dvou deployů nebyly testovány; nic z toho
+neověřuje Render deployment ani ziskovost.
