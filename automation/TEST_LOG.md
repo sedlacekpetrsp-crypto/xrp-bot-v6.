@@ -12,3 +12,4 @@
 | 2026-11-05 08:55 | acb6191 | autopilot checks #5 | stejné jako #4: proces od 2026-11-04 19:58 UTC, 7 min po merge PR #6 stále bez deploye | actions/runs/41998250268 |
 | 2026-11-05 09:02 | d1ca854 | autopilot checks #6 po ručním deployi 9b41f6d (vlastník, 09:01 UTC) | **proces restartován 09:01:52 UTC**; 6× HTTP 200; paused FAST/FLY/LEADLAG/TV; P/L a počty obchodů beze změny (−3 170,35); Combined ledger zapsán 09:01:59, 0 obchodů, extra_rebalance false | actions/runs/41999154699 |
 | 2026-11-05 09:12 | edaa938 | merge PR #7 (Whale trendline 0,1 %) | sloučeno; čeká na ruční deploy na Renderu | pull/7 |
+| 2026-11-05 09:15 | 68f90cc | autopilot checks #7 po ručním deployi edaa938 | **restart 09:13:58 UTC**; dashboard marker „cílové riziko 0,1 %“ = true, „3 %“ = false ⇒ běží kód PR #7; 6× HTTP 200; paused OK; BEST-OF 127→128 obchodů, −10,32 USDT (odpovídá plánovanému SL riziku XRP BREAKOUT 10,29); ostatní účty beze změny | actions/runs/42000803843 |

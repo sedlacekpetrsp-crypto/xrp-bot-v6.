@@ -9,8 +9,9 @@ Plánovaná úloha: `trig_01PCaCadnJSZo5XYuLEdH8uR`, cron `44 */3 * * *` UTC, na
 
 - Služba `xrp-fly-whale-24-7` (`srv-dang770ae00c73em1sm0`), start `uvicorn app_v8_fly:app`,
   větev `v8-fly-layer-test`. Auto Deploy v praxi nereaguje na merge (merge PR #5/#6 nespustily deploy) ⇒ deploy ručně.
-- `v8-fly-layer-test` = `9b41f6d` (PR #5 + PR #6). **Nasazeno ručně 2026-11-05 09:01 UTC**, proces
-  běží od 09:01:52 UTC; předtím `bd55352` od 2026-11-04 19:58 UTC.
+- `v8-fly-layer-test` = `edaa938` (PR #5 + #6 + #7). **Nasazeno ručně**, proces běží od
+  2026-11-05 09:13:58 UTC. Historie: `bd55352` (do 09:01) → `9b41f6d` (09:01–09:13) → `edaa938`.
+- Autopilot kontroluje i značku nasazeného kódu v `/` (`code_markers`).
 - Snapshot 08:39 UTC (run 41996097278): všechny endpointy 200, `paused_bots` FAST/FLY/LEADLAG/TV,
   vše `persistence: postgres`, žádné chyby. Součet P/L 14 PAPER účtů −3 170,34 USDT
   (detail `reports/paper-status-snapshot-20261105.md`).
@@ -44,8 +45,8 @@ Plánovaná úloha: `trig_01PCaCadnJSZo5XYuLEdH8uR`, cron `44 */3 * * *` UTC, na
 
 ## Čeká na vlastníka
 
-- **PR #7 SLOUČEN** (`edaa938`, schváleno vlastníkem): Whale trendline 0,1 % / 35 % / 0,24 %.
-  Čeká na RUČNÍ deploy na Renderu; pak ověřit restart (`process_started_utc`) a stav Whale.
+- Žádné čekající PR. PR #7 (`edaa938`, Whale trendline 0,1 % / 35 % / 0,24 %) nasazen ručně,
+  restart 2026-11-05 09:13:58 UTC, dashboard potvrzuje „cílové riziko 0,1 %“.
 
 ## Blokace a co je potřeba od vlastníka
 
