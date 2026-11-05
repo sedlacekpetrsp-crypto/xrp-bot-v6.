@@ -53,6 +53,29 @@ souborů/artefaktů a archivace, nebo zvětšení disku. Nic se nemaže.
   ještě jednou zdvojit zápis (stará instance bez zámku) ⇒ nasadit bez otevřené BEST-OF pozice.
 - Riziko trvá u každého deploye: i ostatní boty bez ochrany mohou zapsat duplikát při překryvu instancí.
 
+## VÝZKUMNÁ FRONTA STRATEGIÍ — PRIORITA Č. 1 (vlastník 2026-11-05 14:31: „soustřeď se“)
+
+Každý běh: kontroly produkce co nejkratší (jen odchylky), pak **jedna hypotéza z této fronty** od
+začátku do konce. Hotovou položku označ výsledkem a odkazem, pak pokračuj další. Všech 110 dřívějších
+hypotéz je v `reports/hypothesis-inventory-20261105.md` (103 NEPROŠLO) — nic z toho neopakovat.
+
+Společný protokol (zapsat do `research/<název>/PROTOCOL.md` a commitnout PŘED prvním výsledkem):
+- data: Binance Vision spot 1d/1h klines (veřejná, bez klíčů), SHA-256 archivů do `data_source.json`;
+- náklady: poplatek 0,095 % + skluz 0,02 % na stranu, citlivost ×1 / ×2 / ×3;
+- dělení: ladění 2020-09…2022-12, validace 2023-01…2024-12, závěrečný test 2025-01…2026-10
+  použít JEDNOU, nic podle něj neladit; parametry max. malá předem daná mřížka;
+- měřítko: musí porazit buy & hold téhož aktiva rizikově (Sharpe, max DD) a mít ≥ 30 obchodů ve validaci;
+  kladný výsledek bez 3 nejlepších obchodů; PF > 1,2 po nákladech ×2;
+- výstup: `trades.csv` (každý obchod), `results.json`, `RESULTS.md`, řádek ve `STRATEGY_REGISTRY.md`,
+  draft PR do `research/autopilot`. Výsledek „prošlo“ = jen kandidát na forward PAPER, ne „zisková“.
+
+Fronta:
+1. **Donchian trend 20/55 dní** (long-only, ATR stop 2×, BTC/ETH/SOL/XRP, jednotlivě i koš) — větev `research/donchian-trend-20261105`.
+2. **Turn-of-month** BTC/ETH (drž posledních 2 + první 3 dny měsíce, jinak hotovost).
+3. **RSI(2) pullback v uptrendu** (close > SMA200, vstup RSI2 < 10, výstup close > SMA5), BTC/ETH denně.
+4. **SMA200 risk-off overlay** na buy & hold BTC/ETH (nad SMA200 držet, pod ní hotovost) — srovnání s B&H.
+5. Combined replay: 1. 12. 2026 nový běh s daty za listopad (viz bod 3 níže).
+
 ## Otevřené úkoly (priorita shora)
 
 1. PR #8 čeká na review/schválení vlastníka (merge = deploy). Po nasazení ověřit, že při dalším
