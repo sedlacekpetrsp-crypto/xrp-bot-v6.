@@ -25,6 +25,9 @@ Tento dokument řídí každý automatický běh. Platí pro Claude i pro dalš�
    - HTTP ≠ 200, `healthy=false`, `error`/`last_error`, změna `paused_bots`, restart procesu
      (`process_started_utc`), nečekaná změna počtu obchodů nebo P/L, `extra_rebalance_caused_by_pr5`.
    - Nový deploy: změna `process_started_utc` ⇒ zjistit, zda běží `da2f665`.
+   - Duplicitní zápisy obchodů: spustit `tools/autopilot/duplicate_trades_check.sql` přes Render
+     `query_render_postgres` (jen SELECT). Známý stav: bestof_trades 1 skupina (id 128/129). Jakékoli
+     zvýšení `dup_groups` = anomálie → nahlásit vlastníkovi.
 5. Zapsat výsledek do `automation/TEST_LOG.md` (1 řádek/běh) a aktualizovat `STATE.md`
    (poslední hodnoty, otevřené úkoly, blokace). Commit + push (bez změny RUN_REQUEST).
 6. Pokračovat v nejvyšší otevřené položce backlogu v `STATE.md`, pokud se vejde do běhu.
