@@ -1,6 +1,6 @@
 # Autopilot STATE — přepisuje se každým během
 
-Poslední aktualizace: 2026-11-05 15:12 UTC (autopilot běh #12, run 42051247147; produkce beze změny; výzkum: Turn-of-month zamítnut, PR #12).
+Poslední aktualizace: 2026-11-05 17:20 UTC (autopilot běh #13, run 42071042373; produkce beze změny; výzkum: RSI(2) pullback zamítnut, PR #13).
 
 Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h). Vypnout/změnit: claude.ai → plánované úlohy.
 
@@ -25,7 +25,7 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h)
 
 ## Databáze `xrp-bot-db` (1 GB, bez auto-zvětšení)
 
-Poslední kontrola 15:04 UTC: 212,8 MB = 19,8 % (+0,8 MB za 2 h, trend beze změny). Produkce 15:04: beze změny (live edaa938, 0 událostí, 0 error logů, BEST-OF 130 obchodů = nový obchod, dup_groups jen známý id 129).
+Poslední kontrola 17:05 UTC: 213,7 MB = 19,9 % (+0,9 MB za 2 h, trend beze změny). Produkce 17:05: beze změny (live edaa938, 0 událostí, 0 error logů, BEST-OF 131 obchodů, dup_groups jen známý id 129, P/L součet −3 197,26).
 
 | UTC | Velikost | % z 1 GB | Top tabulky |
 |---|---|---|---|
@@ -77,8 +77,9 @@ Fronta:
 1. ~~Donchian trend 20/55~~ — HOTOVO 2026-11-05 14:00 UTC: **ZAMÍTNUTO** (validace Sharpe 1,35 < B&H 1,94; závěrečný test −21 % po nákladech ×2). PR #11, `research/donchian_trend/RESULTS.md`.
 2. ~~Turn-of-month BTC/ETH~~ — HOTOVO 2026-11-05 15:10 UTC: **ZAMÍTNUTO** (ladění +242 %, ale validace −32,6 % vs B&H +321 %, placebo ToM nejhorší z 28 oken; závěrečný ×2 −16,7 %). PR #12, `research/turn_of_month/RESULTS.md`.
    Poučení: kalendářní efekt z 2020–22 se mimo vzorek obrátil ⇒ jednoduché anomálie z ladicího období nepřenášet.
-3. **DALŠÍ NA ŘADĚ → RSI(2) pullback v uptrendu** (close > SMA200, vstup RSI2 < 10, výstup close > SMA5), BTC/ETH denně.
-4. **SMA200 risk-off overlay** na buy & hold BTC/ETH (nad SMA200 držet, pod ní hotovost) — srovnání s B&H.
+3. ~~RSI(2) pullback v uptrendu BTC/ETH~~ — HOTOVO 2026-11-05 17:20 UTC: **ZAMÍTNUTO** (krit. 1: validace +21 %, Sharpe 0,59 vs B&H +321 %, 1,71; ostatní 4 kritéria splněna; ladění −0,5 %; závěrečný ×2 +11,5 % vs B&H −25 %, DD 6 %). PR #13, `research/rsi2_pullback/RESULTS.md`.
+   Poučení: nízká expozice (~4 dny/obchod) v býčím trhu nemůže porazit B&H na Sharpe; nápad na budoucí hypotézu = kombinace s B&H/overlay (nový protokol, ne ladění podle závěrečného testu).
+4. **DALŠÍ NA ŘADĚ → SMA200 risk-off overlay** na buy & hold BTC/ETH (nad SMA200 držet, pod ní hotovost) — srovnání s B&H.
 5. Combined replay: 1. 12. 2026 nový běh s daty za listopad (viz bod 3 níže).
 
 ## Otevřené úkoly (priorita shora)
