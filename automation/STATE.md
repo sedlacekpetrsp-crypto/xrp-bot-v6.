@@ -72,7 +72,7 @@ Společný protokol (zapsat do `research/<název>/PROTOCOL.md` a commitnout PŘE
   draft PR do `research/autopilot`. Výsledek „prošlo“ = jen kandidát na forward PAPER, ne „zisková“.
 
 Fronta:
-1. **Donchian trend 20/55 dní** (long-only, ATR stop 2×, BTC/ETH/SOL/XRP, jednotlivě i koš) — větev `research/donchian-trend-20261105`.
+1. ~~Donchian trend 20/55~~ — HOTOVO 2026-11-05 14:00 UTC: **ZAMÍTNUTO** (validace Sharpe 1,35 < B&H 1,94; závěrečný test −21 % po nákladech ×2). PR #11, `research/donchian_trend/RESULTS.md`.
 2. **Turn-of-month** BTC/ETH (drž posledních 2 + první 3 dny měsíce, jinak hotovost).
 3. **RSI(2) pullback v uptrendu** (close > SMA200, vstup RSI2 < 10, výstup close > SMA5), BTC/ETH denně.
 4. **SMA200 risk-off overlay** na buy & hold BTC/ETH (nad SMA200 držet, pod ní hotovost) — srovnání s B&H.
