@@ -1,6 +1,6 @@
 # Autopilot STATE — přepisuje se každým během
 
-Poslední aktualizace: 2026-11-05 17:20 UTC (autopilot běh #13, run 42071042373; produkce beze změny; výzkum: RSI(2) pullback zamítnut, PR #13).
+Poslední aktualizace: 2026-11-05 19:20 UTC (autopilot běh #14, run 42090267608; produkce beze změny; výzkum: SMA200 overlay zamítnut, PR #14; fronta doplněna o 3 hypotézy).
 
 Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h). Vypnout/změnit: claude.ai → plánované úlohy.
 
@@ -25,7 +25,7 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h)
 
 ## Databáze `xrp-bot-db` (1 GB, bez auto-zvětšení)
 
-Poslední kontrola 17:05 UTC: 213,7 MB = 19,9 % (+0,9 MB za 2 h, trend beze změny). Produkce 17:05: beze změny (live edaa938, 0 událostí, 0 error logů, BEST-OF 131 obchodů, dup_groups jen známý id 129, P/L součet −3 197,26).
+Poslední kontrola 19:05 UTC: 214,6 MB = 20,0 % (+0,9 MB za 2 h, trend beze změny). Produkce 19:04: beze změny (live edaa938 = HEAD, obsahuje da2f665, 0 událostí od 17:00, 0 error logů 17:05–19:05, BEST-OF 131 obchodů, dup_groups jen známý id 129, P/L součet −3 197,26, tests OK).
 
 | UTC | Velikost | % z 1 GB | Top tabulky |
 |---|---|---|---|
@@ -79,8 +79,18 @@ Fronta:
    Poučení: kalendářní efekt z 2020–22 se mimo vzorek obrátil ⇒ jednoduché anomálie z ladicího období nepřenášet.
 3. ~~RSI(2) pullback v uptrendu BTC/ETH~~ — HOTOVO 2026-11-05 17:20 UTC: **ZAMÍTNUTO** (krit. 1: validace +21 %, Sharpe 0,59 vs B&H +321 %, 1,71; ostatní 4 kritéria splněna; ladění −0,5 %; závěrečný ×2 +11,5 % vs B&H −25 %, DD 6 %). PR #13, `research/rsi2_pullback/RESULTS.md`.
    Poučení: nízká expozice (~4 dny/obchod) v býčím trhu nemůže porazit B&H na Sharpe; nápad na budoucí hypotézu = kombinace s B&H/overlay (nový protokol, ne ladění podle závěrečného testu).
-4. **DALŠÍ NA ŘADĚ → SMA200 risk-off overlay** na buy & hold BTC/ETH (nad SMA200 držet, pod ní hotovost) — srovnání s B&H.
-5. Combined replay: 1. 12. 2026 nový běh s daty za listopad (viz bod 3 níže).
+4. ~~SMA200 risk-off overlay BTC/ETH~~ — HOTOVO 2026-11-05 19:20 UTC: **ZAMÍTNUTO** (krit. 1, 2, 5: validace +187 %, Sharpe 1,43, 14 obch. vs B&H +321 %, 1,71; závěrečný ×2 −7,2 % vs B&H −25 %, DD 30 vs 60 %). PR #14, `research/sma200_overlay/RESULTS.md`.
+   Poučení: overlay ~půlí drawdown, ale v býčím období ztrácí Sharpe a mění stav zřídka (< 30 obchodů) ⇒ režimové filtry na B&H podle těchto kritérií neprojdou; další hypotézy s vyšší frekvencí.
+5. **DALŠÍ NA ŘADĚ → Denní volatilitní průraz open + 0,5 × včerejší rozpětí, výstup na close dne (BTC/ETH)** — protokol UŽ COMMITNUT
+   (`research/vol-breakout-20261105`, `79548c4`, `research/vol_breakout/PROTOCOL.md`). Pokračovat: napsat `run.py` (vzor `research/sma200_overlay/run.py`
+   z PR #14: stejná data/metriky/verdikt, jen `simulate`), testy `tests/test_vol_breakout.py`, workflow `.github/workflows/vol-breakout.yml`, spustit, ověřit, PR.
+   Proč nové: vnitrodenní momentum bez držení přes noc, mnoho obchodů; Donchian = vícedenní extrémy, `volatility_compression` = podmínka nízké volatility.
+6. Hlasování časového momenta 1/3/6/12 měsíců (BTC/ETH, expozice = podíl kladných horizontů 0/25/50/75/100 %, měsíční rebalance).
+   Proč nové: částečná expozice z více horizontů; SMA200 overlay (PR #14) = binární 1 horizont, `volatility_managed_momentum` = škálování volatilitou.
+   Pozor: málo obchodů ⇒ v protokolu počítat „obchod“ = změna expozice; kritérium ≥ 30 ponechat.
+7. Přepínání BTC ↔ ETH podle trendu ETHBTC (close ETHBTC > SMA50 ⇒ ETH, jinak BTC; vždy investováno), měřítko B&H 50/50.
+   Před zápisem protokolu přečíst README `research/relative_strength` (inventář #85), aby nešlo o opakování.
+8. Combined replay: 1. 12. 2026 nový běh s daty za listopad (viz bod 3 níže).
 
 ## Otevřené úkoly (priorita shora)
 
