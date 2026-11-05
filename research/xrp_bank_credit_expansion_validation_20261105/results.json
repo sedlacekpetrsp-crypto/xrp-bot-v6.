@@ -1,0 +1,279 @@
+{
+  "strategy": "XRP_BANK_CREDIT_EXPANSION_V1",
+  "status": "NEPROSEL",
+  "protocol_sha256": "ac5f369431005c2cf09879c63d7b08f823c5e18c8de257ab48d59e33bfad3706",
+  "manifest": [
+    {
+      "kind": "FRED_BUSLOANS",
+      "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=BUSLOANS&cosd=2020-01-01&coed=2026-10-01",
+      "sha256": "4e9a916ba8001f0c6a893501012495c1aaa899dd67ce011f6df0294b393bb9f4",
+      "bytes": 1727,
+      "raw_rows": 81,
+      "valid_rows": 81,
+      "missing_value_timestamps": []
+    },
+    {
+      "kind": "binance_XRPUSDT_1d",
+      "url": "https://data-api.binance.vision/api/v3/klines?symbol=XRPUSDT&interval=1d&startTime=1577836800000&endTime=1790812799999&limit=1000",
+      "sha256": "5e26d5bbc3b504fd180a26b43dc2f3f59c71bca777d1de7fd5570beb943c18d9",
+      "bytes": 175813,
+      "rows": 1000,
+      "first_timestamp": 1577836800000,
+      "last_timestamp": 1664150400000
+    },
+    {
+      "kind": "binance_XRPUSDT_1d",
+      "url": "https://data-api.binance.vision/api/v3/klines?symbol=XRPUSDT&interval=1d&startTime=1664236800000&endTime=1790812799999&limit=1000",
+      "sha256": "addf5a6ec2bc2c42a8de1482c963d64917c7158cae81b8bbd210b0a1f83a1eb1",
+      "bytes": 176206,
+      "rows": 1000,
+      "first_timestamp": 1664236800000,
+      "last_timestamp": 1750550400000
+    },
+    {
+      "kind": "binance_XRPUSDT_1d",
+      "url": "https://data-api.binance.vision/api/v3/klines?symbol=XRPUSDT&interval=1d&startTime=1750636800000&endTime=1790812799999&limit=1000",
+      "sha256": "6e75274b2dcb3d8c9d988824f274256caa79f9122f3bbd9c57d119f5e17d5469",
+      "bytes": 81579,
+      "rows": 465,
+      "first_timestamp": 1750636800000,
+      "last_timestamp": 1790726400000
+    }
+  ],
+  "data_quality": {
+    "macro_rows": 81,
+    "macro_duplicates": 0,
+    "macro_start": 1577836800000,
+    "macro_end": 1788220800000,
+    "price_rows": 2465,
+    "price_duplicates": 0,
+    "price_start": 1577836800000,
+    "price_end": 1790726400000,
+    "price_gaps": [],
+    "eligible_signal_dates": 24,
+    "signal_dates_without_price": 0
+  },
+  "runs": {
+    "2020_2021_control_base": {
+      "trades": 2,
+      "net_pnl": 139.28714671316504,
+      "net_return_pct": 1.3928714671316504,
+      "profit_factor": 14.927620468365435,
+      "expectancy": 69.64357335658252,
+      "max_drawdown_pct": 0.3520779487355745,
+      "fees": 0.9567358909442523,
+      "slippage_cost": 0.2014237001162389
+    },
+    "2020_2021_control_stress": {
+      "trades": 2,
+      "net_pnl": 138.18103623295875,
+      "net_return_pct": 1.3818103623295874,
+      "profit_factor": 14.293326511129312,
+      "expectancy": 69.09051811647937,
+      "max_drawdown_pct": 0.3556752376978841,
+      "fees": 1.9134702472040641,
+      "slippage_cost": 0.402858321094973
+    },
+    "2022_base": {
+      "trades": 6,
+      "net_pnl": -4.030581806711333,
+      "net_return_pct": -0.04030581806711333,
+      "profit_factor": 0.9289018714323571,
+      "expectancy": -0.6717636344518888,
+      "max_drawdown_pct": 0.7837609894023162,
+      "fees": 4.609600604686802,
+      "slippage_cost": 0.970442294544007
+    },
+    "2022_stress": {
+      "trades": 6,
+      "net_pnl": -9.491455012167696,
+      "net_return_pct": -0.09491455012167696,
+      "profit_factor": 0.8410842750765489,
+      "expectancy": -1.581909168694616,
+      "max_drawdown_pct": 0.8041213992804275,
+      "fees": 9.217306227798764,
+      "slippage_cost": 1.9404857882555466
+    },
+    "2023_base": {
+      "trades": 10,
+      "net_pnl": -233.46473301146762,
+      "net_return_pct": -2.334647330114676,
+      "profit_factor": 0.1055167912653199,
+      "expectancy": -23.346473301146762,
+      "max_drawdown_pct": 2.334647330114676,
+      "fees": 9.963360990680826,
+      "slippage_cost": 2.0975408260949564
+    },
+    "2023_stress": {
+      "trades": 10,
+      "net_pnl": -244.9121859034024,
+      "net_return_pct": -2.449121859034024,
+      "profit_factor": 0.09180717771013006,
+      "expectancy": -24.49121859034024,
+      "max_drawdown_pct": 2.449121859034021,
+      "fees": 19.917379313926624,
+      "slippage_cost": 4.193097158868515
+    },
+    "2024_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "net_return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0,
+      "fees": 0,
+      "slippage_cost": 0
+    },
+    "2024_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "net_return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0,
+      "fees": 0,
+      "slippage_cost": 0
+    },
+    "2025_base": {
+      "trades": 0,
+      "net_pnl": 0,
+      "net_return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0,
+      "fees": 0,
+      "slippage_cost": 0
+    },
+    "2025_stress": {
+      "trades": 0,
+      "net_pnl": 0,
+      "net_return_pct": 0.0,
+      "profit_factor": null,
+      "expectancy": null,
+      "max_drawdown_pct": 0,
+      "fees": 0,
+      "slippage_cost": 0
+    },
+    "2026_base": {
+      "trades": 6,
+      "net_pnl": -22.76125781823068,
+      "net_return_pct": -0.2276125781823068,
+      "profit_factor": 0.6905133328082713,
+      "expectancy": -3.793542969705113,
+      "max_drawdown_pct": 0.7064291112688355,
+      "fees": 7.494076259546884,
+      "slippage_cost": 1.5776997175882124
+    },
+    "2026_stress": {
+      "trades": 6,
+      "net_pnl": -31.673889957021075,
+      "net_return_pct": -0.31673889957021073,
+      "profit_factor": 0.5957219258949065,
+      "expectancy": -5.278981659503512,
+      "max_drawdown_pct": 0.7541200368642046,
+      "fees": 14.982976502919099,
+      "slippage_cost": 3.1543086768627444
+    },
+    "continuous_oos_base": {
+      "trades": 22,
+      "net_pnl": -259.62211773989264,
+      "net_return_pct": -2.5962211773989265,
+      "profit_factor": 0.33325871121364137,
+      "expectancy": -11.801005351813302,
+      "max_drawdown_pct": 3.4132507343234657,
+      "fees": 21.885111759867566,
+      "slippage_cost": 4.607382624260152
+    },
+    "continuous_oos_stress": {
+      "trades": 22,
+      "net_pnl": -285.0400145631375,
+      "net_return_pct": -2.850400145631375,
+      "profit_factor": 0.2970577546623884,
+      "expectancy": -12.956364298324432,
+      "max_drawdown_pct": 3.626502801534618,
+      "fees": 43.71793346648869,
+      "slippage_cost": 9.203738327693426
+    }
+  },
+  "aggregate_oos": {
+    "trades": 22,
+    "net_pnl": -260.2565726364096,
+    "net_return_pct": -2.602565726364096,
+    "profit_factor": 0.33479177749531286,
+    "expectancy": -11.829844210745891,
+    "max_drawdown_pct": null,
+    "fees": 22.067037854914513,
+    "slippage_cost": 4.6456828382271755
+  },
+  "aggregate_stress": {
+    "trades": 22,
+    "net_pnl": -286.0775308725912,
+    "net_return_pct": -2.860775308725912,
+    "profit_factor": 0.29838753783513383,
+    "expectancy": -13.003524130572327,
+    "max_drawdown_pct": null,
+    "fees": 44.11766204464448,
+    "slippage_cost": 9.287891623986805
+  },
+  "by_year": {
+    "2022": -4.030581806711333,
+    "2023": -233.46473301146762,
+    "2024": 0,
+    "2025": 0,
+    "2026": -22.76125781823068
+  },
+  "stress_by_year": {
+    "2022": -9.491455012167696,
+    "2023": -244.9121859034024,
+    "2024": 0,
+    "2025": 0,
+    "2026": -31.673889957021075
+  },
+  "monthly_base": {
+    "2022-07": 26.13896725294639,
+    "2022-08": -1.4291407707040047,
+    "2022-09": 8.204755946552671,
+    "2022-10": 18.316101449096372,
+    "2022-11": -51.30771495858406,
+    "2022-12": -3.9535507260187046,
+    "2023-01": -51.336116738502895,
+    "2023-02": -19.12623335667561,
+    "2023-03": -50.97875355687253,
+    "2023-04": -2.9568232134234744,
+    "2023-05": -31.559817588803856,
+    "2023-06": 21.931343153619622,
+    "2023-07": -4.292555282251627,
+    "2023-08": -50.07756157204861,
+    "2023-09": 5.6090838330782296,
+    "2023-10": -50.677298689586856,
+    "2026-04": -3.6985149713812073,
+    "2026-05": 18.681580263403706,
+    "2026-06": -51.58441304342673,
+    "2026-07": 20.06569582848367,
+    "2026-08": -18.26226869678401,
+    "2026-09": 12.036662801473891
+  },
+  "gates": {
+    "sample": false,
+    "base_net": false,
+    "base_expectancy": false,
+    "base_pf": false,
+    "stress_net": false,
+    "stress_expectancy": false,
+    "stress_pf": false,
+    "four_positive_years": false,
+    "four_positive_stress_years": false,
+    "final_year": false,
+    "drawdown": true,
+    "concentration": false,
+    "audit": true,
+    "forward_paper": false
+  },
+  "historical_pass_before_audit": false,
+  "limitations": [
+    "FRED can revise history; retained SHA256 identifies this evaluated response, not an original vintage.",
+    "Two-observation lag is conservative but does not reconstruct original release vintages.",
+    "Daily OHLC uses stop-first ambiguity and cannot reconstruct tick order.",
+    "No independent forward PAPER evidence exists."
+  ]
+}
