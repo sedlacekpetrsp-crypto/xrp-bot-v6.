@@ -1,0 +1,537 @@
+{
+ "strategy": {
+  "tuning/x1": {
+   "final_equity": 38450.24140373162,
+   "net_pnl": 28450.24140373162,
+   "return_pct": 284.5024140373162,
+   "sharpe": 1.2618568243234753,
+   "max_drawdown_pct": 45.71773164497897,
+   "trades": 26,
+   "profit_factor": 1.7382218670650365,
+   "win_rate_pct": 42.30769230769231,
+   "net_without_top3": -20555.025712668816,
+   "fees": 160.2385924629703,
+   "avg_hold_days": 54.96153846153846
+  },
+  "tuning/x2": {
+   "final_equity": 38242.40282446289,
+   "net_pnl": 28242.402824462893,
+   "return_pct": 282.42402824462897,
+   "sharpe": 1.2580604051585278,
+   "max_drawdown_pct": 45.85307641661317,
+   "trades": 26,
+   "profit_factor": 1.7320274581588522,
+   "win_rate_pct": 42.30769230769231,
+   "net_without_top3": -20675.91288048796,
+   "fees": 319.34909027429757,
+   "avg_hold_days": 54.96153846153846
+  },
+  "tuning/x3": {
+   "final_equity": 38035.84506468898,
+   "net_pnl": 28035.845064688983,
+   "return_pct": 280.3584506468898,
+   "sharpe": 1.2542642438794074,
+   "max_drawdown_pct": 45.98799881823982,
+   "trades": 27,
+   "profit_factor": 1.7258942772418666,
+   "win_rate_pct": 40.74074074074074,
+   "net_without_top3": -20795.75268603943,
+   "fees": 477.3396524388367,
+   "avg_hold_days": 54.03703703703704
+  },
+  "validation/x1": {
+   "final_equity": 20827.44769547647,
+   "net_pnl": 10827.447695476469,
+   "return_pct": 108.27447695476468,
+   "sharpe": 1.144049412649054,
+   "max_drawdown_pct": 32.39723743078653,
+   "trades": 34,
+   "profit_factor": 2.486336795005312,
+   "win_rate_pct": 58.8235294117647,
+   "net_without_top3": 3007.038505435492,
+   "fees": 93.39793877482761,
+   "avg_hold_days": 42.029411764705884
+  },
+  "validation/x2": {
+   "final_equity": 20671.836655944142,
+   "net_pnl": 10671.836655944142,
+   "return_pct": 106.71836655944142,
+   "sharpe": 1.134293799476386,
+   "max_drawdown_pct": 32.50082904295502,
+   "trades": 34,
+   "profit_factor": 2.4617551743442108,
+   "win_rate_pct": 58.8235294117647,
+   "net_without_top3": 2908.9485044710273,
+   "fees": 185.92817480093896,
+   "avg_hold_days": 42.029411764705884
+  },
+  "validation/x3": {
+   "final_equity": 20517.532843013803,
+   "net_pnl": 10517.532843013803,
+   "return_pct": 105.17532843013804,
+   "sharpe": 1.1245388573749981,
+   "max_drawdown_pct": 32.60411751832146,
+   "trades": 34,
+   "profit_factor": 2.43750547218507,
+   "win_rate_pct": 58.8235294117647,
+   "net_without_top3": 2811.6576374696187,
+   "fees": 277.59916751434645,
+   "avg_hold_days": 42.029411764705884
+  },
+  "final_test/x1": {
+   "final_equity": 7858.536855656645,
+   "net_pnl": -2141.4631443433555,
+   "return_pct": -21.414631443433553,
+   "sharpe": -0.3697674277931938,
+   "max_drawdown_pct": 33.04888941929759,
+   "trades": 24,
+   "profit_factor": 0.5719470136518059,
+   "win_rate_pct": 37.5,
+   "net_without_top3": -3483.1497705658358,
+   "fees": 50.300856323056735,
+   "avg_hold_days": 43.041666666666664
+  },
+  "final_test/x2": {
+   "final_equity": 7802.652457588487,
+   "net_pnl": -2197.347542411513,
+   "return_pct": -21.97347542411513,
+   "sharpe": -0.38464291707521553,
+   "max_drawdown_pct": 33.2499331642779,
+   "trades": 24,
+   "profit_factor": 0.5633951847376792,
+   "win_rate_pct": 37.5,
+   "net_without_top3": -3530.246665753397,
+   "fees": 100.21901973835291,
+   "avg_hold_days": 43.041666666666664
+  },
+  "final_test/x3": {
+   "final_equity": 7747.209590243944,
+   "net_pnl": -2252.790409756056,
+   "return_pct": -22.52790409756056,
+   "sharpe": -0.39949113938548225,
+   "max_drawdown_pct": 33.45019102473421,
+   "trades": 24,
+   "profit_factor": 0.5550053852795297,
+   "win_rate_pct": 37.5,
+   "net_without_top3": -3576.94992221779,
+   "fees": 149.75778764903384,
+   "avg_hold_days": 43.041666666666664
+  }
+ },
+ "buy_hold": {
+  "tuning/x1": {
+   "final_equity": 20838.70974787823,
+   "net_pnl": 10838.70974787823,
+   "return_pct": 108.3870974787823,
+   "sharpe": 0.7976746737438547,
+   "max_drawdown_pct": 76.85214022381805,
+   "trades": 0,
+   "profit_factor": 0.0,
+   "win_rate_pct": 0.0,
+   "net_without_top3": 0.0,
+   "fees": 0,
+   "avg_hold_days": 0.0
+  },
+  "tuning/x2": {
+   "final_equity": 20790.835707649996,
+   "net_pnl": 10790.835707649996,
+   "return_pct": 107.90835707649995,
+   "sharpe": 0.7964763555524579,
+   "max_drawdown_pct": 76.85214022381805,
+   "trades": 0,
+   "profit_factor": 0.0,
+   "win_rate_pct": 0.0,
+   "net_without_top3": 0.0,
+   "fees": 0,
+   "avg_hold_days": 0.0
+  },
+  "tuning/x3": {
+   "final_equity": 20743.071507771925,
+   "net_pnl": 10743.071507771925,
+   "return_pct": 107.43071507771927,
+   "sharpe": 0.7952779222952505,
+   "max_drawdown_pct": 76.85214022381805,
+   "trades": 0,
+   "profit_factor": 0.0,
+   "win_rate_pct": 0.0,
+   "net_without_top3": 0.0,
+   "fees": 0,
+   "avg_hold_days": 0.0
+  },
+  "validation/x1": {
+   "final_equity": 42140.13964452626,
+   "net_pnl": 32140.139644526258,
+   "return_pct": 321.40139644526255,
+   "sharpe": 1.705464215539066,
+   "max_drawdown_pct": 34.03469236201778,
+   "trades": 0,
+   "profit_factor": 0.0,
+   "win_rate_pct": 0.0,
+   "net_without_top3": 0.0,
+   "fees": 0,
+   "avg_hold_days": 0.0
+  },
+  "validation/x2": {
+   "final_equity": 42043.32852882027,
+   "net_pnl": 32043.328528820268,
+   "return_pct": 320.43328528820274,
+   "sharpe": 1.703120887828242,
+   "max_drawdown_pct": 34.03469236201779,
+   "trades": 0,
+   "profit_factor": 0.0,
+   "win_rate_pct": 0.0,
+   "net_without_top3": 0.0,
+   "fees": 0,
+   "avg_hold_days": 0.0
+  },
+  "validation/x3": {
+   "final_equity": 41946.739532801636,
+   "net_pnl": 31946.739532801636,
+   "return_pct": 319.4673953280163,
+   "sharpe": 1.7007709555416375,
+   "max_drawdown_pct": 34.03469236201779,
+   "trades": 0,
+   "profit_factor": 0.0,
+   "win_rate_pct": 0.0,
+   "net_without_top3": 0.0,
+   "fees": 0,
+   "avg_hold_days": 0.0
+  },
+  "final_test/x1": {
+   "final_equity": 7507.097835261271,
+   "net_pnl": -2492.902164738729,
+   "return_pct": -24.929021647387295,
+   "sharpe": -0.03867548195721731,
+   "max_drawdown_pct": 59.9552916378004,
+   "trades": 0,
+   "profit_factor": 0.0,
+   "win_rate_pct": 0.0,
+   "net_without_top3": 0.0,
+   "fees": 0,
+   "avg_hold_days": 0.0
+  },
+  "final_test/x2": {
+   "final_equity": 7489.851321052338,
+   "net_pnl": -2510.148678947662,
+   "return_pct": -25.101486789476624,
+   "sharpe": -0.04108817395872973,
+   "max_drawdown_pct": 59.9552916378004,
+   "trades": 0,
+   "profit_factor": 0.0,
+   "win_rate_pct": 0.0,
+   "net_without_top3": 0.0,
+   "fees": 0,
+   "avg_hold_days": 0.0
+  },
+  "final_test/x3": {
+   "final_equity": 7472.644376579964,
+   "net_pnl": -2527.355623420036,
+   "return_pct": -25.273556234200356,
+   "sharpe": -0.043497963747981726,
+   "max_drawdown_pct": 59.955291637800414,
+   "trades": 0,
+   "profit_factor": 0.0,
+   "win_rate_pct": 0.0,
+   "net_without_top3": 0.0,
+   "fees": 0,
+   "avg_hold_days": 0.0
+  }
+ },
+ "per_symbol": {
+  "tuning/x1": {
+   "BTCUSDT": {
+    "final_equity": 15150.49260010611,
+    "net_pnl": 10150.49260010611,
+    "return_pct": 203.00985200212222,
+    "sharpe": 1.2085195942215097,
+    "max_drawdown_pct": 43.36952207820149,
+    "trades": 13,
+    "profit_factor": 1.6692828900689671,
+    "win_rate_pct": 46.15384615384615,
+    "net_without_top3": -12893.13050693188,
+    "fees": 68.50503464405068,
+    "avg_hold_days": 53.76923076923077
+   },
+   "ETHUSDT": {
+    "final_equity": 23299.74880362551,
+    "net_pnl": 18299.74880362551,
+    "return_pct": 365.99497607251016,
+    "sharpe": 1.2471713587790556,
+    "max_drawdown_pct": 52.12669051778182,
+    "trades": 13,
+    "profit_factor": 1.7829555013078715,
+    "win_rate_pct": 38.46153846153846,
+    "net_without_top3": -18335.706386238828,
+    "fees": 91.7335578189196,
+    "avg_hold_days": 56.15384615384615
+   }
+  },
+  "tuning/x2": {
+   "BTCUSDT": {
+    "final_equity": 15069.332907742553,
+    "net_pnl": 10069.332907742553,
+    "return_pct": 201.3866581548511,
+    "sharpe": 1.20382791424468,
+    "max_drawdown_pct": 43.596754988245245,
+    "trades": 13,
+    "profit_factor": 1.6629233739205174,
+    "win_rate_pct": 46.15384615384615,
+    "net_without_top3": -12934.728769992696,
+    "fees": 136.55571633979517,
+    "avg_hold_days": 53.76923076923077
+   },
+   "ETHUSDT": {
+    "final_equity": 23173.06991672034,
+    "net_pnl": 18173.06991672034,
+    "return_pct": 363.46139833440674,
+    "sharpe": 1.2441539879679482,
+    "max_drawdown_pct": 52.14401910746067,
+    "trades": 13,
+    "profit_factor": 1.7768996969610866,
+    "win_rate_pct": 38.46153846153846,
+    "net_without_top3": -18374.498311797084,
+    "fees": 182.7933739345024,
+    "avg_hold_days": 56.15384615384615
+   }
+  },
+  "tuning/x3": {
+   "BTCUSDT": {
+    "final_equity": 14988.663391691007,
+    "net_pnl": 9988.663391691007,
+    "return_pct": 199.7732678338201,
+    "sharpe": 1.199136967804468,
+    "max_drawdown_pct": 43.82291596523677,
+    "trades": 13,
+    "profit_factor": 1.656629421415603,
+    "win_rate_pct": 46.15384615384615,
+    "net_without_top3": -12975.92901047922,
+    "fees": 204.15519071243563,
+    "avg_hold_days": 53.76923076923077
+   },
+   "ETHUSDT": {
+    "final_equity": 23047.181672997976,
+    "net_pnl": 18047.181672997976,
+    "return_pct": 360.9436334599596,
+    "sharpe": 1.2411373341188132,
+    "max_drawdown_pct": 52.16131404805444,
+    "trades": 14,
+    "profit_factor": 1.7709022990400656,
+    "win_rate_pct": 35.714285714285715,
+    "net_without_top3": -18412.780362144586,
+    "fees": 273.1844617264011,
+    "avg_hold_days": 54.285714285714285
+   }
+  },
+  "validation/x1": {
+   "BTCUSDT": {
+    "final_equity": 12872.68873788109,
+    "net_pnl": 7872.68873788109,
+    "return_pct": 157.4537747576218,
+    "sharpe": 1.3789562440524636,
+    "max_drawdown_pct": 29.10672058394689,
+    "trades": 17,
+    "profit_factor": 4.10980533912943,
+    "win_rate_pct": 58.8235294117647,
+    "net_without_top3": 1008.9273533131454,
+    "fees": 56.100701164034035,
+    "avg_hold_days": 41.11764705882353
+   },
+   "ETHUSDT": {
+    "final_equity": 7954.758957595377,
+    "net_pnl": 2954.758957595377,
+    "return_pct": 59.09517915190754,
+    "sharpe": 0.7660455887664841,
+    "max_drawdown_pct": 38.20648250418809,
+    "trades": 17,
+    "profit_factor": 1.6216509927333533,
+    "win_rate_pct": 58.8235294117647,
+    "net_without_top3": -2349.496905655783,
+    "fees": 37.29723761079357,
+    "avg_hold_days": 42.94117647058823
+   }
+  },
+  "validation/x2": {
+   "BTCUSDT": {
+    "final_equity": 12768.060678271535,
+    "net_pnl": 7768.060678271535,
+    "return_pct": 155.36121356543072,
+    "sharpe": 1.368741673511004,
+    "max_drawdown_pct": 29.224296144571127,
+    "trades": 17,
+    "profit_factor": 4.055387477041025,
+    "win_rate_pct": 58.8235294117647,
+    "net_without_top3": 960.6754371166444,
+    "fees": 111.63241784992432,
+    "avg_hold_days": 41.11764705882353
+   },
+   "ETHUSDT": {
+    "final_equity": 7903.775977672607,
+    "net_pnl": 2903.775977672607,
+    "return_pct": 58.07551955345214,
+    "sharpe": 0.7582627860993285,
+    "max_drawdown_pct": 38.290062995533034,
+    "trades": 17,
+    "profit_factor": 1.6102566891562566,
+    "win_rate_pct": 58.8235294117647,
+    "net_without_top3": -2374.7205121071556,
+    "fees": 74.29575695101464,
+    "avg_hold_days": 42.94117647058823
+   }
+  },
+  "validation/x3": {
+   "BTCUSDT": {
+    "final_equity": 12664.365483768252,
+    "net_pnl": 7664.365483768252,
+    "return_pct": 153.28730967536504,
+    "sharpe": 1.3585206900669888,
+    "max_drawdown_pct": 29.34151751981101,
+    "trades": 17,
+    "profit_factor": 4.001925793518702,
+    "win_rate_pct": 58.8235294117647,
+    "net_without_top3": 912.8446317168582,
+    "fees": 166.60103164031764,
+    "avg_hold_days": 41.11764705882353
+   },
+   "ETHUSDT": {
+    "final_equity": 7853.167359245554,
+    "net_pnl": 2853.1673592455536,
+    "return_pct": 57.06334718491106,
+    "sharpe": 0.7504849538140761,
+    "max_drawdown_pct": 38.37342001151329,
+    "trades": 17,
+    "profit_factor": 1.5989811928802844,
+    "win_rate_pct": 58.8235294117647,
+    "net_without_top3": -2399.7208114341065,
+    "fees": 110.9981358740288,
+    "avg_hold_days": 42.94117647058823
+   }
+  },
+  "final_test/x1": {
+   "BTCUSDT": {
+    "final_equity": 4711.9979669197855,
+    "net_pnl": -288.00203308021446,
+    "return_pct": -5.760040661604293,
+    "sharpe": -0.014505455580118282,
+    "max_drawdown_pct": 24.69880133561957,
+    "trades": 12,
+    "profit_factor": 0.8517027401663468,
+    "win_rate_pct": 50.0,
+    "net_without_top3": -1301.6362635900032,
+    "fees": 26.655069666709398,
+    "avg_hold_days": 45.583333333333336
+   },
+   "ETHUSDT": {
+    "final_equity": 3146.538888736859,
+    "net_pnl": -1853.461111263141,
+    "return_pct": -37.06922222526282,
+    "sharpe": -0.5668528228311464,
+    "max_drawdown_pct": 43.286298160446655,
+    "trades": 12,
+    "profit_factor": 0.3944402331171306,
+    "win_rate_pct": 25.0,
+    "net_without_top3": -3060.7401822678344,
+    "fees": 23.645786656347333,
+    "avg_hold_days": 40.5
+   }
+  },
+  "final_test/x2": {
+   "BTCUSDT": {
+    "final_equity": 4680.065541734352,
+    "net_pnl": -319.93445826564766,
+    "return_pct": -6.398689165312954,
+    "sharpe": -0.02998909950983784,
+    "max_drawdown_pct": 24.93194188410439,
+    "trades": 12,
+    "profit_factor": 0.8365682915490141,
+    "win_rate_pct": 50.0,
+    "net_without_top3": -1323.9036347516167,
+    "fees": 53.112952997462294,
+    "avg_hold_days": 45.583333333333336
+   },
+   "ETHUSDT": {
+    "final_equity": 3122.5869158541345,
+    "net_pnl": -1877.4130841458655,
+    "return_pct": -37.54826168291731,
+    "sharpe": -0.5788451442811519,
+    "max_drawdown_pct": 43.457405657915956,
+    "trades": 12,
+    "profit_factor": 0.38949948998291006,
+    "win_rate_pct": 25.0,
+    "net_without_top3": -3075.203137984783,
+    "fees": 47.106066740890626,
+    "avg_hold_days": 40.5
+   }
+  },
+  "final_test/x3": {
+   "BTCUSDT": {
+    "final_equity": 4648.37239010353,
+    "net_pnl": -351.62760989646995,
+    "return_pct": -7.032552197929398,
+    "sharpe": -0.045458280129195415,
+    "max_drawdown_pct": 25.164170874731674,
+    "trades": 12,
+    "profit_factor": 0.8217786246963433,
+    "win_rate_pct": 50.0,
+    "net_without_top3": -1345.9772319625308,
+    "fees": 79.37528103357447,
+    "avg_hold_days": 45.583333333333336
+   },
+   "ETHUSDT": {
+    "final_equity": 3098.837200140414,
+    "net_pnl": -1901.162799859586,
+    "return_pct": -38.02325599719172,
+    "sharpe": -0.5908054914910413,
+    "max_drawdown_pct": 43.62781351993016,
+    "trades": 12,
+    "profit_factor": 0.3846432355729453,
+    "win_rate_pct": 25.0,
+    "net_without_top3": -3089.5293750930277,
+    "fees": 70.38250661545936,
+    "avg_hold_days": 40.5
+   }
+  }
+ },
+ "info_validation_x1": {
+  "h3_monthly": {
+   "final_equity": 19655.730474415854,
+   "net_pnl": 9655.730474415854,
+   "return_pct": 96.55730474415853,
+   "sharpe": 1.0659189569958305,
+   "max_drawdown_pct": 32.40905052843542,
+   "trades": 30,
+   "profit_factor": 2.4473890013574313,
+   "win_rate_pct": 56.666666666666664,
+   "net_without_top3": 2489.5547081262503,
+   "fees": 114.04683185462963,
+   "avg_hold_days": 44.63333333333333
+  },
+  "h4_weekly": {
+   "final_equity": 26162.781257369337,
+   "net_pnl": 16162.781257369337,
+   "return_pct": 161.62781257369338,
+   "sharpe": 1.4365182628103188,
+   "max_drawdown_pct": 27.20687386428182,
+   "trades": 72,
+   "profit_factor": 2.28566656234625,
+   "win_rate_pct": 62.5,
+   "net_without_top3": 6252.741301424212,
+   "fees": 177.94681926780126,
+   "avg_hold_days": 20.069444444444443
+  }
+ },
+ "avg_target_weight_pct": {
+  "tuning": 59.375,
+  "validation": 71.35416666666667,
+  "final_test": 47.15909090909091
+ },
+ "verdict": {
+  "checks": {
+   "1_validation_sharpe_and_dd_beat_bh_x1": false,
+   "2_validation_trades_ge_30": true,
+   "3_validation_x2_pf_gt_1_2_and_net_gt_0": true,
+   "4_validation_x1_net_without_top3_gt_0": true,
+   "5_final_x2_net_gt_0_sharpe_and_dd_beat_bh": false
+  },
+  "status": "ZAM\u00cdTNUTO"
+ }
+}
