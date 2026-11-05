@@ -27,7 +27,11 @@ Plánovaná úloha: `trig_01PCaCadnJSZo5XYuLEdH8uR`, cron `44 */3 * * *` UTC, na
 
 ## Otevřené úkoly (priorita shora)
 
-1. **Proč se `da2f665` nenasadil** — potřebuje Render (deploy events). BLOKOVÁNO: konektor Render
+1. **Proč se nenasazuje** — PR #5 (merge 07:40 UTC) ani PR #6 (merge `9b41f6d`, 08:48 UTC) nespustily restart:
+   proces běží od 2026-11-04 19:58 UTC (kontrola 08:53 UTC). Vlastník nasazení schválil 2026-11-05 ~08:47 UTC.
+   Pravděpodobné příčiny (neověřeno): Auto Deploy vypnut / nastaven „po CI“, Render ztratil webhook
+   GitHubu, nebo služba sleduje jinou větev. Řešení: Render → Manual Deploy → Deploy latest commit.
+   Původní bod: **Proč se `da2f665` nenasadil** — potřebuje Render (deploy events). BLOKOVÁNO: konektor Render
    `needs_reconnect`. Do té doby sledovat `process_started_utc`.
 2. Po souhlasu vlastníka: PR s Whale testy + `tools/` do `v8-fly-layer-test` (spustí deploy PR #5).
 3. Combined replay: každý měsíc doplnit nový měsíc čistých dat (`--end` = 1. den dalšího měsíce)
