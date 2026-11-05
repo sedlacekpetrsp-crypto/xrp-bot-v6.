@@ -112,3 +112,33 @@ Harness a zmrazený protokol: `research/combined_selection_replay/` (README, `ru
 pouze uzavřené dny, limity vah, identita P/L, monotónnost nákladů, nezávislost na
 budoucích svíčkách, odmítnutí neshodného SHA-256) prošly — nejsou důkazem ziskovosti.
 Očekávání: čistá data od 10/2026 dají jen 1 rebalance → výsledek bude neprůkazný.
+
+## 8. Po sloučení PR #5 (2026-11-05)
+
+- PR #5 sloučen do `v8-fly-layer-test` → merge commit `da2f6659f0bb42e54be7c97a4b7d64bc9998bd14`
+  (rodiče `bd55352`, `2fad28a`). `main` beze změny (`cfcde7a`).
+- **Render NEOVĚŘEN:** session nemá Render API klíč/CLI; síť blokuje `api.render.com`
+  i `*.onrender.com`; žádné připojení k produkční PostgreSQL. Stav deploye, nasazený commit,
+  logy, workery ani časy zápisů nebyly zkontrolovány.
+- Nesoulad konfigurace: `render.yaml` spouští `app_v8_ui:app` (importuje jen `app_v8`, PAPER
+  endpointy vrací 404), dokumentace i ELITE modul počítají se sdílenou službou `app_v8_fly`
+  (`srv-dang770ae00c73em1sm0`). Skutečný start command je nutné ověřit v Render dashboardu.
+
+### Lokální smoke test sloučeného kódu `da2f665` (bez produkčních dat)
+
+- `uvicorn app_v8_ui:app`: start OK, `/` a `/health` 200, bez Traceback.
+- `uvicorn app_v8_fly:app` bez `DATABASE_URL`: start záměrně odmítnut
+  (`Persisted ledger required`, fail-closed, existuje i před PR #5).
+- `uvicorn app_v8_fly:app` s dočasnou lokální PostgreSQL 16 (prázdná DB + marker
+  `fly-ledger-reconcile-20261011`, který v produkci existuje): start OK,
+  `FLY LEGACY RECOVERY nothing_to_recover`, `FLY ACCOUNTING RECONCILIATION already_applied`;
+  200 na `/`, `/health`, `/combined`, `/combined/status`, `/combined/health`, `/elite-paper/status`,
+  `/swing/status`, `/news-paper/status`, `/bestof/status`, `/lh-whale/status`,
+  `/research/market-evidence/status`. Combined worker běží, skeny končí `PAPER_SCAN_ERROR`
+  (proxy 403 na Binance) → lokálně žádný zápis. ELITE lokálně `disabled_other_service`
+  (spouští se jen pod produkčním `RENDER_SERVICE_ID`).
+- Kompatibilita stavu Combined v PostgreSQL (simulované ceny): ledger vytvořený kódem
+  `bd55352` 4. 11. → sken novým kódem 5. 11.: 0 obchodů, pozice a qty beze změny, identita
+  P/L platí (nerealizovaný P/L +17,70 místo dřívějších +19,60 USDT = rozdíl vstupních
+  poplatků), opakovaný sken idempotentní, první sken 1. 12. provede `MONTHLY_REBALANCE`.
+  Lokální DB poté smazána.
