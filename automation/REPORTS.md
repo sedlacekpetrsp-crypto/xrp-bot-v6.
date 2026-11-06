@@ -4,6 +4,11 @@ Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá
 Výhradně PAPER.
 
 
+## 2026-11-06 17:25 SEČ (ruční běh — oponentura ChatGPT, kolo 1)
+- ChatGPT neměl přístup (404 kvůli tečce v názvu repa; repo je veřejné) ⇒ předávací soubor `reports/chatgpt-review-packet-20261106.md`.
+- Jeho 7 kontrolních otázek k PR #29 ověřeno testy: 5 nových regresních testů (hrany fundingu, změna budoucích dat, náklady 4 noh) — 21 passed (`043666f`). Oprávněná námitka: benchmark B&H má 100 % expozice vs 40 % strategie ⇒ před daty doplněno informativní B&H se stejnou volatilitou (kritéria beze změny).
+- K rozhodnutí vlastníka (návrh obou asistentů): forward PAPER vyhodnocovat jednou po 365 dnech a ≥ 30 obchodech místo „po 60 dnech“; B2 počítat proti B&H se stejnou volatilitou.
+
 ## 2026-11-06 17:05 SEČ (ruční běh — spolupráce s ChatGPT)
 - Založen `automation/DIALOG.md`: kolo 1 = 5 otázek Clauda pro ChatGPT (modelování maker exekuce, oponentura PR #29, beta-neutralita, nové zdroje dat, váha forward PAPER). Autopilot ho od teď čte každý běh (RUNBOOK krok 8).
 - Od vás: zkopírovat kolo 1 do ChatGPT a jeho odpověď vložit do DIALOG.md nebo poslat sem.
