@@ -490,7 +490,7 @@ def test_K6_1_negative_rate_gap_blocks_too():
     bh, _ = fd.buy_hold(_flat_market(rate=-0.01, drop=[(None, t08)]), BH_DAY, BH_DAY, 1)
     assert bh["funding"] > 0 and bh["funding_missing_events"] == 8
     flags = {k: 0 for k in fd.DATA_DEFECTS} | {"benchmark_funding_missing_events": bh["funding_missing_events"]}
-    assert fd.final_verdict(True, False, {"r": True}, flags)[0].startswith("NEROZHODNUTO")
+    assert fd.final_verdict({"A1_sharpe_dd": True}, {"B1_val_x2_profit_pf": False}, {"r": True}, flags)[0].startswith("NEROZHODNUTO")
 
 
 def test_K6_2_funding_window_open_both_ends_shared_by_strategy_and_benchmark():
@@ -528,7 +528,8 @@ def test_K6_3_registry_every_flag_classified_unknown_raises_informational_does_n
     with pytest.raises(KeyError):
         fd.blocking_defects({**flags, "nove_pocitadlo": 1})
     info = {k: 0 for k in fd.DATA_DEFECTS} | {"duplicate_funding_rows_same_value": 5}
-    assert fd.final_verdict(True, True, {"r": True}, info) == ("KANDIDÁT NA FORWARD PAPER", {})
+    assert fd.final_verdict({"A1_sharpe_dd": True}, {"B1_val_x2_profit_pf": True}, {"r": True}, info)[:2] == \
+        ("KANDIDÁT NA FORWARD PAPER", {})
     assert fd.DATA_DEFECTS["benchmark_price_fallbacks"] == "blocking"
 
 
@@ -680,3 +681,294 @@ def test_K6_integration_verdict_blocked_by_benchmark_gap_else_candidate(tmp_path
     out = go(bad)
     assert out["verdict"].startswith("NEROZHODNUTO")
     assert out["blocking_data_defects"].get("benchmark_funding_missing_events") == 1
+
+
+# ---- kolo 8: rozhodovací logika, otisk implementace, hranice fundingu, atomické audity ----
+CRIT_A = ("A1_sharpe_dd", "A2_trades_ge_30", "A3_x2_pf_profit", "A4_wo_top3", "A5_final_x2")
+CRIT_B = ("B1_val_x2_profit_pf", "B2_dd_le_0_6_bh", "B3_final_x2_profit", "B4_val_wo_top3", "B5_trades_ge_20",
+          "B6_tuning_x1_profit")
+ROBUST_OK = {"dsr_ge_0_95": True, "neighbors_val_x2_profit": True, "walk_forward_ge_3_of_4": True}
+NO_FLAGS = {k: 0 for k in fd.DATA_DEFECTS}
+BAD_VAL = {"validation": {"benchmark_funding_missing_events": 1}}
+
+
+def tracks(fail=()):
+    return ({c: c not in fail for c in CRIT_A}, {c: c not in fail for c in CRIT_B})
+
+
+def test_K8_1_dependency_map_matches_evaluate_by_perturbation():
+    """Závislost kritérií na benchmarku se neodvozuje z dokumentace, ale změnou benchmarku po obdobích."""
+    base = {"sharpe": 1.0, "max_drawdown_pct": 10.0, "trades": 40, "profit_factor": 1.5, "net_pnl": 100.0,
+            "net_without_top3": 50.0}
+    res = {p: {f"x{m}": dict(base) for m in (1, 2, 3)} for p in fd.PERIODS}
+    bh0 = {"sharpe": 0.5, "max_drawdown_pct": 20.0}
+    found = {c: set() for c in CRIT_A + CRIT_B}
+    for p in fd.PERIODS:
+        for alt in ({"sharpe": 5.0, "max_drawdown_pct": 1.0}, {"sharpe": -5.0, "max_drawdown_pct": 99.0}):
+            bh = {q: {f"x{m}": dict(bh0) for m in (1, 2, 3)} for q in fd.PERIODS}
+            ref = {**fd.evaluate(res, bh)[0], **fd.evaluate(res, bh)[1]}
+            bh[p] = {f"x{m}": dict(alt) for m in (1, 2, 3)}
+            new = {**fd.evaluate(res, bh)[0], **fd.evaluate(res, bh)[1]}
+            found.update({c: found[c] | {p} for c in ref if ref[c] != new[c]})
+    assert {c: tuple(sorted(v)) for c, v in found.items()} == {c: tuple(sorted(v)) for c, v in fd.BENCHMARK_DEPENDENCY.items()}
+
+
+def test_K8_1_clean_data_rejection_stays_rejected():
+    a, b = tracks(fail=("A1_sharpe_dd", "B2_dd_le_0_6_bh"))
+    assert fd.final_verdict(a, b, ROBUST_OK, NO_FLAGS, {})[0] == "ZAMÍTNUTO"
+
+
+def test_K8_1_rejection_only_by_criteria_with_bad_benchmark_is_undecided():
+    a, b = tracks(fail=("A1_sharpe_dd", "B2_dd_le_0_6_bh"))
+    v, _, d = fd.final_verdict(a, b, ROBUST_OK, NO_FLAGS, BAD_VAL)
+    assert v.startswith("NEROZHODNUTO") and (d["track_a"], d["track_b"]) == ("unknown", "unknown")
+
+
+def test_K8_1_independent_rejection_kept_even_with_bad_benchmark():
+    a, b = tracks(fail=("A1_sharpe_dd", "A2_trades_ge_30", "B2_dd_le_0_6_bh", "B5_trades_ge_20"))
+    v, _, d = fd.final_verdict(a, b, ROBUST_OK, NO_FLAGS, BAD_VAL)
+    assert v == "ZAMÍTNUTO" and d["track_a_reasons"] == ["A2_trades_ge_30"] and d["track_b_reasons"] == ["B5_trades_ge_20"]
+    # A5 používá final_test, vada jen ve validaci ⇒ A5 je spolehlivé zamítnutí
+    a, b = tracks(fail=("A5_final_x2", "B3_final_x2_profit"))
+    assert fd.final_verdict(a, b, ROBUST_OK, NO_FLAGS, BAD_VAL)[0] == "ZAMÍTNUTO"
+
+
+def test_K8_1_combinations_and_one_unknown_track():
+    # stopa A neznámá (jen A1), stopa B spolehlivě zamítnutá (B3) ⇒ zamítnutí nelze prokázat pro A ⇒ NEROZHODNUTO
+    a, b = tracks(fail=("A1_sharpe_dd", "B3_final_x2_profit"))
+    assert fd.final_verdict(a, b, ROBUST_OK, NO_FLAGS, BAD_VAL)[0].startswith("NEROZHODNUTO")
+    # A1 + A5 při vadě jen ve validaci: A5 spolehlivé ⇒ A zamítnuta; B jen B2 ⇒ neznámá ⇒ NEROZHODNUTO
+    a, b = tracks(fail=("A1_sharpe_dd", "A5_final_x2", "B2_dd_le_0_6_bh"))
+    v, _, d = fd.final_verdict(a, b, ROBUST_OK, NO_FLAGS, BAD_VAL)
+    assert (d["track_a"], d["track_b"]) == ("fail", "unknown") and v.startswith("NEROZHODNUTO")
+    # stopa prošla, benchmark vadný ⇒ NEROZHODNUTO (nikdy kandidát)
+    a, b = tracks(fail=("B2_dd_le_0_6_bh",))
+    flags = NO_FLAGS | {"benchmark_funding_missing_events": 1}
+    assert fd.final_verdict(a, b, ROBUST_OK, flags, BAD_VAL)[0].startswith("NEROZHODNUTO")
+
+
+def test_K8_1_robustness_failure_is_benchmark_independent_and_unmapped_criterion_is_conservative():
+    a, b = tracks(fail=("A1_sharpe_dd", "B2_dd_le_0_6_bh"))
+    assert fd.final_verdict(a, b, {**ROBUST_OK, "dsr_ge_0_95": False}, NO_FLAGS, BAD_VAL)[0] == "ZAMÍTNUTO"
+    assert fd.final_verdict({"X_new": False}, {"Y_new": False}, ROBUST_OK, NO_FLAGS, BAD_VAL)[0].startswith("NEROZHODNUTO")
+    assert fd.final_verdict({"X_new": False}, {"Y_new": False}, ROBUST_OK, NO_FLAGS, {})[0] == "ZAMÍTNUTO"
+
+
+def test_K8_1_benchmark_defect_periods_separate_strategy_from_benchmark():
+    m = _flat_market(drop=[(None, fd.ms_of(BH_DAY) + 8 * H)])
+    bh_bad = fd.buy_hold(m, BH_DAY, BH_DAY, 1)[0]
+    bh_ok = fd.buy_hold(_flat_market(), BH_DAY, BH_DAY, 1)[0]
+    bh = {"tuning": {"x1": bh_ok}, "validation": {"x1": bh_bad}, "final_test": {"x1": bh_ok}}
+    assert fd.benchmark_defect_periods(bh) == {"validation": {"benchmark_funding_missing_events": 8,
+                                                              "benchmark_funding_discontinuities": 8}}
+    assert all(k.startswith("benchmark_") for k in fd.BENCHMARK_DEFECT_KEYS)
+
+
+def _src():
+    from pathlib import Path
+    root = Path(fd.__file__).resolve().parents[2]
+    return {r: (root / r).read_text() for r in fd.FINGERPRINT_SOURCES}
+
+
+def test_K8_2_fingerprint_ignores_comments_docstrings_but_not_code_or_constants():
+    src = _src()
+    run_py, dsr_py = fd.FINGERPRINT_SOURCES
+    base = fd.code_fingerprint(src)
+    assert base == fd.impl_fingerprint()
+    assert fd.code_fingerprint({**src, run_py: src[run_py].replace("# dny bez otevřeného koše", "# jiný komentář")}) == base
+    assert fd.code_fingerprint({**src, run_py: src[run_py].replace('"""Počet chybějících hodinových svíček v [lo, hi]."""',
+                                                                   '"""Jiný docstring."""')}) == base
+    for old, new in (("FEE, SLIP = 0.00095, 0.0002", "FEE, SLIP = 0.00095, 0.0003"),        # náklady
+                     ("LEG_FRACTION = 0.10", "LEG_FRACTION = 0.11"),                        # notional
+                     ("    c = (FEE + SLIP) * mult\n    end_ms", "    c = (FEE + SLIP) * mult * 0\n    end_ms"),  # simulate
+                     ("return fts[bisect.bisect_right(fts, entry)", "return fts[bisect.bisect_left(fts, entry)"),  # hranice
+                     ('"benchmark_price_fallbacks": "blocking"', '"benchmark_price_fallbacks": "informational"'),
+                     ("if blocking:\n", "if False:\n")):
+        assert old in src[run_py], old
+        assert fd.code_fingerprint({**src, run_py: src[run_py].replace(old, new, 1)}) != base, old
+    assert fd.code_fingerprint({**src, dsr_py: src[dsr_py] + "\nX_NEW = 1\n"}) != base
+
+
+def test_K8_2_changed_code_invalidates_previous_decision(monkeypatch, tmp_path):
+    import json
+    src = _src()
+    run_py = fd.FINGERPRINT_SOURCES[0]
+    old_fp = fd.code_fingerprint({**src, run_py: src[run_py].replace("LEG_FRACTION = 0.10", "LEG_FRACTION = 0.12")})
+    (tmp_path / fd.SEMANTICS_FILE).write_text(json.dumps(valid_decision(impl_sha256=old_fp)))
+    ok, why = fd.semantics_gate(tmp_path)
+    assert ok is False and "impl_sha256" in why
+
+
+def test_K8_3_entry_exit_exactly_at_funding_and_empty_holding():
+    m = _flat_market()["BTCUSDT"]
+    t0 = fd.ms_of(BH_DAY)
+    assert fd.funding_window(m, t0 + 8 * H, t0 + 16 * H) == []  # vstup i výstup přesně v události
+    assert fd.funding_window(m, t0 + 8 * H, t0 + 8 * H) == []    # entry = exit
+    stale = fd.prepare(m["bars"], {t: (r, 8.0) for t, r in m["funding"].items() if t < t0 - 2 * DAY})
+    assert fd.funding_completeness(stale, t0, t0) == {"discontinuities": 0, "missing_events": 0, "unknown_coverage": False}
+    assert fd.funding_completeness(stale, t0, t0 + H)["missing_events"] > 0  # neprázdné držení se starou řadou = mezera
+
+
+def test_K8_3_interval_change_is_not_a_missing_event_but_real_gap_is():
+    from datetime import datetime, timezone
+    ms = lambda x: int(datetime.fromisoformat(x + ":00:00").replace(tzinfo=timezone.utc).timestamp() * 1000)
+    seq = [("2022-11-09T00", 8), ("2022-11-09T08", 8), ("2022-11-09T16", 8), ("2022-11-09T20", 4), ("2022-11-10T00", 4),
+           ("2022-11-10T04", 2), ("2022-11-10T06", 2), ("2022-11-10T08", 2), ("2022-11-10T10", 2)]
+    f = {ms(t): (0.0001, float(iv)) for t, iv in seq}
+    lo, hi = ms("2022-11-09T00"), ms("2022-11-10T10") + 1
+    assert fd.funding_completeness(fd.prepare({}, f), lo, hi) == {"discontinuities": 0, "missing_events": 0,
+                                                                  "unknown_coverage": False}
+    del f[ms("2022-11-10T06")]
+    assert fd.funding_completeness(fd.prepare({}, f), lo, hi)["missing_events"] == 1
+
+
+def test_K8_3_assets_with_different_intervals_and_utc_day_boundary():
+    m = make_market(days=60, rates=lambda a, t: 0.01)
+    t0 = fd.ms_of(date(2020, 12, 1))
+    f4 = {t0 + k * 4 * H: (0.01, 4.0) for k in range(60 * 6)}  # SOL každé 4 h
+    m["SOLUSDT"] = fd.prepare(m["SOLUSDT"]["bars"], f4)
+    d1, d2 = date(2021, 1, 4), date(2021, 1, 5)
+    bh, _ = fd.buy_hold(m, d1, d2, 1)
+    assert bh["funding_missing_events"] == 0 and bh["funding_discontinuities"] == 0
+    q = fd.START_EQUITY / 8 * (1 - (fd.FEE + fd.SLIP)) / 100
+    n_events = 7 * (2 + 3) + (5 + 6)  # 8h aktiva: 1. den 08/16, 2. den 00/08/16; SOL 4h: 5 + 6; 00:00 po 2. dni = prodej
+    assert bh["funding"] == pytest.approx(-0.01 * q * 100 * n_events)
+
+
+def test_K8_3_utc_day_boundary_event_belongs_to_new_day_in_benchmark_curve():
+    m = _flat_market()
+    d1, d2 = date(2021, 1, 4), date(2021, 1, 5)
+    _, rets = fd.buy_hold(m, d1, d2, 1)
+    bh1, _ = fd.buy_hold(m, d1, d1, 1)
+    q = fd.START_EQUITY / 8 * (1 - (fd.FEE + fd.SLIP)) / 100
+    # den 1 nese 08/16 (2 události), událost 5. 1. 00:00 patří dni 2 spolu s 08/16
+    eq1 = fd.START_EQUITY * (1 + rets[0])
+    assert eq1 == pytest.approx(fd.START_EQUITY * (1 - (fd.FEE + fd.SLIP)) - 8 * 2 * 0.01 * q * 100)
+    assert bh1["funding"] == pytest.approx(-8 * 2 * 0.01 * q * 100)
+
+
+def test_K8_3_duplicate_funding_conflict_raises_same_value_counted():
+    audit = {"duplicates_same_value": 0}
+    store = {}
+    fd.add_funding(store, [(1, 0.01, 8.0, 1), (1, 0.01, 8.0, 2)], "BTCUSDT", audit)
+    assert audit["duplicates_same_value"] == 1
+    with pytest.raises(ValueError):
+        fd.add_funding(store, [(1, 0.02, 8.0, 3)], "BTCUSDT", audit)
+
+
+def _zip_csv(rows):
+    import io as _io, zipfile as _zf
+    buf = _io.BytesIO()
+    with _zf.ZipFile(buf, "w") as z:
+        z.writestr("x.csv", "\n".join(",".join(map(str, r)) for r in rows))
+    return buf.getvalue()
+
+
+def test_K8_3_missing_archive_after_first_month_is_fatal(tmp_path, monkeypatch):
+    import urllib.error
+    monkeypatch.setattr(fd, "ASSETS", ("BTCUSDT",))
+    monkeypatch.setattr(fd, "FIRST_MONTH", (2021, 1))
+    monkeypatch.setattr(fd, "LAST_MONTH", (2021, 3))
+    t = fd.ms_of(date(2021, 1, 1))
+
+    def fetcher(url):
+        if "2021-02" in url and "fundingRate" in url:
+            raise urllib.error.HTTPError(url, 404, "nf", None, None)
+        return _zip_csv([(t, 8, 0.0001)]) if "fundingRate" in url else _zip_csv([(t, 1, 1, 1, 1)])
+    _, manifest, missing, fatal = fd.load(tmp_path, fetcher)
+    assert fatal == [{"asset": "BTCUSDT", "kind": "fr", "month": "2021-02"}] and len(missing) == 1
+
+
+def test_K8_4_unfilled_planned_notional_uses_equity_at_decision_and_is_not_duplicated():
+    D = fd.ms_of(START)
+    rates = lambda a, t: 0.0001 * ((fd.ASSETS.index(a) * 3) % 8)
+    m = make_market(days=60, rates=rates)
+    _, _, d0 = fd.simulate(m, START, date(2021, 1, 18), 7, 7, 1)
+    gone = d0[1]["longs"][0]  # chybí vstup až ve 2. koši (equity po 1. koši ≠ 10 000)
+    b = dict(m[gone]["bars"])
+    del b[D + 7 * DAY + H]
+    m[gone] = fd.prepare(b, m[gone]["funding"])
+    legs, curve, dec = fd.simulate(m, START, date(2021, 1, 18), 7, 7, 1)
+    eq_at_2nd = fd.START_EQUITY + sum(lg["net_pnl"] for lg in legs if lg["basket"] == 1)  # realizovaná equity v 2. rozhodnutí
+    rec = dec[1]["unfilled_entries"]
+    assert len(rec) == 1 and rec[0]["planned_notional"] == pytest.approx(0.1 * eq_at_2nd, abs=1e-6) and eq_at_2nd != 10_000
+    r1 = fd.run(m, START, date(2021, 1, 18), 1, 7, 7, "t")[0]
+    r2 = fd.run(m, START, date(2021, 1, 18), 1, 7, 7, "t")[0]
+    assert r1["unfilled_entries"] == r2["unfilled_entries"] and r1["unfilled_entry_legs"] == 1  # opakování bez duplicity
+
+
+def test_K8_5_concurrent_run_refused_before_load(tmp_path, monkeypatch):
+    calls = _guard(monkeypatch, market=make_market(rates=ranked_rates))
+    with fd.RunLock(tmp_path):
+        with pytest.raises(SystemExit) as e:
+            fd.main(["--outdir", str(tmp_path), "--mode", "audit"])
+    assert e.value.code == 5 and calls["load"] == 0
+    assert not (tmp_path / fd.LOCK_FILE).exists()  # zámek uvolněn
+    fd.main(["--outdir", str(tmp_path), "--mode", "audit"])  # po uvolnění projde
+    assert not (tmp_path / fd.LOCK_FILE).exists()
+
+
+def test_K8_5_atomic_write_keeps_old_content_on_failure(tmp_path, monkeypatch):
+    target = tmp_path / "data_audit.json"
+    target.write_text("STARÝ")
+
+    def boom(a, b):
+        raise OSError("disk")
+    monkeypatch.setattr(fd.os, "replace", boom)
+    with pytest.raises(OSError):
+        fd.atomic_write(target, "NOVÝ")
+    assert target.read_text() == "STARÝ" and [p.name for p in tmp_path.iterdir()] == ["data_audit.json"]
+
+
+def test_K8_5_audit_bundle_hashes_detect_mixed_runs(tmp_path, monkeypatch):
+    import json
+    _guard(monkeypatch, market=make_market(rates=ranked_rates))
+    fd.main(["--outdir", str(tmp_path), "--mode", "audit"])
+    man = json.loads((tmp_path / fd.AUDIT_MANIFEST_FILE).read_text())
+    src = json.loads((tmp_path / "data_source.json").read_text())
+    assert man["run_id"] == src["run_id"] and set(man["files_sha256"]) == {"data_source.json", "data_audit.json"}
+    assert fd.verify_audit_bundle(tmp_path) == (True, [])
+    (tmp_path / "data_audit.json").write_text("{}")  # soubor z jiného běhu
+    assert fd.verify_audit_bundle(tmp_path) == (False, ["data_audit.json"])
+
+
+def test_K8_5_audit_does_not_touch_performance_files(tmp_path, monkeypatch):
+    (tmp_path / "results.json").write_text("PERF")
+    (tmp_path / "trades.csv").write_text("PERF")
+    _guard(monkeypatch, market=make_market(rates=ranked_rates))
+    fd.main(["--outdir", str(tmp_path), "--mode", "audit"])
+    assert (tmp_path / "results.json").read_text() == "PERF" and (tmp_path / "trades.csv").read_text() == "PERF"
+
+
+def test_K8_integration_main_rejected_vs_undecided_by_benchmark(tmp_path, monkeypatch):
+    import json
+    monkeypatch.setattr(fd, "PERIODS", {"tuning": ("2021-01-04", "2021-01-17"), "validation": ("2021-01-18", "2021-01-31"),
+                                        "final_test": ("2021-02-01", "2021-02-14")})
+    monkeypatch.setattr(fd, "WF_YEARS", ())
+    monkeypatch.setattr(fd, "evaluate", lambda res, bh: tracks(fail=("A1_sharpe_dd", "B2_dd_le_0_6_bh")))
+    monkeypatch.setattr(fd, "robustness_checks", lambda dsr, nb, wf: dict(ROBUST_OK))
+    monkeypatch.setattr(fd, "safe_dsr", lambda r, n, v: {"dsr": None, "undefined_reason": "mock"})
+    (tmp_path / fd.SEMANTICS_FILE).write_text(json.dumps(valid_decision()))
+
+    def go(market):
+        monkeypatch.setattr(fd, "load", lambda cache: (market, [], [], []))
+        fd.main(["--outdir", str(tmp_path), "--mode", "perf"])
+        return json.loads((tmp_path / "results.json").read_text())
+    assert go(make_market(days=90, rates=ranked_rates))["verdict"] == "ZAMÍTNUTO"
+    bad = make_market(days=90, rates=ranked_rates)
+    t = fd.ms_of(date(2021, 1, 20)) + 8 * H
+    bad["BTCUSDT"] = fd.prepare(bad["BTCUSDT"]["bars"], {k: v for k, v in bad["BTCUSDT"]["funding"].items() if k != t})
+    out = go(bad)
+    assert out["verdict"].startswith("NEROZHODNUTO") and "validation" in out["verdict_detail"]["benchmark_defect_periods"]
+
+
+def test_K8_5_results_bind_trades_csv_hash(tmp_path, monkeypatch):
+    import json
+    monkeypatch.setattr(fd, "PERIODS", {"tuning": ("2021-01-04", "2021-01-17"), "validation": ("2021-01-18", "2021-01-31"),
+                                        "final_test": ("2021-02-01", "2021-02-14")})
+    monkeypatch.setattr(fd, "WF_YEARS", ())
+    monkeypatch.setattr(fd, "load", lambda cache: (make_market(days=90, rates=ranked_rates), [], [], []))
+    (tmp_path / fd.SEMANTICS_FILE).write_text(json.dumps(valid_decision()))
+    fd.main(["--outdir", str(tmp_path), "--mode", "perf"])
+    r = json.loads((tmp_path / "results.json").read_text())
+    assert r["trades_csv_sha256"] == fd.file_sha256(tmp_path / "trades.csv") and r["run_id"]

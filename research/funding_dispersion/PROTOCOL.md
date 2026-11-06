@@ -163,3 +163,16 @@ implementované (kód implementuje A). Audit dat (`AUDIT`) zámek neblokuje. Roz
   z equity při rozhodnutí, důvod); bez fiktivní pozice, poplatku či cooldownu.
 - Zapsané rozhodnutí v `FUNDING_SEMANTICS.json` nová pole nemá a `performance_hold` zůstává `true` ⇒ výkonnost je dál
   odmítnuta. Doplnit pole a uvolnit smí jen vlastník.
+
+## Dodatek 7 (2026-11-06, oponentura kola 8; výkonnost dál nespuštěna, návrh na kontrolu)
+- **Zamítnutí a vadný benchmark.** `BENCHMARK_DEPENDENCY`: A1 ← validace, A5 ← finální test, B2 ← validace + finální test,
+  ostatní kritéria benchmark nepoužívají (ověřeno testem změnou benchmarku po obdobích). Neznámé kritérium = závislé na všech
+  obdobích. Stopa je „unknown“, pokud všechna její porušená kritéria závisí na období s blokující závadou benchmarku.
+  Neprošla-li žádná stopa a některá je „unknown“ ⇒ NEROZHODNUTO, jinak ZAMÍTNUTO. Selhání robustnosti (DSR, sousedé,
+  walk-forward; benchmark nepoužívají) ⇒ ZAMÍTNUTO. Závady strategie zamítnutí zatím nemění (otevřená otázka).
+- **Otisk implementace.** `impl_sha256` = sha256 normalizovaného AST celého `run.py` a `tools/research/deflated_sharpe.py`
+  (bez komentářů a docstringů) + verze Pythonu major.minor. Mění ho každá změna kódu i konstant.
+- **Prázdné držení** (vstup = výstup) nehlásí mezeru fundingu.
+- **Souběh a atomicita.** Zámek výstupního adresáře (`.run.lock`, souběh ⇒ kód 5), workflow `concurrency`, zápis přes
+  dočasný soubor + `os.replace`, `run_id` a sha256 souborů v `audit_manifest.json` (zapisuje se poslední),
+  `trades_csv_sha256` v `results.json` (zapisuje se poslední). Rozhodnutí se čte jednou pro obě brány.

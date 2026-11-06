@@ -11,6 +11,9 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+concurrency:  # kolo 8: nikdy dva běhy nad stejnou větví současně (smíšené artefakty)
+  group: funding-dispersion-${{ github.ref }}
+  cancel-in-progress: false
 jobs:
   backtest:
     runs-on: ubuntu-latest

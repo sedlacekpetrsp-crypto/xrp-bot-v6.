@@ -4,13 +4,16 @@ PAPER výzkum, veřejná data Binance Vision, bez klíčů a objednávek.
     python -m research.funding_dispersion.run --cache /tmp/vision-fd --outdir research/funding_dispersion
 """
 import argparse
+import ast
 import bisect
 import csv
 import hashlib
 import io
 import json
 import math
+import os
 import sys
+import uuid
 import urllib.error
 import urllib.request
 import zipfile
@@ -252,6 +255,8 @@ def funding_completeness(m, entry, exit_):
     """Úplnost fundingu pro držení (entry, exit) — tytéž hranice jako funding_window (kolo 6, body 1 a 2).
     Tři oddělené veličiny: nesouvislosti (= funding_chain_gaps na (entry, exit − 1]), odhad chybějících událostí
     a neznámé pokrytí (před vstupem žádná událost ⇒ prefix nelze ověřit). Chybějící sazba se nikdy nedosadí nulou."""
+    if exit_ <= entry:  # kolo 8: prázdné držení nemá co pokrýt (dřív mohlo hlásit mezeru)
+        return {"discontinuities": 0, "missing_events": 0, "unknown_coverage": False}
     hi = exit_ - 1
     disc = funding_chain_gaps(m, entry, hi)
     if disc is None:
@@ -598,16 +603,35 @@ SEMANTICS_FILE = "FUNDING_SEMANTICS.json"
 AUDIT_MANIFEST_FILE = "audit_manifest.json"
 PERFORMANCE_FILES = ("results.json", "trades.csv")
 # Funkce, které implementují rozhodnutou sémantiku a hranice fundingu; jejich zdroj tvoří otisk implementace (kolo 6, bod 5).
-SEMANTICS_IMPL_FUNCS = ("spacing_ok", "funding_chain_gaps", "funding_window", "funding_completeness")
+# Kolo 8, bod 2: otisk CELÉ implementace, na níž závisí ekonomický výsledek a verdikt — tento soubor (simulace, benchmark,
+# funding, náklady, equity, vstupy/výstupy, brány, registr, verdikt, konstanty) a modul DSR. Počítá se z AST bez docstringů
+# a komentářů: změna kódu nebo konstanty otisk změní, změna komentáře/docstringu ne. Součástí je verze Pythonu (major.minor),
+# protože tvar AST se mezi verzemi může lišit — jiná verze ⇒ jiný otisk ⇒ konzervativně odmítnuto.
+FINGERPRINT_SOURCES = ("research/funding_dispersion/run.py", "tools/research/deflated_sharpe.py")
 REQUIRED_DECISION_FIELDS = ("semantics", "evidence", "decided_utc", "audit_id", "impl_sha256", "data_manifest_sha256")
 
 
+def _strip_docstrings(tree):
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.Module, ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) and node.body \
+                and isinstance(node.body[0], ast.Expr) and isinstance(node.body[0].value, ast.Constant) \
+                and isinstance(node.body[0].value.value, str):
+            node.body = node.body[1:] or [ast.Pass()]
+    return tree
+
+
+def code_fingerprint(sources):
+    """sources {relativní cesta: text} → sha256 normalizovaného AST (deterministické pořadí podle cesty)."""
+    h = hashlib.sha256(f"python{sys.version_info[0]}.{sys.version_info[1]}".encode())
+    for name in sorted(sources):
+        tree = _strip_docstrings(ast.parse(sources[name]))
+        h.update(name.encode() + b"\0" + ast.dump(tree, include_attributes=False).encode() + b"\0")
+    return h.hexdigest()
+
+
 def impl_fingerprint():
-    """sha256 zdrojového kódu funkcí sémantiky (SEMANTICS_IMPL_FUNCS). Změna kterékoli z nich ⇒ nový otisk ⇒ výkonnost
-    se odmítne, dokud vlastník nezapíše rozhodnutí pro novou verzi implementace."""
-    import inspect
-    src = "\n".join(inspect.getsource(globals()[f]) for f in SEMANTICS_IMPL_FUNCS)
-    return hashlib.sha256(src.encode()).hexdigest()
+    root = Path(__file__).resolve().parents[2]
+    return code_fingerprint({rel: (root / rel).read_text() for rel in FINGERPRINT_SOURCES})
 
 
 def manifest_fingerprint(manifest, missing=()):
@@ -617,19 +641,22 @@ def manifest_fingerprint(manifest, missing=()):
     return hashlib.sha256(json.dumps({"archives": rows, "missing": gone}, separators=(",", ":")).encode()).hexdigest()
 
 
-def semantics_gate(outdir):
-    """Dodatek 4 + kolo 6, bod 5 — kontrola PŘED načtením dat: v `<outdir>/FUNDING_SEMANTICS.json` musí být rozhodnutí
-    o sémantice (A/B), odkaz na doložený audit (audit_id), otisk implementace shodný s běžícím kódem, otisk dat z auditu
-    a performance_hold=false (uvolní jen vlastník). Samotná existence souboru nestačí. Vrací (povoleno, důvod)."""
+def read_decision(outdir):
+    """→ (rozhodnutí dict | None, důvod). Čte se jednou; brána před i po načtení dat pracuje s tímtéž obsahem (kolo 8)."""
     f = Path(outdir) / SEMANTICS_FILE
     if not f.exists():
-        return False, f"chybí {SEMANTICS_FILE} (rozhodnutí o sémantice intervalu fundingu)"
+        return None, f"chybí {SEMANTICS_FILE} (rozhodnutí o sémantice intervalu fundingu)"
     try:
         d = json.loads(f.read_text())
     except ValueError as e:
-        return False, f"{SEMANTICS_FILE} není platný JSON: {e}"
+        return None, f"{SEMANTICS_FILE} není platný JSON: {e}"
     if not isinstance(d, dict):
-        return False, f"{SEMANTICS_FILE}: očekáván objekt"
+        return None, f"{SEMANTICS_FILE}: očekáván objekt"
+    return d, "ok"
+
+
+def check_decision(d):
+    """Dodatek 4 + kolo 6/8, bod 5 — kontrola PŘED načtením dat. Samotná existence souboru nestačí."""
     if d.get("semantics") not in ("A", "B"):
         return False, f"{SEMANTICS_FILE}: semantics musí být 'A' nebo 'B'"
     if not d.get("evidence") or not d.get("decided_utc"):
@@ -642,18 +669,22 @@ def semantics_gate(outdir):
     if missing:
         return False, f"{SEMANTICS_FILE}: chybí {', '.join(missing)} (vazba rozhodnutí na audit, implementaci a data)"
     if d["impl_sha256"] != impl_fingerprint():
-        return False, "impl_sha256 neodpovídá běžící implementaci sémantiky — rozhodnutí platí pro jinou verzi kódu"
+        return False, "impl_sha256 neodpovídá běžící implementaci — rozhodnutí platí pro jinou verzi kódu"
     if not (isinstance(d["data_manifest_sha256"], str) and len(d["data_manifest_sha256"]) == 64):
         return False, "data_manifest_sha256 není sha256"
     return True, "ok"
 
 
-def data_gate(outdir, manifest, missing):
+def semantics_gate(outdir):
+    d, why = read_decision(outdir)
+    return (False, why) if d is None else check_decision(d)
+
+
+def data_gate(decision, manifest, missing):
     """Kolo 6, bod 5 — kontrola PO načtení a PŘED první simulací: načtená data musí být tatáž, která prošla auditem."""
-    d = json.loads((Path(outdir) / SEMANTICS_FILE).read_text())
     got = manifest_fingerprint(manifest, missing)
-    if got != d.get("data_manifest_sha256"):
-        return False, f"načtená data ({got[:12]}…) ≠ auditovaný manifest ({str(d.get('data_manifest_sha256'))[:12]}…)"
+    if got != decision.get("data_manifest_sha256"):
+        return False, f"načtená data ({got[:12]}…) ≠ auditovaný manifest ({str(decision.get('data_manifest_sha256'))[:12]}…)"
     return True, "ok"
 
 
@@ -682,38 +713,138 @@ def blocking_defects(flags):
     return {k: v for k, v in flags.items() if DATA_DEFECTS[k] == "blocking" and v}
 
 
+BENCHMARK_DEFECT_KEYS = {
+    "benchmark_funding_missing_events": lambda r: r["funding_missing_events"],
+    "benchmark_funding_discontinuities": lambda r: r["funding_discontinuities"],
+    "benchmark_funding_unknown_coverage_assets": lambda r: r["funding_unknown_coverage_assets"],
+    "benchmark_price_fallbacks": lambda r: r["price_fallbacks"],
+    "benchmark_unavailable_at_start": lambda r: len(r["unavailable_at_start"]),
+}
+# Kolo 8, bod 1: která kritéria používají benchmark a ze kterého období (viz evaluate). Kritérium, které tu chybí,
+# se konzervativně bere jako závislé na benchmarku všech období.
+BENCHMARK_DEPENDENCY = {
+    "A1_sharpe_dd": ("validation",), "A2_trades_ge_30": (), "A3_x2_pf_profit": (), "A4_wo_top3": (),
+    "A5_final_x2": ("final_test",),
+    "B1_val_x2_profit_pf": (), "B2_dd_le_0_6_bh": ("validation", "final_test"), "B3_final_x2_profit": (),
+    "B4_val_wo_top3": (), "B5_trades_ge_20": (), "B6_tuning_x1_profit": (),
+}
+
+
 def defect_flags(res, bh, market=None):
     """Počty závad pro verdikt: strategie z x1 každého období (scénáře nákladů mají stejná data, nenásobí se),
     benchmark z x1 každého období."""
     f = {"edge_funding_events": sum(res[p]["x1"]["edge_funding_events_excluded"] for p in PERIODS),
          "unfilled_entry_legs": sum(res[p]["x1"]["unfilled_entry_legs"] for p in PERIODS),
          "legs_with_price_fallback": sum(res[p]["x1"]["legs_with_price_fallback"] for p in PERIODS),
-         "legs_with_funding_gap_in_holding": sum(res[p]["x1"]["legs_with_funding_gap_in_holding"] for p in PERIODS),
-         "benchmark_funding_missing_events": sum(bh[p]["x1"]["funding_missing_events"] for p in PERIODS),
-         "benchmark_funding_discontinuities": sum(bh[p]["x1"]["funding_discontinuities"] for p in PERIODS),
-         "benchmark_funding_unknown_coverage_assets": sum(bh[p]["x1"]["funding_unknown_coverage_assets"] for p in PERIODS),
-         "benchmark_price_fallbacks": sum(bh[p]["x1"]["price_fallbacks"] for p in PERIODS),
-         "benchmark_unavailable_at_start": sum(len(bh[p]["x1"]["unavailable_at_start"]) for p in PERIODS)}
+         "legs_with_funding_gap_in_holding": sum(res[p]["x1"]["legs_with_funding_gap_in_holding"] for p in PERIODS)}
+    f.update({k: sum(get(bh[p]["x1"]) for p in PERIODS) for k, get in BENCHMARK_DEFECT_KEYS.items()})
     if market is not None:
         f["duplicate_funding_rows_same_value"] = sum((market[a].get("load_audit") or {}).get("duplicates_same_value", 0)
                                                      for a in ASSETS)
     return f
 
 
-def final_verdict(passed_a, passed_b, robust, flags):
-    """Datová brána na úrovni finálního verdiktu: jinak úspěšný kandidát s blokující závadou ⇒ NEROZHODNUTO."""
-    verdict = "KANDIDÁT NA FORWARD PAPER" if (passed_a or passed_b) and all(robust.values()) else "ZAMÍTNUTO"
+def benchmark_defect_periods(bh):
+    """{období: {závada: počet}} jen nenulové blokující závady benchmarku (data jsou stejná ve všech scénářích ⇒ x1)."""
+    out = {}
+    for p in PERIODS:
+        d = {k: get(bh[p]["x1"]) for k, get in BENCHMARK_DEFECT_KEYS.items()}
+        d = {k: v for k, v in d.items() if v and DATA_DEFECTS[k] == "blocking"}
+        if d:
+            out[p] = d
+    return out
+
+
+def track_status(track, bad_periods):
+    """pass | fail (aspoň jedno porušené kritérium nezávislé na vadném benchmarku) | unknown (všechna porušená kritéria
+    závisí na benchmarku s blokující závadou ⇒ zamítnutí nelze prokázat)."""
+    failing = [c for c, ok in track.items() if not ok]
+    if not failing:
+        return "pass", []
+    reliable = [c for c in failing if not (set(BENCHMARK_DEPENDENCY.get(c, tuple(PERIODS))) & set(bad_periods))]
+    return ("fail", reliable) if reliable else ("unknown", failing)
+
+
+def final_verdict(track_a, track_b, robust, flags, bench_bad_periods=None):
+    """Datová brána na úrovni finálního verdiktu (kolo 6 bod 3, kolo 8 bod 1).
+    - robustnost (DSR, sousedé, walk-forward) benchmark nepoužívá ⇒ její selhání = ZAMÍTNUTO bez ohledu na benchmark;
+    - prošla-li stopa: blokující závada (strategie nebo benchmarku) ⇒ NEROZHODNUTO, jinak KANDIDÁT;
+    - neprošla žádná: je-li některá stopa „unknown“ (zamítnutí stojí jen na kritériích s vadným benchmarkem) ⇒ NEROZHODNUTO,
+      jinak ZAMÍTNUTO. Závady strategie zamítnutí nemění (otevřená otázka pro kolo 9).
+    Vrací (verdikt, blokující závady, detail)."""
+    bad = dict(bench_bad_periods or {})
     blocking = blocking_defects(flags)
-    if verdict.startswith("KANDIDÁT") and blocking:
-        verdict = "NEROZHODNUTO — datové závady (hrany/mezery fundingu, náhradní ceny, neotevřené nohy, vadný benchmark): " + \
-            ", ".join(sorted(blocking))
-    return verdict, blocking
+    sa, sb = track_status(track_a, bad), track_status(track_b, bad)
+    detail = {"track_a": sa[0], "track_b": sb[0], "track_a_reasons": sa[1], "track_b_reasons": sb[1],
+              "benchmark_defect_periods": bad, "robust": all(robust.values())}
+    if not all(robust.values()):
+        return "ZAMÍTNUTO", blocking, detail
+    if "pass" in (sa[0], sb[0]):
+        if blocking:
+            return ("NEROZHODNUTO — datové závady (hrany/mezery fundingu, náhradní ceny, neotevřené nohy, vadný benchmark): "
+                    + ", ".join(sorted(blocking))), blocking, detail
+        return "KANDIDÁT NA FORWARD PAPER", blocking, detail
+    if "unknown" in (sa[0], sb[0]):
+        return ("NEROZHODNUTO — zamítnutí stojí jen na kritériích s vadným benchmarkem: "
+                + ", ".join(sorted(set(sa[1] if sa[0] == "unknown" else []) | set(sb[1] if sb[0] == "unknown" else [])))
+                ), blocking, detail
+    return "ZAMÍTNUTO", blocking, detail
 
 
-def audit_manifest(outdir, produced, data_fp):
-    """Kolo 6, bod 5: audit popíše, co sám vytvořil; staré výkonnostní soubory v adresáři označí jako cizí."""
+LOCK_FILE = ".run.lock"
+
+
+def atomic_write(path, text):
+    """Kolo 8, bod 5: zápis přes dočasný soubor a os.replace ⇒ čtenář vidí starý nebo celý nový obsah, nikdy směs."""
+    path = Path(path)
+    tmp = path.with_name(f".{path.name}.{os.getpid()}.{uuid.uuid4().hex}.tmp")
+    try:
+        tmp.write_text(text)
+        os.replace(tmp, path)
+    finally:
+        if tmp.exists():
+            tmp.unlink()
+
+
+class RunLock:
+    """Výhradní zámek výstupního adresáře (O_EXCL). Souběžný běh ⇒ exit 5 ještě před načtením dat."""
+    def __init__(self, outdir):
+        self.path = Path(outdir) / LOCK_FILE
+
+    def __enter__(self):
+        try:
+            fd_ = os.open(self.path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+        except FileExistsError:
+            print("RUN_REFUSED", f"výstupní adresář je zamčen jiným během ({self.path})")
+            sys.exit(5)
+        os.write(fd_, str(os.getpid()).encode())
+        os.close(fd_)
+        return self
+
+    def __exit__(self, *exc):
+        self.path.unlink(missing_ok=True)
+        return False
+
+
+def file_sha256(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def verify_audit_bundle(outdir):
+    """Kontrola, že audit_manifest.json popisuje přesně soubory, které leží vedle něj (žádný smíšený manifest)."""
     out = Path(outdir)
-    return {"mode": "audit", "run_utc": datetime.now(timezone.utc).isoformat(), "produced_by_this_run": list(produced),
+    man = json.loads((out / AUDIT_MANIFEST_FILE).read_text())
+    bad = [f for f, h in man.get("files_sha256", {}).items() if not (out / f).exists() or file_sha256(out / f) != h]
+    return (not bad), bad
+
+
+def audit_manifest(outdir, produced, data_fp, run_id=None):
+    """Kolo 6, bod 5: audit popíše, co sám vytvořil (s sha256 každého souboru, kolo 8); staré výkonnostní soubory
+    v adresáři označí jako cizí."""
+    out = Path(outdir)
+    return {"mode": "audit", "run_id": run_id, "run_utc": datetime.now(timezone.utc).isoformat(),
+            "produced_by_this_run": list(produced),
+            "files_sha256": {f: file_sha256(out / f) for f in produced if f != AUDIT_MANIFEST_FILE and (out / f).exists()},
             "impl_sha256": impl_fingerprint(), "data_manifest_sha256": data_fp,
             "preexisting_performance_files_not_from_this_run": [f for f in PERFORMANCE_FILES if (out / f).exists()],
             "note": "audit nepočítá výkonnost; případné results.json/trades.csv nejsou výstupem tohoto běhu"}
@@ -831,30 +962,38 @@ def main(argv=None):
         print("MODE_REFUSED zadej --mode audit nebo --mode perf")
         sys.exit(4)
     out = Path(args.outdir)
+    with RunLock(out):  # kolo 8, bod 5: souběžný běh nad stejným adresářem ⇒ exit 5
+        return _execute(mode, args, out)
+
+
+def _execute(mode, args, out):
+    run_id = uuid.uuid4().hex
+    decision = None
     if mode == "perf":
-        ok, why = semantics_gate(out)
+        decision, why = read_decision(out)  # čte se jednou, obě brány používají tentýž obsah
+        ok, why = (False, why) if decision is None else check_decision(decision)
         if not ok:  # kontrola PŘED stažením dat a před jakýmkoli výpočtem
             print("PERFORMANCE_REFUSED", why)
             sys.exit(3)
     market, manifest, missing, fatal = load(args.cache)
     data_fp = manifest_fingerprint(manifest, missing)
     if mode == "perf":
-        ok, why = data_gate(out, manifest, missing)
+        ok, why = data_gate(decision, manifest, missing)
         if not ok:  # data se načetla, ale simulace nesmí proběhnout; nic se nezapisuje
             print("PERFORMANCE_REFUSED", why)
             sys.exit(3)
-    (out / "data_source.json").write_text(json.dumps({"archives": manifest, "missing": missing,
-                                                      "data_manifest_sha256": data_fp}, indent=1))
+    atomic_write(out / "data_source.json", json.dumps({"run_id": run_id, "archives": manifest, "missing": missing,
+                                                       "data_manifest_sha256": data_fp}, indent=1))
     if fatal:
         print("FATAL missing archives after first available month", json.dumps(fatal[:30]))
         sys.exit(2)
     audit = data_audit(market)
-    (out / "data_audit.json").write_text(json.dumps(audit, indent=1, default=str))
+    atomic_write(out / "data_audit.json", json.dumps(audit, indent=1, default=str))
     print("DATA_AUDIT", json.dumps({a: {k: v for k, v in x.items() if k != "interval_transitions"} | {
         "interval_transitions": len(x["interval_transitions"])} for a, x in audit.items()}, default=str))
     if mode == "audit":
-        man = audit_manifest(out, ("data_source.json", "data_audit.json", AUDIT_MANIFEST_FILE), data_fp)
-        (out / AUDIT_MANIFEST_FILE).write_text(json.dumps(man, indent=1))
+        man = audit_manifest(out, ("data_source.json", "data_audit.json", AUDIT_MANIFEST_FILE), data_fp, run_id)
+        atomic_write(out / AUDIT_MANIFEST_FILE, json.dumps(man, indent=1))  # zapisuje se poslední, s hashi souborů
         print("AUDIT_MANIFEST", json.dumps(man))
         return
     first_bar = {a: date_of(market[a]["first_bar"]).isoformat() if market[a]["first_bar"] else None for a in ASSETS}
@@ -903,7 +1042,7 @@ def main(argv=None):
                  "bh_vol_matched_x1": {p: vol_matched(rets_store[(ctag, p, 1)], bh_rets[(p, 1)])
                                        for p in ("validation", "final_test")}}
     flags = defect_flags(res, bh, market)
-    verdict, blocking = final_verdict(passed_a, passed_b, robust, flags)
+    verdict, blocking, verdict_detail = final_verdict(track_a, track_b, robust, flags, benchmark_defect_periods(bh))
     payload = {"protocol": "research/funding_dispersion/PROTOCOL.md", "chosen": ctag,
                "tuning_selection_x1": tune, "strategy": results, "buy_hold_equal_8": bh,
                "walk_forward_x2": wf,
@@ -912,17 +1051,20 @@ def main(argv=None):
                "dsr_note": "N = 159 je pracovní odhad (ne doložená horní mez); V[SR] = 0,5 p.a. je předpoklad",
                "dsr_sensitivity_scenarios": dsr_sens, "robustness": robust, "interpretation_flags": flags,
                "blocking_data_defects": blocking, "data_defect_classes": DATA_DEFECTS,
+               "verdict_detail": verdict_detail, "benchmark_dependency": BENCHMARK_DEPENDENCY, "run_id": run_id,
                "impl_sha256": impl_fingerprint(), "data_manifest_sha256": data_fp,
                "unfilled_entries_x1": {p: res[p]["x1"]["unfilled_entries"] for p in PERIODS},
                "info": {**beta_info, "price_fallbacks_by_purpose": px.fallbacks, "first_bar": first_bar,
                         "first_funding": first_funding,
                         "load_audit": {a: market[a].get("load_audit") for a in ASSETS}},
                "verdict": verdict}
-    (out / "results.json").write_text(json.dumps(payload, indent=1, default=str))
-    with open(out / "trades.csv", "w", newline="") as fh:
-        w = csv.DictWriter(fh, fieldnames=list(rows[0].keys()) if rows else ["period"])
-        w.writeheader()
-        w.writerows(rows)
+    buf = io.StringIO()
+    w = csv.DictWriter(buf, fieldnames=list(rows[0].keys()) if rows else ["period"])
+    w.writeheader()
+    w.writerows(rows)
+    atomic_write(out / "trades.csv", buf.getvalue())
+    payload["trades_csv_sha256"] = file_sha256(out / "trades.csv")  # results.json se zapisuje poslední a váže trades.csv
+    atomic_write(out / "results.json", json.dumps(payload, indent=1, default=str))
     print("SUMMARY", json.dumps({"chosen": ctag, "verdict": verdict, "track_a": track_a, "track_b": track_b,
                                  "robust": robust, "dsr": dsr["dsr"], "dsr_sens": dsr_sens, "flags": flags,
                                  "neighbors": nb,
