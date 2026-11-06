@@ -44,3 +44,16 @@ Jinak **zamítnuto**. „Kandidát“ = jen kandidát na forward PAPER.
 
 ## Výstupy
 `trades.csv`, `results.json`, `RESULTS.md`, `data_source.json`; řádek v `automation/STRATEGY_REGISTRY.md`; draft PR do `research/autopilot`.
+
+## Dodatek 1 (2026-11-06 13:15 UTC, PŘED prvním kódem i výsledkem) — vyhodnocení podle rámce v2
+Protokol vznikl před `automation/RESEARCH_FRAMEWORK.md` (v2). Pravidla, dělení a kritéria 1–5 výše se NEMĚNÍ
+(= stopa A, A1–A5). Navíc se spočítá a zapíše:
+- **Stopa B** (B1–B6 přesně podle rámce v2): validace ×2 zisk > 0 a PF úseků > 1,2; max DD (×1) ≤ 0,6 × B&H ve validaci
+  i závěrečném testu; závěrečný test ×2 zisk > 0; validace ×1 bez 3 nejlepších úseků > 0; validace + závěrečný ≥ 20 úseků;
+  ladění ×1 zisk > 0.
+- **Robustnost** (nutná pro „kandidáta“ při splnění A nebo B): DSR validace ×1 (denní výnosy) ≥ 0,95 s N = 148
+  (dosavadní průběžný součet ~145 + 3 varianty této hypotézy), rozptyl Sharpe pokusů 0,5 ročně (jako PR #23);
+  sousední parametry ±1 krok mřížky (krok 10 p. b.: cíl **30 % a 50 %**) — validace ×2 čistý zisk > 0 u obou;
+  walk-forward 2021, 2022, 2023, 2024 (každý rok samostatně, ×2) — zisk > 0 ve ≥ 3 ze 4 let.
+- Implementační upřesnění: úprava za open(t+1) nastaví hodnotu BTC na w*·V(open) před náklady (náklady z obratu),
+  výsledná váha je tedy ≈ w* (odchylka jen o náklady). Cíl 60 % a ETH zůstávají jen informační.
