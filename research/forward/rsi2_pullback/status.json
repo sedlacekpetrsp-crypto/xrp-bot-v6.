@@ -5,7 +5,9 @@
  "days": 0,
  "symbols": [
   "BTCUSDT",
-  "ETHUSDT"
+  "ETHUSDT",
+  "XRPUSDT",
+  "LTCUSDT"
  ],
  "interim_review": "2026-12-16",
  "min_evaluation": "2027-01-05",
