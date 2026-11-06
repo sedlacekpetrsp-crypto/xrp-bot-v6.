@@ -1,6 +1,6 @@
 # Autopilot STATE — přepisuje se každým během
 
-Poslední aktualizace: 2026-11-06 11:35 UTC (autopilot běh #22, run 42207516705; produkce beze změny; R2 DSR nástroj PR #22; R3 funding carry ZAMÍTNUTO (málo obchodů), PR #23; další R4).
+Poslední aktualizace: 2026-11-06 13:30 UTC (autopilot běh #23, run 42223222553; live `083e7e7` (PR #25, ruční deploy vlastníka 12:59), HEAD `fd6065b` (PR #26) čeká na ruční deploy; R4 vol-target ZAMÍTNUTO, PR #27; další R5 až 2026-11-07 (denní limit 3 nové hypotézy vyčerpán: R3, RSI2 křížový, R4)).
 
 Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h). Vypnout/změnit: claude.ai → plánované úlohy.
 
@@ -22,6 +22,8 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h)
   žádné nové vstupy těchto botů, duplicitní SELECT beze změny.
 
 ## Produkce (poslední známé hodnoty, 13:06 UTC — beze změny od 09:59 kromě níže uvedeného)
+
+- **2026-11-06 13:10 UTC (běh #23):** live **`083e7e7`** (deploy `dep-dbmsu4nf3r2c73bihqn0`, ruční, vlastník, live 12:59:42) — obsahuje `da2f665`; HEAD `v8-fly-layer-test` = `fd6065b` (PR #26) ⇒ čeká na ruční deploy (očekávané). Proces od 12:59:32; 6× HTTP 200; `paused_bots` BEST, FAST, FLY, LEADLAG, TV, WHALE (PR #25 aktivní); P/L −3 176,78; testy research/autopilot 239 passed; error logy 0 (11:00–13:09); dup jen id 129 (BEST-OF 132); DB 222,6 MB = 20,7 %.
 
 - 13:06: live `edaa938` = HEAD `v8-fly-layer-test`, obsahuje `da2f665`; žádné události od 10:00; error logy 0 (10:00–13:06);
   proces od 09:15:38; 6× HTTP 200, vše healthy, paused FAST/FLY/LEADLAG/TV; P/L −3 180,67 (beze změny);
@@ -107,9 +109,9 @@ R3b. ~~Forward PAPER RSI(2)~~ — NASTAVENO 2026-11-06 ~13:00 UTC (ručně): run
     (c) průběžné vyhodnocení po 40 dnech (2026-12-16) = jen kontrola, že forward odpovídá backtestu (počet obchodů,
         průměrný obchod, skluz) a stop-loss pravidlo: pokud forward ×2 < −10 % nebo 5 ztrát po sobě ⇒ hlásit vlastníkovi.
         Hlavní vyhodnocení až po ≥ 30 forward obchodech NEBO 60 dnech (co nastane později) — ani pak ne „zisková“.
-R4. **DALŠÍ NA ŘADĚ →** Volatilitní cílení BTC 40 % (bod 12 níže; protokol už commitnut ve `research/vol-target-20261106`, `fc9b4a4`) —
+R4. ~~Volatilitní cílení BTC 40 %~~ — HOTOVO 2026-11-06 13:25 UTC: **ZAMÍTNUTO** (A1–A4 ✔ poprvé: validace ×1 +392 %, Sharpe 2,14, DD 20,7 %, 35 úseků vs B&H BTC +464 %, 2,02, 26,2 %; A5 ✘ závěrečný ×2 −17,4 % vs B&H −17,5 %, Sharpe −0,09 vs −0,03; B2 ✘ DD 0,79× B&H; B3 ✘; DSR 0,64). PR #27, `research/vol_target/RESULTS.md`. Poučení: vol-cílení BTC zlepší Sharpe/DD jen v klidném býčím trhu; v 2022 a 2025–26 (σ ~ cíl ⇒ váha ~0,9) kopíruje B&H. Původně: (bod 12 níže; protokol už commitnut ve `research/vol-target-20261106`, `fc9b4a4`) —
     pokračovat `run.py` + testy + workflow podle vzoru `research/funding_carry`, vyhodnotit stopou A i B + DSR (nástroj z PR #22).
-R5. Blízkost 52týdennímu maximu průřezově, 8 aktiv (bod 14 níže).
+R5. **DALŠÍ NA ŘADĚ (nejdřív 2026-11-07 UTC, denní limit 3 nových hypotéz) →** Blízkost 52týdennímu maximu průřezově, 8 aktiv (bod 14 níže).
 R6. ~~Audit produkčních PAPER botů~~ — HOTOVO 2026-11-06 12:50 UTC ručně: `reports/production-bot-audit-20261106.md`; návrhy (pozastavit WHALE, BEST-OF, SWING; sběr research_market_samples) čekají na vlastníka. Původně: Audit produkčních PAPER botů (jen čtení, Render SQL): za 30 a 90 dní na bota obchody, čistý P/L, PF, náklady,
     max DD ⇒ `reports/production-bot-audit-<datum>.md` s návrhem, které pozastavit (jen návrh, čeká na vlastníka).
 R7. Kontrariánský žebřík BTC (bod 13 níže).
@@ -156,7 +158,7 @@ Fronta:
    Poučení: ani trend (PR #17), ani návrat k průměru poměru ETHBTC nefunguje stabilně napříč obdobími ⇒ poměr BTC/ETH dál netestovat.
 
 Nové hypotézy (doplněno 2026-11-06 07:15; nízký obrat; žádný směrový signál trendu vs B&H, žádný trend poměru, žádný rebalance):
-12. Volatilitní cílení BTC 40 % (w = min(1, 0,40/σ30), úprava při odchylce > 10 p. b., za open t+1). Měřítko B&H BTC.
+12. ~~Volatilitní cílení BTC 40 %~~ — HOTOVO, ZAMÍTNUTO (viz R4, PR #27). (w = min(1, 0,40/σ30), úprava při odchylce > 10 p. b., za open t+1). Měřítko B&H BTC.
     Proč nové: expozice jen podle realizované volatility (shlukování vol), ne podle směru; #101 mělo momentum signál, #104 vážilo více aktiv.
     PROTOKOL UŽ COMMITNUT (`research/vol-target-20261106`, `fc9b4a4`, `research/vol_target/PROTOCOL.md`). Pokračovat: `run.py` (úseky mezi úpravami,
     souvislý ledger), testy + workflow podle vzoru PR #20, spustit, ověřit, PR.

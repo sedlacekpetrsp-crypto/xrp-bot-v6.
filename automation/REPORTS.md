@@ -4,6 +4,13 @@ Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá
 Výhradně PAPER.
 
 
+## 2026-11-06 14:30 SEČ (běh #23)
+- Nasazeno: `083e7e7` (PR #25, váš ruční deploy 13:59 SEČ) – PR #5 ano. PR #26 (`fd6065b`) čeká na ruční deploy. Produkce v pořádku: 6× HTTP 200, pozastaveny WHALE/BEST-OF (+ FAST/FLY/LEADLAG/TV), 239 testů OK, 0 chyb, 0 nových duplicit, P/L součet −3 176,78.
+- Výzkum R4: **Volatilitní cílení BTC 40 % — ZAMÍTNUTO** ([PR #27](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/27)). Poprvé splněna kritéria A1–A4: validace 2023–24 ×1 +392 % (Sharpe 2,14, DD 20,7 %, 35 úprav) vs buy & hold BTC +464 % (Sharpe 2,02, DD 26,2 %).
+  Závěrečný test ×2 ale −17,4 % (Sharpe −0,09, DD 50,7 %) vs B&H −17,5 % (−0,03, 53 %) — v klesajícím trhu kopíruje B&H; DSR 0,64 < 0,95. Obchody přepočteny: 18 bloků, 0 neshod.
+- DB 20,7 %. Další: blízkost ročnímu maximu, 8 aktiv (R5) — od zítřka (limit 3 nové hypotézy denně vyčerpán); forward RSI(2) startuje 7. 11.
+- Od vás: po nasazení PR #26 nic dalšího; PR #8/#9/#10 dál čekají na review.
+
 ## 2026-11-06 13:05 SEČ (ruční práce na žádost vlastníka)
 - RSI(2) křížový test na 8 aktivech se stejnými pravidly ([PR #24](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/24)): **koš zamítnut** — validace ×2 −1,6 %, DSR 0,07 ⇒ RSI(2) nemá obecnou výhodu napříč aktivy. Pravidlo protokolu splnily XRP a LTC.
 - Forward PAPER spuštěn: BTC, ETH (výjimka), XRP, LTC; start 2026-11-07, aktualizace při každém běhu autopilota, `research/forward/rsi2_pullback/STATUS.md`. Kontrola 16. 12., vyhodnocení po ≥ 30 obchodech.
