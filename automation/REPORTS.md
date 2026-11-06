@@ -4,6 +4,12 @@ Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá
 Výhradně PAPER.
 
 
+## 2026-11-06 16:55 SEČ (ruční běh — vaše 3 hypotézy)
+- **H1 Funding settlement pressure — DUPLICITNÍ, netestováno**: stejné pravidlo (po settlementu funding pod 10. percentilem posledních 90 ⇒ obchod proti) už propadlo jako `funding_reversal` (321 obchodů, PF 0,76, ×2 0,59) a `eth_funding_extreme`; nové jsou jen parametry na opotřebovaných datech.
+- **H2 Průřezová disperze fundingu, 8 perpů — ve frontě (R8)** ([PR #29](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/29)): nový mechanismus, protokol zmrazen předem, kód + 9 testů OK.
+- **H3 Spot-led 5m — ve frontě (R9, nízká priorita)** ([PR #30](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/30)): částečný překryv s `flow_pressure` a `btc_lead_lag`; protokol předem, kód + 11 testů OK.
+- Čísla zatím nejsou: denní limit 3 nových hypotéz je dnes vyčerpán ⇒ backtesty H2 a H3 poběží 7. 11. po R5. Podrobně `reports/claude-hypotheses-triage-20261106.md`. Produkce beze změny.
+
 ## 2026-11-06 16:20 SEČ (běh #24)
 - Nasazeno: `fd6065b` (PR #26, váš ruční deploy 14:18 SEČ) – PR #5 ano. Produkce v pořádku: 6× HTTP 200, 239 testů OK, 0 nových duplicit, nové epochy LH-WHALE a LIQUIDITY běží (0 obchodů, 10 000), P/L součet −3 144,10.
 - Výzkum R5 **Blízkost ročnímu maximu, 8 aktiv** — připraveno ([PR #28](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/28)): protokol commitnut předem, kód + 13 testů OK. Backtest se spustí po půlnoci UTC (denní limit 3 nových hypotéz vyčerpán) — zatím žádná čísla.
