@@ -1,0 +1,76 @@
+# Spot-led price discovery (spot → perp, 5m) BTC/ETH/XRP — předem registrovaný protokol (2026-11-06)
+
+Hypotéza `H-20261106-3` z `automation/IDEAS.md` (externí podnět vlastníka). Výhradně PAPER výzkum podle
+`automation/RESEARCH_FRAMEWORK.md` v2. Zapsáno a commitnuto **před** prvním kódem, stažením dat i výsledkem.
+Po prvním spuštění se pravidla, dělení ani kritéria nemění; povoleny jsou jen dodatky k načítání dat
+zapsané před zobrazením jakékoli metriky.
+
+## Odlišnost od otestovaného (částečný překryv — proto nízká priorita fronty)
+- `flow_pressure` (zamítnuto, XRP 15m, PF 0,82): taker-buy podíl na spotu + objem + VWAP, obchod **spot** long.
+  Zde: taker-buy podíl jen jako filtr; jádro je **nesoulad** spot vs perp téhož aktiva, obchod na **perpu**, obě strany.
+- `btc_lead_lag` (zamítnuto, 1h): BTC vede XRP (mezi aktivy). Zde: spot vede perp **téhož** aktiva, 5m.
+- `large_trade_followthrough`, `cross_exchange_residual`, `premium_recovery`: jiné pozorovatelné veličiny
+  (velikost obchodu, rozdíl burz, hodinová prémie po extrému).
+
+## Data (veřejná, bez klíčů; stahuje GitHub Actions — síť session je pro Binance blokovaná)
+- Binance Vision spot 5m `data/spot/monthly/klines/<S>/5m/<S>-5m-YYYY-MM.zip` (sloupec 5 = objem báze,
+  sloupec 9 = taker buy base volume) a USDT-M perp 5m `data/futures/um/monthly/klines/<S>/5m/<S>-5m-YYYY-MM.zip`,
+  funding `data/futures/um/monthly/fundingRate/<S>/...`, BTCUSDT, ETHUSDT, XRPUSDT, 2020-01 … 2026-10.
+- SHA-256 každého archivu do `data_source.json`. Svíčky se párují **jen přes shodný open time (UTC ms)**; µs časy
+  (spot od 2025) se převedou na ms. Nic se nedoplňuje. Audit mezer: počet chybějících 5m časů na trh a měsíc a
+  počet časů jen v jednom trhu do `results.json`. Chybějící archiv uvnitř období ⇒ chyba běhu (zastavit, dodatek).
+
+## Pravidla (na každé aktivum zvlášť, společná equity 10 000 USDT)
+- Signál po uzavření 5m svíčky s open time T (closes T+5m). Vyžaduje svíčky T a T−5m v obou trzích, objem spotu > 0.
+  - podíl = taker_buy_base(T) / volume(T) na spotu;
+  - r_spot = close_spot(T) / close_spot(T−5m) − 1; r_perp = close_perp(T) / close_perp(T−5m) − 1.
+  - **LONG**: podíl > p_hi a r_spot > +0,20 % a r_perp < +0,10 %.
+  - **SHORT**: podíl < p_lo a r_spot < −0,20 % a r_perp > −0,10 %.
+- Vstup: perp **open svíčky T+5m** (nejbližší následující; chybí-li tato svíčka v perpu ⇒ signál zahodit).
+- Výstup: perp open svíčky T+5m+držení. Chybí-li ⇒ první dostupný perp open po tomto čase, příznak `data_gap=1`.
+- Max. 1 pozice na aktivum; signál během otevřené pozice se ignoruje (nový signál smí mít T+5m ≥ čas výstupu).
+  Souběžně max. 3 pozice (1 na aktivum).
+- Velikost: notional = 10 % realizované equity při vstupu, bez páky. Bez stop-lossu.
+- Funding: událost s časem t, kde vstup < t < výstup ⇒ cash flow = −strana × sazba × qty × perp open svíčky v t.
+
+## Náklady
+Poplatek 0,095 % + skluz 0,02 % na stranu (round-trip 0,23 % při ×1), náklady ×1 / ×2 / ×3.
+
+## Mřížka a výběr (4 varianty, N +4)
+(p_hi, p_lo) ∈ {(0,65; 0,35), (0,70; 0,30)} × držení ∈ {15, 30} min. Výběr jedné varianty na **ladění ×1 podle čistého
+zisku**; beze změny do validace a závěrečného testu. Sousedé = 2 varianty lišící se v jednom rozměru.
+
+## Dělení
+- Ladění 2020-02-01 … 2022-12-31; validace 2023-01-01 … 2024-12-31; závěrečný test 2025-01-01 … 2026-10-31
+  (podle rámce v2 jen „druhá validace“). Obchod patří do období podle času vstupu; výstup nesmí přesáhnout konec období
+  (jinak se signál nebere). Každé období začíná na 10 000 USDT.
+- Walk-forward: kalendářní roky 2021, 2022, 2023, 2024 se zvolenou variantou, náklady ×2.
+
+## Měřítko
+B&H koše 3 perpů stejnými vahami bez rebalance (nákup za první open období, prodej za poslední close, stejné náklady).
+
+## Metriky
+Denní equity = realizovaná hotovost na konci dne UTC (pozice trvají ≤ 30 min). Sharpe = průměr/sd denních výnosů ×√365.
+Max DD z denní equity. „Obchod“ = vstup–výstup, net_pnl včetně fundingu a nákladů. Informačně: počet obchodů/rok na aktivum,
+průměrný hrubý výnos obchodu v bp (aby šlo porovnat s round-trip náklady 23 bp).
+
+## Kritéria (rámec v2, beze změny)
+- Stopa A: A1 validace ×1 Sharpe > B&H a max DD < B&H; A2 ≥ 30 obchodů ve validaci; A3 validace ×2 PF > 1,2 a zisk > 0;
+  A4 validace ×1 zisk bez 3 nejlepších > 0; A5 závěrečný ×2 zisk > 0, Sharpe > B&H a DD < B&H.
+- Stopa B: B1 validace ×2 zisk > 0 a PF > 1,2; B2 max DD ≤ 0,6 × B&H ve validaci i závěrečném testu (×1);
+  B3 závěrečný ×2 zisk > 0; B4 validace ×1 bez 3 nejlepších > 0; B5 validace + závěrečný ≥ 20 obchodů; B6 ladění ×1 zisk > 0.
+- Při „prošlo“ (A nebo B) navíc: DSR ≥ 0,95 na denních výnosech validace ×1, N = 159 (průběžných 151 + 4 H-20261106-2 + 4 tato),
+  V[SR] = 0,5 p.a.; oba sousedé zisk ×2 ve validaci > 0; walk-forward zisk ×2 ve ≥ 3 ze 4 let.
+- Prošlo vše ⇒ jen **forward PAPER ve výzkumu ≥ 60 dní**, nikdy „zisková strategie“ ani zásah do produkčních botů.
+
+## Kontrola look-ahead (testy kódu před daty)
+Signál ze svíčky T používá jen data s open time ≤ T; vstup až na open T+5m; prefix invariance (připojení budoucích dat
+nezmění dřívější obchody); svíčka jen v jednom trhu se nepoužije; funding na hranách se nezapočte; náklady ×1/×2/×3.
+
+## Hlavní rizika
+Zdánlivý lead-lag z nesynchronních close (poslední obchod v 5m okně), exekuce za open další svíčky už po vyrovnání cen,
+round-trip náklady 0,23 % (×1) proti krátkodobému pohybu.
+
+## Výstupy
+`trades.csv`, `results.json`, `RESULTS.md`, `data_source.json`; řádek v `automation/STRATEGY_REGISTRY.md`; draft PR do
+`research/autopilot`. Spuštění: commit UTC času do `research/spot_led/RUN_REQUEST` (nejdřív 2026-11-07 UTC, denní limit).
