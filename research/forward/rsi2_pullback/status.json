@@ -1,0 +1,35 @@
+{
+ "strategy": "RSI(2) pullback (post-hoc v\u00fdjimka, B6 nespln\u011bno)",
+ "start": "2026-11-07",
+ "updated_for": null,
+ "days": 0,
+ "symbols": [
+  "BTCUSDT",
+  "ETHUSDT"
+ ],
+ "interim_review": "2026-12-16",
+ "min_evaluation": "2027-01-05",
+ "open_positions": [],
+ "pending_next_open": {},
+ "by_cost": {
+  "x1": {
+   "closed_trades": 0,
+   "wins": 0,
+   "net_pnl_closed": 0,
+   "return_pct": 0.0,
+   "bh_return_pct": 0.0,
+   "max_dd_pct": 0.0,
+   "bh_max_dd_pct": 0.0
+  },
+  "x2": {
+   "closed_trades": 0,
+   "wins": 0,
+   "net_pnl_closed": 0,
+   "return_pct": 0.0,
+   "bh_return_pct": 0.0,
+   "max_dd_pct": 0.0,
+   "bh_max_dd_pct": 0.0
+  }
+ },
+ "alerts": []
+}
