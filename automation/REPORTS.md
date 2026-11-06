@@ -4,6 +4,11 @@ Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá
 Výhradně PAPER.
 
 
+## 2026-11-06 18:35 SEČ (ruční běh — audit dat, sémantika fundingu)
+- Audit dat obou PR proběhl (žádná výkonnost). Interval fundingu se v 2020–2026 měnil jen u SOL v 11/2022; rozhodnuto čtení „B“ (záznam popisuje úsek, který jím končí), kód upraven, 0 nesouladů na skutečných datech.
+- Výpočet výkonnosti je v obou runnerech zablokovaný (`performance_hold`), uvolníte ho jen vy. Zjištěny chybějící dny v datech (28. 10. 2026; u XRP/SOL/LTC 26.–28. 2. a 1.–2. 4. 2022) — před výpočtem nutný dodatek.
+- Soubor oponentury ChatGPT kola 4 zatím nedorazil.
+
 ## 2026-11-06 18:30 SEČ (ruční běh — oponentura ChatGPT, kolo 3)
 - Další 4 skutečné chyby (všechny reprodukovány, opraveny před daty): PR #29 výběr koše závisel na existenci budoucí vstupní svíčky (`8a008b6`); PR #30 nejednotná hranice dne, `day_close` mohla vzít budoucí cenu, náhradní ceny fundingu bez označení a kontroly úplnosti (`0a8373b`). Testy 37 + 31, CI zelené.
 - Nově zítra nejdřív jen audit dat (sémantika intervalu fundingu), výkonnost až po rozhodnutí. Soubor pro ChatGPT: `reports/chatgpt-round4-20261106.md`.

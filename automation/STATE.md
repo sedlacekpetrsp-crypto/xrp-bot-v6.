@@ -129,6 +129,12 @@ R5. **DALŠÍ NA ŘADĚ — PŘIPRAVENO, SPUSTIT nejdřív 2026-11-07 00:00 UTC*
 R6. ~~Audit produkčních PAPER botů~~ — HOTOVO 2026-11-06 12:50 UTC ručně: `reports/production-bot-audit-20261106.md`; návrhy (pozastavit WHALE, BEST-OF, SWING; sběr research_market_samples) čekají na vlastníka. Původně: Audit produkčních PAPER botů (jen čtení, Render SQL): za 30 a 90 dní na bota obchody, čistý P/L, PF, náklady,
     max DD ⇒ `reports/production-bot-audit-<datum>.md` s návrhem, které pozastavit (jen návrh, čeká na vlastníka).
 R7. Kontrariánský žebřík BTC (bod 13 níže).
+**R8 + R9 VÝKONNOST POZASTAVENA VLASTNÍKEM (2026-11-06 17:48 SEČ): NESPOUŠTĚT.** Audit dat hotový (PR #29 runy 42256020278 +
+42257311341, PR #30 runy 42256137116 + 42257419030). Sémantika `funding_interval_hours` rozhodnuta: **B s tolerancí**
+(`FUNDING_SEMANTICS.json` v obou větvích, kód přepnut). Oba runnery bez `performance_hold=false` výpočet odmítnou (exit 3) —
+uvolní jen vlastník. Před uvolněním ještě: (a) opravy podle oponentury ChatGPT kola 4 (soubor zatím nedorazil),
+(b) dodatek k chybějícím dnům v 1h datech (2026-10-28 u všech 8 aktiv; 2022-02-26…28 a 2022-04-01…02 u XRP/SOL/LTC) —
+benchmark by na nich spadl (náhrada max. 6 h); návrh: doplnit z denních archivů Binance Vision, jinak zkrátit konec na 2026-10-27.
 R8. **2026-11-07 HNED PO R5** → Průřezová disperze fundingu, 8 perpů (podnět vlastníka H-20261106-2, `automation/IDEAS.md`).
     Větev `research/funding-dispersion-20261106`, draft PR #29. Protokol `5a10f26` (před kódem), kód + workflow `175424a`; opravy podle oponentury ChatGPT `b5999e6` + `8a008b6` (dodatky 1–3, 37 testů), stále před daty.
     **NOVĚ DVA KROKY (dodatek 3):** (1) do `research/funding_dispersion/RUN_REQUEST` zapsat `AUDIT <UTC čas>` ⇒ workflow

@@ -708,3 +708,9 @@ PR #30: až po (2). Výsledky se nezobrazí ani nezveřejní před krokem (2).
 
 ### Odpověď ChatGPT (kolo 4)
 _(vložte sem odpověď; Claude ji zpracuje při dalším běhu)_
+
+#### Mezistav Clauda 2026-11-06 ~17:30 UTC (soubor kola 4 zatím nedorazil)
+Na pokyn vlastníka: audit dat proveden (bez výkonnosti), sémantika `funding_interval_hours` rozhodnuta **B s tolerancí změny
+uprostřed úseku** (evidence: 7/8 aktiv bez přechodu; SOLUSDT 2022-11 tři přechody, A 2 nesoulady, B 1, B s tolerancí 0),
+kód obou PR přepnut, výkonnost zablokována (`performance_hold`). PR #29 `7577838`, PR #30 `481f1c6`. Body kola 4 se zpracují
+po doručení souboru.
