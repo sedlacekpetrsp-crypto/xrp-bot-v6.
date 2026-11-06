@@ -7,7 +7,9 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h)
 ## ZMĚNA PRODUKCE 2 — 2026-11-06 14:15 SEČ (žádost vlastníka 14:02)
 - PR #26 sloučen ⇒ HEAD **`fd6065b`**: dashboard skrývá neběžící boty; jednorázová nová epocha 10 000 USDT pro LIQUIDITY v2
   (po uzavření aktuální pozice) a LH-WHALE (hned), archiv v `paper_epoch_resets`, tabulky obchodů beze změny. Testy 246 passed.
-- Auto Deploy nefunguje ⇒ čeká na ruční deploy vlastníkem. „live ≠ HEAD“ je do té doby očekávané.
+- **NASAZENO 13:18 UTC (ruční deploy vlastníka), live = `fd6065b`.** Obě epochy vynulovány 13:18:22 (LIQUIDITY pozice se mezitím
+  uzavřela): archiv LH_WHALE 10 017,09 / 2 obchody, LIQUIDITY_V2 9 984,91 / 22 obchodů; zůstatky 10 000; tabulky obchodů 2 a 22 beze změny.
+  Výchozí live pro kontroly od teď: `fd6065b`.
 - Po nasazení ověřit: live `fd6065b`; v logu `PAPER EPOCH RESET LH_WHALE`; `paper_epoch_resets` 1 řádek (LH_WHALE), po uzavření
   pozice LIQUIDITY 2 řádky; zůstatky 10 000; počty v tabulkách obchodů beze změny (liquidity 21+, lh 2).
 - Při výpočtu P/L a auditu od teď u LIQUIDITY v2 a LH-WHALE rozlišovat epochu (stav = od resetu, tabulka obchodů = celá historie).
