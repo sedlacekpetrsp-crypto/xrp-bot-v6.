@@ -1,0 +1,1574 @@
+{
+ "days": [
+  "2020-02-09",
+  "2020-02-19",
+  "2020-03-04",
+  "2020-04-25",
+  "2020-06-28",
+  "2020-11-30",
+  "2020-12-21",
+  "2020-12-25",
+  "2021-02-11",
+  "2021-03-06",
+  "2021-04-20",
+  "2021-04-25",
+  "2021-08-13",
+  "2021-09-29",
+  "2023-03-24",
+  "2022-02-26",
+  "2022-04-01"
+ ],
+ "series": {
+  "spot:BTCUSDT": {
+   "2020-02-09": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 276,
+    "daily_bars": 276,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 276,
+    "differ": 0
+   },
+   "2020-02-19": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 218,
+    "daily_bars": 218,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 218,
+    "differ": 0
+   },
+   "2020-03-04": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 263,
+    "daily_bars": 263,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 263,
+    "differ": 0
+   },
+   "2020-04-25": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 258,
+    "daily_bars": 258,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 258,
+    "differ": 0
+   },
+   "2020-06-28": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 246,
+    "daily_bars": 246,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 246,
+    "differ": 0
+   },
+   "2020-11-30": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 276,
+    "daily_bars": 276,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 276,
+    "differ": 0
+   },
+   "2020-12-21": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 242,
+    "daily_bars": 238,
+    "only_monthly": 4,
+    "only_daily": 0,
+    "common": 238,
+    "differ": 7,
+    "differ_first": [
+     {
+      "utc": "2020-12-21T13:15:00+00:00",
+      "monthly": [
+       22527.3,
+       22661.57,
+       22524.25,
+       22646.53,
+       496.200806,
+       254.208892
+      ],
+      "daily": [
+       22527.3,
+       22666.66,
+       22524.25,
+       22637.92,
+       558.33538,
+       286.75025
+      ],
+      "agg_1m": [
+       22527.3,
+       22666.66,
+       22524.25,
+       22637.92,
+       664.284953,
+       349.260297
+      ]
+     },
+     {
+      "utc": "2020-12-21T13:20:00+00:00",
+      "monthly": [
+       22646.53,
+       22646.53,
+       22646.53,
+       22646.53,
+       0.0,
+       0.0
+      ],
+      "daily": [
+       22641.66,
+       22750.0,
+       22626.02,
+       22683.0,
+       241.338571,
+       128.500968
+      ],
+      "agg_1m": [
+       22641.66,
+       22750.0,
+       22626.02,
+       22683.0,
+       294.001519,
+       156.575769
+      ]
+     },
+     {
+      "utc": "2020-12-21T13:25:00+00:00",
+      "monthly": [
+       22646.53,
+       22646.53,
+       22646.53,
+       22646.53,
+       0.0,
+       0.0
+      ],
+      "daily": [
+       22675.01,
+       22771.15,
+       22645.75,
+       22695.72,
+       162.73185,
+       72.742235
+      ],
+      "agg_1m": [
+       22675.01,
+       22771.15,
+       22645.75,
+       22695.72,
+       200.01109,
+       97.628171
+      ]
+     },
+     {
+      "utc": "2020-12-21T13:30:00+00:00",
+      "monthly": [
+       22646.53,
+       22646.53,
+       22646.53,
+       22646.53,
+       0.0,
+       0.0
+      ],
+      "daily": [
+       22695.7,
+       22728.58,
+       22642.01,
+       22651.73,
+       119.291239,
+       35.135099
+      ],
+      "agg_1m": [
+       22695.7,
+       22728.58,
+       22642.01,
+       22651.73,
+       167.024862,
+       48.765554
+      ]
+     },
+     {
+      "utc": "2020-12-21T13:35:00+00:00",
+      "monthly": [
+       22646.53,
+       22646.53,
+       22646.53,
+       22646.53,
+       0.0,
+       0.0
+      ],
+      "daily": [
+       22651.74,
+       22700.0,
+       22627.93,
+       22650.73,
+       137.813756,
+       66.249746
+      ],
+      "agg_1m": [
+       22651.74,
+       22700.0,
+       22627.93,
+       22650.73,
+       168.017437,
+       75.887212
+      ]
+     }
+    ],
+    "differ_last": "2020-12-21T13:45:00+00:00",
+    "monthly_matches_1m": 0,
+    "daily_matches_1m": 7,
+    "max_close_diff_bp": 37.0379820788791
+   },
+   "2020-12-25": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 276,
+    "daily_bars": 276,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 276,
+    "differ": 0
+   },
+   "2021-02-11": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 273,
+    "daily_bars": 273,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 273,
+    "differ": 0
+   },
+   "2021-03-06": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 270,
+    "daily_bars": 270,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 270,
+    "differ": 0
+   },
+   "2021-04-20": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 258,
+    "daily_bars": 258,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 258,
+    "differ": 0
+   },
+   "2021-04-25": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 232,
+    "daily_bars": 232,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 232,
+    "differ": 0
+   },
+   "2021-08-13": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 234,
+    "daily_bars": 234,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 234,
+    "differ": 0
+   },
+   "2021-09-29": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 264,
+    "daily_bars": 264,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 264,
+    "differ": 0
+   },
+   "2023-03-24": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 272,
+    "daily_bars": 272,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 272,
+    "differ": 0
+   },
+   "2022-02-26": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2022-04-01": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   }
+  },
+  "spot:ETHUSDT": {
+   "2020-02-09": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 276,
+    "daily_bars": 276,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 276,
+    "differ": 0
+   },
+   "2020-02-19": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 218,
+    "daily_bars": 218,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 218,
+    "differ": 0
+   },
+   "2020-03-04": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 263,
+    "daily_bars": 263,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 263,
+    "differ": 0
+   },
+   "2020-04-25": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 258,
+    "daily_bars": 258,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 258,
+    "differ": 0
+   },
+   "2020-06-28": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 246,
+    "daily_bars": 246,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 246,
+    "differ": 0
+   },
+   "2020-11-30": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 276,
+    "daily_bars": 276,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 276,
+    "differ": 0
+   },
+   "2020-12-21": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 242,
+    "daily_bars": 238,
+    "only_monthly": 4,
+    "only_daily": 0,
+    "common": 238,
+    "differ": 7,
+    "differ_first": [
+     {
+      "utc": "2020-12-21T13:15:00+00:00",
+      "monthly": [
+       606.56,
+       608.52,
+       606.56,
+       608.31,
+       6001.93838,
+       4260.47138
+      ],
+      "daily": [
+       606.56,
+       608.54,
+       606.56,
+       608.0,
+       6604.44608,
+       4367.8119
+      ],
+      "agg_1m": [
+       606.56,
+       608.54,
+       606.56,
+       608.0,
+       7620.90097,
+       4986.68347
+      ]
+     },
+     {
+      "utc": "2020-12-21T13:20:00+00:00",
+      "monthly": [
+       608.31,
+       608.31,
+       608.31,
+       608.31,
+       0.0,
+       0.0
+      ],
+      "daily": [
+       608.0,
+       610.07,
+       607.79,
+       610.0,
+       2347.91941,
+       1746.58289
+      ],
+      "agg_1m": [
+       608.0,
+       610.07,
+       607.79,
+       610.0,
+       2832.20318,
+       2121.07027
+      ]
+     },
+     {
+      "utc": "2020-12-21T13:25:00+00:00",
+      "monthly": [
+       608.31,
+       608.31,
+       608.31,
+       608.31,
+       0.0,
+       0.0
+      ],
+      "daily": [
+       609.99,
+       611.38,
+       609.45,
+       610.17,
+       1969.35794,
+       1624.13263
+      ],
+      "agg_1m": [
+       609.99,
+       611.38,
+       609.45,
+       610.17,
+       2234.61718,
+       1864.78644
+      ]
+     },
+     {
+      "utc": "2020-12-21T13:30:00+00:00",
+      "monthly": [
+       608.31,
+       608.31,
+       608.31,
+       608.31,
+       0.0,
+       0.0
+      ],
+      "daily": [
+       610.0,
+       612.65,
+       608.35,
+       610.29,
+       1673.60051,
+       802.97906
+      ],
+      "agg_1m": [
+       610.0,
+       612.65,
+       608.35,
+       610.29,
+       2018.91407,
+       887.74951
+      ]
+     },
+     {
+      "utc": "2020-12-21T13:35:00+00:00",
+      "monthly": [
+       608.31,
+       608.31,
+       608.31,
+       608.31,
+       0.0,
+       0.0
+      ],
+      "daily": [
+       610.4,
+       610.61,
+       608.35,
+       609.91,
+       1029.51533,
+       379.49527
+      ],
+      "agg_1m": [
+       610.4,
+       610.61,
+       608.35,
+       609.91,
+       1452.22306,
+       429.94018
+      ]
+     }
+    ],
+    "differ_last": "2020-12-21T13:45:00+00:00",
+    "monthly_matches_1m": 0,
+    "daily_matches_1m": 7,
+    "max_close_diff_bp": 35.056106151201135
+   },
+   "2020-12-25": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 276,
+    "daily_bars": 276,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 276,
+    "differ": 0
+   },
+   "2021-02-11": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 273,
+    "daily_bars": 273,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 273,
+    "differ": 0
+   },
+   "2021-03-06": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 270,
+    "daily_bars": 270,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 270,
+    "differ": 0
+   },
+   "2021-04-20": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 258,
+    "daily_bars": 258,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 258,
+    "differ": 0
+   },
+   "2021-04-25": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 232,
+    "daily_bars": 232,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 232,
+    "differ": 0
+   },
+   "2021-08-13": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 234,
+    "daily_bars": 234,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 234,
+    "differ": 0
+   },
+   "2021-09-29": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 264,
+    "daily_bars": 264,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 264,
+    "differ": 0
+   },
+   "2023-03-24": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 272,
+    "daily_bars": 272,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 272,
+    "differ": 0
+   },
+   "2022-02-26": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2022-04-01": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   }
+  },
+  "spot:XRPUSDT": {
+   "2020-02-09": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 276,
+    "daily_bars": 276,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 276,
+    "differ": 0
+   },
+   "2020-02-19": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 218,
+    "daily_bars": 218,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 218,
+    "differ": 0
+   },
+   "2020-03-04": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 263,
+    "daily_bars": 263,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 263,
+    "differ": 0
+   },
+   "2020-04-25": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 258,
+    "daily_bars": 258,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 258,
+    "differ": 0
+   },
+   "2020-06-28": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 246,
+    "daily_bars": 246,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 246,
+    "differ": 0
+   },
+   "2020-11-30": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 276,
+    "daily_bars": 276,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 276,
+    "differ": 0
+   },
+   "2020-12-21": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 242,
+    "daily_bars": 238,
+    "only_monthly": 4,
+    "only_daily": 0,
+    "common": 238,
+    "differ": 7,
+    "differ_first": [
+     {
+      "utc": "2020-12-21T13:15:00+00:00",
+      "monthly": [
+       0.51837,
+       0.52175,
+       0.51837,
+       0.52115,
+       4128653.9,
+       2142297.9
+      ],
+      "daily": [
+       0.51837,
+       0.52175,
+       0.51837,
+       0.52125,
+       4343609.5,
+       2269249.1
+      ],
+      "agg_1m": [
+       0.51837,
+       0.52175,
+       0.51837,
+       0.52125,
+       5125495.9,
+       2675345.1
+      ]
+     },
+     {
+      "utc": "2020-12-21T13:20:00+00:00",
+      "monthly": [
+       0.52115,
+       0.52115,
+       0.52115,
+       0.52115,
+       0.0,
+       0.0
+      ],
+      "daily": [
+       0.52125,
+       0.5261,
+       0.52115,
+       0.52236,
+       1755614.4,
+       1176254.7
+      ],
+      "agg_1m": [
+       0.52125,
+       0.5261,
+       0.52115,
+       0.52236,
+       2003983.7,
+       1364481.2
+      ]
+     },
+     {
+      "utc": "2020-12-21T13:25:00+00:00",
+      "monthly": [
+       0.52115,
+       0.52115,
+       0.52115,
+       0.52115,
+       0.0,
+       0.0
+      ],
+      "daily": [
+       0.52236,
+       0.5249,
+       0.52115,
+       0.5229,
+       557290.9,
+       210539.2
+      ],
+      "agg_1m": [
+       0.52236,
+       0.5249,
+       0.52115,
+       0.5229,
+       762990.5,
+       245330.5
+      ]
+     },
+     {
+      "utc": "2020-12-21T13:30:00+00:00",
+      "monthly": [
+       0.52115,
+       0.52115,
+       0.52115,
+       0.52115,
+       0.0,
+       0.0
+      ],
+      "daily": [
+       0.5229,
+       0.5262,
+       0.52138,
+       0.52297,
+       453873.3,
+       264226.3
+      ],
+      "agg_1m": [
+       0.5229,
+       0.5262,
+       0.52138,
+       0.52297,
+       610337.6,
+       370580.8
+      ]
+     },
+     {
+      "utc": "2020-12-21T13:35:00+00:00",
+      "monthly": [
+       0.52115,
+       0.52115,
+       0.52115,
+       0.52115,
+       0.0,
+       0.0
+      ],
+      "daily": [
+       0.52203,
+       0.52315,
+       0.52118,
+       0.52253,
+       241400.7,
+       132703.0
+      ],
+      "agg_1m": [
+       0.52203,
+       0.52315,
+       0.52118,
+       0.52253,
+       285038.5,
+       152528.3
+      ]
+     }
+    ],
+    "differ_last": "2020-12-21T13:45:00+00:00",
+    "monthly_matches_1m": 0,
+    "daily_matches_1m": 7,
+    "max_close_diff_bp": 66.33246287860106
+   },
+   "2020-12-25": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 276,
+    "daily_bars": 276,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 276,
+    "differ": 0
+   },
+   "2021-02-11": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 273,
+    "daily_bars": 273,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 273,
+    "differ": 0
+   },
+   "2021-03-06": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 270,
+    "daily_bars": 270,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 270,
+    "differ": 0
+   },
+   "2021-04-20": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 258,
+    "daily_bars": 258,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 258,
+    "differ": 0
+   },
+   "2021-04-25": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 232,
+    "daily_bars": 232,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 232,
+    "differ": 0
+   },
+   "2021-08-13": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 234,
+    "daily_bars": 234,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 234,
+    "differ": 0
+   },
+   "2021-09-29": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 264,
+    "daily_bars": 264,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 264,
+    "differ": 0
+   },
+   "2023-03-24": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 272,
+    "daily_bars": 272,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 272,
+    "differ": 0
+   },
+   "2022-02-26": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2022-04-01": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   }
+  },
+  "perp:BTCUSDT": {
+   "2020-02-09": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2020-02-19": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2020-03-04": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2020-04-25": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2020-06-28": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2020-11-30": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2020-12-21": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2020-12-25": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2021-02-11": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2021-03-06": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2021-04-20": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2021-04-25": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2021-08-13": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2021-09-29": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2023-03-24": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2022-02-26": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2022-04-01": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   }
+  },
+  "perp:ETHUSDT": {
+   "2020-02-09": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2020-02-19": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2020-03-04": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2020-04-25": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2020-06-28": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2020-11-30": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2020-12-21": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2020-12-25": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2021-02-11": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2021-03-06": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2021-04-20": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2021-04-25": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2021-08-13": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2021-09-29": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2023-03-24": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2022-02-26": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2022-04-01": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   }
+  },
+  "perp:XRPUSDT": {
+   "2020-02-09": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2020-02-19": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2020-03-04": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2020-04-25": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2020-06-28": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2020-11-30": {
+    "monthly": 200,
+    "daily": 404,
+    "daily_1m": 404
+   },
+   "2020-12-21": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2020-12-25": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2021-02-11": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2021-03-06": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2021-04-20": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2021-04-25": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2021-08-13": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2021-09-29": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2023-03-24": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 288,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 0,
+    "common": 288,
+    "differ": 0
+   },
+   "2022-02-26": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 0,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 288,
+    "common": 0,
+    "differ": 0
+   },
+   "2022-04-01": {
+    "monthly": 200,
+    "daily": 200,
+    "daily_1m": 200,
+    "monthly_bars": 0,
+    "daily_bars": 288,
+    "only_monthly": 0,
+    "only_daily": 288,
+    "common": 0,
+    "differ": 0
+   }
+  }
+ }
+}
