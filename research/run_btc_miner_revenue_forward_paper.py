@@ -3,6 +3,7 @@ import argparse
 import datetime as dt
 import hashlib
 import json
+import os
 import pathlib
 import urllib.parse
 import urllib.request
@@ -54,7 +55,42 @@ def _closed(trades):
 
 def _metrics(trades):
     gains = sum(max(0, trade["pnl"]) for trade in trades); losses = -sum(min(0, trade["pnl"]) for trade in trades)
-    return {"trades": len(trades), "net_pnl": sum(trade["pnl"] for trade in trades), "expectancy": (sum(trade["pnl"] for trade in trades) / len(trades)) if trades else None, "profit_factor": (gains / losses) if losses else (None if not gains else float("inf"))}
+    return {"trades": len(trades), "net_pnl": sum(trade["pnl"] for trade in trades), "expectancy": (sum(trade["pnl"] for trade in trades) / len(trades)) if trades else None, "profit_factor": (gains / losses) if losses else None, "gross_profit": gains, "gross_loss": losses, "no_losing_trades": bool(trades) and losses == 0}
+
+
+def _drawdown_pct(curve):
+    peak = 10000.0; maximum = 0.0
+    for point in curve:
+        equity = float(point["equity"]); peak = max(peak, equity)
+        maximum = max(maximum, (peak - equity) / peak * 100 if peak else 0.0)
+    return maximum
+
+
+def forward_gates(now_ms, base, stress, base_curve, stress_curve):
+    base_metrics = _metrics(base); stress_metrics = _metrics(stress)
+    positive = [trade["pnl"] for trade in base if trade["pnl"] > 0]
+    concentration = max(positive) / sum(positive) if positive else None
+    stressed_pf_pass = stress_metrics["no_losing_trades"] or ((stress_metrics["profit_factor"] or 0) > 1.0)
+    gates = {
+        "elapsed_365_days": now_ms - STARTED_AT >= 365 * DAY,
+        "minimum_20_trades": len(base) >= 20 and len(stress) >= 20,
+        "base_net_positive": base_metrics["net_pnl"] > 0,
+        "base_expectancy_positive": (base_metrics["expectancy"] or 0) > 0,
+        "stress_net_positive": stress_metrics["net_pnl"] > 0,
+        "stress_expectancy_positive": (stress_metrics["expectancy"] or 0) > 0,
+        "stress_pf_above_1": stressed_pf_pass,
+        "stress_drawdown_at_most_10": _drawdown_pct(stress_curve) <= 10,
+        "single_trade_concentration_at_most_35": concentration is not None and concentration <= 0.35,
+    }
+    return gates, base_metrics, stress_metrics, concentration, _drawdown_pct(base_curve), _drawdown_pct(stress_curve)
+
+
+def write_state_atomic(path, state):
+    temporary = path.with_name(path.name + ".tmp")
+    payload = json.dumps(state, indent=2, allow_nan=False) + "\n"
+    with temporary.open("w") as handle:
+        handle.write(payload); handle.flush(); os.fsync(handle.fileno())
+    os.replace(temporary, path)
 
 
 def update_state(state, source_rows, price_rows, now_ms, source_sha256, price_sha256, source_url=SOURCE_URL, prices_url="fixture"):
@@ -88,13 +124,17 @@ def update_state(state, source_rows, price_rows, now_ms, source_sha256, price_sh
         state[label] = fresh
     state.setdefault("snapshots", []).append({"observed_at_utc": dt.datetime.fromtimestamp(now_ms / 1000, dt.timezone.utc).isoformat(), "source_url": source_url, "source_sha256": source_sha256, "source_rows": len(source_rows), "price_url": prices_url, "price_sha256": price_sha256, "price_rows": len(price_rows)})
     state["last_run_utc"] = state["snapshots"][-1]["observed_at_utc"]
+    gates, base_metrics, stress_metrics, concentration, base_dd, stress_dd = forward_gates(now_ms, base, stress, base_curve, stress_curve)
     state["prospective_closed_trades"] = len(base)
-    state["prospective_net_pnl"] = _metrics(base)["net_pnl"]
-    state["prospective_stress_net_pnl"] = _metrics(stress)["net_pnl"]
-    state["base_metrics"] = _metrics(base); state["stress_metrics"] = _metrics(stress)
+    state["prospective_net_pnl"] = base_metrics["net_pnl"]
+    state["prospective_stress_net_pnl"] = stress_metrics["net_pnl"]
+    state["base_metrics"] = base_metrics; state["stress_metrics"] = stress_metrics
     state["marked_min_equity_base"] = min([10000.0] + [point["equity"] for point in base_curve])
     state["marked_min_equity_stress"] = min([10000.0] + [point["equity"] for point in stress_curve])
-    state["status"] = "COLLECTING_FORWARD_PAPER"
+    state["max_drawdown_pct_base"] = base_dd; state["max_drawdown_pct_stress"] = stress_dd
+    state["single_trade_positive_profit_concentration"] = concentration
+    state["forward_gates"] = gates
+    state["status"] = "FORWARD_GATE_PASSED" if all(gates.values()) else "COLLECTING_FORWARD_PAPER"
     return state
 
 
@@ -104,8 +144,8 @@ def main():
     now_ms = args.now_ms or int(dt.datetime.now(dt.timezone.utc).timestamp() * 1000)
     source_payload = fetch(SOURCE_URL); prices_url = price_url(now_ms); price_payload = fetch(prices_url)
     state = update_state(state, parse_source(source_payload), parse_prices(price_payload), now_ms, hashlib.sha256(source_payload).hexdigest(), hashlib.sha256(price_payload).hexdigest(), SOURCE_URL, prices_url)
-    path.write_text(json.dumps(state, indent=2, allow_nan=False) + "\n")
-    print(json.dumps({"status": state["status"], "trades": state["prospective_closed_trades"], "source_sha256": state["snapshots"][-1]["source_sha256"], "price_sha256": state["snapshots"][-1]["price_sha256"]}))
+    write_state_atomic(path, state)
+    print(json.dumps({"status": state["status"], "trades": state["prospective_closed_trades"], "gates": state["forward_gates"], "source_sha256": state["snapshots"][-1]["source_sha256"], "price_sha256": state["snapshots"][-1]["price_sha256"]}))
 
 
 if __name__ == "__main__": main()
