@@ -1,6 +1,6 @@
 # Autopilot STATE — přepisuje se každým během
 
-Poslední aktualizace: 2026-11-06 05:15 UTC (autopilot běh #19, run 42166129378; produkce beze změny; výzkum: XRPBTC switch zamítnut, PR #19; protokol #11 ETHBTC mean-reversion commitnut).
+Poslední aktualizace: 2026-11-06 07:15 UTC (autopilot běh #20, run 42178406243; produkce beze změny; výzkum: ETHBTC mean-reversion zamítnut, PR #20; fronta doplněna o #12–#14, protokol #12 vol-target commitnut).
 
 Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h). Vypnout/změnit: claude.ai → plánované úlohy.
 
@@ -25,7 +25,7 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h)
 
 ## Databáze `xrp-bot-db` (1 GB, bez auto-zvětšení)
 
-Poslední kontrola 2026-11-06 05:04 UTC: 218,9 MB = 20,4 % (+0,8 MB za 2 h); produkce beze změny (live edaa938 = HEAD, 0 událostí od 03:00, 0 error logů 03:04–05:04, dup jen id 129, BEST-OF 131, P/L −3 176,32, 238 passed). Předchozí 03:04 UTC: 218,1 MB = 20,3 % (+0,8 MB za 2 h); produkce beze změny (live edaa938 = HEAD, 0 událostí od 01:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 176,32, testy OK). Předchozí 01:04 UTC: 217,3 MB = 20,2 % (+0,8 MB za 2 h); produkce 01:04 beze změny (live edaa938 = HEAD, 0 událostí od 23:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 176,32, testy OK). Předchozí 23:03: 216,5 MB = 20,2 % (+0,9 MB za 2 h, trend beze změny); produkce 23:03 beze změny (live edaa938, 0 událostí od 21:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 166,91). Předchozí 21:03: 215,6 MB = 20,1 %. Produkce 21:03 beze změny (live edaa938, 0 událostí od 19:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 166,91, 238 passed). Předchozí 19:04: beze změny (live edaa938 = HEAD, obsahuje da2f665, 0 událostí od 17:00, 0 error logů 17:05–19:05, BEST-OF 131 obchodů, dup_groups jen známý id 129, P/L součet −3 197,26, tests OK).
+Poslední kontrola 2026-11-06 07:04 UTC: 219,8 MB = 20,5 % (+0,9 MB za 2 h); produkce beze změny (live edaa938 = HEAD, 0 událostí od 05:00, 0 error logů 05:00–07:04, dup jen id 129, BEST-OF 132 (+1), P/L −3 176,78, testy OK). Předchozí 05:04 UTC: 218,9 MB = 20,4 % (+0,8 MB za 2 h); produkce beze změny (live edaa938 = HEAD, 0 událostí od 03:00, 0 error logů 03:04–05:04, dup jen id 129, BEST-OF 131, P/L −3 176,32, 238 passed). Předchozí 03:04 UTC: 218,1 MB = 20,3 % (+0,8 MB za 2 h); produkce beze změny (live edaa938 = HEAD, 0 událostí od 01:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 176,32, testy OK). Předchozí 01:04 UTC: 217,3 MB = 20,2 % (+0,8 MB za 2 h); produkce 01:04 beze změny (live edaa938 = HEAD, 0 událostí od 23:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 176,32, testy OK). Předchozí 23:03: 216,5 MB = 20,2 % (+0,9 MB za 2 h, trend beze změny); produkce 23:03 beze změny (live edaa938, 0 událostí od 21:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 166,91). Předchozí 21:03: 215,6 MB = 20,1 %. Produkce 21:03 beze změny (live edaa938, 0 událostí od 19:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 166,91, 238 passed). Předchozí 19:04: beze změny (live edaa938 = HEAD, obsahuje da2f665, 0 událostí od 17:00, 0 error logů 17:05–19:05, BEST-OF 131 obchodů, dup_groups jen známý id 129, P/L součet −3 197,26, tests OK).
 
 | UTC | Velikost | % z 1 GB | Top tabulky |
 |---|---|---|---|
@@ -93,11 +93,20 @@ Fronta:
    Poučení: rebalancing premium je malé (±1–8 % P/L), znaménko podle toho, zda poměr BTC/ETH osciluje (2020–22 +) nebo trenduje (2023–24 −). Netestovat dál varianty rebalance.
 10. ~~Přepínání XRP ↔ BTC podle XRPBTC SMA50~~ — HOTOVO 2026-11-06 05:10 UTC: **ZAMÍTNUTO** (krit. 1, 5: validace ×1 +627 %, Sharpe 1,80, DD 37,5 %, 38 obch. vs B&H 50/50 XRP/BTC +489 %, 1,86, 32,2 %; závěrečný ×2 −53,9 % (DD 77 %) vs B&H −28,8 % (DD 62 %)). PR #19, `research/xrpbtc_switch/RESULTS.md`.
    Poučení: relativní trend poměru selhal na ETH i XRP mimo vzorek; validační zisk stojí na jednom XRP úseku (bez top 3 ×2 záporné). Přepínání podle trendu poměru dál netestovat.
-11. **DALŠÍ NA ŘADĚ →** Mean-reversion poměru ETHBTC (long-only): výchozí 50/50; z-skóre ETHBTC vůči 20d průměru < −2 ⇒ 100 % ETH do z > 0;
-   z > +2 ⇒ 100 % BTC do z < 0. Měřítko B&H 50/50. Liší se od `sol_eth_pairs` (#91, SOL/ETH, jiný pár i mechanika) a od PR #17 (trend).
-   PROTOKOL UŽ COMMITNUT (`research/ethbtc-meanrev-20261106`, `0f07b1d`, `research/ethbtc_meanrev/PROTOCOL.md`). Pokračovat: napsat
-   `run.py` (stavy N/E/B, segmenty N v trades.csv), testy + workflow podle vzoru PR #17/#18, spustit, ověřit, PR.
-   Po #11 je fronta prázdná ⇒ doplnit 3 nové hypotézy (nízký obrat; ne časování trhu vs B&H, ne trend poměru, ne rebalance).
+11. ~~Mean-reversion poměru ETHBTC z20 ±2 (koš 50/50)~~ — HOTOVO 2026-11-06 07:10 UTC: **ZAMÍTNUTO** (krit. 1, 2, 5: validace ×1 +354 %, Sharpe 1,65, DD 39,2 %, 28 epizod vs B&H 50/50 +321 %, 1,71, 34 %; krit. 3, 4 splněny (PF×2 2,27); závěrečný ×2 −45,9 %, Sharpe −0,30, DD 62,8 % vs B&H −25,1 %, DD 60 %; ladění +27 % vs B&H +108 %). PR #20, `research/ethbtc_meanrev/RESULTS.md`.
+   Poučení: ani trend (PR #17), ani návrat k průměru poměru ETHBTC nefunguje stabilně napříč obdobími ⇒ poměr BTC/ETH dál netestovat.
+
+Nové hypotézy (doplněno 2026-11-06 07:15; nízký obrat; žádný směrový signál trendu vs B&H, žádný trend poměru, žádný rebalance):
+12. **DALŠÍ NA ŘADĚ →** Volatilitní cílení BTC 40 % (w = min(1, 0,40/σ30), úprava při odchylce > 10 p. b., za open t+1). Měřítko B&H BTC.
+    Proč nové: expozice jen podle realizované volatility (shlukování vol), ne podle směru; #101 mělo momentum signál, #104 vážilo více aktiv.
+    PROTOKOL UŽ COMMITNUT (`research/vol-target-20261106`, `fc9b4a4`, `research/vol_target/PROTOCOL.md`). Pokračovat: `run.py` (úseky mezi úpravami,
+    souvislý ledger), testy + workflow podle vzoru PR #20, spustit, ověřit, PR.
+13. Kontrariánský žebřík BTC: základ 50 % BTC / 50 % hotovost; dokoupit po 1/3 hotovosti při poklesu ≥ 20/30/40 % pod 365d maximum close,
+    tranše prodat zpět na 50 % při novém 365d maximu. Měřítko B&H BTC i statický 50/50 BTC/hotovost. Proč nové: valuační (drawdown) signál,
+    ne trend ani kalendář; žádná z 110 hypotéz nepoužila vzdálenost od ročního maxima.
+14. Blízkost 52týdennímu maximu průřezově (George–Hwang): z 8 velkých spot aktiv (BTC, ETH, BNB, XRP, ADA, DOGE, LTC, LINK) držet měsíčně
+    3 s nejvyšším close/max365, stejné váhy. Měřítko B&H rovnovážného koše týchž 8 (bez rebalance). Proč nové: `cross_sectional_rotation` (#56)
+    a `relative_strength` (#85) řadily podle výnosu/momenta, ne podle vzdálenosti k ročnímu maximu (anchoring efekt).
 
 ## Otevřené úkoly (priorita shora)
 
