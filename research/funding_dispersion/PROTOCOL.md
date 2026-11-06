@@ -176,3 +176,16 @@ implementované (kód implementuje A). Audit dat (`AUDIT`) zámek neblokuje. Roz
 - **Souběh a atomicita.** Zámek výstupního adresáře (`.run.lock`, souběh ⇒ kód 5), workflow `concurrency`, zápis přes
   dočasný soubor + `os.replace`, `run_id` a sha256 souborů v `audit_manifest.json` (zapisuje se poslední),
   `trades_csv_sha256` v `results.json` (zapisuje se poslední). Rozhodnutí se čte jednou pro obě brány.
+
+## Dodatek 8 (2026-11-06, kolo 9; výkonnost dál nespuštěna, návrh na kontrolu)
+- **Rozhodování (Q1/Q3)** přes sdílený `tools/research/decision_gate.py` (shodný v PR #29 a #30). Pro každé kritérium je
+  dané, ze kterých období čte strategii a benchmark (`CRITERIA_DATA`, ověřeno testem změnou dat po obdobích).
+  - ZAMÍTNUTO jen při aspoň jednom platném důvodu na čistých datech (kritérium obou stop nebo robustní test).
+  - Robustní testy podle zasažených dat: DSR ← validace zvolené varianty; sousedé ← validace sousedních variant;
+    walk-forward po jednotlivých foldech (fold bez obchodů je nehodnotitelný).
+  - Závady v ladicím období KTERÉKOLI varianty mění výběr ⇒ globální ⇒ NEROZHODNUTO.
+  - Nová blokující závada `ineligible_data_gap`: aktivum vyřazené z výběru kvůli mezeře dat mění pořadí.
+  - Žádné vyřazování zasažených obchodů, žádný přepočet, žádný procentní práh.
+- **Zámek** `fcntl.flock` (uvolní OS i při SIGKILL), konflikt ⇒ `run_conflicts.jsonl` a kód 5. Audit zapisuje do
+  `audits/<UTC>_<run_id>/` (nikdy nepřepíše dřívější výstupy) i s údaji o prostředí.
+- **Nezávislý ekonomický přepočet** (Decimal, bez importu runneru) jedné sady 4 noh a benchmarku: shoda na 1e-6 USDT.

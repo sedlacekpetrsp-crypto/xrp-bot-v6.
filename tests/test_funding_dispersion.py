@@ -666,6 +666,8 @@ def test_K6_integration_verdict_blocked_by_benchmark_gap_else_candidate(tmp_path
     monkeypatch.setattr(fd, "WF_YEARS", ())
     monkeypatch.setattr(fd, "evaluate", lambda res, bh: ({"A": True}, {"B": True}))
     monkeypatch.setattr(fd, "robustness_checks", lambda dsr, nb, wf: {"mock": True})
+    monkeypatch.setattr(fd, "robustness_context", lambda *a: {"dsr": 0.99, "dsr_defects": {}, "neighbors": {"n": (1.0, {})},
+                                                              "wf": {y: (1.0, 5, {}) for y in "abc"}})
     monkeypatch.setattr(fd, "safe_dsr", lambda r, n, v: {"dsr": None, "undefined_reason": "mock"})
     (tmp_path / fd.SEMANTICS_FILE).write_text(json.dumps(valid_decision()))
 
@@ -727,7 +729,7 @@ def test_K8_1_rejection_only_by_criteria_with_bad_benchmark_is_undecided():
 def test_K8_1_independent_rejection_kept_even_with_bad_benchmark():
     a, b = tracks(fail=("A1_sharpe_dd", "A2_trades_ge_30", "B2_dd_le_0_6_bh", "B5_trades_ge_20"))
     v, _, d = fd.final_verdict(a, b, ROBUST_OK, NO_FLAGS, BAD_VAL)
-    assert v == "ZAMÍTNUTO" and d["track_a_reasons"] == ["A2_trades_ge_30"] and d["track_b_reasons"] == ["B5_trades_ge_20"]
+    assert v == "ZAMÍTNUTO" and d["track_a_criteria"] == ["A2_trades_ge_30"] and d["track_b_criteria"] == ["B5_trades_ge_20"]
     # A5 používá final_test, vada jen ve validaci ⇒ A5 je spolehlivé zamítnutí
     a, b = tracks(fail=("A5_final_x2", "B3_final_x2_profit"))
     assert fd.final_verdict(a, b, ROBUST_OK, NO_FLAGS, BAD_VAL)[0] == "ZAMÍTNUTO"
@@ -772,7 +774,7 @@ def _src():
 
 def test_K8_2_fingerprint_ignores_comments_docstrings_but_not_code_or_constants():
     src = _src()
-    run_py, dsr_py = fd.FINGERPRINT_SOURCES
+    run_py, dsr_py = fd.FINGERPRINT_SOURCES[:2]
     base = fd.code_fingerprint(src)
     assert base == fd.impl_fingerprint()
     assert fd.code_fingerprint({**src, run_py: src[run_py].replace("# dny bez otevřeného koše", "# jiný komentář")}) == base
@@ -783,10 +785,12 @@ def test_K8_2_fingerprint_ignores_comments_docstrings_but_not_code_or_constants(
                      ("    c = (FEE + SLIP) * mult\n    end_ms", "    c = (FEE + SLIP) * mult * 0\n    end_ms"),  # simulate
                      ("return fts[bisect.bisect_right(fts, entry)", "return fts[bisect.bisect_left(fts, entry)"),  # hranice
                      ('"benchmark_price_fallbacks": "blocking"', '"benchmark_price_fallbacks": "informational"'),
-                     ("if blocking:\n", "if False:\n")):
+                     ("ok = lambda k: robust.get(k, True)", "ok = lambda k: True")):
         assert old in src[run_py], old
         assert fd.code_fingerprint({**src, run_py: src[run_py].replace(old, new, 1)}) != base, old
     assert fd.code_fingerprint({**src, dsr_py: src[dsr_py] + "\nX_NEW = 1\n"}) != base
+    gate_py = fd.FINGERPRINT_SOURCES[2]
+    assert fd.code_fingerprint({**src, gate_py: src[gate_py].replace("WF_NEEDED = 3", "WF_NEEDED = 2")}) != base
 
 
 def test_K8_2_changed_code_invalidates_previous_decision(monkeypatch, tmp_path):
@@ -952,6 +956,8 @@ def test_K8_integration_main_rejected_vs_undecided_by_benchmark(tmp_path, monkey
     monkeypatch.setattr(fd, "WF_YEARS", ())
     monkeypatch.setattr(fd, "evaluate", lambda res, bh: tracks(fail=("A1_sharpe_dd", "B2_dd_le_0_6_bh")))
     monkeypatch.setattr(fd, "robustness_checks", lambda dsr, nb, wf: dict(ROBUST_OK))
+    monkeypatch.setattr(fd, "robustness_context", lambda *a: {"dsr": 0.99, "dsr_defects": {}, "neighbors": {"n": (1.0, {})},
+                                                              "wf": {y: (1.0, 5, {}) for y in "abc"}})
     monkeypatch.setattr(fd, "safe_dsr", lambda r, n, v: {"dsr": None, "undefined_reason": "mock"})
     (tmp_path / fd.SEMANTICS_FILE).write_text(json.dumps(valid_decision()))
 
@@ -964,7 +970,7 @@ def test_K8_integration_main_rejected_vs_undecided_by_benchmark(tmp_path, monkey
     t = fd.ms_of(date(2021, 1, 20)) + 8 * H
     bad["BTCUSDT"] = fd.prepare(bad["BTCUSDT"]["bars"], {k: v for k, v in bad["BTCUSDT"]["funding"].items() if k != t})
     out = go(bad)
-    assert out["verdict"].startswith("NEROZHODNUTO") and "validation" in out["verdict_detail"]["benchmark_defect_periods"]
+    assert out["verdict"].startswith("NEROZHODNUTO") and "validation" in out["verdict_detail"]["benchmark_bad_periods"]
 
 
 def test_K8_5_results_bind_trades_csv_hash(tmp_path, monkeypatch):
@@ -1029,3 +1035,110 @@ def test_K9_5_lock_code_has_no_age_based_removal():
     import inspect
     src = inspect.getsource(fd.RunLock)
     assert "unlink" not in src and "st_mtime" not in src and "getmtime" not in src
+
+
+# ---- kolo 9, Q1/Q3: závislosti na datech strategie, globální závady, walk-forward ----
+def test_K9_1_strategy_dependency_map_matches_evaluate_by_perturbation():
+    from tools.research import decision_gate as dg
+    base = {"sharpe": 1.0, "max_drawdown_pct": 10.0, "trades": 15, "profit_factor": 1.5, "net_pnl": 100.0,
+            "net_without_top3": 50.0}
+    bh = {p: {f"x{m}": {"sharpe": 0.5, "max_drawdown_pct": 20.0} for m in (1, 2, 3)} for p in fd.PERIODS}
+    found = {c: set() for c in dg.CRITERIA_DATA}
+    for p in fd.PERIODS:
+        for alt in ({"sharpe": 5.0, "max_drawdown_pct": 1.0, "trades": 500, "profit_factor": 9.0, "net_pnl": 1e4,
+                     "net_without_top3": 1e4},
+                    {"sharpe": -5.0, "max_drawdown_pct": 99.0, "trades": 0, "profit_factor": 0.1, "net_pnl": -1e4,
+                     "net_without_top3": -1e4}):
+            res = {q: {f"x{m}": dict(base) for m in (1, 2, 3)} for q in fd.PERIODS}
+            ref = {**fd.evaluate(res, bh)[0], **fd.evaluate(res, bh)[1]}
+            res[p] = {f"x{m}": dict(alt) for m in (1, 2, 3)}
+            new = {**fd.evaluate(res, bh)[0], **fd.evaluate(res, bh)[1]}
+            found.update({c: found[c] | {p} for c in ref if ref[c] != new[c]})
+    assert {c: tuple(sorted(x)) for c, x in found.items()} == \
+        {c: tuple(sorted(d["strategy"])) for c, d in dg.CRITERIA_DATA.items()}
+
+
+def test_K9_1_ineligibility_from_data_gap_is_counted():
+    D = fd.ms_of(START)
+    m = make_market(rates=ranked_rates)
+    f = {t: (r, 8.0) for t, r in m["SOLUSDT"]["funding"].items() if t != D - 2 * DAY}  # mezera v okně signálu
+    m["SOLUSDT"] = fd.prepare(m["SOLUSDT"]["bars"], f)
+    r = fd.run(m, START, date(2021, 1, 11), 1, 7, 7, "t")[0]
+    assert r["ineligible_data_gap"] == 1 and fd.strategy_defects(r) == {"ineligible_data_gap": 1}
+
+
+def _k9_main(tmp_path, monkeypatch, market, wf_years=()):
+    import json
+    monkeypatch.setattr(fd, "PERIODS", {"tuning": ("2021-01-04", "2021-01-17"), "validation": ("2021-01-18", "2021-01-31"),
+                                        "final_test": ("2021-02-01", "2021-02-14")})
+    monkeypatch.setattr(fd, "WF_YEARS", wf_years)
+    monkeypatch.setattr(fd, "evaluate", lambda res, bh: tracks(fail=("A2_trades_ge_30", "B3_final_x2_profit")))
+    monkeypatch.setattr(fd, "load", lambda cache: (market, [], [], []))
+    (tmp_path / fd.SEMANTICS_FILE).write_text(json.dumps(valid_decision()))
+    fd.main(["--outdir", str(tmp_path), "--mode", "perf"])
+    return json.loads((tmp_path / "results.json").read_text())
+
+
+def test_K9_1_tuning_defect_in_any_variant_is_global(tmp_path, monkeypatch):
+    clean = _k9_main(tmp_path, monkeypatch, make_market(days=90, rates=ranked_rates))
+    assert clean["verdict_detail"]["global_defects"] == {}
+    bad = make_market(days=90, rates=ranked_rates)
+    t = fd.ms_of(date(2020, 12, 30)) + 8 * H  # mezera fundingu SOL v okně signálu 1. rozhodnutí ladicího období
+    bad["SOLUSDT"] = fd.prepare(bad["SOLUSDT"]["bars"], {k: v for k, v in bad["SOLUSDT"]["funding"].items() if k != t})
+    out = _k9_main(tmp_path, monkeypatch, bad)
+    assert out["verdict"].startswith("NEROZHODNUTO — globální") and out["verdict_detail"]["global_defects"]
+
+
+def test_K9_3_periods_do_not_overlap_and_folds_inside_data():
+    from datetime import date as d_
+    spans = [(d_.fromisoformat(s), d_.fromisoformat(e)) for s, e in fd.PERIODS.values()]
+    assert all(e1 < s2 for (s1, e1), (s2, e2) in zip(spans, spans[1:])) and all(s <= e for s, e in spans)
+    # WF 2021–2022 leží v ladicím období (deklarováno jako NE čistý OOS) — test to hlídá, aby se to nezměnilo potichu
+    assert [y for y in fd.WF_YEARS if d_(y, 1, 1) <= spans[0][1]] == [2021, 2022]
+
+
+def test_K9_3_no_lookahead_signal_changes_only_after_future_change():
+    """Změna dat po rozhodnutí D nesmí změnit rozhodnutí v D (kauzalita na úrovni celé simulace)."""
+    D2 = fd.ms_of(START) + 7 * DAY
+    base = make_market(days=60, rates=ranked_rates)
+    alt = make_market(days=60, rates=lambda a, t: ranked_rates(a, t) if t <= D2 else 0.05 * fd.ASSETS.index(a))
+    _, _, db = fd.simulate(base, START, date(2021, 1, 25), 7, 7, 1)
+    _, _, da = fd.simulate(alt, START, date(2021, 1, 25), 7, 7, 1)
+    assert db[:2] == da[:2] and db[2] != da[2]
+
+
+# ---- kolo 9, bod 6: NEZÁVISLÝ ekonomický přepočet ----
+# Očekávané hodnoty jsou literály z ručního přepočtu v Decimal (skript calc/indep_fd.py, bez importu runneru);
+# žádná funkce runneru se k výpočtu očekávané hodnoty nepoužívá. Předem stanovená přesnost: 1e-6 USDT.
+TOL = 1e-6
+_P0 = {"BTCUSDT": 100.0, "ETHUSDT": 50.0, "DOGEUSDT": 0.2, "LTCUSDT": 80.0}
+_P1 = {"BTCUSDT": 110.0, "ETHUSDT": 45.0, "DOGEUSDT": 0.18, "LTCUSDT": 88.0}
+
+
+def _econ_market():
+    D = fd.ms_of(START)
+    price = lambda a, t: _P0.get(a, 100.0) if t <= D + H else _P1.get(a, 100.0)
+    rates = lambda a, t: 0.0001 * fd.ASSETS.index(a) if t <= D else 0.0003
+    return make_market(days=60, price=price, rates=rates)
+
+
+def test_K9_6_independent_leg_accounting():
+    legs, curve, dec = fd.simulate(_econ_market(), START, date(2021, 1, 11), 7, 7, 1)
+    assert (dec[0]["longs"], dec[0]["shorts"]) == (["BTCUSDT", "ETHUSDT"], ["DOGEUSDT", "LTCUSDT"])
+    exp = {"BTCUSDT": (10.0, 100.0, -6.93, 2.415, 90.655), "ETHUSDT": (20.0, -100.0, -5.67, 2.185, -107.855),
+           "DOGEUSDT": (5000.0, 100.0, 5.67, 2.185, 103.485), "LTCUSDT": (12.5, -100.0, 6.93, 2.415, -95.485)}
+    got = {lg["asset"]: lg for lg in legs}
+    for a, (q, g, f, c, n) in exp.items():
+        lg = got[a]
+        assert lg["entry"] == _P0[a] and lg["exit"] == _P1[a]
+        for k, e in (("qty", q), ("gross", g), ("funding", f), ("costs", c), ("net_pnl", n)):
+            assert abs(lg[k] - e) <= TOL, (a, k, lg[k], e)
+    assert abs(curve[date(2021, 1, 5)] - 9995.4) <= TOL       # mark-to-market s 5 událostmi fundingu
+    assert abs(curve[date(2021, 1, 11)] - 9990.8) <= TOL      # equity po uzavření
+
+
+def test_K9_6_independent_benchmark_accounting():
+    bh, rets = fd.buy_hold(_econ_market(), date(2021, 1, 4), date(2021, 1, 5), 1)
+    assert abs(fd.START_EQUITY * (1 + rets[0]) - 9982.5069) <= TOL
+    assert abs(bh["funding"] - (-14.98275)) <= 1e-4  # runner zaokrouhluje na 4 místa
+    assert abs(bh["net_pnl"] - (-37.969525)) <= 1e-4

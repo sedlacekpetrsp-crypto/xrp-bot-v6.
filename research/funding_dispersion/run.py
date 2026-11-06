@@ -464,7 +464,9 @@ def run(market, start, end, mult, W, H, variant, prices=None):
             "legs_with_funding_gap_in_holding": sum(1 for lg in legs if lg["funding_gaps_in_holding"]),
             "per_basket": basket_metrics(legs),
             "unfilled_entry_legs": sum(len(x.get("unfilled_legs", [])) for x in dec),
-            "unfilled_entries": [e for x in dec for e in x.get("unfilled_entries", [])]}, legs, rets, curve
+            "unfilled_entries": [e for x in dec for e in x.get("unfilled_entries", [])],
+            "ineligible_data_gap": sum(1 for x in dec for r in x["ineligible_reasons"].values()
+                                       if r in ("price_gap_in_window", "funding_gap_in_window"))}, legs, rets, curve
 
 
 def buy_hold(market, start, end, mult, prices=None):
@@ -608,7 +610,8 @@ PERFORMANCE_FILES = ("results.json", "trades.csv")
 # funding, náklady, equity, vstupy/výstupy, brány, registr, verdikt, konstanty) a modul DSR. Počítá se z AST bez docstringů
 # a komentářů: změna kódu nebo konstanty otisk změní, změna komentáře/docstringu ne. Součástí je verze Pythonu (major.minor),
 # protože tvar AST se mezi verzemi může lišit — jiná verze ⇒ jiný otisk ⇒ konzervativně odmítnuto.
-FINGERPRINT_SOURCES = ("research/funding_dispersion/run.py", "tools/research/deflated_sharpe.py")
+FINGERPRINT_SOURCES = ("research/funding_dispersion/run.py", "tools/research/deflated_sharpe.py",
+                       "tools/research/decision_gate.py")
 REQUIRED_DECISION_FIELDS = ("semantics", "evidence", "decided_utc", "audit_id", "impl_sha256", "data_manifest_sha256")
 
 
@@ -702,6 +705,9 @@ DATA_DEFECTS = {
     "benchmark_funding_unknown_coverage_assets": "blocking",
     "benchmark_price_fallbacks": "blocking",
     "benchmark_unavailable_at_start": "blocking",
+    "ineligible_data_gap": "blocking",  # kolo 9: aktivum vyřazené z výběru kvůli mezeře dat mění pořadí ⇒ potenciálně globální
+    "walk_forward_defects": "blocking",
+    "neighbor_defects": "blocking",
     "duplicate_funding_rows_same_value": "informational",
 }
 
@@ -723,12 +729,9 @@ BENCHMARK_DEFECT_KEYS = {
 }
 # Kolo 8, bod 1: která kritéria používají benchmark a ze kterého období (viz evaluate). Kritérium, které tu chybí,
 # se konzervativně bere jako závislé na benchmarku všech období.
-BENCHMARK_DEPENDENCY = {
-    "A1_sharpe_dd": ("validation",), "A2_trades_ge_30": (), "A3_x2_pf_profit": (), "A4_wo_top3": (),
-    "A5_final_x2": ("final_test",),
-    "B1_val_x2_profit_pf": (), "B2_dd_le_0_6_bh": ("validation", "final_test"), "B3_final_x2_profit": (),
-    "B4_val_wo_top3": (), "B5_trades_ge_20": (), "B6_tuning_x1_profit": (),
-}
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from tools.research import decision_gate as _dg  # noqa: E402  (sdílená mapa kritérií obou runnerů)
+BENCHMARK_DEPENDENCY = {c: d["benchmark"] for c, d in _dg.CRITERIA_DATA.items()}
 
 
 def defect_flags(res, bh, market=None):
@@ -737,7 +740,8 @@ def defect_flags(res, bh, market=None):
     f = {"edge_funding_events": sum(res[p]["x1"]["edge_funding_events_excluded"] for p in PERIODS),
          "unfilled_entry_legs": sum(res[p]["x1"]["unfilled_entry_legs"] for p in PERIODS),
          "legs_with_price_fallback": sum(res[p]["x1"]["legs_with_price_fallback"] for p in PERIODS),
-         "legs_with_funding_gap_in_holding": sum(res[p]["x1"]["legs_with_funding_gap_in_holding"] for p in PERIODS)}
+         "legs_with_funding_gap_in_holding": sum(res[p]["x1"]["legs_with_funding_gap_in_holding"] for p in PERIODS),
+         "ineligible_data_gap": sum(res[p]["x1"].get("ineligible_data_gap", 0) for p in PERIODS)}
     f.update({k: sum(get(bh[p]["x1"]) for p in PERIODS) for k, get in BENCHMARK_DEFECT_KEYS.items()})
     if market is not None:
         f["duplicate_funding_rows_same_value"] = sum((market[a].get("load_audit") or {}).get("duplicates_same_value", 0)
@@ -756,40 +760,50 @@ def benchmark_defect_periods(bh):
     return out
 
 
-def track_status(track, bad_periods):
-    """pass | fail (aspoň jedno porušené kritérium nezávislé na vadném benchmarku) | unknown (všechna porušená kritéria
-    závisí na benchmarku s blokující závadou ⇒ zamítnutí nelze prokázat)."""
-    failing = [c for c, ok in track.items() if not ok]
-    if not failing:
-        return "pass", []
-    reliable = [c for c in failing if not (set(BENCHMARK_DEPENDENCY.get(c, tuple(PERIODS))) & set(bad_periods))]
-    return ("fail", reliable) if reliable else ("unknown", failing)
+# Kolo 9, Q1: závady strategie podle varianty a období (klíč výsledku run() → název v registru DATA_DEFECTS).
+STRATEGY_DEFECT_KEYS = {
+    "edge_funding_events": "edge_funding_events_excluded",
+    "unfilled_entry_legs": "unfilled_entry_legs",
+    "legs_with_price_fallback": "legs_with_price_fallback",
+    "legs_with_funding_gap_in_holding": "legs_with_funding_gap_in_holding",
+    "ineligible_data_gap": "ineligible_data_gap",
+}
 
 
-def final_verdict(track_a, track_b, robust, flags, bench_bad_periods=None):
-    """Datová brána na úrovni finálního verdiktu (kolo 6 bod 3, kolo 8 bod 1).
-    - robustnost (DSR, sousedé, walk-forward) benchmark nepoužívá ⇒ její selhání = ZAMÍTNUTO bez ohledu na benchmark;
-    - prošla-li stopa: blokující závada (strategie nebo benchmarku) ⇒ NEROZHODNUTO, jinak KANDIDÁT;
-    - neprošla žádná: je-li některá stopa „unknown“ (zamítnutí stojí jen na kritériích s vadným benchmarkem) ⇒ NEROZHODNUTO,
-      jinak ZAMÍTNUTO. Závady strategie zamítnutí nemění (otevřená otázka pro kolo 9).
-    Vrací (verdikt, blokující závady, detail)."""
-    bad = dict(bench_bad_periods or {})
+def _gate():
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+    from tools.research import decision_gate
+    return decision_gate
+
+
+def strategy_defects(r):
+    """Blokující závady jednoho běhu run() (jedna varianta, jedno období, x1)."""
+    return {k: r.get(src, 0) for k, src in STRATEGY_DEFECT_KEYS.items() if r.get(src, 0) and DATA_DEFECTS[k] == "blocking"}
+
+
+def robustness_context(dsr, dsr_defects, nb_ctx, wf_ctx):
+    """Kolo 9, Q3: podklady robustních testů včetně závad zasažených dat (DSR ← validace zvolené varianty, sousedé ←
+    validace sousedních variant, walk-forward ← každý fold zvlášť; fold bez obchodů = nehodnotitelný)."""
+    return {"dsr": dsr["dsr"], "dsr_defects": dsr_defects, "neighbors": nb_ctx, "wf": wf_ctx}
+
+
+def robust_ctx_from_flags(robust):
+    """Pro volání bez podrobného kontextu (unit testy): robustní booleany jako čisté výsledky."""
+    ok = lambda k: robust.get(k, True)
+    return {"dsr": 1.0 if ok("dsr_ge_0_95") else 0.0, "dsr_defects": {},
+            "neighbors": {"n": (1.0 if ok("neighbors_val_x2_profit") else -1.0, {})},
+            "wf": {y: ((1.0 if ok("walk_forward_ge_3_of_4") or i == 0 else -1.0), 1, {}) for i, y in enumerate("abcd")}}
+
+
+def final_verdict(track_a, track_b, robust, flags, bench_bad_periods=None, strat_bad_periods=(), global_defects=None,
+                  robust_ctx=None):
+    """Datová brána na úrovni finálního verdiktu (kolo 6 bod 3, kolo 8 bod 1, kolo 9 Q1/Q3) přes tools/research/
+    decision_gate.decide. Vrací (verdikt, blokující závady, detail)."""
     blocking = blocking_defects(flags)
-    sa, sb = track_status(track_a, bad), track_status(track_b, bad)
-    detail = {"track_a": sa[0], "track_b": sb[0], "track_a_reasons": sa[1], "track_b_reasons": sb[1],
-              "benchmark_defect_periods": bad, "robust": all(robust.values())}
-    if not all(robust.values()):
-        return "ZAMÍTNUTO", blocking, detail
-    if "pass" in (sa[0], sb[0]):
-        if blocking:
-            return ("NEROZHODNUTO — datové závady (hrany/mezery fundingu, náhradní ceny, neotevřené nohy, vadný benchmark): "
-                    + ", ".join(sorted(blocking))), blocking, detail
-        return "KANDIDÁT NA FORWARD PAPER", blocking, detail
-    if "unknown" in (sa[0], sb[0]):
-        return ("NEROZHODNUTO — zamítnutí stojí jen na kritériích s vadným benchmarkem: "
-                + ", ".join(sorted(set(sa[1] if sa[0] == "unknown" else []) | set(sb[1] if sb[0] == "unknown" else [])))
-                ), blocking, detail
-    return "ZAMÍTNUTO", blocking, detail
+    verdict, detail = _gate().decide(track_a, track_b, robust_ctx or robust_ctx_from_flags(robust),
+                                     strat_bad=tuple(strat_bad_periods), bench_bad=tuple(bench_bad_periods or {}),
+                                     global_defects=global_defects, blocking=blocking)
+    return verdict, blocking, detail
 
 
 LOCK_FILE = ".run.lock"
@@ -1081,7 +1095,15 @@ def _execute(mode, args, out):
                  "bh_vol_matched_x1": {p: vol_matched(rets_store[(ctag, p, 1)], bh_rets[(p, 1)])
                                        for p in ("validation", "final_test")}}
     flags = defect_flags(res, bh, market)
-    verdict, blocking, verdict_detail = final_verdict(track_a, track_b, robust, flags, benchmark_defect_periods(bh))
+    strat_bad = [p for p in PERIODS if strategy_defects(res[p]["x1"])]
+    global_defects = {f"{tag}:{k}": v for tag in results for k, v in strategy_defects(results[tag]["tuning"]["x1"]).items()}
+    nb_ctx = {g: (nb[g], strategy_defects(results[g]["validation"]["x1"])) for g in nb}
+    wf_ctx = {y: (r["net_pnl"], r["trades"], strategy_defects(r)) for y, r in wf.items()}
+    flags["walk_forward_defects"] = sum(1 for v in wf_ctx.values() if v[2])
+    flags["neighbor_defects"] = sum(1 for v in nb_ctx.values() if v[1])
+    rctx = robustness_context(dsr, strategy_defects(res["validation"]["x1"]), nb_ctx, wf_ctx)
+    verdict, blocking, verdict_detail = final_verdict(track_a, track_b, robust, flags, benchmark_defect_periods(bh),
+                                                      strat_bad, global_defects, rctx)
     payload = {"protocol": "research/funding_dispersion/PROTOCOL.md", "chosen": ctag,
                "tuning_selection_x1": tune, "strategy": results, "buy_hold_equal_8": bh,
                "walk_forward_x2": wf,
