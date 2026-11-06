@@ -23,6 +23,11 @@ _cache = {}
 _task = None
 
 
+# 2026-11-06: owner approved pausing both swing families after the read-only audit.
+# Paused = no new entries; open positions keep stop/trailing/exit management.
+PAUSED_FAMILIES = frozenset({'supertrend_4h', 'aroon_1h_4h'})
+
+
 def iso(ms):
     return datetime.fromtimestamp(ms / 1000, timezone.utc).isoformat()
 
@@ -145,6 +150,7 @@ def advance(state, family, quotes, frames, now):
         stamp = d['candle']
         if s['seen'].get(sym,0) >= stamp: continue
         s['seen'][sym] = stamp  # consume each candle even if no slot or missing/old signal
+        if family in PAUSED_FAMILIES: continue  # owner pause 2026-11-06: no new entries, exits keep running
         side = d['side']
         if not side or stamp < s['activated_at'] or not 0 <= now-stamp <= ENTRY_WINDOW: continue
         if sym in s['positions'] or sym in just_closed or len(s['positions']) >= 2 or now < s['cooldown'].get(sym,0): continue
@@ -268,7 +274,7 @@ def snapshot():
                 positions.append(dict(p,current_price=q['price'] if q else None,
                     unrealized_net_pnl=net(p,q['price'],now)[0] if q else None,price_stale=stale))
         age = now-datetime.fromisoformat(s['last_cycle_at']).timestamp()*1000 if s and s.get('last_cycle_at') else float('inf')
-        accounts.append(dict(id=family,**config,mode='PAPER',build=BUILD,risk_pct=.5,
+        accounts.append(dict(id=family,**config,mode='PAPER',build=BUILD,risk_pct=.5,paused=family in PAUSED_FAMILIES,
             balance=s['balance'] if s else None,equity=s['equity'] if s and not s.get('equity_stale') and age<45000 else None,
             net_pnl=s['balance']-10000 if s else None,max_drawdown_pct=s['max_drawdown_pct'] if s else None,
             trades_count=s['count'] if s else 0,win_rate=100*s['wins']/s['count'] if s and s['count'] else None,

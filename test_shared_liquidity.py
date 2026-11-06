@@ -106,3 +106,16 @@ def test_combined_routes_local_and_pause_preserved():
             for endpoint in (app.liquidity_v2_status,app.liquidity_hunter_status):
                 assert json.loads((await endpoint()).body)['execution']=='shared-paid-service'
     asyncio.run(run())
+
+
+@pytest.mark.owner_pause
+def test_owner_pause_20261106_whale_and_bestof_block_entries_only():
+    import app_v8_fly as app
+    assert {'FLY','FAST','LEADLAG','TV','WHALE','BEST'} <= app.PAUSED_BOTS
+    for bot in ('WHALE','BEST'):
+        assert app.portfolio_entry_allowed(bot,'XRPUSDT','LONG') == (False,'USER_PAUSED')
+    assert app.portfolio_entry_allowed('LIQUIDITY','XRPUSDT','LONG')[0] is True
+    import app_bestof_core as best
+    import app_blue_whale_mirror as whale
+    assert best.portfolio_entry_allowed('BEST','XRPUSDT','LONG')[0] is False
+    assert whale.portfolio_entry_allowed('WHALE','XRPUSDT','LONG')[0] is False

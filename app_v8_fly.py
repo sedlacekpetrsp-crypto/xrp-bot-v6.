@@ -54,7 +54,10 @@ def _portfolio_reference_balance():
     return min(values) if values else 10000.0
 
 # User-requested pause, 2026-10-07. Keep portfolios and trade history intact.
-PAUSED_BOTS = frozenset({"FLY", "FAST", "LEADLAG", "TV"})
+# 2026-11-06: owner approved pausing WHALE (blue whale mirror incl. trendline) and BEST (BEST-OF)
+# after the read-only audit (reports/production-bot-audit-20261106.md). Entries blocked; open
+# positions keep their exit management; balances and history untouched.
+PAUSED_BOTS = frozenset({"FLY", "FAST", "LEADLAG", "TV", "WHALE", "BEST"})
 
 def portfolio_entry_allowed(bot_name, symbol, side):
     """Paused bots cannot enter; existing positions retain their exit management."""

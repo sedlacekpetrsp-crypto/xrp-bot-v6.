@@ -15,6 +15,9 @@ def ready():
 def opened(side=1): return s.advance(ready(),F,quote(),frame(side),NOW)[0]
 
 class Paper(unittest.TestCase):
+ def setUp(self):
+  # behaviour tests of the strategy itself; the owner pause (PAUSED_FAMILIES) is tested separately below
+  self._pause=patch.object(s,'PAUSED_FAMILIES',frozenset());self._pause.start();self.addCleanup(self._pause.stop)
  def test_snapshot_initial_and_running(self):
   with patch.object(s,"runtime",{}):
    data=s.snapshot();self.assertEqual(len(data["accounts"]),2)
@@ -89,3 +92,16 @@ class Paper(unittest.TestCase):
    self.assertEqual(len(db['trades']),1);self.assertEqual(result['count'],1)
 
 if __name__=='__main__':unittest.main()
+
+
+class OwnerPause(unittest.TestCase):
+ def test_paused_families_do_not_open_but_still_close(self):
+  self.assertEqual(s.PAUSED_FAMILIES,frozenset({'supertrend_4h','aroon_1h_4h'}))
+  for family in s.CONFIG:
+   st,_=s.advance(ready(),family,quote(),frame(),NOW)
+   self.assertFalse(st['positions'])
+  with patch.object(s,'PAUSED_FAMILIES',frozenset()):
+   st=opened()
+  after,trades=s.advance(st,F,quote(90),{},NOW+1000)
+  self.assertFalse(after['positions']);self.assertEqual(len(trades),1)
+  self.assertTrue(all(a['paused'] for a in s.snapshot()['accounts']))
