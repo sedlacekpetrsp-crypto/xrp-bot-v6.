@@ -144,3 +144,22 @@ implementované (kód implementuje A). Audit dat (`AUDIT`) zámek neblokuje. Roz
   v `FUNDING_SEMANTICS.json`. Kód (`spacing_ok`, `funding_chain_gaps`) přepnut z A na B; vliv jen SOLUSDT 2022-11-09…19.
 - Zámek výkonnosti nově vyžaduje i `performance_hold = false`; zapsané rozhodnutí má `true` (pokyn vlastníka nespouštět
   výkonnost) ⇒ runner výpočet odmítne, dokud to vlastník neuvolní.
+
+## Dodatek 6 (2026-11-06, oponentura kola 4–6 ChatGPT/Claude; výkonnost dál nespuštěna, návrh na kontrolu)
+- **Brána výkonnosti (bod 5).** Režim musí být explicitní: `RUN_REQUEST` začíná `AUDIT` nebo `PERF`, cokoli jiného ⇒ kód 4
+  bez metrik (dřív „vše nezačínající AUDIT = výkon“). Před načtením dat musí `FUNDING_SEMANTICS.json` kromě dosavadních polí
+  obsahovat `audit_id`, `impl_sha256` (= otisk funkcí `spacing_ok`, `funding_chain_gaps`, `funding_window`,
+  `funding_completeness`; vypíše `--print-fingerprints`) a `data_manifest_sha256` z auditu. Po načtení a před první simulací
+  se otisk skutečně načtených archivů porovná s auditovaným; neshoda ⇒ kód 3, nic se nezapisuje. Audit nevolá simulaci
+  a do `audit_manifest.json` uvede své soubory a označí případné staré `results.json`/`trades.csv` jako cizí.
+- **Hranice fundingu (bod 2).** Jediná funkce `funding_window`: události s vstup < t < výstup, pro strategii i benchmark.
+- **Úplnost fundingu benchmarku (bod 1).** Pro každé skutečně držené aktivum B&H: nesouvislosti, odhad chybějících událostí
+  a neznámé pokrytí (bez události před vstupem). Chybějící sazba se nedosazuje nulou. Počty z x1 každého období, bez násobení
+  scénáři nákladů. Neznámé pokrytí v držení strategie se počítá jako závada (dřív `None` ⇒ 0).
+- **Registr datových závad (bod 3).** Každé počítadlo verdiktu má třídu `blocking`/`informational`; neregistrované ⇒ chyba.
+  Blokující > 0 u jinak úspěšného kandidáta ⇒ NEROZHODNUTO. Nově blokují i závady benchmarku (mezery fundingu, náhradní
+  ceny, nedostupnost na začátku).
+- **Nevyplněné vstupy (bod 4).** Kromě `unfilled_legs` záznam `unfilled_entries` (aktivum, strana, čas, plánovaný notional
+  z equity při rozhodnutí, důvod); bez fiktivní pozice, poplatku či cooldownu.
+- Zapsané rozhodnutí v `FUNDING_SEMANTICS.json` nová pole nemá a `performance_hold` zůstává `true` ⇒ výkonnost je dál
+  odmítnuta. Doplnit pole a uvolnit smí jen vlastník.

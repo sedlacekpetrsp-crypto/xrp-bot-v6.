@@ -10,6 +10,13 @@ DAY = fd.DAY_MS
 START = date(2021, 1, 4)  # pondělí
 
 
+def valid_decision(manifest=(), missing=(), **kw):
+    """Úplný záznam rozhodnutí (kolo 6, bod 5) pro syntetické testy brány."""
+    return {"semantics": "B", "evidence": "test", "decided_utc": "test", "audit_id": "run-test",
+            "impl_sha256": fd.impl_fingerprint(), "data_manifest_sha256": fd.manifest_fingerprint(list(manifest), list(missing)),
+            "performance_hold": False, **kw}
+
+
 def make_market(days=60, price=None, rates=None, start=date(2020, 12, 1)):
     """price(a, t) a rates(a, t) volitelné; výchozí cena 100, funding 0 po 8 h."""
     t0 = fd.ms_of(start)
@@ -284,9 +291,8 @@ def test_R4_no_trades_still_writes_results_with_null_dsr(tmp_path, monkeypatch):
         market[a]["first_funding"] = None
     monkeypatch.setattr(fd, "load", lambda cache: (market, [], [], []))
     import json as _j
-    (tmp_path / fd.SEMANTICS_FILE).write_text(_j.dumps({"semantics": "B", "evidence": "test", "decided_utc": "test",
-                                                         "performance_hold": False}))
-    fd.main(["--outdir", str(tmp_path)])
+    (tmp_path / fd.SEMANTICS_FILE).write_text(_j.dumps(valid_decision()))
+    fd.main(["--outdir", str(tmp_path), "--mode", "perf"])
     import json
     r = json.loads((tmp_path / "results.json").read_text())
     assert r["dsr_validation_x1"]["dsr"] is None and r["dsr_validation_x1"]["undefined_reason"]
@@ -389,10 +395,10 @@ def test_gate_refuses_performance_without_semantics_decision(tmp_path, monkeypat
     called = []
     monkeypatch.setattr(fd, "load", lambda cache: called.append(1) or ({}, [], [], []))
     with pytest.raises(SystemExit) as e:
-        fd.main(["--outdir", str(tmp_path)])
+        fd.main(["--outdir", str(tmp_path), "--mode", "perf"])
     assert e.value.code == 3 and called == []  # odmítnuto ještě před načtením dat
     import json
-    ok = {"semantics": "B", "evidence": "run 1", "decided_utc": "t", "performance_hold": False}
+    ok = valid_decision()
     for bad in ({**ok, "semantics": "C"}, {"semantics": "B"}, {**ok, "semantics": "A"},  # A ≠ implementace
                 {**ok, "performance_hold": True}, {k: v for k, v in ok.items() if k != "performance_hold"}):
         (tmp_path / fd.SEMANTICS_FILE).write_text(json.dumps(bad))
@@ -435,3 +441,242 @@ def test_semantics_B_real_SOL_november_2022_pattern():
     assert fd.funding_chain_gaps(m, lo, hi) == 0 and fd.funding_chain_gaps(m, lo - 1, hi) is None
     del f[ms("2022-11-10T06")]  # skutečně chybějící událost se dál označí
     assert fd.funding_chain_gaps(fd.prepare({}, f), lo, hi) == 1
+
+
+# ---- kolo 6 (oponentura kol 4–6): testy DOKAZUJÍCÍ OPRAVU ----
+BH_DAY = date(2021, 1, 4)
+
+
+def _flat_market(rate=0.01, drop=()):
+    """Ploché ceny 100, funding `rate` v 00/08/16 UTC; drop = [(aktivum|None, ts)] odstraní událost (None = všem)."""
+    m = make_market(rates=lambda a, t: rate)
+    for who, ts in drop:
+        for a in fd.ASSETS if who is None else (who,):
+            f = {t: (r, 8.0) for t, r in m[a]["funding"].items() if t != ts}
+            m[a] = fd.prepare(m[a]["bars"], f)
+    return m
+
+
+def test_K6_1_bh_complete_series_reference_values():
+    bh, _ = fd.buy_hold(_flat_market(), BH_DAY, BH_DAY, 1)
+    assert bh["funding"] == pytest.approx(-199.77, abs=1e-4) and bh["net_pnl"] == pytest.approx(-222.7568, abs=1e-4)
+    assert (bh["funding_missing_events"], bh["funding_discontinuities"], bh["funding_unknown_coverage_assets"]) == (0, 0, 0)
+
+
+def test_K6_1_bh_gap_middle_is_counted_per_asset_not_hidden():
+    t08 = fd.ms_of(BH_DAY) + 8 * H
+    bh, _ = fd.buy_hold(_flat_market(drop=[(None, t08)]), BH_DAY, BH_DAY, 1)
+    assert bh["funding"] == pytest.approx(-99.885, abs=1e-4)  # účtování beze změny, chybějící sazba ≠ 0 se neodhaduje
+    assert bh["funding_missing_events"] == 8 and bh["funding_discontinuities"] == 8  # 8 aktiv PR #29, ne 12
+    assert all(c == {"discontinuities": 1, "missing_events": 1, "unknown_coverage": False}
+               for c in bh["funding_completeness"].values())
+
+
+def test_K6_1_bh_gap_prefix_suffix_and_unknown_coverage():
+    t0 = fd.ms_of(BH_DAY)
+    pre, _ = fd.buy_hold(_flat_market(drop=[("BTCUSDT", t0)]), BH_DAY, BH_DAY, 1)  # chybí událost, na kterou navazuje držení
+    suf, _ = fd.buy_hold(_flat_market(drop=[("ETHUSDT", t0 + 16 * H)]), BH_DAY, BH_DAY, 1)  # chybí poslední před prodejem
+    assert (pre["funding_missing_events"], pre["funding_discontinuities"]) == (1, 1)
+    assert (suf["funding_missing_events"], suf["funding_discontinuities"]) == (1, 1)
+    m = _flat_market()
+    f = {t: (r, 8.0) for t, r in m["XRPUSDT"]["funding"].items() if t > t0}  # funding začíná až po nákupu
+    m["XRPUSDT"] = fd.prepare(m["XRPUSDT"]["bars"], f)
+    unk, _ = fd.buy_hold(m, BH_DAY, BH_DAY, 1)
+    assert unk["funding_unknown_coverage_assets"] == 1
+
+
+def test_K6_1_negative_rate_gap_blocks_too():
+    t08 = fd.ms_of(BH_DAY) + 8 * H
+    bh, _ = fd.buy_hold(_flat_market(rate=-0.01, drop=[(None, t08)]), BH_DAY, BH_DAY, 1)
+    assert bh["funding"] > 0 and bh["funding_missing_events"] == 8
+    flags = {k: 0 for k in fd.DATA_DEFECTS} | {"benchmark_funding_missing_events": bh["funding_missing_events"]}
+    assert fd.final_verdict(True, False, {"r": True}, flags)[0].startswith("NEROZHODNUTO")
+
+
+def test_K6_2_funding_window_open_both_ends_shared_by_strategy_and_benchmark():
+    m = _flat_market()["BTCUSDT"]
+    t0 = fd.ms_of(BH_DAY)
+    assert fd.funding_window(m, t0, t0 + DAY) == [t0 + 8 * H, t0 + 16 * H]  # 00:00 vstup a 00:00 výstup se neúčtují
+    # tatáž hranice v kontrole úplnosti: chybějící událost přesně ve výstupu není mezera
+    f = {t: (r, 8.0) for t, r in m["funding"].items() if t != t0 + DAY}
+    assert fd.funding_completeness(fd.prepare(m["bars"], f), t0, t0 + DAY)["missing_events"] == 0
+    # strategie: událost v hodině vstupu / uvnitř / ve výstupu
+    D = fd.ms_of(START)
+    entry, exit_ = D + H, D + 7 * DAY + H
+    mm = make_market(rates=lambda a, t: ranked_rates(a, t) if t <= D else 0.0)
+    for a in fd.ASSETS:
+        f = dict(mm[a]["funding"])
+        f[entry] = f[exit_] = f[entry + 3 * H] = 0.002
+        mm[a] = fd.prepare(mm[a]["bars"], f)
+    legs, _, _ = fd.simulate(mm, START, date(2021, 1, 11), 7, 7, 1)
+    for lg in [x for x in legs if x["entry_ts"] == entry]:
+        assert lg["funding"] == pytest.approx(-lg["side"] * 0.002 * lg["qty"] * 100)  # jen událost uvnitř
+
+
+def test_K6_2_completeness_discontinuities_equal_chain_gaps():
+    m = _flat_market(drop=[("BTCUSDT", fd.ms_of(BH_DAY) + 8 * H)])["BTCUSDT"]
+    lo, hi = fd.ms_of(BH_DAY) - 3 * DAY, fd.ms_of(BH_DAY) + 2 * DAY
+    assert fd.funding_completeness(m, lo, hi)["discontinuities"] == fd.funding_chain_gaps(m, lo, hi - 1) == 1
+
+
+def test_K6_3_registry_every_flag_classified_unknown_raises_informational_does_not_block():
+    m = make_market(rates=ranked_rates)
+    res = {p: {"x1": fd.run(m, START, date(2021, 1, 20), 1, 7, 7, "t")[0]} for p in fd.PERIODS}
+    bh = {p: {"x1": fd.buy_hold(m, START, date(2021, 1, 20), 1)[0]} for p in fd.PERIODS}
+    flags = fd.defect_flags(res, bh, m)
+    assert set(flags) <= set(fd.DATA_DEFECTS) and set(fd.DATA_DEFECTS.values()) == {"blocking", "informational"}
+    with pytest.raises(KeyError):
+        fd.blocking_defects({**flags, "nove_pocitadlo": 1})
+    info = {k: 0 for k in fd.DATA_DEFECTS} | {"duplicate_funding_rows_same_value": 5}
+    assert fd.final_verdict(True, True, {"r": True}, info) == ("KANDIDÁT NA FORWARD PAPER", {})
+    assert fd.DATA_DEFECTS["benchmark_price_fallbacks"] == "blocking"
+
+
+def test_K6_3_benchmark_price_fallback_counted():
+    m = _flat_market()
+    b = dict(m["BTCUSDT"]["bars"])
+    del b[fd.ms_of(BH_DAY) + 8 * H]  # chybí svíčka v čase fundingu, předchozí close je čerstvý
+    m["BTCUSDT"] = fd.prepare(b, {t: (r, 8.0) for t, r in m["BTCUSDT"]["funding"].items()})
+    bh, _ = fd.buy_hold(m, BH_DAY, BH_DAY, 1)
+    assert bh["price_fallbacks"] == 1
+
+
+def test_K6_4_unfilled_entry_record_without_fake_position_fee_or_cooldown():
+    D = fd.ms_of(START)
+    m = make_market(rates=lambda a, t: 0.0001 * ((fd.ASSETS.index(a) * 3) % 8) if t <= D else 0.0)
+    _, _, d0 = fd.simulate(m, START, date(2021, 1, 11), 7, 7, 1)
+    gone = d0[0]["longs"][0]
+    b = dict(m[gone]["bars"])
+    del b[D + H]
+    m[gone] = fd.prepare(b, m[gone]["funding"])
+    legs, curve, d1 = fd.simulate(m, START, date(2021, 1, 11), 7, 7, 1)
+    assert d1[0]["unfilled_entries"] == [{"asset": gone, "side": 1, "entry_utc": "2021-01-04T01:00:00+00:00",
+                                         "planned_notional": 1000.0, "reason": "missing_entry_bar"}]
+    c = fd.FEE + fd.SLIP
+    assert len(legs) == 3 and curve[date(2021, 1, 11)] == pytest.approx(fd.START_EQUITY - 6 * 1000 * c)
+    r = fd.run(m, START, date(2021, 1, 11), 1, 7, 7, "t")[0]
+    assert r["unfilled_entry_legs"] == 1 and r["unfilled_entries"][0]["reason"] == "missing_entry_bar"
+
+
+# ---- kolo 6, bod 5: brána výkonnosti ----
+def _boom(*a, **k):
+    raise AssertionError("simulace nesmí být zavolána")
+
+
+def _guard(monkeypatch, market=None, manifest=()):
+    calls = {"load": 0}
+
+    def load(cache):
+        calls["load"] += 1
+        return market or {}, list(manifest), [], []
+    monkeypatch.setattr(fd, "load", load)
+    for f in ("simulate", "run", "buy_hold"):
+        monkeypatch.setattr(fd, f, _boom)
+    return calls
+
+
+@pytest.mark.parametrize("decision", [None, "{nejson", {"semantics": "B"},
+                                      valid_decision(performance_hold=True), valid_decision(audit_id=""),
+                                      valid_decision(impl_sha256="0" * 64), valid_decision(semantics="A")])
+def test_K6_5_invalid_decision_no_load_no_sim_no_metrics(tmp_path, monkeypatch, decision):
+    import json
+    if decision is not None:
+        (tmp_path / fd.SEMANTICS_FILE).write_text(decision if isinstance(decision, str) else json.dumps(decision))
+    calls = _guard(monkeypatch)
+    with pytest.raises(SystemExit) as e:
+        fd.main(["--outdir", str(tmp_path), "--mode", "perf"])
+    assert e.value.code == 3 and calls["load"] == 0
+    assert not any((tmp_path / f).exists() for f in ("results.json", "trades.csv", "data_source.json"))
+
+
+def test_K6_5_changed_data_loads_but_never_simulates(tmp_path, monkeypatch):
+    import json
+    audited = [{"url": "u1", "sha256": "a" * 64, "rows": 1}]
+    (tmp_path / fd.SEMANTICS_FILE).write_text(json.dumps(valid_decision(manifest=audited)))
+    calls = _guard(monkeypatch, manifest=[{"url": "u1", "sha256": "b" * 64, "rows": 1}])
+    with pytest.raises(SystemExit) as e:
+        fd.main(["--outdir", str(tmp_path), "--mode", "perf"])
+    assert e.value.code == 3 and calls["load"] == 1
+    assert not any((tmp_path / f).exists() for f in ("results.json", "trades.csv", "data_source.json"))
+
+
+def test_K6_5_valid_gate_reaches_simulation_with_mocked_performance(tmp_path, monkeypatch):
+    import json
+    audited = [{"url": "u1", "sha256": "a" * 64, "rows": 1}]
+    (tmp_path / fd.SEMANTICS_FILE).write_text(json.dumps(valid_decision(manifest=audited)))
+    _guard(monkeypatch, market=make_market(rates=ranked_rates), manifest=audited)
+
+    class Reached(Exception):
+        pass
+
+    def reached(*a, **k):
+        raise Reached
+    monkeypatch.setattr(fd, "run", reached)
+    with pytest.raises(Reached):
+        fd.main(["--outdir", str(tmp_path), "--mode", "perf"])
+
+
+def test_K6_5_audit_never_simulates_and_disowns_old_results(tmp_path, monkeypatch):
+    import json
+    (tmp_path / "results.json").write_text("{\"stary\": true}")
+    _guard(monkeypatch, market=make_market(rates=ranked_rates))
+    fd.main(["--outdir", str(tmp_path), "--mode", "audit"])
+    man = json.loads((tmp_path / fd.AUDIT_MANIFEST_FILE).read_text())
+    assert man["mode"] == "audit" and "results.json" not in man["produced_by_this_run"]
+    assert man["preexisting_performance_files_not_from_this_run"] == ["results.json"]
+    assert json.loads((tmp_path / "results.json").read_text()) == {"stary": True}  # nepřepsáno, nevydáváno za nové
+
+
+@pytest.mark.parametrize("text,code", [("BACKTEST 2026", 4), ("", 4), ("audit malými", 4)])
+def test_K6_5_unknown_mode_refused(tmp_path, monkeypatch, text, code):
+    req = tmp_path / "RUN_REQUEST"
+    req.write_text(text)
+    calls = _guard(monkeypatch)
+    with pytest.raises(SystemExit) as e:
+        fd.main(["--outdir", str(tmp_path), "--request-file", str(req)])
+    assert e.value.code == code and calls["load"] == 0
+
+
+def test_K6_5_missing_or_conflicting_mode_refused(tmp_path, monkeypatch):
+    calls = _guard(monkeypatch)
+    for argv in ([], ["--audit-only", "--mode", "perf"]):
+        with pytest.raises(SystemExit) as e:
+            fd.main(["--outdir", str(tmp_path), *argv])
+        assert e.value.code == 4
+    with pytest.raises(SystemExit) as e:
+        fd.main(["--outdir", str(tmp_path), "--mode", "backtest"])  # argparse choices
+    assert e.value.code == 2 and calls["load"] == 0
+
+
+def test_K6_5_committed_request_is_audit_and_decision_still_blocks():
+    from pathlib import Path
+    here = Path(fd.__file__).parent
+    assert fd.mode_from_request(here / "RUN_REQUEST") == "audit"
+    ok, why = fd.semantics_gate(here)
+    assert ok is False and "performance_hold" in why
+
+
+def test_K6_integration_verdict_blocked_by_benchmark_gap_else_candidate(tmp_path, monkeypatch):
+    """Celá větev main → buy_hold → defect_flags → final_verdict → results.json na syntetických datech; výkonnostní
+    kritéria a robustnost vynuceně splněné (mock), aby rozhodovala jen datová brána."""
+    import json
+    monkeypatch.setattr(fd, "PERIODS", {"tuning": ("2021-01-04", "2021-01-17"), "validation": ("2021-01-18", "2021-01-31"),
+                                        "final_test": ("2021-02-01", "2021-02-14")})
+    monkeypatch.setattr(fd, "WF_YEARS", ())
+    monkeypatch.setattr(fd, "evaluate", lambda res, bh: ({"A": True}, {"B": True}))
+    monkeypatch.setattr(fd, "robustness_checks", lambda dsr, nb, wf: {"mock": True})
+    monkeypatch.setattr(fd, "safe_dsr", lambda r, n, v: {"dsr": None, "undefined_reason": "mock"})
+    (tmp_path / fd.SEMANTICS_FILE).write_text(json.dumps(valid_decision()))
+
+    def go(market):
+        monkeypatch.setattr(fd, "load", lambda cache: (market, [], [], []))
+        fd.main(["--outdir", str(tmp_path), "--mode", "perf"])
+        return json.loads((tmp_path / "results.json").read_text())
+    clean = go(make_market(days=90, rates=ranked_rates))
+    assert clean["verdict"] == "KANDIDÁT NA FORWARD PAPER" and clean["blocking_data_defects"] == {}
+    bad = make_market(days=90, rates=ranked_rates)
+    t = fd.ms_of(date(2021, 1, 20)) + 8 * H  # mezera fundingu BTC ve validaci (zasáhne i benchmark)
+    bad["BTCUSDT"] = fd.prepare(bad["BTCUSDT"]["bars"], {k: v for k, v in bad["BTCUSDT"]["funding"].items() if k != t})
+    out = go(bad)
+    assert out["verdict"].startswith("NEROZHODNUTO")
+    assert out["blocking_data_defects"].get("benchmark_funding_missing_events") == 1
