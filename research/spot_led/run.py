@@ -139,8 +139,11 @@ def load(cache, fetcher=fetch):
 
 def patch_from_daily(store, asset, kind, cache, fetcher=fetch, manifest=None, audit=None):
     """Kolo 10: mezery uvnitř řady doplnit VÝHRADNĚ z oficiálních denních archivů Binance Vision (sha256 v manifestu;
-    XRP perp 2022-02-26…28 a 2022-04-01…02 v měsíčním archivu chybí, v denním jsou). Konflikt ⇒ chyba (add_row).
-    Spotové výpadky 2020–2023 chybí i v denních a 1m archivech (skutečná údržba burzy) ⇒ zůstanou mezerou."""
+    XRP perp 2022-02-26…28 a 2022-04-01…02 v měsíčním archivu chybí, v denním jsou). Spotové výpadky 2020–2023 chybí
+    i v denních a 1m archivech (skutečná údržba burzy) ⇒ zůstanou mezerou.
+    Kolo 10 (nález R10-1, audit run 42275871499): spot 2020-12-21 13:15–13:45 má měsíční a denní archiv JINÉ hodnoty
+    (a 1m agregace třetí objem). Konflikt se nepřepisuje ani nevybírá: ponechá se měsíční řádek, čas se zapíše
+    do `conflicts` a v období je to blokující závada `archive_conflicts` (data v okně jsou nespolehlivá)."""
     ts = sorted(store)
     days = set()
     for x, y in zip(ts, ts[1:]):
@@ -150,7 +153,7 @@ def patch_from_daily(store, asset, kind, cache, fetcher=fetch, manifest=None, au
             t += BAR
     base = "spot/daily/klines" if kind == "spot" else "futures/um/daily/klines"
     parser = parse_spot if kind == "spot" else parse_perp
-    added, statuses = 0, {}
+    added, statuses, conflicts = 0, {}, []
     for d in sorted(days):
         url = f"https://data.binance.vision/data/{base}/{asset}/5m/{asset}-5m-{d.isoformat()}.zip"
         p = Path(cache) / f"{kind}_daily" / url.rsplit("/", 1)[1]
@@ -167,12 +170,14 @@ def patch_from_daily(store, asset, kind, cache, fetcher=fetch, manifest=None, au
         if manifest is not None:
             manifest.append({"url": url, "sha256": hashlib.sha256(payload).hexdigest(), "rows": len(rows),
                              "daily_patch": True})
-        before = len(store)
-        scratch = {"duplicates_same_value": 0}
         for r in rows:
-            add_row(store, r[0], r[1:], asset, kind, scratch)
-        added += len(store) - before
-    return {"rows_added": added, "days": statuses}
+            if r[0] in store:
+                if store[r[0]] != r[1:]:
+                    conflicts.append(r[0])
+                continue
+            store[r[0]] = r[1:]
+            added += 1
+    return {"rows_added": added, "days": statuses, "conflicts": sorted(conflicts)}
 
 
 def add_row(store, ts, value, asset, kind, audit):
@@ -472,13 +477,16 @@ def trade_metrics(trades, start, end):
 def run(market, start, end, mult, th, hold, variant, delay_bars=0):
     trades, curve, unfilled = simulate_full(market, start, end, th, hold, mult, variant, delay_bars)
     s_ms, e_ms = ms_of(start), ms_of(end) + DAY_MS
-    lost = 0
-    for a in ASSETS:  # kolo 9: 5m časy období bez příznaku (chybí spot/perp svíčka T nebo T − 5 m) = ztracené signály
+    lost, conflicts = 0, 0
+    for a in ASSETS:
+        la = market[a].get("load_audit") or {}
+        conflicts += sum(1 for k in ("spot_daily_patch", "perp_daily_patch")
+                         for t in (la.get(k) or {}).get("conflicts", []) if s_ms - BAR <= t < e_ms)  # kolo 9: 5m časy období bez příznaku (chybí spot/perp svíčka T nebo T − 5 m) = ztracené signály
         f = market[a]["features"]
         have = bisect.bisect_left(f, (e_ms - BAR,)) - bisect.bisect_left(f, (s_ms - BAR,))
         lost += (e_ms - s_ms) // BAR - have
     cm, rets = curve_metrics(curve, START_EQUITY)
-    return {**cm, **trade_metrics(trades, start, end), "unfilled_entries": len(unfilled), "signal_bars_lost_to_gaps": lost,
+    return {**cm, **trade_metrics(trades, start, end), "unfilled_entries": len(unfilled), "signal_bars_lost_to_gaps": lost, "archive_conflicts": conflicts,
             "unfilled_entry_records": [{"asset": u["asset"], "side": u["side"], "signal_utc": iso(u["signal_ts"]),
                                         "entry_utc": iso(u["entry_ts"]), "planned_notional": round(u["planned_notional"], 6),
                                         "reason": u["reason"]} for u in unfilled]}, trades, rets
@@ -703,7 +711,8 @@ DATA_DEFECTS = {
     "benchmark_funding_unknown_coverage_assets": "blocking",
     "data_gap_exits_within_limit": "informational",  # výstup zpožděný ≤ 60 min podle dodatku 1
     "duplicate_rows_same_value": "informational",
-    "signal_bars_lost_to_gaps": "blocking",  # kolo 9: chybějící svíčky tiše ruší signály ⇒ mění výběr obchodů
+    "signal_bars_lost_to_gaps": "blocking",
+    "archive_conflicts": "blocking",  # kolo 10: měsíční ≠ denní archiv pro tutéž svíčku  # kolo 9: chybějící svíčky tiše ruší signály ⇒ mění výběr obchodů
     "walk_forward_defects": "blocking",
     "neighbor_defects": "blocking",
 }
@@ -722,7 +731,7 @@ BENCHMARK_DEPENDENCY = {c: d["benchmark"] for c, d in _dg.CRITERIA_DATA.items()}
 # Kolo 9, Q1: závady strategie jednoho běhu run() (klíč v registru → klíč výsledku)
 STRATEGY_DEFECT_KEYS = {k: k for k in ("data_gap_unrealizable_exits", "funding_price_fallback_trades", "funding_gap_trades",
                                         "unevaluable_trades", "stale_mtm_trades", "unfilled_entries",
-                                        "signal_bars_lost_to_gaps")}
+                                        "signal_bars_lost_to_gaps", "archive_conflicts")}
 
 
 def blocking_defects(flags):
@@ -739,7 +748,7 @@ def defect_flags(res, bh, market=None):
          "funding_price_fallback_trades": st("funding_price_fallback_trades"),
          "funding_gap_trades": st("funding_gap_trades"), "unevaluable_trades": st("unevaluable_trades"),
          "stale_mtm_trades": st("stale_mtm_trades"), "unfilled_entries": st("unfilled_entries"),
-         "signal_bars_lost_to_gaps": st("signal_bars_lost_to_gaps"),
+         "signal_bars_lost_to_gaps": st("signal_bars_lost_to_gaps"), "archive_conflicts": st("archive_conflicts"),
          "data_gap_exits_within_limit": st("data_gap_exits") - st("data_gap_unrealizable_exits")}
     f.update({k: sum(get(bh[p]["x1"]) for p in PERIODS) for k, get in BENCHMARK_DEFECT_KEYS.items()})
     if market is not None:

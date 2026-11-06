@@ -963,3 +963,27 @@ def test_K10_1_monthly_gap_patched_only_from_official_daily_archive(tmp_path, mo
     assert market["XRPUSDT"]["load_audit"]["perp_daily_patch"]["rows_added"] == 3 and any(x.get("daily_patch") for x in manifest)
     market, _, _, _ = sl.load(tmp_path / "b", fetcher(daily_missing=True))
     assert not any(t in market["XRPUSDT"]["perp"] for t in gap)
+
+
+def test_K10_1_monthly_daily_conflict_recorded_not_overwritten_and_blocking(tmp_path, monkeypatch):
+    """Nález R10-1: spot 2020-12-21 13:15 měsíční ≠ denní archiv. Dřív by add_row shodil celý audit."""
+    monkeypatch.setattr(sl, "ASSETS", ("BTCUSDT",))
+    monkeypatch.setattr(sl, "FIRST_MONTH", (2020, 12))
+    monkeypatch.setattr(sl, "LAST_MONTH", (2020, 12))
+    t0 = sl.ms_of(date(2020, 12, 21))
+    k_row = lambda t, c=1: (t, 1, 1, 1, c, 1, 0, 0, 0, 1, 0, 0)
+
+    def f(url):
+        if "fundingRate" in url:
+            return _zip_csv([(t0, 8, 0.0001)])
+        if "/daily/" in url:
+            return _zip_csv([k_row(t0 + k * BAR, 2 if k == 159 else 1) for k in range(288)])  # 13:15 jiná hodnota
+        return _zip_csv([k_row(t0 + k * BAR) for k in range(288) if not 170 <= k < 216])     # mezera 14:10–17:55
+    market, _, _, _ = sl.load(tmp_path, f)
+    la = market["BTCUSDT"]["load_audit"]["spot_daily_patch"]
+    assert la["conflicts"] == [t0 + 159 * BAR] and market["BTCUSDT"]["spot"][t0 + 159 * BAR][0] == 1.0  # měsíční ponechán
+    for a in ("ETHUSDT", "XRPUSDT"):
+        market[a] = market["BTCUSDT"]
+    monkeypatch.setattr(sl, "ASSETS", ("BTCUSDT", "ETHUSDT", "XRPUSDT"))
+    r = sl.run(market, date(2020, 12, 21), date(2020, 12, 21), 1, 0.65, 15, "t")[0]
+    assert r["archive_conflicts"] == 6 and "archive_conflicts" in sl.strategy_defects(r)  # spot + perp × 3 aktiva
