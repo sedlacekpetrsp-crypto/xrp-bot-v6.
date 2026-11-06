@@ -1,6 +1,6 @@
 # Autopilot STATE — přepisuje se každým během
 
-Poslední aktualizace: 2026-11-06 07:15 UTC (autopilot běh #20, run 42178406243; produkce beze změny; výzkum: ETHBTC mean-reversion zamítnut, PR #20; fronta doplněna o #12–#14, protokol #12 vol-target commitnut).
+Poslední aktualizace: 2026-11-06 09:35 UTC (autopilot běh #21, run 42192244238; produkce beze změny; výzkum R1: přehodnocení #11–#20 stopou B — 0/10 prošlo, PR #21; další R2).
 
 Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h). Vypnout/změnit: claude.ai → plánované úlohy.
 
@@ -25,7 +25,7 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h)
 
 ## Databáze `xrp-bot-db` (1 GB, bez auto-zvětšení)
 
-Poslední kontrola 2026-11-06 07:04 UTC: 219,8 MB = 20,5 % (+0,9 MB za 2 h); produkce beze změny (live edaa938 = HEAD, 0 událostí od 05:00, 0 error logů 05:00–07:04, dup jen id 129, BEST-OF 132 (+1), P/L −3 176,78, testy OK). Předchozí 05:04 UTC: 218,9 MB = 20,4 % (+0,8 MB za 2 h); produkce beze změny (live edaa938 = HEAD, 0 událostí od 03:00, 0 error logů 03:04–05:04, dup jen id 129, BEST-OF 131, P/L −3 176,32, 238 passed). Předchozí 03:04 UTC: 218,1 MB = 20,3 % (+0,8 MB za 2 h); produkce beze změny (live edaa938 = HEAD, 0 událostí od 01:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 176,32, testy OK). Předchozí 01:04 UTC: 217,3 MB = 20,2 % (+0,8 MB za 2 h); produkce 01:04 beze změny (live edaa938 = HEAD, 0 událostí od 23:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 176,32, testy OK). Předchozí 23:03: 216,5 MB = 20,2 % (+0,9 MB za 2 h, trend beze změny); produkce 23:03 beze změny (live edaa938, 0 událostí od 21:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 166,91). Předchozí 21:03: 215,6 MB = 20,1 %. Produkce 21:03 beze změny (live edaa938, 0 událostí od 19:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 166,91, 238 passed). Předchozí 19:04: beze změny (live edaa938 = HEAD, obsahuje da2f665, 0 událostí od 17:00, 0 error logů 17:05–19:05, BEST-OF 131 obchodů, dup_groups jen známý id 129, P/L součet −3 197,26, tests OK).
+Poslední kontrola 2026-11-06 09:04 UTC: 220,6 MB = 20,5 % (+0,8 MB za 2 h); produkce beze změny (live edaa938 = HEAD, 0 událostí od 07:00, 0 error logů 07:00–09:04, dup jen id 129, BEST-OF 132, P/L −3 176,78, 238 passed). Předchozí 07:04 UTC: 219,8 MB = 20,5 % (+0,9 MB za 2 h); produkce beze změny (live edaa938 = HEAD, 0 událostí od 05:00, 0 error logů 05:00–07:04, dup jen id 129, BEST-OF 132 (+1), P/L −3 176,78, testy OK). Předchozí 05:04 UTC: 218,9 MB = 20,4 % (+0,8 MB za 2 h); produkce beze změny (live edaa938 = HEAD, 0 událostí od 03:00, 0 error logů 03:04–05:04, dup jen id 129, BEST-OF 131, P/L −3 176,32, 238 passed). Předchozí 03:04 UTC: 218,1 MB = 20,3 % (+0,8 MB za 2 h); produkce beze změny (live edaa938 = HEAD, 0 událostí od 01:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 176,32, testy OK). Předchozí 01:04 UTC: 217,3 MB = 20,2 % (+0,8 MB za 2 h); produkce 01:04 beze změny (live edaa938 = HEAD, 0 událostí od 23:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 176,32, testy OK). Předchozí 23:03: 216,5 MB = 20,2 % (+0,9 MB za 2 h, trend beze změny); produkce 23:03 beze změny (live edaa938, 0 událostí od 21:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 166,91). Předchozí 21:03: 215,6 MB = 20,1 %. Produkce 21:03 beze změny (live edaa938, 0 událostí od 19:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 166,91, 238 passed). Předchozí 19:04: beze změny (live edaa938 = HEAD, obsahuje da2f665, 0 událostí od 17:00, 0 error logů 17:05–19:05, BEST-OF 131 obchodů, dup_groups jen známý id 129, P/L součet −3 197,26, tests OK).
 
 | UTC | Velikost | % z 1 GB | Top tabulky |
 |---|---|---|---|
@@ -59,11 +59,11 @@ souborů/artefaktů a archivace, nebo zvětšení disku. Nic se nemaže.
 
 Hodnotit vždy stopou A i B, u „prošlo“ Deflated Sharpe + robustnost (rámec bod 2). Max. 3 nové hypotézy/den.
 
-R1. **DALŠÍ NA ŘADĚ →** Přehodnotit 11 dosavadních výsledků (PR #11–#20, body 1–11 níže) stopou B jen z jejich
-    `results.json` (žádný nový backtest). Výsledek tabulkou do `reports/track-b-rescore-20261106.md`; úspěchy značit
-    (post-hoc). Pravděpodobný kandidát: RSI(2) pullback (závěrečný ×2 +11,5 %, DD 6 %), ale ladění ≈ 0 ⇒ ověřit bod 6.
-R2. Nástroje: `tools/research/deflated_sharpe.py` + test; forward PAPER runner `research/forward/` (denní svíčky
-    Binance Vision přes GitHub Actions, trades.csv + equity.csv) — pro kandidáty z R1.
+R1. ~~Přehodnotit 10 výsledků (PR #11–#20) stopou B~~ — HOTOVO 2026-11-06 09:30 UTC: **0/10 prošlo** (post-hoc). PR #21,
+    `reports/track-b-rescore-20261106.md`, nástroj `tools/research/track_b_rescore.py`. RSI(2) #13 splnil B1–B5, ale B6 ✘
+    (ladění ×1 −46,94 USD) ⇒ není kandidát; výjimka jen rozhodnutím vlastníka. Ostatní ✘ B2 (DD > 0,6× B&H), většinou i B3.
+R2. **DALŠÍ NA ŘADĚ →** Nástroje: `tools/research/deflated_sharpe.py` + test; forward PAPER runner `research/forward/` (denní svíčky
+    Binance Vision přes GitHub Actions, trades.csv + equity.csv) — R1 kandidáty nedal ⇒ forward runner až pro první „prošlo“; teď jen DSR + test, pak hned R3.
 R3. Delta-neutrální funding carry BTC/ETH: spot long + USDT-M perp short, jen když 7denní průměr fundingu > práh
     (mřížka 2 prahy); data Binance Vision `futures/um/monthly/fundingRate` + klines spot i perp; náklady obou nohou ×1/×2/×3.
 R4. Volatilitní cílení BTC 40 % (bod 12 níže) — stopa B je pro ni přirozená.

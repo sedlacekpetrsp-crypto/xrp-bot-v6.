@@ -3,6 +3,13 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## 2026-11-06 10:35 SEČ (běh #21)
+- Nasazeno: `edaa938` – PR #5 ano. Produkce beze změny (6× HTTP 200, 238 testů OK, 0 chyb, 0 událostí, 0 nových duplicit, P/L součet −3 176,78).
+- Výzkum (rámec v2, R1): **přehodnocení 10 dosavadních hypotéz stopou B „řízené riziko“ — 0 z 10 prošlo** ([PR #21](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/21)).
+  Nejblíž RSI(2) pullback: validace ×2 +1 414 USD (PF 1,38, DD 17 % vs B&H 34 %), závěrečný test ×2 +11,5 % (DD 6 %) vs B&H −25,1 % (DD 60 %) — ale v ladění 2020–22 −0,5 % ⇒ podmínka B6 nesplněna, není kandidát. Ostatní mají propad blízko trhu. Vstupy přepočteny z trades.csv: 90 bloků, 0 neshod.
+- DB 20,5 %. Další: Deflated Sharpe nástroj (R2), pak funding carry BTC/ETH (R3).
+- Od vás: jen pokud chcete RSI(2) přesto sledovat ve forward PAPER jako výjimku (post-hoc, B6 nesplněno) — jinak nic; PR #8/#9/#10 dál čekají na review.
+
 ## 2026-11-06 08:15 SEČ (běh #20)
 - Nasazeno: `edaa938` – PR #5 ano. Produkce beze změny (6× HTTP 200, testy OK, 0 chyb, 0 nových duplicit, BEST-OF +1 obchod, P/L součet −3 176,78).
 - Výzkum: **Návrat poměru ETHBTC k průměru (z-skóre ±2, koš BTC/ETH) — ZAMÍTNUTO** ([PR #20](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/20)).
