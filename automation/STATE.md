@@ -130,16 +130,23 @@ R6. ~~Audit produkčních PAPER botů~~ — HOTOVO 2026-11-06 12:50 UTC ručně:
     max DD ⇒ `reports/production-bot-audit-<datum>.md` s návrhem, které pozastavit (jen návrh, čeká na vlastníka).
 R7. Kontrariánský žebřík BTC (bod 13 níže).
 R8. **2026-11-07 HNED PO R5** → Průřezová disperze fundingu, 8 perpů (podnět vlastníka H-20261106-2, `automation/IDEAS.md`).
-    Větev `research/funding-dispersion-20261106`, draft PR #29. Protokol `5a10f26` (před kódem), kód + 9 testů + workflow `175424a`.
+    Větev `research/funding-dispersion-20261106`, draft PR #29. Protokol `5a10f26` (před kódem), kód + workflow `175424a`; opravy R1–R4 podle oponentury ChatGPT `b5999e6` (dodatky 1–2, 33 testů), stále před daty.
     KDE POKRAČOVAT: ve větvi zapsat UTC čas do `research/funding_dispersion/RUN_REQUEST`, commit + push ⇒ workflow
     `funding-dispersion.yml` stáhne data (8 × 1h klines + fundingRate), spustí backtest, commitne výsledky; pak `git pull`,
     nezávisle přepočítat bloky z trades.csv vs results.json, `RESULTS.md`, řádek v registru, TEST_LOG, report,
     doplnit výsledek do `reports/claude-hypotheses-triage-20261106.md` a řádek „Stav“ v IDEAS.md. Nic neměnit v pravidlech.
 R9. **2026-11-07 PO R8 (3. hypotéza dne)** → Spot-led price discovery 5m BTC/ETH/XRP (H-20261106-3, nízká priorita).
-    Větev `research/spot-led-20261106`, draft PR #30. Protokol `883cf7d`, kód + 11 testů + workflow `95d9cf9`.
+    Větev `research/spot-led-20261106`, draft PR #30. Protokol `883cf7d`, kód + workflow `95d9cf9`; opravy podle oponentury ChatGPT `e77f2f9` (dodatek 1, 25 testů), stále před daty.
     Stejný postup přes `research/spot_led/RUN_REQUEST` (workflow `spot-led.yml`, timeout 120 min, ~500 archivů 5m).
     H-20261106-1 (funding settlement pressure) = DUPLICITNÍ s `funding_reversal`/`eth_funding_extreme`, netestovat (N +0).
     Při posunu R7 (kontrariánský žebřík) až na 2026-11-08.
+    Po běhu R8/R9: zkontrolovat `interpretation_flags` / `data_gap_unrealizable_exits`, `ineligible_reasons` (sémantika
+    `funding_interval_hours`) a verdikt „NEROZHODNUTO“ ⇒ nic neprohlašovat, ručně revidovat a zapsat do DIALOG.md.
+R10. Rekonstrukce počtu variant (N) a Sharpe všech dřívějších pokusů z commitů/exportů bez nového ladění (oponentura ChatGPT
+    kolo 2, bod 4): sjednotit období, frekvenci, náklady a definici Sharpe; oddělit doložený počet od odhadu. Do té doby
+    N = 159 = pracovní odhad (ne horní mez), V[SR] = 0,5 jen předpoklad, DSR uvádět jako podmíněné. Nízká priorita, bez dat z Binance.
+Spolupráce s ChatGPT: `automation/DIALOG.md` (kolo 3 čeká na odpověď). Návrh forward vyhodnocení (365 dní, bootstrap, K = 4/rok)
+    čeká na rozhodnutí vlastníka — nic neměnit.
 
 ## VÝZKUMNÁ FRONTA STRATEGIÍ — PRIORITA Č. 1 (vlastník 2026-11-05 14:31: „soustřeď se“)
 

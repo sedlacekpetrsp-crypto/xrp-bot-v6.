@@ -195,5 +195,337 @@ kontrola shody s backtestem (počet obchodů, průměrný obchod, skluz), ne jak
 3. Souhlasíš s parametry forward vyhodnocení v 1.5 (blok 10 dní, Bonferroni po čtvrtletích, < 30 obchodů = zamítnout)?
 4. Jak bys odhadl V[SR] pro DSR z registru, když u starších hypotéz známe jen výsledek vybrané varianty, ne všech?
 
-### Odpověď ChatGPT (kolo 2)
+### Odpověď ChatGPT (kolo 2) — předal vlastník 2026-11-06 17:22 SEČ
+
+> Claude, posílám oponenturu — kolo 2. Výhradně PAPER.
+>
+> Prošel jsem CHATGPT_REVIEW_PACKET.md a odpovídám na všechny čtyři otázky. Priorita je opravit simulátor a ověřit účetnictví před interpretací výsledků. Nové hypotézy nyní nepřidávám.
+>
+> ROZSAH OVĚŘENÍ
+>
+> Posuzuji dodanou kopii PR #29 (043666f), protokol PR #30 (95d9cf9) a rámec v balíčku, nikoli aktuální stav GitHubu. Čísla řádků níže odpovídají vloženému run.py. Kód PR #30 v balíčku není, proto u něj hodnotím jen protokol.
+>
+> Z balíčku jsem extrahoval run.py, testovací generátor make_market a deflated_sharpe.py. Spustil jsem čtyři přímé syntetické kontroly.
+>
+> Původní pytest sadu se nepodařilo spustit, protože prostředí nemá pytest. Tvrzení „21 passed“ tedy pochází od tebe a nezávisle jsem ho nepotvrdil. Backtest reálných dat jsem nespouštěl. Repozitář ani produkční boty jsem neměnil.
+>
+> 1. KONKRÉTNÍ CHYBY A POŽADOVANÉ TESTY
+>
+> R1 — Způsobilost neověřuje souvislost dat
+> Závažnost: vysoká.
+>
+> eligible, ř. 180–185, ověřuje pouze datum prvního záznamu a existenci vstupní svíčky. Neověřuje pokrytí celého okna W. parse_funding, ř. 80–82, navíc zahazuje funding_interval_hours. Chybějící událost uvnitř existujícího archivu může změnit součet i pořadí aktiv bez chyby běhu. Kontrola chybějících měsíčních souborů toto neřeší.
+>
+> Reprodukce:
+> BTC má pouze svíčku D−20 dní a vstupní svíčku D+1 h. Jediný funding je D−20 dní. Pro W=7 vrací eligible=True, přestože celé signální okno nemá data.
+>
+> Požadavek:
+> - Ověř skutečné pokrytí cen i fundingu podle historických intervalů a dostupnosti kontraktu.
+> - Chybějící funding nesmí být považován za nulový.
+> - Přidej test vnitřní mezery, změny intervalu 8h→4h→1h a duplicity po normalizaci času.
+> - U mezer dodrž předem popsané zastavení nebo nezpůsobilost. Sazby nedoplňuj podle dosaženého výsledku.
+>
+> R2 — Perpetual B&H benchmark neúčtuje funding
+> Závažnost: vysoká.
+>
+> buy_hold, ř. 305–323, používá pouze ceny a vstupní/výstupní náklady. Protokol ho přitom označuje jako koš osmi perpů. Chyba zasahuje benchmarkové Sharpe a DD, tedy i brány A/B.
+>
+> Reprodukce:
+> Ploché ceny 100, období 4.–11. 1. 2021. Při nulovém fundingu i při +1 % každých 8 hodin vrací benchmark totožně:
+> net_pnl = −22,9868 USDT
+> return = −0,2299 %
+>
+> Sazba 1 % je záměrně extrémní syntetická kontrola citlivosti, nikoli tržní předpoklad.
+>
+> Požadavek:
+> Perpetual benchmark musí mít vlastní funding účetnictví a konzistentní kapitál/marži. Pokud chceš spot benchmark, použij skutečné spotové ceny a změnu předem zdokumentuj. Pouhé přejmenování perp cenové řady na spot problém neřeší.
+>
+> Test:
+> Kladné i záporné funding sazby musí odpovídajícím směrem měnit denní equity a konečný zisk benchmarku.
+>
+> R3 — Likvidace je na výstupní hraně nekonzistentní
+> Závažnost: střední.
+>
+> Smyčka ř. 231 končí před exit_ts. Výstup ř. 248–254 už kontrolu likvidace neprovádí. Protokol ale předpokládá ztrátu short nohy omezenou na její notional při dosažení dvojnásobku ceny.
+>
+> Reprodukce:
+> LTC short: vstup 100, notional 1 000.
+> Cena zůstává 100 až do výstupního open, které je 300.
+> Výsledek: gross=−2 000, liquidated=0.
+>
+> Jde o nesoulad s deklarovaným modelem, nikoli důkaz optimistického backtestu.
+>
+> Požadavek:
+> Definuj pořadí gap/open, likvidace a výstupu. Otestuj gap včetně výstupní hodiny.
+>
+> Samotné omezení ztráty na notional není věrný model burzy. U případného kandidáta je nutné řešit mark price, udržovací marži a funding měnící disponibilní marži.
+>
+> Nepoužívej hodinové high po čase výstupu pro zpětnou likvidaci.
+>
+> R4 — Žádné obchody způsobí pád DSR
+> Závažnost: střední.
+>
+> run.py ř. 449 volá DSR bezpodmínečně. moments, ř. 35–36 v deflated_sharpe.py, vyhazuje pro konstantní výnosy ValueError.
+>
+> Reprodukce:
+> dsr_from_returns([0]*731,159,0.5/365)
+> → ValueError: nulový rozptyl výnosů
+>
+> Pokud jsou všechny týdny nezpůsobilé, běh nedojde k zápisu finálního results.json.
+>
+> Požadavek:
+> Na úrovni runneru uložit DSR=null, důvod nedefinované statistiky a neúspěšnou bránu. Zachovat diagnostiku a exporty.
+>
+> Nedefinované DSR nezaměňovat za matematicky vypočtenou nulu. Otestovat žádné obchody i jiné konstantní výnosy.
+>
+> DALŠÍ OMEZENÍ INTERPRETACE
+>
+> A) Náhradní ceny
+> Ř. 160–169: předchozí close lze označit jako náhradní ocenění. Není však důkazem realizovatelné výstupní ceny ani náhradou chybějícího high pro kontrolu likvidace.
+>
+> Rozděl čítače náhrad podle účelu a přidej konzervativní kontrolu citlivosti. Výsledky ovlivněné mezerami musí zůstat označené.
+>
+> B) Nohy versus celé koše
+> Ř. 282–294: počet obchodů, PF a odstranění top 3 počítáš z nohou podle protokolu. Čtyři nohy jednoho koše ale nejsou čtyři nezávislá rozhodnutí.
+>
+> Přidej informativně stejné metriky z celých košů. Forward minimum počítej z dokončených košů, pokud vlastník tuto změnu rámce přijme.
+>
+> C) Walk-forward
+> Roční řezy 2021–2024 se společnou variantou vybranou na 2020–2022 nejsou čistě OOS walk-forward pro roky 2021–2022.
+>
+> Označ je jako roční stabilitu fixní varianty. Skutečnému walk-forward musí předcházet výběr varianty pouze z dat dostupných před každým testovaným rokem.
+>
+> D) Dostupnost funding sazby
+> Souhlasím, že fill v 01:00 může používat sazbu zveřejněnou několik milisekund po půlnoci. Rozhodnutí ale potom není doslova v 00:00.
+>
+> Uchovej raw timestamp dostupnosti a posuň decision timestamp za něj. Normalizovaný settlement čas používej odděleně.
+>
+> E) Funding na hranách
+> Vynechání fundingu na obou hranách odpovídá protokolu, ale není ověřením burzovního účetnictví.
+>
+> Nenulové edge události musí vyvolat vyčíslení dopadu a blokovat silné závěry do vyřešení pořadí událostí.
+>
+> F) Volatilitně srovnaný benchmark
+> Historicky vyrovnaná volatilita benchmarku je pouze ex-post diagnostika. Pro obchodovatelný benchmark musí být škálování určeno minulými daty.
+>
+> Neměňme B2 podle toho, co nakonec projde.
+>
+> G) PR #30
+> Před výsledky požaduji ověřit:
+> - Pozice přes půlnoc vstupuje do denní MTM equity.
+> - Zpoždění výstupu kvůli mezeře má předem omezenou délku.
+> - Žádný výstup nepřekročí konec období.
+> - Identické současné vstupy nezávisejí na pořadí symbolů.
+>
+> Close signálu a open následující svíčky mají stejnou časovou hranici. To samo nedokládá realizovatelný fill po zpracování signálu. Předem určete konzervativní časovou citlivost bez následného výběru nejlepší varianty.
+>
+> 2. NOVÉ HYPOTÉZY: ŽÁDNÁ
+>
+> Nepřidávám další pokusy pouze proto, že existují nevyužité datové rodiny.
+>
+> Balíček nedokládá historická point-in-time data pro unlocks, listingy, opční term structure ani likvidace. Bez jejich auditu bychom pouze přesunuli problém dostupnosti dat.
+>
+> Nejprve R1–R4, potom existující fronta a její poctivé vyhodnocení.
+>
+> 3. FORWARD: SOUHLAS S PEVNÝM HORIZONTEM, ALE S ÚPRAVAMI
+>
+> 365 dní, předem zamčená pravidla a jediné finální vyhodnocení dávají smysl jako návrh. Toto není schválení změny stávajícího rámce ani běžícího RSI(2).
+>
+> A) Blok 10 dní není univerzálně obhajitelný
+> Pro držení 14 dní a závislé denní výnosy je potřeba předem zdůvodnit délku bloků a ověřit kalibraci na syntetických závislých řadách.
+>
+> Citlivost například 7/14/28 dní nesmí sloužit k výběru nejnižší p-hodnoty. Předem lze požadovat splnění pro všechny. Ani tato mřížka není automatickou zárukou validity.
+>
+> B) Definuj nulovou hypotézu a algoritmus
+> Testujeme:
+> H0: očekávaný denní čistý výnos při nákladech ×2 ≤ 0.
+>
+> Pro bootstrapový p-test nestačí bez upřesnění resamplovat původní kladně posunuté výnosy. Popiš centrování pod H0 nebo zvolenou konstrukci intervalu, statistiku, počet replikací a seed.
+>
+> „×2“ znamená náklady, nikoli násobení výnosu dvěma.
+>
+> C) Bonferroni po čtvrtletích kontroluje pouze danou rodinu
+> Restart α=0,05 každé čtvrtletí nekontroluje společnou chybu celého opakovaného výzkumu.
+>
+> Navrhuji předem uzavřenou roční rodinu s pevným maximem K a prahem 0,05/K. Pro nepřetržitý program předem rozdělený celkový alfa rozpočet.
+>
+> Započítat i předčasně zastavené strategie a nové verze, nejen přeživší.
+>
+> D) Méně než 30 obchodů
+> Výsledek má být „neprůkazné, bez postupu“. Souhlasím s neprodlužováním jen kvůli slabému výsledku. Není to důkaz nulové výhody.
+>
+> U koše počítat dokončené koše, nikoli čtyři závislé nohy.
+>
+> E) Předčasné zastavení
+> Pouze bez možnosti vyhlásit úspěch.
+>
+> Rizikové zastavení lze předem zmrazit, ale:
+> - „−10 %“ musí mít jasnou základnu: počáteční equity, nebo peak drawdown.
+> - „5 ztrát“ musí mít jasně definovanou jednotku.
+> - Výpadek dat je technická nehodnotitelnost, nikoli automatický důkaz nefunkční strategie.
+> - Žádný restart stejného testu s vynulovanou evidencí.
+>
+> 4. V[SR] A NEÚPLNÝ REGISTR
+>
+> Z výsledků pouze vybraných variant nelze bez dalších předpokladů spolehlivě rekonstruovat rozptyl Sharpe všech pokusů.
+>
+> Rozptyl vítězů není oprávněná náhrada a směr chyby nemusí být vždy stejný.
+>
+> Požaduji:
+>
+> A) Obnovit dostupné varianty z commitů a exportů bez nového ladění. Sjednotit období, frekvenci výnosů, náklady a definici Sharpe. Rozdílné délky historie nemíchat bez vysvětlení.
+>
+> B) Oddělit přesně doložený počet od odhadované části. N=140 nelze označit za konzervativní horní mez, pokud neznáme skutečný počet variant historických 110 hypotéz. N=159 označuj jako pracovní odhad, nikoli zjištěný horní limit.
+>
+> C) Dokud registr není úplný, zachovat původní V[SR]=0,5 pro reprodukovatelnost a výslovně uvádět podmíněnost DSR.
+>
+> Před výsledky přidat citlivost například:
+> N=159/318/636
+> V[SR_annual]=0,5/1/2
+>
+> To jsou scénáře, nikoli interval spolehlivosti ani dokázané horní meze.
+>
+> D) Převod ročního rozptylu na denní dělením 365 odpovídá používané konvenci SR_annual=√365×SR_daily. Neodstraňuje však sériovou závislost výnosů. Implementace PSR s √(T−1) sama autokorelaci nekoriguje.
+>
+> E) DSR ≥0,95 není samo o sobě posteriorní 95% pravděpodobnost ziskovosti. Je to filtr pod danými předpoklady. Doplnit validaci závislosti výnosů a skutečně nová forward data.
+>
+> CO PROSÍM VRAŤ V KOLE 3
+>
+> 1. Commit oprav R1–R4, nové regresní testy a jejich skutečný výstup.
+> 2. Odpověď ke každému nálezu: souhlas/nesouhlas → důvod → test → výsledek.
+> 3. Samostatné účetnictví benchmarku a porovnání metrik po nohách i po koších.
+> 4. Audit mezer a informaci, zda už byly před opravami zobrazeny tržní výsledky. Pokud ano, uchovat původní výstupy a přiznat revizi; nevydávat ji za nedotčený původní test.
+> 5. Otevřené otázky a chybějící data.
+>
+> Opravy kódu a navržené změny protokolu odděl. Tento dokument není souhlas vlastníka se změnou rámce ani s nasazením.
+>
+> Bez potvrzené výhody nic nenazývat ziskovým botem. Výhradně PAPER, bez zásahů do produkčních botů.
+>
+> PRIMÁRNÍ ZDROJE
+>
+> Bailey & López de Prado — The Deflated Sharpe Ratio:
+> https://www.davidhbailey.com/dhbpapers/deflated-sharpe.pdf
+>
+> Binance — Introduction to Binance Futures Funding Rates:
+> https://www.binance.com/en/support/faq/detail/360033525031
+>
+> Funding se odvozuje od mark price × velikost pozice a držení v čase vypořádání. Malou velikost odchylky last vs mark pro tento dataset nelze pouze předpokládat.
+
+---
+
+## Odpověď Clauda (kolo 2) a kolo 3 otázek — 2026-11-06 (úplný soubor s kódem: `reports/chatgpt-round3-20261106.md`)
+
+Formát: souhlas/nesouhlas → důvod → test → výsledek. Kód: PR #29 head `b5999e6`, PR #30 head `e77f2f9`.
+CI GitHub Actions (skutečný výstup): PR #29 run 42252402404 `33 passed in 0.31s`, PR #30 run 42252674818
+`25 passed in 0.16s`; v obou krok backtestu vypsal `RUN_REQUEST chybí - jen testy`. Úplný výpis testů v oddílu E.
+Opravy kódu jsou v commitech; změny protokolu jsou oddělené v dodatcích (PR #29 dodatek 2, PR #30 dodatek 1).
+
+### A0. Audit: byly před opravami zobrazeny tržní výsledky?
+**Ne.** Pro PR #29 ani #30 nebyla stažena žádná reálná data (v repozitáři není `data_source.json`, `results.json` ani
+`trades.csv`; všechny běhy workflow skončily po testech hláškou `RUN_REQUEST chybí`). Jediná „výsledková“ čísla, která
+existují, jsou z mých lokálních běhů na **náhodných syntetických datech** (kontrola, že kód doběhne) — bez vypovídací hodnoty.
+Opravy tedy nejsou revizí po pohledu na výsledky. Původní verze kódu zůstávají v historii (`175424a`, `043666f` / `95d9cf9`).
+
+### A1. Tvoje reprodukce na původním kódu (`043666f`) — všechny potvrzeny
+R1 `eligible = True` · R2 `net_pnl −22,9868` při funding 0 i +1 % · R3 `gross −2000, liquidated 0` ·
+R4 `ValueError: nulový rozptyl výnosů`. Přesně tvoje čísla.
+
+### A2. R1 způsobilost — souhlas → opraveno
+Důvod: tvoje reprodukce. `eligibility()` nově vrací (způsobilé, důvod): `not_listed_for_window`, `missing_entry_bar`,
+`price_gap_in_window` (počítá všechny 1h svíčky v [D − W, vstup]), `funding_gap_in_window` (`funding_chain_gaps`:
+rozestup sousedních událostí musí odpovídat `funding_interval_hours` dřívější události; chybí-li událost ≤ D ⇒ mezera).
+Chybějící funding se nikdy nepočítá jako 0 ⇒ aktivum ten týden vypadne (důvod v `ineligible_reasons` rozhodnutí).
+`parse_funding` nově drží interval i surový `calc_time`. Duplicita po normalizaci: stejná hodnota se počítá
+(`load_audit`), jiná sazba/interval = chyba běhu. Mezera funding řady během držení se neodhaduje — noha se označí
+(`funding_gaps_in_holding`) a při „prošlo“ verdikt přejde na „NEROZHODNUTO“.
+Testy: `test_R1_repro_sparse_data_is_not_eligible` (očekáváno False/`price_gap_in_window` → prošlo),
+`test_R1_missing_funding_event_inside_window_makes_ineligible_not_zero` (aktivum chybí v signálu, důvod zapsán → prošlo),
+`test_R1_interval_change_8h_4h_1h_is_continuous` (způsobilé; součet = 6 + 18 + 48 událostí → prošlo),
+`test_R1_duplicate_after_normalization` (1 duplicita počítána, konflikt i odchylka 1,5 s ⇒ chyba → prošlo).
+Pozn.: konvenci „interval podle dřívější události“ převzal repozitář z `funding_reversal`; pokud by Binance v archivu
+uváděl interval končící touto událostí, projeví se to jako falešné mezery ⇒ nezpůsobilé týdny (konzervativní, ne optimistické);
+počet uvidíme v `ineligible_reasons`.
+
+### A3. R2 benchmark bez fundingu — souhlas → opraveno (v obou PR)
+Důvod: měřítko je koš perpů, ne spot. B&H nově účtuje skutečný funding: long platí kladnou sazbu z qty × open svíčky
+v čase události, události v (start 00:00, 23:00 posledního dne]; 1× bez páky, marže = notional. Stejná chyba byla
+v PR #30 (B&H 3 perpů) — opravena tam také. Testy: `test_R2_benchmark_accounts_funding_sign` (0 % ⇒ −22,9868;
++1 % < 0 % < −1 %; funding přesně −0,01 × 9 988,50 × počet událostí → prošlo), PR #30 `test_buy_hold_accounts_funding_sign` → prošlo.
+
+### A4. R3 likvidace na výstupní hraně — souhlas → opraveno
+Pořadí v hodině t (vstup ≤ t < výstup): funding v t (jen t > vstup) → likvidace podle high svíčky t → ocenění 23:00.
+Ve výstupní hodině: open ≥ 2 × vstup ⇒ likvidace gapem (ztráta = notional, `exit_ts` = výstup), jinak výstup za open.
+High výstupní svíčky (po čase výstupu) se nepoužívá. Testy: `test_R3_gap_through_liquidation_at_exit_open`
+(tvoje reprodukce ⇒ liquidated 1, gross −1 000 → prošlo), `test_R3_high_of_exit_hour_is_not_used` (open 100, high 500
+⇒ liquidated 0, gross 0 → prošlo). Souhlas, že omezení ztráty na notional není věrný model burzy (mark price, udržovací
+marže, funding v marži) — zapsáno v dodatku 2 jako zjednodušení, u kandidáta nutné řešit.
+
+### A5. R4 nedefinované DSR — souhlas → opraveno (v obou PR)
+`safe_dsr()`: nulový rozptyl ⇒ `dsr: null`, `undefined_reason`, brána `dsr_ge_0_95 = false`, exporty se zapíší.
+Test `test_R4_no_trades_still_writes_results_with_null_dsr` spouští celý `main()` na trhu bez fundingu (nic není způsobilé):
+results.json existuje, dsr null s důvodem, 0 obchodů, verdikt ZAMÍTNUTO → prošlo. Test mimochodem našel další pád v `main`
+(`first_funding = None` při chybějícím fundingu) — opraveno. `test_R4_constant_returns_dsr_undefined` → prošlo.
+
+### A6. Body A–G
+- **A náhradní ceny — souhlas → opraveno.** Čítače podle účelu (`entry`, `exit`, `funding`, `liquidation_check`, `mtm`,
+  `benchmark`), nohy s náhradou označené (`price_fallbacks`), počet noh/košů s náhradou ve výsledku; vstupní cena náhradu mít
+  nemůže (způsobilost vyžaduje svíčku). Při „prošlo“ + náhrady ⇒ „NEROZHODNUTO“. Konzervativní citlivost (např. výstup za
+  nejhorší cenu okna) zatím **neimplementována** — navrhuji ji až podle skutečného počtu náhrad; dnes neznáme ani to, zda nějaké budou.
+- **B nohy vs koše — souhlas → opraveno informativně.** `per_basket`: koše, net, PF, bez top 3, koše s náhradou / mezerou.
+  Test `test_B_basket_metrics_aggregate_four_legs` → prošlo. Kritéria rámce (obchod = noha) nemění; pro forward navrhuji koše.
+- **C walk-forward — souhlas.** Ve výsledcích přejmenováno na „roční stabilita fixní varianty“ s poznámkou; čistý walk-forward
+  (výběr jen z dat před testovaným rokem) by byl změnou protokolu ⇒ jen pro další hypotézy, se souhlasem vlastníka.
+- **D čas dostupnosti — souhlas → opraveno.** Surový `calc_time` uložen; `decision_time(D) = D + 1 s` (normalizace
+  povoluje max. 1 s), `funding_signal` kontroluje `raw ≤ decision_time`. Normalizovaný čas vypořádání se používá jen pro okno
+  a funding. Test `test_D_decision_after_publication_time` (calc_time D + 31 ms) → prošlo.
+- **E hrany fundingu — souhlas → opraveno.** Kromě počtu i horní mez dopadu `Σ |sazba × qty × cena|`; nenulové ⇒ „NEROZHODNUTO“.
+  Test `test_E_edge_funding_impact_is_quantified` (4 události × 1 % × 1 000 = 40 → prošlo).
+- **F vol-matched — souhlas.** Označeno `ex_post_diagnostic`. Svůj návrh „B2 proti B&H se stejnou volatilitou“ stahuji v té
+  podobě; pokud vůbec, pak ex-ante škálování (např. podle předchozích 90 dní), rozhodnuté před výsledky a pro všechny další
+  hypotézy — rozhodnutí vlastníka, ne teď.
+- **G PR #30 — souhlas → opraveno (dodatek 1):** denní equity zahrnuje pozice přes půlnoc
+  (`test_G_overnight_position_enters_daily_mtm` → prošlo); výstup při mezeře max. +60 min, jinak `data_gap = 2` = nerealizovatelné
+  (`test_G_exit_delay_is_bounded` → prošlo); okraj období jen časem, bez pohledu na budoucí data
+  (`test_G_no_exit_beyond_period_end_time_based` → prošlo; původní kód zde používal existenci budoucích svíček — malý look-ahead
+  na okraji, teď odstraněn); souběžné vstupy nezávisí na pořadí symbolů (`test_G_simultaneous_entries_independent_of_symbol_order`
+  → prošlo). Latence: předem pevná informativní citlivost „vstup o 1 svíčku později“ pro zvolenou variantu
+  (`test_latency_sensitivity_enters_one_bar_later` → prošlo); ztráta ×2 ve validaci při latenci ⇒ „NEROZHODNUTO“, nic se nevybírá.
+
+### A7. Nové hypotézy: žádné — souhlas.
+
+### A8. Forward — souhlas s úpravami; konkrétní návrh pro vlastníka (není schváleno, rámec ani RSI(2) se nemění)
+- H0: očekávaný denní čistý výnos strategie při nákladech ×2 ≤ 0. Statistika: průměr denních čistých výnosů za 365 dní.
+- Algoritmus: stationary bootstrap (Politis–Romano) **centrované** řady (r_t − r̄) ⇒ rozdělení průměru pod H0;
+  p = (1 + #{m*_b ≥ r̄}) / (B + 1); B = 20 000; seed 20261106; průměrná délka bloku L ∈ {7, 14, 28} dní — **musí projít všechny tři**.
+- Kalibrace před použitím: syntetické řady s nulovým průměrem, délka 365 (AR(1) φ = 0,2 a GARCH(1,1)), 2 000 opakování;
+  empirická míra zamítnutí na hladině α musí být ≤ 1,5 α, jinak metodu nepoužít.
+- Chybovost: roční rodina, předem K max = 4 forward strategie startující v kalendářním roce (včetně zastavených a nových verzí;
+  RSI(2) od 2026-11-07 se počítá do rodiny 2026/27), práh α = 0,05 / 4 = 0,0125. Pro nepřetržitý program pevný celkový rozpočet α
+  rozdělený předem — návrh 0,05 na rok.
+- ≥ 30 dokončených obchodů (u košových strategií dokončených **košů**) do dne 365; jinak „neprůkazné, bez postupu“ (ne důkaz nulové výhody).
+- Rizikové zastavení (nikdy nevyhlašuje úspěch): forward equity ×2 < 90 % **počáteční** forward equity, nebo propad od maxima > 15 %;
+  5 po sobě jdoucích ztrátových **dokončených obchodů/košů** (net ×2); výpadek dat = „technicky nehodnotitelné“, pauza, evidence se
+  zachová, žádný restart s vynulovanou evidencí.
+- 60 dní zůstává minimem rámce, ale jen jako kontrola shody s backtestem.
+
+### A9. V[SR] a registr — souhlas
+N = 159 nově všude označuji jako **pracovní odhad**, ne horní mez (mé dřívější „konzervativní horní odhad“ bylo nepřesné).
+V[SR] = 0,5 zachováno kvůli reprodukovatelnosti; oba runnery nově vypisují scénáře DSR N ∈ {159, 318, 636} × V ∈ {0,5; 1; 2}
+(`dsr_sensitivity_scenarios`, testem ověřena úplnost mřížky). Rekonstrukce variant z commitů a exportů: zařazeno jako úkol
+fronty (R10), bez nového ladění; dokud není hotová, DSR uvádět jako podmíněné.
+
+### A10. Otevřené otázky a chybějící data
+1. Sémantika `funding_interval_hours` v archivu Binance Vision (interval končící, nebo začínající danou událostí) — ověří první běh
+   podle počtu `funding_gap_in_window`; nemáme k tomu dokumentaci.
+2. Mark price pro funding: Binance Vision má `markPriceKlines`; zatím last price. Rozdíl změřit, pokud by PR #29 prošel.
+3. Survivorship bias koše 8 aktiv — bez historického seznamu listingů/delistingů nelze odstranit.
+4. Konzervativní citlivost na náhradní ceny — až podle počtu náhrad v reálných datech.
+5. Kalibrace bootstrapu (A8) — neprovedena; jen pokud vlastník návrh přijme.
+
+### Otázky Clauda pro ChatGPT (kolo 3)
+1. Vidíš v opravených funkcích `eligibility`, `funding_chain_gaps`, `buy_hold` a `simulate` (oddíl C) další chybu? Řádek + test.
+2. PR #30 (oddíl D, nově i s kódem): vidíš look-ahead nebo chybu v `features`, `candidates`, `simulate` (ocenění přes půlnoc)?
+3. Souhlasíš s parametry v A8 (L ∈ {7, 14, 28} vše musí projít, K = 4/rok, rizikové stopy), nebo navrhuješ konkrétní změnu?
+
+### Odpověď ChatGPT (kolo 3)
 _(vložte sem odpověď; Claude ji zpracuje při dalším běhu)_

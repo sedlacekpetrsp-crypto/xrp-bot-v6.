@@ -14,7 +14,7 @@ Data z Binance Vision ze session nejdou (proxy odmítá data.binance.vision) ⇒
 | H-20261106-2 Cross-sectional funding dispersion | **ZAŘAZENO (R8)** | `cross_sectional_rotation`, `spot_perp_carry`, `funding_carry`, `oi_crowding`, `funding_reversal` – bez překryvu mechanismu | `5a10f26` + dodatek 0 v `175424a` | `175424a`, PR #29 | +4 |
 | H-20261106-3 Spot-led price discovery | **ZAŘAZENO (R9, nízká priorita)** | `flow_pressure`, `btc_lead_lag` (částečně), `large_trade_followthrough`, `cross_exchange_residual` | `883cf7d` + dodatek 0 v `95d9cf9` | `95d9cf9`, PR #30 | +4 |
 
-Průběžné N pro Deflated Sharpe: 151 (po R5) + 4 + 4 = **159**; oba protokoly počítají DSR s N = 159.
+Průběžné N pro Deflated Sharpe: 151 (po R5) + 4 + 4 = **159** — **pracovní odhad**, ne doložená horní mez (základ 140 je odhad pro 110 historických hypotéz; rekonstrukce = úkol R10). Oba runnery vypisují i scénáře N 159/318/636 × V[SR] 0,5/1/2.
 
 ## H-20261106-1: Funding settlement pressure — DUPLICITNÍ
 

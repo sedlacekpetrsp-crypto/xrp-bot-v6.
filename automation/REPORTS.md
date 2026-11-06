@@ -4,6 +4,11 @@ Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá
 Výhradně PAPER.
 
 
+## 2026-11-06 18:05 SEČ (ruční běh — oponentura ChatGPT, kolo 2)
+- ChatGPT našel 4 skutečné chyby v PR #29 (způsobilost bez kontroly mezer, benchmark perpů bez fundingu, likvidace na výstupní hraně, pád při nedefinovaném DSR); všechny reprodukovány a opraveny před daty (`b5999e6`, 33 testů). Chyby benchmarku a DSR byly i v PR #30 — opraveno spolu s body G (`e77f2f9`, 25 testů).
+- Žádná reálná data ani výsledky před opravami neexistovaly ⇒ nejde o úpravu po pohledu na výsledky.
+- Nový úkol R10 (rekonstrukce N); N = 159 je pracovní odhad. Odpověď a kód pro ChatGPT: `reports/chatgpt-round3-20261106.md`.
+
 ## 2026-11-06 17:25 SEČ (ruční běh — oponentura ChatGPT, kolo 1)
 - ChatGPT neměl přístup (404 kvůli tečce v názvu repa; repo je veřejné) ⇒ předávací soubor `reports/chatgpt-review-packet-20261106.md`.
 - Jeho 7 kontrolních otázek k PR #29 ověřeno testy: 5 nových regresních testů (hrany fundingu, změna budoucích dat, náklady 4 noh) — 21 passed (`043666f`). Oprávněná námitka: benchmark B&H má 100 % expozice vs 40 % strategie ⇒ před daty doplněno informativní B&H se stejnou volatilitou (kritéria beze změny).
