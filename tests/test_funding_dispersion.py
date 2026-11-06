@@ -1252,7 +1252,8 @@ def test_K10_1_monthly_gap_patched_only_from_official_daily_archive(tmp_path, mo
     m = market["BTCUSDT"]
     assert all(t in m["bars"] for t in gap) and m["load_audit"]["daily_patch_rows"] == 3 and not fatal
     assert any(x.get("daily_patch") for x in manifest)  # denní archiv je v manifestu (otisk dat se tím mění)
-    with pytest.raises(ValueError):
-        fd.load(tmp_path / "b", fetcher(conflict=True))
+    market, _, _, _ = fd.load(tmp_path / "b", fetcher(conflict=True))  # konflikt se zapíše, nepřepíše
+    conf = market["BTCUSDT"]["load_audit"]["daily_conflicts"]
+    assert conf == [fd.ms_of(date(2022, 2, 26)) + 5 * H] and market["BTCUSDT"]["bars"][conf[0]][0] == 1.0
     market, _, _, _ = fd.load(tmp_path / "c", fetcher(daily_missing=True))
     assert not any(t in market["BTCUSDT"]["bars"] for t in gap)  # bez denního archivu zůstane mezera, nic umělého

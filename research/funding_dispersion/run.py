@@ -153,7 +153,9 @@ def load(cache, fetcher=fetch):
 def patch_from_daily(bars, asset, cache, fetcher=fetch, manifest=None):
     """Kolo 10 (nález z vyšetření mezer): měsíční archiv Binance Vision u XRP/SOL/LTC postrádá 2022-02-26…28 a 2022-04-01…02,
     denní archivy jsou úplné. Mezery uvnitř řady se doplní VÝHRADNĚ z oficiálních denních archivů (sha256 v manifestu).
-    Řádek, který už existuje s jinou hodnotou ⇒ chyba. Nikdy se nevytváří umělá cena; co denní archiv nemá, zůstane mezerou."""
+    Nikdy se nevytváří umělá cena; co denní archiv nemá, zůstane mezerou. Kolo 10 (sjednocení s PR #30, nález R10-1):
+    řádek, který už existuje s jinou hodnotou, se nepřepíše; čas se zapíše do `daily_conflicts` a je to blokující
+    závada `archive_conflicts` v daném období."""
     bts = sorted(bars)
     days = set()
     for x, y in zip(bts, bts[1:]):
@@ -161,7 +163,7 @@ def patch_from_daily(bars, asset, cache, fetcher=fetch, manifest=None):
         while t < y:
             days.add(date_of(t))
             t += HOUR_MS
-    added, statuses = 0, {}
+    added, statuses, conflicts = 0, {}, []
     for d in sorted(days):
         url = f"https://data.binance.vision/data/futures/um/daily/klines/{asset}/1h/{asset}-1h-{d.isoformat()}.zip"
         p = Path(cache) / "kl_daily" / url.rsplit("/", 1)[1]
@@ -181,11 +183,11 @@ def patch_from_daily(bars, asset, cache, fetcher=fetch, manifest=None):
         for r in rows:
             if r[0] in bars:
                 if tuple(bars[r[0]]) != tuple(r[1:]):
-                    raise ValueError(f"denní archiv {asset} {r[0]} nesouhlasí s měsíčním: {bars[r[0]]} vs {r[1:]}")
+                    conflicts.append(r[0])
                 continue
             bars[r[0]] = r[1:]
             added += 1
-    return {"daily_patch_rows": added, "daily_patch_days": statuses}
+    return {"daily_patch_rows": added, "daily_patch_days": statuses, "daily_conflicts": sorted(conflicts)}
 
 
 def prepare(bars, fund):
@@ -509,7 +511,9 @@ def run(market, start, end, mult, W, H, variant, prices=None):
             "unfilled_entry_legs": sum(len(x.get("unfilled_legs", [])) for x in dec),
             "unfilled_entries": [e for x in dec for e in x.get("unfilled_entries", [])],
             "ineligible_data_gap": sum(1 for x in dec for r in x["ineligible_reasons"].values()
-                                       if r in ("price_gap_in_window", "funding_gap_in_window"))}, legs, rets, curve
+                                       if r in ("price_gap_in_window", "funding_gap_in_window")),
+            "archive_conflicts": sum(1 for a in ASSETS for t in (market[a].get("load_audit") or {}).get("daily_conflicts", [])
+                                     if ms_of(start) <= t < ms_of(end) + DAY_MS)}, legs, rets, curve
 
 
 def buy_hold(market, start, end, mult, prices=None):
@@ -761,7 +765,8 @@ DATA_DEFECTS = {
     "benchmark_funding_unknown_coverage_assets": "blocking",
     "benchmark_price_fallbacks": "blocking",
     "benchmark_unavailable_at_start": "blocking",
-    "ineligible_data_gap": "blocking",  # kolo 9: aktivum vyřazené z výběru kvůli mezeře dat mění pořadí ⇒ potenciálně globální
+    "ineligible_data_gap": "blocking",
+    "archive_conflicts": "blocking",  # kolo 10: měsíční ≠ denní archiv pro tutéž svíčku  # kolo 9: aktivum vyřazené z výběru kvůli mezeře dat mění pořadí ⇒ potenciálně globální
     "walk_forward_defects": "blocking",
     "neighbor_defects": "blocking",
     "duplicate_funding_rows_same_value": "informational",
@@ -797,7 +802,8 @@ def defect_flags(res, bh, market=None):
          "unfilled_entry_legs": sum(res[p]["x1"]["unfilled_entry_legs"] for p in PERIODS),
          "legs_with_price_fallback": sum(res[p]["x1"]["legs_with_price_fallback"] for p in PERIODS),
          "legs_with_funding_gap_in_holding": sum(res[p]["x1"]["legs_with_funding_gap_in_holding"] for p in PERIODS),
-         "ineligible_data_gap": sum(res[p]["x1"].get("ineligible_data_gap", 0) for p in PERIODS)}
+         "ineligible_data_gap": sum(res[p]["x1"].get("ineligible_data_gap", 0) for p in PERIODS),
+         "archive_conflicts": sum(res[p]["x1"].get("archive_conflicts", 0) for p in PERIODS)}
     f.update({k: sum(get(bh[p]["x1"]) for p in PERIODS) for k, get in BENCHMARK_DEFECT_KEYS.items()})
     if market is not None:
         f["duplicate_funding_rows_same_value"] = sum((market[a].get("load_audit") or {}).get("duplicates_same_value", 0)
@@ -823,6 +829,7 @@ STRATEGY_DEFECT_KEYS = {
     "legs_with_price_fallback": "legs_with_price_fallback",
     "legs_with_funding_gap_in_holding": "legs_with_funding_gap_in_holding",
     "ineligible_data_gap": "ineligible_data_gap",
+    "archive_conflicts": "archive_conflicts",
 }
 
 
