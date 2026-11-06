@@ -56,3 +56,9 @@ B&H koše BTC/ETH 50/50 bez rebalance (stejné náklady). Informačně: hotovost
 `trades.csv` (každá epizoda; sloupce variant, period, cost_mult, asset, entry/exit, funding, costs, net_pnl,
 liquidated), `results.json`, `RESULTS.md`, `data_source.json`; řádek v `automation/STRATEGY_REGISTRY.md`;
 draft PR do `research/autopilot`.
+
+## Dodatek 1 (2026-11-06 11:20 UTC, jen načítání dat — PŘED zobrazením jakéhokoli výsledku)
+První běh (run 42208143113) skončil chybou „chybí klines BTCUSDT 2026-10-28“ (měsíční archiv neobsahuje den);
+žádné metriky nebyly vypsány ani uloženy. Den chybějící v měsíčním archivu se doplní z oficiálního **denního**
+archivu Binance Vision (`data/<spot|futures/um>/daily/klines/<S>/1d/<S>-1d-YYYY-MM-DD.zip`), SHA-256 do manifestu
+(`filled_missing_day`). Chybí-li i denní archiv ⇒ chyba. Pravidla, dělení ani kritéria se nemění.

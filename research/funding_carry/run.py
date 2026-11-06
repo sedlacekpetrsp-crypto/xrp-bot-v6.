@@ -107,6 +107,31 @@ def load(cache, fetcher=fetch):
         for kind in ("spot", "perp"):
             dedup = {b["ts"]: b for b in series[kind]}
             series[kind] = {day(t): dedup[t] for t in sorted(dedup)}
+            # dodatek protokolu (2026-11-06, před zobrazením výsledků): den chybějící v měsíčním archivu
+            # se doplní z oficiálního DENNÍHO archivu Binance Vision (stejný zdroj, SHA-256 do manifestu)
+            need = daterange(date(2020, 8, 24), date(LAST_MONTH[0], LAST_MONTH[1], 31))
+            for d in need:
+                if d in series[kind]:
+                    continue
+                base = "spot" if kind == "spot" else "futures/um"
+                url = (f"https://data.binance.vision/data/{base}/daily/klines/{a}/1d/"
+                       f"{a}-1d-{d.isoformat()}.zip")
+                pth = Path(cache) / f"{kind}-daily" / url.rsplit("/", 1)[1]
+                if not pth.exists():
+                    try:
+                        payload = fetcher(url)
+                    except urllib.error.HTTPError as e:
+                        missing.append({"url": url, "http": e.code, "required": True})
+                        continue
+                    pth.parent.mkdir(parents=True, exist_ok=True)
+                    pth.write_bytes(payload)
+                payload = pth.read_bytes()
+                rows = parse_klines(payload)
+                manifest.append({"url": url, "sha256": hashlib.sha256(payload).hexdigest(), "rows": len(rows),
+                                 "filled_missing_day": d.isoformat()})
+                print("FILLED_FROM_DAILY", kind, a, d.isoformat(), len(rows))
+                for b in rows:
+                    series[kind][day(b["ts"])] = b
         fd = {f["ts"]: f for f in series["funding"]}
         series["funding"] = [fd[t] for t in sorted(fd)]
         market[a] = series
@@ -323,7 +348,7 @@ def main(argv=None):
     if missing:
         print("MISSING_ARCHIVES", json.dumps(missing[:20]), "count", len(missing))
         # chybějící měsíce mimo potřebné okno (2020-08-25 … 2026-10-31) jsou povoleny jen pro klines před 2020-08
-        bad = [m for m in missing if not any(f"-{y}-{mm:02d}.zip" in m["url"]
+        bad = [m for m in missing if m.get("required") or not any(f"-{y}-{mm:02d}.zip" in m["url"]
                                              for y, mm in [(2020, k) for k in range(1, 8)])]
         if bad:
             print("FATAL missing archives in required window", json.dumps(bad[:20]))
