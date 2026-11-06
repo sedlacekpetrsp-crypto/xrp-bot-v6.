@@ -55,6 +55,23 @@ souborů/artefaktů a archivace, nebo zvětšení disku. Nic se nemaže.
   ještě jednou zdvojit zápis (stará instance bez zámku) ⇒ nasadit bez otevřené BEST-OF pozice.
 - Riziko trvá u každého deploye: i ostatní boty bez ochrany mohou zapsat duplikát při překryvu instancí.
 
+## FRONTA v2 — PLATÍ OD 2026-11-06 09:40 SEČ (nahrazuje pořadí níže; rámec `automation/RESEARCH_FRAMEWORK.md`)
+
+Hodnotit vždy stopou A i B, u „prošlo“ Deflated Sharpe + robustnost (rámec bod 2). Max. 3 nové hypotézy/den.
+
+R1. **DALŠÍ NA ŘADĚ →** Přehodnotit 11 dosavadních výsledků (PR #11–#20, body 1–11 níže) stopou B jen z jejich
+    `results.json` (žádný nový backtest). Výsledek tabulkou do `reports/track-b-rescore-20261106.md`; úspěchy značit
+    (post-hoc). Pravděpodobný kandidát: RSI(2) pullback (závěrečný ×2 +11,5 %, DD 6 %), ale ladění ≈ 0 ⇒ ověřit bod 6.
+R2. Nástroje: `tools/research/deflated_sharpe.py` + test; forward PAPER runner `research/forward/` (denní svíčky
+    Binance Vision přes GitHub Actions, trades.csv + equity.csv) — pro kandidáty z R1.
+R3. Delta-neutrální funding carry BTC/ETH: spot long + USDT-M perp short, jen když 7denní průměr fundingu > práh
+    (mřížka 2 prahy); data Binance Vision `futures/um/monthly/fundingRate` + klines spot i perp; náklady obou nohou ×1/×2/×3.
+R4. Volatilitní cílení BTC 40 % (bod 12 níže) — stopa B je pro ni přirozená.
+R5. Blízkost 52týdennímu maximu průřezově, 8 aktiv (bod 14 níže).
+R6. Audit produkčních PAPER botů (jen čtení, Render SQL): za 30 a 90 dní na bota obchody, čistý P/L, PF, náklady,
+    max DD ⇒ `reports/production-bot-audit-<datum>.md` s návrhem, které pozastavit (jen návrh, čeká na vlastníka).
+R7. Kontrariánský žebřík BTC (bod 13 níže).
+
 ## VÝZKUMNÁ FRONTA STRATEGIÍ — PRIORITA Č. 1 (vlastník 2026-11-05 14:31: „soustřeď se“)
 
 Každý běh: kontroly produkce co nejkratší (jen odchylky), pak **jedna hypotéza z této fronty** od
@@ -97,7 +114,7 @@ Fronta:
    Poučení: ani trend (PR #17), ani návrat k průměru poměru ETHBTC nefunguje stabilně napříč obdobími ⇒ poměr BTC/ETH dál netestovat.
 
 Nové hypotézy (doplněno 2026-11-06 07:15; nízký obrat; žádný směrový signál trendu vs B&H, žádný trend poměru, žádný rebalance):
-12. **DALŠÍ NA ŘADĚ →** Volatilitní cílení BTC 40 % (w = min(1, 0,40/σ30), úprava při odchylce > 10 p. b., za open t+1). Měřítko B&H BTC.
+12. Volatilitní cílení BTC 40 % (w = min(1, 0,40/σ30), úprava při odchylce > 10 p. b., za open t+1). Měřítko B&H BTC.
     Proč nové: expozice jen podle realizované volatility (shlukování vol), ne podle směru; #101 mělo momentum signál, #104 vážilo více aktiv.
     PROTOKOL UŽ COMMITNUT (`research/vol-target-20261106`, `fc9b4a4`, `research/vol_target/PROTOCOL.md`). Pokračovat: `run.py` (úseky mezi úpravami,
     souvislý ledger), testy + workflow podle vzoru PR #20, spustit, ověřit, PR.
