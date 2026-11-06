@@ -131,3 +131,66 @@ def test_buy_hold_and_evaluate_shapes():
     bh, rets = fd.buy_hold(m, START, date(2021, 1, 20), 1)
     assert bh["net_pnl"] < 0 and len(rets) == 17
     assert set(fd.neighbors(7, 7)) == {(7, 14), (14, 7)}
+
+
+# ---- regresní testy na žádost oponentury ChatGPT (DIALOG.md kolo 1) ----
+def _first_basket(legs, D):
+    return sorted(((lg["asset"], lg["side"], lg["entry_ts"], lg["exit_ts"], round(lg["qty"], 9),
+                    round(lg["funding"], 9), round(lg["net_pnl"], 9)) for lg in legs if lg["entry_ts"] == D + H))
+
+
+def test_funding_exactly_at_entry_and_exit_is_excluded():
+    D = fd.ms_of(START)
+    entry, exit_ = D + H, D + 7 * DAY + H
+    m = make_market(rates=lambda a, t: ranked_rates(a, t) if t <= D else 0.0)
+    for a in fd.ASSETS:  # nenulová sazba přesně na hranách (01:00) – nesmí se započíst
+        f = dict(m[a]["funding"])
+        f[entry] = f[exit_] = 0.05
+        m[a] = fd.prepare(m[a]["bars"], f)
+    legs, _, _ = fd.simulate(m, START, date(2021, 1, 11), 7, 7, 1)
+    first = [lg for lg in legs if lg["entry_ts"] == entry]
+    assert len(first) == 4 and all(lg["funding"] == 0.0 for lg in first)
+    assert fd.simulate_edge_events(m, legs) == 8  # 4 nohy × (vstup + výstup), vykázáno informativně
+
+
+def test_funding_one_hour_inside_edges_is_included_once():
+    D = fd.ms_of(START)
+    entry, exit_ = D + H, D + 7 * DAY + H
+    m = make_market(rates=lambda a, t: ranked_rates(a, t) if t <= D else 0.0)
+    for a in fd.ASSETS:
+        f = dict(m[a]["funding"])
+        f[entry + H] = f[exit_ - H] = 0.001
+        m[a] = fd.prepare(m[a]["bars"], f)
+    legs, _, _ = fd.simulate(m, START, date(2021, 1, 11), 7, 7, 1)
+    for lg in [x for x in legs if x["entry_ts"] == entry]:
+        assert lg["funding"] == pytest.approx(-lg["side"] * 0.001 * lg["qty"] * 100 * 2)
+
+
+def test_changing_future_data_does_not_change_earlier_decisions_weights_fills():
+    """Kauzalita: data po výstupu prvního koše se ZMĚNÍ (ne jen připojí) ⇒ 1. koš beze změny."""
+    D = fd.ms_of(START)
+    cut = D + 7 * DAY + H  # výstup 1. koše
+    base = make_market(days=60, rates=ranked_rates)
+    alt = make_market(days=60, price=lambda a, t: 100.0 if t <= cut else (300.0, 900.0),
+                      rates=lambda a, t: ranked_rates(a, t) if t <= cut else (-1) ** fd.ASSETS.index(a) * 0.01)
+    lb, _, db = fd.simulate(base, START, date(2021, 1, 25), 7, 7, 1)
+    la, _, da = fd.simulate(alt, START, date(2021, 1, 25), 7, 7, 1)
+    assert _first_basket(lb, D) == _first_basket(la, D)
+    assert db[0] == da[0] and db[1] == da[1]  # 2. rozhodnutí (11. 1. 00:00) leží před změnou v 01:00
+    assert db[2] != da[2]  # 3. rozhodnutí už vidí změněný funding ⇒ test má sílu
+
+
+def test_costs_charged_on_all_four_legs_entry_and_exit():
+    m = make_market(rates=lambda a, t: 0.0001 * fd.ASSETS.index(a) if t <= fd.ms_of(START) else 0.0)
+    legs, curve, _ = fd.simulate(m, START, date(2021, 1, 11), 7, 7, 1)
+    c = fd.FEE + fd.SLIP
+    assert len(legs) == 4
+    for lg in legs:
+        assert lg["costs"] == pytest.approx(2 * 1000 * c) and lg["net_pnl"] == pytest.approx(-2 * 1000 * c)
+    assert curve[date(2021, 1, 11)] == pytest.approx(fd.START_EQUITY - 8 * 1000 * c)
+
+
+def test_vol_matched_benchmark_info():
+    out = fd.vol_matched(strategy_rets=[0.01, -0.01] * 10, bh_rets=[0.04, -0.04] * 10)
+    assert out["scale"] == pytest.approx(0.25)
+    assert 0 < out["max_drawdown_pct"] < 2

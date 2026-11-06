@@ -298,7 +298,8 @@ def run(market, start, end, mult, W, H, variant, prices=None):
     legs, curve, dec = simulate(market, start, end, W, H, mult, variant, prices)
     cm, rets = curve_metrics(curve, START_EQUITY)
     return {**cm, **trade_metrics(legs), "baskets": sum(1 for x in dec if not x["skipped"]),
-            "skipped_weeks": sum(1 for x in dec if x["skipped"])}, legs, rets, curve
+            "skipped_weeks": sum(1 for x in dec if x["skipped"]),
+            "edge_funding_events_excluded": simulate_edge_events(market, legs)}, legs, rets, curve
 
 
 def buy_hold(market, start, end, mult, prices=None):
@@ -320,6 +321,26 @@ def buy_hold(market, start, end, mult, prices=None):
     curve[end] = cash + (curve[end] - cash) * (1 - c)
     cm, rets = curve_metrics(curve, START_EQUITY)
     return {**cm, "net_pnl": round(curve[end] - START_EQUITY, 4)}, rets
+
+
+def simulate_edge_events(market, legs):
+    """Info (dodatek 1): funding události přesně v čase vstupu/výstupu nohy — podle protokolu se nezapočítají."""
+    return sum((lg["entry_ts"] in market[lg["asset"]]["funding"]) + (lg["exit_ts"] in market[lg["asset"]]["funding"])
+               for lg in legs)
+
+
+def vol_matched(strategy_rets, bh_rets):
+    """Info (dodatek 1): B&H přeškálované na stejnou denní volatilitu jako strategie (bez nákladů); kritéria nemění."""
+    def sd(x):
+        mu = sum(x) / len(x)
+        return math.sqrt(sum((r - mu) ** 2 for r in x) / (len(x) - 1))
+    k = sd(strategy_rets) / sd(bh_rets) if sd(bh_rets) > 0 else 0.0
+    v, peak, mdd = 1.0, 1.0, 0.0
+    for r in bh_rets:
+        v *= 1 + k * r
+        peak = max(peak, v)
+        mdd = max(mdd, 1 - v / peak)
+    return {"scale": round(k, 6), "return_pct": round((v - 1) * 100, 4), "max_drawdown_pct": round(mdd * 100, 4)}
 
 
 def corr(x, y):
@@ -432,7 +453,10 @@ def main(argv=None):
               "walk_forward_ge_3_of_4": wf_pos >= 3}
     s, e = PERIODS["validation"]
     beta_info = {"corr_daily_vs_btc_validation_x1": corr(rets_store[(ctag, "validation", 1)],
-                                                         btc_daily_returns(market, pdate(s), pdate(e), px))}
+                                                         btc_daily_returns(market, pdate(s), pdate(e), px)),
+                 "gross_exposure_strategy": 4 * LEG_FRACTION, "gross_exposure_bh": 1.0,
+                 "bh_vol_matched_x1": {p: vol_matched(rets_store[(ctag, p, 1)], bh_rets[(p, 1)])
+                                       for p in ("validation", "final_test")}}
     verdict = ("KANDIDÁT NA FORWARD PAPER" if (passed_a or passed_b) and all(robust.values()) else "ZAMÍTNUTO")
     payload = {"protocol": "research/funding_dispersion/PROTOCOL.md", "chosen": ctag,
                "tuning_selection_x1": tune, "strategy": results, "buy_hold_equal_8": bh,

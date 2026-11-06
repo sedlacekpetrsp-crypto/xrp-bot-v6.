@@ -91,3 +91,13 @@ Chybí-li 1h svíčka v čase potřebném pro vstup, výstup, funding, likvidač
 nejbližší dřívější svíčky téhož aktiva nejvýše 6 h zpět (počet náhrad do `results.json`, `price_fallbacks`); starší ⇒ chyba.
 Důvod: ojedinělé výpadky hodin na Binance by jinak zastavily celý běh. Pravidla, dělení ani kritéria se nemění.
 Shoda v pořadí fundingu se řeší abecedně, výběr varianty při shodě zisku první v pořadí mřížky.
+
+## Dodatek 1 (2026-11-06 ~16:20 UTC, po oponentuře ChatGPT, stále před stažením dat a před jakýmkoli výsledkem)
+Jen informativní výstupy, kritéria ani pravidla se nemění:
+- `edge_funding_events_excluded`: počet funding událostí přesně v čase vstupu/výstupu nohy (01:00 UTC; při 8h/4h intervalu
+  by měl být 0; při 1h intervalu by šlo o platbu, kterou protokol nepřiřadí ani staré, ani nové noze).
+- `gross_exposure_*` a `bh_vol_matched_x1`: B&H přeškálované na stejnou denní volatilitu jako strategie (návratnost, max DD).
+  Důvod: strategie má gross 40 % long-short, B&H 100 % long ⇒ kritérium B2 (DD ≤ 0,6 × B&H) zvýhodňuje nízkou expozici.
+  Rozhoduje dál rámec v2; toto číslo slouží jen k poctivé interpretaci.
+- Známé zjednodušení (beze změny): funding se počítá z open 1h svíčky last price, ne z mark price; rozhodnutí v 00:00 bere
+  sazbu vypořádanou v 00:00 (calc_time o ms později), exekuce je ale až v 01:00 ⇒ žádný fill nepoužívá budoucí informaci.
