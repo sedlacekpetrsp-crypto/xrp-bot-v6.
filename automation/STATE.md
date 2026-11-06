@@ -74,7 +74,17 @@ R3b. **DALŠÍ NA ŘADĚ → Forward PAPER RSI(2) pullback BTC/ETH — VÝJIMKA 
     náklady ×1 a ×2), nic neladit. Start = první denní svíčka po 2026-11-06; data Binance Vision daily klines přes GitHub Actions
     (workflow `forward-paper.yml`, plán 1× denně po 00:30 UTC + ručně), výstup `trades.csv`, `equity.csv`, `STATUS.md` (otevřená
     pozice, P/L po nákladech vs. B&H od startu, max DD). Každý běh autopilota: jen zkontrolovat, že se forward aktualizoval, a 1 řádek
-    do reportu (P/L od startu vs. B&H). Vyhodnocení po ≥ 60 dnech (nejdřív 2027-01-05) — ani pak ne „zisková“.
+    do reportu (P/L od startu vs. B&H).
+    **Doplněk (vlastník 12:39: víc obchodů, vyhodnotit dřív):** backtest ukázal jen ~1,2 obchodu/měsíc na BTC+ETH
+    (závěrečný test 27 obchodů za 22 měsíců) ⇒ 60 dní ≈ 2–3 obchody, bez vypovídací hodnoty. Postup:
+    (a) NEJDŘÍV křížový test na dalších aktivech se STEJNÝMI pravidly a parametry (žádné ladění): SOL, XRP, BNB, ADA, DOGE,
+        LINK, LTC, AVAX (Binance Vision 1d, stejná období, náklady ×1/×2/×3, trades.csv); protokol commitnout předem.
+        Kritérium přidání aktiva do forwardu: validace ×2 i závěrečný test ×2 čistý zisk > 0 a DD ≤ 0,6 × B&H; výsledek za
+        celý koš (ne výběr nejlepších) zapsat do registru vč. N pro Deflated Sharpe.
+    (b) forward PAPER spustit pro BTC/ETH hned + pro aktiva, která (a) splní.
+    (c) průběžné vyhodnocení po 40 dnech (2026-12-16) = jen kontrola, že forward odpovídá backtestu (počet obchodů,
+        průměrný obchod, skluz) a stop-loss pravidlo: pokud forward ×2 < −10 % nebo 5 ztrát po sobě ⇒ hlásit vlastníkovi.
+        Hlavní vyhodnocení až po ≥ 30 forward obchodech NEBO 60 dnech (co nastane později) — ani pak ne „zisková“.
 R4. Volatilitní cílení BTC 40 % (bod 12 níže; protokol už commitnut ve `research/vol-target-20261106`, `fc9b4a4`) —
     pokračovat `run.py` + testy + workflow podle vzoru `research/funding_carry`, vyhodnotit stopou A i B + DSR (nástroj z PR #22).
 R5. Blízkost 52týdennímu maximu průřezově, 8 aktiv (bod 14 níže).
