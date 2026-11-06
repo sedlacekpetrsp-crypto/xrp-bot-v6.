@@ -194,3 +194,132 @@ def test_vol_matched_benchmark_info():
     out = fd.vol_matched(strategy_rets=[0.01, -0.01] * 10, bh_rets=[0.04, -0.04] * 10)
     assert out["scale"] == pytest.approx(0.25)
     assert 0 < out["max_drawdown_pct"] < 2
+
+
+# ---- kolo 2 oponentury ChatGPT: R1–R4 a body B, D, E ----
+def test_R1_repro_sparse_data_is_not_eligible():
+    D = fd.ms_of(START)
+    m = {"BTCUSDT": fd.prepare({D - 20 * DAY: (1, 1, 1, 1), D + H: (1, 1, 1, 1)}, {D - 20 * DAY: 0.0})}
+    ok, why = fd.eligibility(m, "BTCUSDT", D, 7, D + H)
+    assert ok is False and why == "price_gap_in_window"
+
+
+def test_R1_missing_funding_event_inside_window_makes_ineligible_not_zero():
+    D = fd.ms_of(START)
+    m = make_market(rates=ranked_rates)
+    a = "ETHUSDT"
+    f = dict(m[a]["funding"])
+    del f[D - 2 * DAY]  # vnitřní mezera
+    m[a] = fd.prepare(m[a]["bars"], f)
+    assert fd.eligibility(m, a, D, 7, D + H) == (False, "funding_gap_in_window")
+    _, _, dec = fd.simulate(m, START, date(2021, 1, 11), 7, 7, 1)
+    assert a not in dec[0]["signal"] and dec[0]["ineligible_reasons"] == {a: "funding_gap_in_window"}
+
+
+def test_R1_interval_change_8h_4h_1h_is_continuous():
+    D = fd.ms_of(START)
+    bars = {D - 10 * DAY + i * H: (100.0, 100.0, 100.0, 100.0) for i in range(12 * 24)}
+    f, t = {}, D - 10 * DAY
+    while t <= D + 3 * DAY:
+        iv = 8 if t < D - 5 * DAY else (4 if t < D - 2 * DAY else 1)
+        f[t] = (0.0001, float(iv))
+        t += iv * H
+    m = {"BTCUSDT": fd.prepare(bars, f)}
+    assert fd.eligibility(m, "BTCUSDT", D, 7, D + H) == (True, "ok")
+    # počet událostí v okně odpovídá intervalům: 8h do D−5 d, 4h do D−2 d, 1h do D
+    assert fd.funding_signal(m["BTCUSDT"], D, 7) == pytest.approx(0.0001 * (6 + 18 + 48))
+
+
+def test_R1_duplicate_after_normalization():
+    audit = {"duplicates_same_value": 0}
+    store = {}
+    fd.add_funding(store, [(0, 0.001, 8.0, 5), (0, 0.001, 8.0, 12)], "BTCUSDT", audit)
+    assert audit["duplicates_same_value"] == 1 and len(store) == 1
+    with pytest.raises(ValueError):
+        fd.add_funding(store, [(0, 0.002, 8.0, 7)], "BTCUSDT", audit)
+    with pytest.raises(ValueError):
+        fd.normalize_funding_ts(3 * H + 1500)
+
+
+def test_R2_benchmark_accounts_funding_sign():
+    res = {}
+    for r in (0.0, 0.01, -0.01):
+        mk = make_market(rates=lambda a, t, r=r: r)
+        res[r] = fd.buy_hold(mk, START, date(2021, 1, 11), 1)[0]
+    assert res[0.0]["net_pnl"] == pytest.approx(-22.9868, abs=1e-4)
+    assert res[0.01]["net_pnl"] < res[0.0]["net_pnl"] < res[-0.01]["net_pnl"]
+    # 8 dní × 3 události, každá 1 % z 9 988,5 notional (po vstupních nákladech); poslední den 00:00 je uvnitř
+    n_events = sum(1 for t in mk["BTCUSDT"]["fts"] if fd.ms_of(START) < t <= fd.ms_of(date(2021, 1, 11)) + 23 * H)
+    assert res[0.01]["funding"] == pytest.approx(-0.01 * fd.START_EQUITY * (1 - (fd.FEE + fd.SLIP)) * n_events)
+
+
+def test_R3_gap_through_liquidation_at_exit_open():
+    D = fd.ms_of(START)
+    exit_ = D + 7 * DAY + H
+    def price(a, t):
+        return 300.0 if a == "LTCUSDT" and t >= exit_ else 100.0
+    m = make_market(price=price, rates=lambda a, t: ranked_rates(a, t) if t <= D else 0.0)
+    legs, _, _ = fd.simulate(m, START, date(2021, 1, 11), 7, 7, 1)
+    ltc = [lg for lg in legs if lg["asset"] == "LTCUSDT"][0]
+    assert ltc["liquidated"] == 1 and ltc["gross"] == pytest.approx(-1000.0) and ltc["exit_ts"] == exit_
+
+
+def test_R3_high_of_exit_hour_is_not_used():
+    D = fd.ms_of(START)
+    exit_ = D + 7 * DAY + H
+    def price(a, t):
+        return (100.0, 500.0) if a == "LTCUSDT" and t == exit_ else 100.0  # open 100, high 500 až po výstupu
+    m = make_market(price=price, rates=lambda a, t: ranked_rates(a, t) if t <= D else 0.0)
+    legs, _, _ = fd.simulate(m, START, date(2021, 1, 11), 7, 7, 1)
+    ltc = [lg for lg in legs if lg["asset"] == "LTCUSDT"][0]
+    assert ltc["liquidated"] == 0 and ltc["gross"] == pytest.approx(0.0)
+
+
+def test_R4_no_trades_still_writes_results_with_null_dsr(tmp_path, monkeypatch):
+    t0, t1 = fd.ms_of(date(2020, 9, 1)), fd.ms_of(date(2026, 11, 1))
+    bars = {t: (100.0, 100.0, 100.0, 100.0) for t in range(t0, t1, H)}
+    market = {a: fd.prepare(bars, {}) for a in fd.ASSETS}  # bez fundingu ⇒ nic není způsobilé
+    for a in fd.ASSETS:
+        market[a]["first_funding"] = None
+    monkeypatch.setattr(fd, "load", lambda cache: (market, [], [], []))
+    fd.main(["--outdir", str(tmp_path)])
+    import json
+    r = json.loads((tmp_path / "results.json").read_text())
+    assert r["dsr_validation_x1"]["dsr"] is None and r["dsr_validation_x1"]["undefined_reason"]
+    assert r["robustness"]["dsr_ge_0_95"] is False and r["verdict"] == "ZAMÍTNUTO"
+    assert r["strategy"]["W7_H7"]["validation"]["x1"]["trades"] == 0
+    assert set(r["dsr_sensitivity_scenarios"]) == {f"N{n}_V{v}" for n in (159, 318, 636) for v in (0.5, 1.0, 2.0)}
+
+
+def test_R4_constant_returns_dsr_undefined():
+    out = fd.safe_dsr([0.0] * 731, 159, 0.5)
+    assert out["dsr"] is None and "rozptyl" in out["undefined_reason"]
+
+
+def test_B_basket_metrics_aggregate_four_legs():
+    m = make_market(rates=lambda a, t: ranked_rates(a, t) if t <= fd.ms_of(START) else 0.0)
+    legs, _, _ = fd.simulate(m, START, date(2021, 1, 11), 7, 7, 1)
+    b = fd.basket_metrics(legs)
+    assert b["baskets"] == 1 and b["net_pnl"] == pytest.approx(sum(lg["net_pnl"] for lg in legs))
+
+
+def test_D_decision_after_publication_time():
+    D = fd.ms_of(START)
+    m = make_market(rates=ranked_rates)
+    f = {t: (r, 8.0, t + 31 if t == D else t) for t, r in m["BTCUSDT"]["funding"].items()}  # calc_time D + 31 ms
+    mk = fd.prepare(m["BTCUSDT"]["bars"], f)
+    assert mk["fraw"][D] == D + 31 <= fd.decision_time(D)
+    assert fd.funding_signal(mk, D, 7) == pytest.approx(0.0)  # BTC sazba 0 v ranked_rates
+
+
+def test_E_edge_funding_impact_is_quantified():
+    D = fd.ms_of(START)
+    entry = D + H
+    m = make_market(rates=lambda a, t: ranked_rates(a, t) if t <= D else 0.0)
+    for a in fd.ASSETS:
+        f = dict(m[a]["funding"])
+        f[entry] = 0.01
+        m[a] = fd.prepare(m[a]["bars"], f)
+    legs, _, _ = fd.simulate(m, START, date(2021, 1, 11), 7, 7, 1)
+    n, impact = fd.simulate_edge_events(m, legs, True)
+    assert n == 4 and impact == pytest.approx(4 * 0.01 * 1000)

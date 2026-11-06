@@ -78,8 +78,13 @@ def normalize_funding_ts(ts):
 
 
 def parse_funding(payload):
-    """Binance Vision fundingRate: calc_time, funding_interval_hours, last_funding_rate."""
-    return [(normalize_funding_ts(_ms(int(r[0]))), float(r[2])) for r in _csv_rows(payload)]
+    """Binance Vision fundingRate: calc_time, funding_interval_hours, last_funding_rate.
+    → [(normalizovaný čas vypořádání, sazba, interval_h, surový calc_time)]"""
+    out = []
+    for r in _csv_rows(payload):
+        raw = _ms(int(r[0]))
+        out.append((normalize_funding_ts(raw), float(r[2]), float(r[1]), raw))
+    return out
 
 
 def urls(asset):
@@ -90,11 +95,23 @@ def urls(asset):
         yield "fr", (y, m), f"{base}/fundingRate/{asset}/{asset}-fundingRate-{tag}.zip"
 
 
+def add_funding(store, rows, asset, audit):
+    """Oprava R1: duplicita po normalizaci se stejnou sazbou = počítat; s jinou sazbou nebo intervalem = chyba."""
+    for ts, rate, interval_h, raw in rows:
+        if ts in store:
+            if store[ts][:2] != (rate, interval_h):
+                raise ValueError(f"konfliktní duplicitní funding {asset} {ts}: {store[ts][:2]} vs {(rate, interval_h)}")
+            audit["duplicates_same_value"] += 1
+            continue
+        store[ts] = (rate, interval_h, raw)
+
+
 def load(cache, fetcher=fetch):
     market, manifest, missing, fatal = {}, [], [], []
     for a in ASSETS:
         bars, fund, present = {}, {}, {"kl": [], "fr": []}
         miss = {"kl": [], "fr": []}
+        audit = {"duplicates_same_value": 0}
         for kind, ym, url in urls(a):
             p = Path(cache) / kind / url.rsplit("/", 1)[1]
             if not p.exists():
@@ -114,8 +131,7 @@ def load(cache, fetcher=fetch):
                     bars[r[0]] = r[1:]
             else:
                 rows = parse_funding(payload)
-                for ts, rate in rows:
-                    fund[ts] = rate
+                add_funding(fund, rows, a, audit)
             manifest.append({"url": url, "sha256": hashlib.sha256(payload).hexdigest(), "rows": len(rows)})
         for kind in ("kl", "fr"):
             # povolené jsou jen chybějící měsíce PŘED prvním existujícím (kontrakt ještě neobchodoval)
@@ -125,17 +141,26 @@ def load(cache, fetcher=fetch):
             else:
                 fatal.append({"asset": a, "kind": kind, "month": "all"})
         market[a] = prepare(bars, fund)
+        market[a]["load_audit"] = audit
     return market, manifest, missing, fatal
 
 
 def prepare(bars, fund):
-    """bars {ts: (o, h, l, c)}, fund {ts: rate} → struktura s indexy pro rychlé kauzální dotazy."""
-    funding = dict(sorted(fund.items()))
-    fts = list(funding)
+    """bars {ts: (o, h, l, c)}, fund {ts: rate | (rate, interval_h[, raw_ts])} → indexy pro kauzální dotazy.
+    Holá sazba (syntetické testy) = interval 8 h, raw = ts."""
+    norm = {}
+    for ts, v in fund.items():
+        if isinstance(v, tuple):
+            norm[ts] = (v[0], v[1], v[2] if len(v) > 2 else ts)
+        else:
+            norm[ts] = (v, 8.0, ts)
+    fts = sorted(norm)
+    funding = {ts: norm[ts][0] for ts in fts}
     cum = [0.0]
     for ts in fts:
         cum.append(cum[-1] + funding[ts])
-    return {"bars": bars, "funding": funding, "fts": fts, "fcum": cum,
+    return {"bars": bars, "bts": sorted(bars), "funding": funding, "finterval": {ts: norm[ts][1] for ts in fts},
+            "fraw": {ts: norm[ts][2] for ts in fts}, "fts": fts, "fcum": cum,
             "first_bar": min(bars) if bars else None, "first_funding": fts[0] if fts else None}
 
 
@@ -152,37 +177,88 @@ def first_monday_on_or_after(d):
     return d + timedelta(days=(7 - d.weekday()) % 7)
 
 
+FALLBACK_PURPOSES = ("entry", "exit", "funding", "liquidation_check", "mtm", "benchmark")
+
+
 class Prices:
     def __init__(self, market):
         self.m = market
-        self.fallbacks = 0
+        self.fallbacks = {p: 0 for p in FALLBACK_PURPOSES}
+        self.last_fallback = False
 
-    def get(self, a, t, field):
-        """field: 0 open, 1 high, 2 low, 3 close. Chybí-li svíčka v t: close nejbližší dřívější do 6 h (dodatek 0)."""
+    def get(self, a, t, field, purpose):
+        """field: 0 open, 1 high, 2 low, 3 close. Chybí-li svíčka v t: close nejbližší dřívější do 6 h (dodatek 0);
+        náhrada se počítá podle účelu (dodatek 2) — je to náhradní ocenění, ne důkaz realizovatelné ceny."""
+        self.last_fallback = False
         b = self.m[a]["bars"].get(t)
         if b is not None:
             return b[field]
         for k in range(1, FALLBACK_HOURS + 1):
             b = self.m[a]["bars"].get(t - k * HOUR_MS)
             if b is not None:
-                self.fallbacks += 1
+                self.fallbacks[purpose] += 1
+                self.last_fallback = True
                 return b[3]
         raise KeyError(f"chybí cena {a} {datetime.fromtimestamp(t / 1000, tz=timezone.utc)}")
 
 
+def decision_time(D):
+    """Dodatek 2 (D): rozhodnutí až po zveřejnění sazby vypořádané v D (calc_time ≤ D + 1 s podle normalizace)."""
+    return D + 1000
+
+
 def funding_signal(m, D, W):
-    """Součet sazeb vypořádaných v (D − W dní, D] — jen známé k D."""
+    """Součet sazeb s časem vypořádání v (D − W dní, D] a surovým calc_time ≤ decision_time(D)."""
     lo = D - W * DAY_MS
     i, j = bisect.bisect_right(m["fts"], lo), bisect.bisect_right(m["fts"], D)
+    assert all(m["fraw"][ts] <= decision_time(D) for ts in m["fts"][i:j])
     return m["fcum"][j] - m["fcum"][i]
 
 
-def eligible(market, a, D, W, entry_ts):
+def funding_chain_gaps(m, lo, hi):
+    """Počet nesouvislostí funding řady pokrývající (lo, hi]: chybí předchozí událost ≤ lo, rozestup dvou po sobě
+    jdoucích událostí ≠ intervalu (podle intervalu té dřívější), nebo po poslední události ≤ hi chybí další před hi."""
+    fts = m["fts"]
+    i = bisect.bisect_right(fts, lo) - 1
+    if i < 0:
+        return None  # kontrakt ještě neměl funding
+    gaps, k = 0, i
+    while k + 1 < len(fts) and fts[k + 1] <= hi:
+        if fts[k + 1] - fts[k] != m["finterval"][fts[k]] * HOUR_MS:
+            gaps += 1
+        k += 1
+    if fts[k] + m["finterval"][fts[k]] * HOUR_MS <= hi and (k + 1 >= len(fts) or fts[k + 1] > hi):
+        gaps += 1  # očekávaná událost ≤ hi chybí
+    return gaps
+
+
+def price_gaps(m, lo, hi):
+    """Počet chybějících hodinových svíček v [lo, hi]."""
+    i, j = bisect.bisect_left(m["bts"], lo), bisect.bisect_right(m["bts"], hi)
+    return (hi - lo) // HOUR_MS + 1 - (j - i)
+
+
+def eligibility(market, a, D, W, entry_ts):
+    """Oprava R1: způsobilost = souvislé ceny i funding po celé okno W a svíčka ve vstupní hodině.
+    Chybějící funding se nikdy nepovažuje za nulový. Vrací (způsobilé, důvod)."""
     m = market[a]
     if m["first_funding"] is None or m["first_bar"] is None:
-        return False
+        return False, "no_data"
     lo = D - W * DAY_MS
-    return m["first_funding"] <= lo and m["first_bar"] <= lo and entry_ts in m["bars"]
+    if m["first_bar"] > lo or m["first_funding"] > lo:
+        return False, "not_listed_for_window"
+    if entry_ts not in m["bars"]:
+        return False, "missing_entry_bar"
+    if price_gaps(m, lo, entry_ts):
+        return False, "price_gap_in_window"
+    g = funding_chain_gaps(m, lo, D)
+    if g is None or g > 0:
+        return False, "funding_gap_in_window"
+    return True, "ok"
+
+
+def eligible(market, a, D, W, entry_ts):
+    return eligibility(market, a, D, W, entry_ts)[0]
 
 
 def select_legs(signals):
@@ -192,8 +268,15 @@ def select_legs(signals):
     return longs, shorts
 
 
+def _liquidate(lg, t, price):
+    lg.update(alive=False, liquidated=1, exit_ts=t, exit=price, gross=-lg["notional"])
+
+
 def simulate(market, start, end, W, H, mult, variant="", prices=None):
-    """Vrací (nohy, denní equity {date: value}, rozhodnutí)."""
+    """Vrací (nohy, denní equity {date: value}, rozhodnutí).
+    Pořadí v hodině t (vstup ≤ t < výstup): funding události v t (jen t > vstup) → kontrola likvidace short nohy
+    podle high svíčky t → ocenění v 23:00. Ve výstupní hodině: je-li open ≥ 2 × vstup ⇒ likvidace gapem (ztráta =
+    notional), jinak výstup za open. High po čase výstupu se nepoužívá (oprava R3)."""
     px = prices or Prices(market)
     c = (FEE + SLIP) * mult
     end_ms = ms_of(end) + DAY_MS
@@ -205,28 +288,36 @@ def simulate(market, start, end, W, H, mult, variant="", prices=None):
         entry_ts, exit_ts = D + HOUR_MS, D + H * DAY_MS + HOUR_MS
         if exit_ts > end_ms - HOUR_MS:  # výstupní svíčka musí ležet v období
             break
-        elig = [a for a in ASSETS if eligible(market, a, D, W, entry_ts)]
+        why = {a: eligibility(market, a, D, W, entry_ts)[1] for a in ASSETS}
+        elig = [a for a in ASSETS if why[a] == "ok"]
         if len(elig) < MIN_ELIGIBLE:
-            decisions.append({"decision": date_of(D).isoformat(), "skipped": True, "eligible": len(elig)})
+            decisions.append({"decision_utc": datetime.fromtimestamp(decision_time(D) / 1000, tz=timezone.utc).isoformat(),
+                              "decision": date_of(D).isoformat(), "skipped": True, "eligible": len(elig),
+                              "ineligible_reasons": {a: r for a, r in why.items() if r != "ok"}})
             for k in range(7):
                 curve[date_of(D + k * DAY_MS)] = cash
             D += 7 * DAY_MS
             continue
         sig = {a: funding_signal(market[a], D, W) for a in elig}
         longs, shorts = select_legs(sig)
-        decisions.append({"decision": date_of(D).isoformat(), "skipped": False, "eligible": len(elig),
+        decisions.append({"decision_utc": datetime.fromtimestamp(decision_time(D) / 1000, tz=timezone.utc).isoformat(),
+                          "decision": date_of(D).isoformat(), "skipped": False, "eligible": len(elig),
+                          "ineligible_reasons": {a: r for a, r in why.items() if r != "ok"},
                           "longs": longs, "shorts": shorts, "signal": sig})
         equity0 = cash
         open_legs = []
+        basket_id = len(decisions)
         for side, names in ((1, longs), (-1, shorts)):
             for a in names:
-                e = px.get(a, entry_ts, 0)
+                e = px.get(a, entry_ts, 0, "entry")
                 notional = LEG_FRACTION * equity0
                 cost_in = notional * c
                 cash -= cost_in
-                open_legs.append({"period_variant": variant, "asset": a, "side": side, "entry_ts": entry_ts,
-                                  "entry": e, "qty": notional / e, "notional": notional, "costs": cost_in,
-                                  "funding": 0.0, "liquidated": 0, "alive": True, "signal": sig[a]})
+                open_legs.append({"period_variant": variant, "basket": basket_id, "asset": a, "side": side,
+                                  "entry_ts": entry_ts, "entry": e, "qty": notional / e, "notional": notional,
+                                  "costs": cost_in, "funding": 0.0, "liquidated": 0, "alive": True, "signal": sig[a],
+                                  "price_fallbacks": 0,
+                                  "funding_gaps_in_holding": funding_chain_gaps(market[a], entry_ts, exit_ts - 1) or 0})
         t = entry_ts
         while t < exit_ts:
             for lg in open_legs:
@@ -234,24 +325,31 @@ def simulate(market, start, end, W, H, mult, variant="", prices=None):
                     continue
                 a = lg["asset"]
                 if t > entry_ts and t in market[a]["funding"]:
-                    amt = -lg["side"] * market[a]["funding"][t] * lg["qty"] * px.get(a, t, 0)
+                    amt = -lg["side"] * market[a]["funding"][t] * lg["qty"] * px.get(a, t, 0, "funding")
                     lg["funding"] += amt
-                if lg["side"] == -1 and px.get(a, t, 1) >= 2 * lg["entry"]:
-                    lg.update(alive=False, liquidated=1, exit_ts=t, exit=2 * lg["entry"],
-                              gross=-lg["notional"])
-                    cash += lg["gross"] + lg["funding"]
+                if lg["side"] == -1:
+                    hi = px.get(a, t, 1, "liquidation_check")
+                    lg["price_fallbacks"] += px.last_fallback
+                    if hi >= 2 * lg["entry"]:
+                        _liquidate(lg, t, 2 * lg["entry"])
+                        cash += lg["gross"] + lg["funding"]
             if (t // HOUR_MS) % 24 == 23:  # close svíčky 23:00 = konec dne
-                mtm = sum(lg["side"] * lg["qty"] * (px.get(lg["asset"], t, 3) - lg["entry"]) + lg["funding"]
+                mtm = sum(lg["side"] * lg["qty"] * (px.get(lg["asset"], t, 3, "mtm") - lg["entry"]) + lg["funding"]
                           for lg in open_legs if lg["alive"])
                 curve[date_of(t)] = cash + mtm
             t += HOUR_MS
         for lg in open_legs:
             if lg["alive"]:
-                x = px.get(lg["asset"], exit_ts, 0)
-                cost_out = lg["qty"] * x * c
-                lg.update(alive=False, exit_ts=exit_ts, exit=x, gross=lg["side"] * lg["qty"] * (x - lg["entry"]))
-                lg["costs"] += cost_out
-                cash += lg["gross"] + lg["funding"] - cost_out
+                x = px.get(lg["asset"], exit_ts, 0, "exit")
+                lg["price_fallbacks"] += px.last_fallback
+                if lg["side"] == -1 and x >= 2 * lg["entry"]:  # gap přes likvidační cenu ve výstupní hodině
+                    _liquidate(lg, exit_ts, x)
+                    cash += lg["gross"] + lg["funding"]
+                else:
+                    cost_out = lg["qty"] * x * c
+                    lg.update(alive=False, exit_ts=exit_ts, exit=x, gross=lg["side"] * lg["qty"] * (x - lg["entry"]))
+                    lg["costs"] += cost_out
+                    cash += lg["gross"] + lg["funding"] - cost_out
             lg["net_pnl"] = lg["gross"] + lg["funding"] - lg["costs"]
             legs.append(lg)
         D += H * DAY_MS
@@ -299,39 +397,78 @@ def run(market, start, end, mult, W, H, variant, prices=None):
     cm, rets = curve_metrics(curve, START_EQUITY)
     return {**cm, **trade_metrics(legs), "baskets": sum(1 for x in dec if not x["skipped"]),
             "skipped_weeks": sum(1 for x in dec if x["skipped"]),
-            "edge_funding_events_excluded": simulate_edge_events(market, legs)}, legs, rets, curve
+            "edge_funding_events_excluded": simulate_edge_events(market, legs),
+            "edge_funding_impact_abs_upper_bound": simulate_edge_events(market, legs, True)[1],
+            "legs_with_price_fallback": sum(1 for lg in legs if lg["price_fallbacks"]),
+            "legs_with_funding_gap_in_holding": sum(1 for lg in legs if lg["funding_gaps_in_holding"]),
+            "per_basket": basket_metrics(legs)}, legs, rets, curve
 
 
 def buy_hold(market, start, end, mult, prices=None):
+    """Oprava R2: B&H 8 perpů (long 12,5 % na aktivum, 1× bez páky, marže = notional) včetně skutečného fundingu:
+    long platí kladnou sazbu z qty × open svíčky v čase události, pro události v (start 00:00, konec dne end).
+    Nákup za open první hodiny, prodej za close svíčky 23:00 posledního dne; nedostupné aktivum = hotovost."""
     px = prices or Prices(market)
     c = (FEE + SLIP) * mult
     t0 = ms_of(start)
+    t_end = ms_of(end) + 23 * HOUR_MS
     share = START_EQUITY / len(ASSETS)
-    qty, cash = {}, 0.0
+    qty, cash, funding = {}, 0.0, 0.0
     for a in ASSETS:
         if t0 in market[a]["bars"]:
-            qty[a] = share * (1 - c) / px.get(a, t0, 0)
+            qty[a] = share * (1 - c) / px.get(a, t0, 0, "benchmark")
         else:
             cash += share
-    curve, d = {}, start
+    events = sorted((t, a) for a in qty for t in market[a]["fts"] if t0 < t <= t_end)
+    k, curve, d = 0, {}, start
     while d <= end:
         t = ms_of(d) + 23 * HOUR_MS
-        curve[d] = cash + sum(q * px.get(a, t, 3) for a, q in qty.items())
+        while k < len(events) and events[k][0] <= t:
+            te, a = events[k]
+            funding -= market[a]["funding"][te] * qty[a] * px.get(a, te, 0, "benchmark")
+            k += 1
+        curve[d] = cash + funding + sum(q * px.get(a, t, 3, "benchmark") for a, q in qty.items())
         d += timedelta(days=1)
-    curve[end] = cash + (curve[end] - cash) * (1 - c)
+    asset_value = curve[end] - cash - funding
+    curve[end] = cash + funding + asset_value * (1 - c)
     cm, rets = curve_metrics(curve, START_EQUITY)
-    return {**cm, "net_pnl": round(curve[end] - START_EQUITY, 4)}, rets
+    return {**cm, "net_pnl": round(curve[end] - START_EQUITY, 4), "funding": round(funding, 4)}, rets
 
 
-def simulate_edge_events(market, legs):
-    """Info (dodatek 1): funding události přesně v čase vstupu/výstupu nohy — podle protokolu se nezapočítají."""
-    return sum((lg["entry_ts"] in market[lg["asset"]]["funding"]) + (lg["exit_ts"] in market[lg["asset"]]["funding"])
-               for lg in legs)
+def simulate_edge_events(market, legs, with_impact=False):
+    """Funding události přesně v čase vstupu/výstupu nohy — podle protokolu se nezapočítají (dodatek 1).
+    with_impact: (počet, součet |sazba × qty × cena|) = horní mez dopadu na P/L (dodatek 2, E)."""
+    n, impact = 0, 0.0
+    for lg in legs:
+        m = market[lg["asset"]]
+        for t, p in ((lg["entry_ts"], lg["entry"]), (lg["exit_ts"], lg["exit"])):
+            if t in m["funding"]:
+                n += 1
+                impact += abs(m["funding"][t] * lg["qty"] * p)
+    return (n, round(impact, 6)) if with_impact else n
+
+
+def basket_metrics(legs):
+    """Dodatek 2 (B): metriky z celých košů (4 nohy jednoho rozhodnutí nejsou 4 nezávislá rozhodnutí)."""
+    by = {}
+    for lg in legs:
+        by.setdefault(lg["basket"], []).append(lg)
+    pnl = [sum(x["net_pnl"] for x in b) for _, b in sorted(by.items())]
+    gains = sum(x for x in pnl if x > 0)
+    losses = -sum(x for x in pnl if x < 0)
+    return {"baskets": len(pnl), "net_pnl": round(sum(pnl), 4),
+            "profit_factor": round(gains / losses, 4) if losses > 0 else (None if gains == 0 else 999.0),
+            "net_without_top3": round(sum(pnl) - sum(sorted(pnl, reverse=True)[:3]), 4),
+            "baskets_with_price_fallback": sum(1 for _, b in by.items() if any(x["price_fallbacks"] for x in b)),
+            "baskets_with_funding_gap": sum(1 for _, b in by.items() if any(x["funding_gaps_in_holding"] for x in b))}
 
 
 def vol_matched(strategy_rets, bh_rets):
-    """Info (dodatek 1): B&H přeškálované na stejnou denní volatilitu jako strategie (bez nákladů); kritéria nemění."""
+    """Info (dodatek 1): B&H přeškálované na stejnou denní volatilitu jako strategie (bez nákladů); kritéria nemění.
+    EX-POST diagnostika (škála z celého období), ne obchodovatelný benchmark (dodatek 2, F)."""
     def sd(x):
+        if len(x) < 2:
+            return 0.0
         mu = sum(x) / len(x)
         return math.sqrt(sum((r - mu) ** 2 for r in x) / (len(x) - 1))
     k = sd(strategy_rets) / sd(bh_rets) if sd(bh_rets) > 0 else 0.0
@@ -340,7 +477,7 @@ def vol_matched(strategy_rets, bh_rets):
         v *= 1 + k * r
         peak = max(peak, v)
         mdd = max(mdd, 1 - v / peak)
-    return {"scale": round(k, 6), "return_pct": round((v - 1) * 100, 4), "max_drawdown_pct": round(mdd * 100, 4)}
+    return {"kind": "ex_post_diagnostic", "scale": round(k, 6), "return_pct": round((v - 1) * 100, 4), "max_drawdown_pct": round(mdd * 100, 4)}
 
 
 def corr(x, y):
@@ -356,7 +493,7 @@ def corr(x, y):
 def btc_daily_returns(market, start, end, prices):
     vals, d = [], start - timedelta(days=1)
     while d <= end:
-        vals.append(prices.get("BTCUSDT", ms_of(d) + 23 * HOUR_MS, 3))
+        vals.append(prices.get("BTCUSDT", ms_of(d) + 23 * HOUR_MS, 3, "benchmark"))
         d += timedelta(days=1)
     return [vals[k] / vals[k - 1] - 1 for k in range(1, len(vals))]
 
@@ -381,6 +518,20 @@ def evaluate(res, bh):
     return a, b
 
 
+def safe_dsr(rets, n, var_annual):
+    """Oprava R4: nedefinované DSR (nulový rozptyl, např. žádné obchody) = None + důvod, brána neprošla."""
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+    from tools.research.deflated_sharpe import dsr_from_returns
+    try:
+        return {**dsr_from_returns(rets, n, var_annual / 365), "undefined_reason": None}
+    except (ValueError, ZeroDivisionError) as e:
+        return {"dsr": None, "undefined_reason": str(e), "n_trials": n, "var_trials": var_annual / 365}
+
+
+DSR_SENSITIVITY_N = (159, 318, 636)
+DSR_SENSITIVITY_V = (0.5, 1.0, 2.0)
+
+
 def neighbors(w, h):
     return [(w2, h2) for (w2, h2) in GRID if (w2 == w) != (h2 == h)]
 
@@ -397,7 +548,8 @@ def leg_row(period, mult, lg):
             "entry": lg["entry"], "exit": lg["exit"], "qty": round(lg["qty"], 10),
             "notional": round(lg["notional"], 6), "gross": round(lg["gross"], 6),
             "funding": round(lg["funding"], 6), "costs": round(lg["costs"], 6),
-            "liquidated": lg["liquidated"], "net_pnl": round(lg["net_pnl"], 6)}
+            "liquidated": lg["liquidated"], "basket": lg["basket"], "price_fallbacks": lg["price_fallbacks"],
+            "funding_gaps_in_holding": lg["funding_gaps_in_holding"], "net_pnl": round(lg["net_pnl"], 6)}
 
 
 def main(argv=None):
@@ -411,8 +563,9 @@ def main(argv=None):
     if fatal:
         print("FATAL missing archives after first available month", json.dumps(fatal[:30]))
         sys.exit(2)
-    first_bar = {a: date_of(market[a]["first_bar"]).isoformat() for a in ASSETS}
-    first_funding = {a: date_of(market[a]["first_funding"]).isoformat() for a in ASSETS}
+    first_bar = {a: date_of(market[a]["first_bar"]).isoformat() if market[a]["first_bar"] else None for a in ASSETS}
+    first_funding = {a: date_of(market[a]["first_funding"]).isoformat() if market[a]["first_funding"] else None
+                     for a in ASSETS}
     print("DATA_COVERAGE", json.dumps({"first_bar": first_bar, "first_funding": first_funding}))
     px = Prices(market)
 
@@ -444,12 +597,13 @@ def main(argv=None):
     res = results[ctag]
     track_a, track_b = evaluate(res, bh)
     passed_a, passed_b = all(track_a.values()), all(track_b.values())
-    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-    from tools.research.deflated_sharpe import dsr_from_returns
-    dsr = dsr_from_returns(rets_store[(ctag, "validation", 1)], DSR_N, DSR_VAR_ANNUAL / 365)
+    vrets = rets_store[(ctag, "validation", 1)]
+    dsr = safe_dsr(vrets, DSR_N, DSR_VAR_ANNUAL)
+    dsr_sens = {f"N{n}_V{v}": safe_dsr(vrets, n, v)["dsr"] for n in DSR_SENSITIVITY_N for v in DSR_SENSITIVITY_V}
     nb = {vt(*g): results[vt(*g)]["validation"]["x2"]["net_pnl"] for g in neighbors(*chosen)}
     wf_pos = sum(1 for y in wf.values() if y["net_pnl"] > 0)
-    robust = {"dsr_ge_0_95": dsr["dsr"] >= 0.95, "neighbors_val_x2_profit": all(v > 0 for v in nb.values()),
+    robust = {"dsr_ge_0_95": dsr["dsr"] is not None and dsr["dsr"] >= 0.95,
+              "neighbors_val_x2_profit": all(v > 0 for v in nb.values()),
               "walk_forward_ge_3_of_4": wf_pos >= 3}
     s, e = PERIODS["validation"]
     beta_info = {"corr_daily_vs_btc_validation_x1": corr(rets_store[(ctag, "validation", 1)],
@@ -458,12 +612,21 @@ def main(argv=None):
                  "bh_vol_matched_x1": {p: vol_matched(rets_store[(ctag, p, 1)], bh_rets[(p, 1)])
                                        for p in ("validation", "final_test")}}
     verdict = ("KANDIDÁT NA FORWARD PAPER" if (passed_a or passed_b) and all(robust.values()) else "ZAMÍTNUTO")
+    flags = {"edge_funding_events": sum(res[p]["x1"]["edge_funding_events_excluded"] for p in PERIODS),
+             "legs_with_price_fallback": sum(res[p]["x1"]["legs_with_price_fallback"] for p in PERIODS),
+             "legs_with_funding_gap_in_holding": sum(res[p]["x1"]["legs_with_funding_gap_in_holding"] for p in PERIODS)}
+    if verdict.startswith("KANDIDÁT") and any(flags.values()):
+        verdict = "NEROZHODNUTO — výsledek ovlivněn hranami fundingu / mezerami dat, nutná revize (dodatek 2)"
     payload = {"protocol": "research/funding_dispersion/PROTOCOL.md", "chosen": ctag,
                "tuning_selection_x1": tune, "strategy": results, "buy_hold_equal_8": bh,
-               "walk_forward_x2": wf, "neighbors_val_x2": nb, "track_a": track_a, "track_b": track_b,
-               "passed_a": passed_a, "passed_b": passed_b, "dsr_validation_x1": dsr, "robustness": robust,
-               "info": {**beta_info, "price_fallbacks": px.fallbacks, "first_bar": first_bar,
-                        "first_funding": first_funding},
+               "walk_forward_x2": wf,
+               "walk_forward_note": "roční stabilita fixní varianty vybrané na 2020-10…2022; pro 2021–22 NE čistý OOS walk-forward", "neighbors_val_x2": nb, "track_a": track_a, "track_b": track_b,
+               "passed_a": passed_a, "passed_b": passed_b, "dsr_validation_x1": dsr,
+               "dsr_note": "N = 159 je pracovní odhad (ne doložená horní mez); V[SR] = 0,5 p.a. je předpoklad",
+               "dsr_sensitivity_scenarios": dsr_sens, "robustness": robust, "interpretation_flags": flags,
+               "info": {**beta_info, "price_fallbacks_by_purpose": px.fallbacks, "first_bar": first_bar,
+                        "first_funding": first_funding,
+                        "load_audit": {a: market[a].get("load_audit") for a in ASSETS}},
                "verdict": verdict}
     (out / "results.json").write_text(json.dumps(payload, indent=1, default=str))
     with open(out / "trades.csv", "w", newline="") as fh:
@@ -471,7 +634,8 @@ def main(argv=None):
         w.writeheader()
         w.writerows(rows)
     print("SUMMARY", json.dumps({"chosen": ctag, "verdict": verdict, "track_a": track_a, "track_b": track_b,
-                                 "robust": robust, "dsr": round(dsr["dsr"], 4), "neighbors": nb,
+                                 "robust": robust, "dsr": dsr["dsr"], "dsr_sens": dsr_sens, "flags": flags,
+                                 "neighbors": nb,
                                  "val": res["validation"], "final": res["final_test"], "tuning": res["tuning"],
                                  "bh_val": bh["validation"]["x1"], "bh_final": bh["final_test"]["x2"],
                                  "wf": {k: v["net_pnl"] for k, v in wf.items()}, **beta_info,

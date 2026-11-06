@@ -101,3 +101,23 @@ Jen informativní výstupy, kritéria ani pravidla se nemění:
   Rozhoduje dál rámec v2; toto číslo slouží jen k poctivé interpretaci.
 - Známé zjednodušení (beze změny): funding se počítá z open 1h svíčky last price, ne z mark price; rozhodnutí v 00:00 bere
   sazbu vypořádanou v 00:00 (calc_time o ms později), exekuce je ale až v 01:00 ⇒ žádný fill nepoužívá budoucí informaci.
+
+## Dodatek 2 (2026-11-06 ~16:45 UTC, po oponentuře ChatGPT kolo 2; stále před stažením dat — žádný tržní výsledek dosud neexistuje)
+Opravy implementace, aby kód odpovídal textu protokolu (pravidla obchodování, mřížka, dělení ani kritéria se nemění):
+- **R1** způsobilost skutečně ověřuje souvislost okna: všechny 1h svíčky v [D − W, vstup] a souvislou funding řadu
+  (rozestup sousedních událostí = `funding_interval_hours` dřívější události; chybí-li událost ≤ D ⇒ mezera). Chybějící
+  funding se nikdy nepočítá jako nula ⇒ aktivum je ten týden nezpůsobilé (důvod do `ineligible_reasons`).
+  Duplicita po normalizaci: stejná hodnota = počítat (`load_audit`), jiná sazba/interval = chyba běhu.
+  Mezera funding řady během držení se nepřiřazuje odhadem; noha/koš se označí (`funding_gaps_in_holding`).
+- **R2** B&H 8 perpů účtuje skutečný funding (long platí kladnou sazbu, qty × open svíčky v čase události,
+  události v (start 00:00, 23:00 posledního dne]); měřítko je tedy skutečně perp benchmark.
+- **R3** pořadí v hodině: funding (jen t > vstup) → kontrola likvidace podle high → ocenění; ve výstupní hodině gap
+  open ≥ 2 × vstup ⇒ likvidace (ztráta = notional), jinak výstup za open; high po čase výstupu se nepoužívá.
+  Omezení ztráty na notional zůstává zjednodušením (bez mark price, udržovací marže a vlivu fundingu na marži).
+- **R4** nedefinované DSR (nulový rozptyl, např. 0 obchodů) ⇒ `dsr = null` + důvod, brána neprošla, exporty se zapíší.
+- Informativně (bez vlivu na kritéria): náhrady cen podle účelu; metriky z celých košů (`per_basket`); horní mez dopadu
+  funding událostí na hranách; scénáře DSR N ∈ {159, 318, 636} × V[SR] ∈ {0,5; 1; 2} p.a. (N = 159 je pracovní odhad,
+  ne doložená horní mez); B&H se stejnou volatilitou je jen ex-post diagnostika; „walk-forward“ 2021–24 je roční
+  stabilita fixní varianty (pro 2021–22 ne čistý OOS); rozhodnutí v D + 1 s (po zveřejnění sazby vypořádané v D).
+- Je-li výsledek „prošlo“, ale existují hrany fundingu, náhrady cen nebo mezery fundingu v držení ⇒ verdikt
+  „NEROZHODNUTO“ do ruční revize, ne kandidát.
