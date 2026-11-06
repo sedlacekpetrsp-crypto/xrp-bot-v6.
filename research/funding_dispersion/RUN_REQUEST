@@ -1,1 +1,1 @@
-AUDIT 2026-11-06T16:58:25Z (opakovaný audit po přepnutí na sémantiku B + rozsahy chybějících hodin; bez výkonnosti)
+AUDIT 2026-11-06T18:40:00Z (kolo 9 Q4: jen kontrola reálných dat novým kódem, izolovaná větev, bez výkonnosti; výstup audits/<UTC>_<run_id>/)
