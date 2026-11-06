@@ -1,0 +1,1108 @@
+{
+ "BTCUSDT": {
+  "2026-10-27": {
+   "trades": 200,
+   "trade_rows": 2540264,
+   "1h": {
+    "official": 200,
+    "rebuilt_bars": 24,
+    "official_bars": 24,
+    "common": 24,
+    "ohlc_equal": 24,
+    "volume_equal": 24,
+    "ohlc_mismatch_examples": []
+   },
+   "5m": {
+    "official": 200,
+    "rebuilt_bars": 288,
+    "official_bars": 288,
+    "common": 288,
+    "ohlc_equal": 288,
+    "volume_equal": 288,
+    "ohlc_mismatch_examples": []
+   }
+  },
+  "2026-10-29": {
+   "trades": 200,
+   "trade_rows": 4478291,
+   "1h": {
+    "official": 200,
+    "rebuilt_bars": 24,
+    "official_bars": 24,
+    "common": 24,
+    "ohlc_equal": 24,
+    "volume_equal": 21,
+    "ohlc_mismatch_examples": []
+   },
+   "5m": {
+    "official": 200,
+    "rebuilt_bars": 288,
+    "official_bars": 288,
+    "common": 288,
+    "ohlc_equal": 273,
+    "volume_equal": 257,
+    "ohlc_mismatch_examples": [
+     {
+      "utc": "2026-10-29T22:10:00+00:00",
+      "official": [
+       78677.0,
+       78998.1,
+       78625.6,
+       78791.7,
+       1818.384,
+       1121.819
+      ],
+      "rebuilt": [
+       78677.0,
+       78998.1,
+       78625.6,
+       78792.0,
+       1503.217,
+       885.472
+      ]
+     },
+     {
+      "utc": "2026-10-29T22:15:00+00:00",
+      "official": [
+       78791.5,
+       78973.2,
+       78622.0,
+       78912.1,
+       1366.731,
+       751.529
+      ],
+      "rebuilt": [
+       78791.5,
+       78973.1,
+       78622.0,
+       78912.1,
+       1186.113,
+       644.566
+      ]
+     },
+     {
+      "utc": "2026-10-29T22:30:00+00:00",
+      "official": [
+       78985.1,
+       79078.9,
+       78915.7,
+       79027.9,
+       698.04,
+       368.952
+      ],
+      "rebuilt": [
+       78985.0,
+       79078.9,
+       78915.7,
+       79028.0,
+       490.028,
+       249.152
+      ]
+     }
+    ]
+   }
+  },
+  "2026-10-28": {
+   "trades": 200,
+   "trade_rows": 2568252,
+   "1h": {
+    "official": 404,
+    "rebuilt_bars": 24
+   },
+   "5m": {
+    "official": 404,
+    "rebuilt_bars": 288
+   }
+  }
+ },
+ "ETHUSDT": {
+  "2026-10-27": {
+   "trades": 200,
+   "trade_rows": 3199387,
+   "1h": {
+    "official": 200,
+    "rebuilt_bars": 24,
+    "official_bars": 24,
+    "common": 24,
+    "ohlc_equal": 24,
+    "volume_equal": 24,
+    "ohlc_mismatch_examples": []
+   },
+   "5m": {
+    "official": 200,
+    "rebuilt_bars": 288,
+    "official_bars": 288,
+    "common": 288,
+    "ohlc_equal": 288,
+    "volume_equal": 288,
+    "ohlc_mismatch_examples": []
+   }
+  },
+  "2026-10-29": {
+   "trades": 200,
+   "trade_rows": 6442667,
+   "1h": {
+    "official": 200,
+    "rebuilt_bars": 24,
+    "official_bars": 24,
+    "common": 24,
+    "ohlc_equal": 23,
+    "volume_equal": 21,
+    "ohlc_mismatch_examples": [
+     {
+      "utc": "2026-10-29T23:00:00+00:00",
+      "official": [
+       2273.37,
+       2273.37,
+       2246.73,
+       2252.34,
+       258469.299,
+       120329.399
+      ],
+      "rebuilt": [
+       2273.37,
+       2273.37,
+       2246.8,
+       2252.34,
+       64538.491,
+       34729.691
+      ]
+     }
+    ]
+   },
+   "5m": {
+    "official": 200,
+    "rebuilt_bars": 288,
+    "official_bars": 288,
+    "common": 288,
+    "ohlc_equal": 272,
+    "volume_equal": 256,
+    "ohlc_mismatch_examples": [
+     {
+      "utc": "2026-10-29T22:05:00+00:00",
+      "official": [
+       2258.4,
+       2263.82,
+       2251.12,
+       2258.83,
+       53307.164,
+       24509.65
+      ],
+      "rebuilt": [
+       2258.39,
+       2263.82,
+       2251.12,
+       2258.83,
+       50322.571,
+       23288.267
+      ]
+     },
+     {
+      "utc": "2026-10-29T22:10:00+00:00",
+      "official": [
+       2258.83,
+       2272.2,
+       2257.0,
+       2265.46,
+       36173.443,
+       20352.291
+      ],
+      "rebuilt": [
+       2258.83,
+       2272.19,
+       2257.0,
+       2265.46,
+       33126.837,
+       18412.626
+      ]
+     },
+     {
+      "utc": "2026-10-29T22:20:00+00:00",
+      "official": [
+       2268.21,
+       2278.48,
+       2264.28,
+       2276.64,
+       27163.449,
+       14628.619
+      ],
+      "rebuilt": [
+       2268.21,
+       2278.42,
+       2264.28,
+       2276.64,
+       21898.876,
+       11636.933
+      ]
+     }
+    ]
+   }
+  },
+  "2026-10-28": {
+   "trades": 200,
+   "trade_rows": 3601727,
+   "1h": {
+    "official": 404,
+    "rebuilt_bars": 24
+   },
+   "5m": {
+    "official": 404,
+    "rebuilt_bars": 288
+   }
+  }
+ },
+ "XRPUSDT": {
+  "2026-10-27": {
+   "trades": 200,
+   "trade_rows": 1218997,
+   "1h": {
+    "official": 200,
+    "rebuilt_bars": 24,
+    "official_bars": 24,
+    "common": 24,
+    "ohlc_equal": 24,
+    "volume_equal": 24,
+    "ohlc_mismatch_examples": []
+   },
+   "5m": {
+    "official": 200,
+    "rebuilt_bars": 288,
+    "official_bars": 288,
+    "common": 288,
+    "ohlc_equal": 288,
+    "volume_equal": 288,
+    "ohlc_mismatch_examples": []
+   }
+  },
+  "2026-10-29": {
+   "trades": 200,
+   "trade_rows": 2074698,
+   "1h": {
+    "official": 200,
+    "rebuilt_bars": 24,
+    "official_bars": 24,
+    "common": 24,
+    "ohlc_equal": 23,
+    "volume_equal": 21,
+    "ohlc_mismatch_examples": [
+     {
+      "utc": "2026-10-29T23:00:00+00:00",
+      "official": [
+       1.2456,
+       1.2484,
+       1.2338,
+       1.2371,
+       51986399.8,
+       28513713.1
+      ],
+      "rebuilt": [
+       1.2454,
+       1.2484,
+       1.2338,
+       1.237,
+       18171788.999998,
+       10853330.799999
+      ]
+     }
+    ]
+   },
+   "5m": {
+    "official": 200,
+    "rebuilt_bars": 288,
+    "official_bars": 288,
+    "common": 288,
+    "ohlc_equal": 274,
+    "volume_equal": 257,
+    "ohlc_mismatch_examples": [
+     {
+      "utc": "2026-10-29T22:25:00+00:00",
+      "official": [
+       1.2505,
+       1.2535,
+       1.2478,
+       1.2484,
+       4879498.3,
+       2354939.1
+      ],
+      "rebuilt": [
+       1.2505,
+       1.2535,
+       1.248,
+       1.2484,
+       3101040.8,
+       1510405.6
+      ]
+     },
+     {
+      "utc": "2026-10-29T22:50:00+00:00",
+      "official": [
+       1.2484,
+       1.2489,
+       1.243,
+       1.2455,
+       3918135.3,
+       2064789.1
+      ],
+      "rebuilt": [
+       1.2485,
+       1.2489,
+       1.243,
+       1.2454,
+       2438076.9,
+       1214058.0
+      ]
+     },
+     {
+      "utc": "2026-10-29T22:55:00+00:00",
+      "official": [
+       1.2455,
+       1.247,
+       1.2427,
+       1.2456,
+       3586249.6,
+       1896324.6
+      ],
+      "rebuilt": [
+       1.2455,
+       1.2468,
+       1.2427,
+       1.2456,
+       2303613.1,
+       1129158.5
+      ]
+     }
+    ]
+   }
+  },
+  "2026-10-28": {
+   "trades": 200,
+   "trade_rows": 1230026,
+   "1h": {
+    "official": 404,
+    "rebuilt_bars": 24
+   },
+   "5m": {
+    "official": 404,
+    "rebuilt_bars": 288
+   }
+  }
+ },
+ "SOLUSDT": {
+  "2026-10-27": {
+   "trades": 200,
+   "trade_rows": 1398192,
+   "1h": {
+    "official": 200,
+    "rebuilt_bars": 24,
+    "official_bars": 24,
+    "common": 24,
+    "ohlc_equal": 24,
+    "volume_equal": 24,
+    "ohlc_mismatch_examples": []
+   },
+   "5m": {
+    "official": 200,
+    "rebuilt_bars": 288,
+    "official_bars": 288,
+    "common": 288,
+    "ohlc_equal": 288,
+    "volume_equal": 288,
+    "ohlc_mismatch_examples": []
+   }
+  },
+  "2026-10-29": {
+   "trades": 200,
+   "trade_rows": 2727676,
+   "1h": {
+    "official": 200,
+    "rebuilt_bars": 24,
+    "official_bars": 24,
+    "common": 24,
+    "ohlc_equal": 22,
+    "volume_equal": 21,
+    "ohlc_mismatch_examples": [
+     {
+      "utc": "2026-10-29T22:00:00+00:00",
+      "official": [
+       97.5,
+       97.82,
+       96.45,
+       97.02,
+       2626091.44,
+       1244577.87
+      ],
+      "rebuilt": [
+       97.5,
+       97.82,
+       96.45,
+       97.03,
+       1768724.970002,
+       889306.53
+      ]
+     },
+     {
+      "utc": "2026-10-29T23:00:00+00:00",
+      "official": [
+       97.01,
+       97.08,
+       95.55,
+       95.62,
+       1745418.0,
+       880419.3
+      ],
+      "rebuilt": [
+       97.01,
+       97.08,
+       95.55,
+       95.61,
+       430238.74,
+       229802.12
+      ]
+     }
+    ]
+   },
+   "5m": {
+    "official": 200,
+    "rebuilt_bars": 288,
+    "official_bars": 288,
+    "common": 288,
+    "ohlc_equal": 278,
+    "volume_equal": 256,
+    "ohlc_mismatch_examples": [
+     {
+      "utc": "2026-10-29T22:45:00+00:00",
+      "official": [
+       97.35,
+       97.4,
+       97.05,
+       97.17,
+       78058.55,
+       39944.93
+      ],
+      "rebuilt": [
+       97.36,
+       97.39,
+       97.05,
+       97.17,
+       43028.05,
+       21778.01
+      ]
+     },
+     {
+      "utc": "2026-10-29T22:55:00+00:00",
+      "official": [
+       96.94,
+       97.11,
+       96.84,
+       97.02,
+       63920.86,
+       39620.51
+      ],
+      "rebuilt": [
+       96.94,
+       97.11,
+       96.84,
+       97.03,
+       28078.35,
+       17806.43
+      ]
+     },
+     {
+      "utc": "2026-10-29T23:05:00+00:00",
+      "official": [
+       96.4,
+       96.67,
+       96.24,
+       96.6,
+       144096.55,
+       76799.84
+      ],
+      "rebuilt": [
+       96.41,
+       96.67,
+       96.24,
+       96.6,
+       44159.93,
+       26587.55
+      ]
+     }
+    ]
+   }
+  },
+  "2026-10-28": {
+   "trades": 200,
+   "trade_rows": 1553139,
+   "1h": {
+    "official": 404,
+    "rebuilt_bars": 24
+   },
+   "5m": {
+    "official": 404,
+    "rebuilt_bars": 288
+   }
+  }
+ },
+ "BNBUSDT": {
+  "2026-10-27": {
+   "trades": 200,
+   "trade_rows": 848322,
+   "1h": {
+    "official": 200,
+    "rebuilt_bars": 24,
+    "official_bars": 24,
+    "common": 24,
+    "ohlc_equal": 24,
+    "volume_equal": 24,
+    "ohlc_mismatch_examples": []
+   },
+   "5m": {
+    "official": 200,
+    "rebuilt_bars": 288,
+    "official_bars": 288,
+    "common": 288,
+    "ohlc_equal": 288,
+    "volume_equal": 288,
+    "ohlc_mismatch_examples": []
+   }
+  },
+  "2026-10-29": {
+   "trades": 200,
+   "trade_rows": 2794529,
+   "1h": {
+    "official": 200,
+    "rebuilt_bars": 24,
+    "official_bars": 24,
+    "common": 24,
+    "ohlc_equal": 23,
+    "volume_equal": 21,
+    "ohlc_mismatch_examples": [
+     {
+      "utc": "2026-10-29T23:00:00+00:00",
+      "official": [
+       706.85,
+       707.13,
+       696.74,
+       697.96,
+       108310.88,
+       50875.01
+      ],
+      "rebuilt": [
+       706.86,
+       707.13,
+       696.86,
+       697.95,
+       32736.97,
+       19491.34
+      ]
+     }
+    ]
+   },
+   "5m": {
+    "official": 200,
+    "rebuilt_bars": 288,
+    "official_bars": 288,
+    "common": 288,
+    "ohlc_equal": 269,
+    "volume_equal": 257,
+    "ohlc_mismatch_examples": [
+     {
+      "utc": "2026-10-29T21:55:00+00:00",
+      "official": [
+       705.03,
+       709.47,
+       702.81,
+       708.57,
+       15481.61,
+       10210.24
+      ],
+      "rebuilt": [
+       705.03,
+       709.46,
+       702.81,
+       708.57,
+       14067.8,
+       8857.11
+      ]
+     },
+     {
+      "utc": "2026-10-29T22:15:00+00:00",
+      "official": [
+       703.71,
+       705.17,
+       701.88,
+       703.7,
+       6450.78,
+       3014.0
+      ],
+      "rebuilt": [
+       703.71,
+       705.16,
+       701.88,
+       703.73,
+       5320.15,
+       2574.5
+      ]
+     },
+     {
+      "utc": "2026-10-29T22:25:00+00:00",
+      "official": [
+       705.31,
+       705.74,
+       701.0,
+       701.0,
+       12201.43,
+       6387.35
+      ],
+      "rebuilt": [
+       705.31,
+       705.74,
+       701.0,
+       701.01,
+       7378.47,
+       3771.52
+      ]
+     }
+    ]
+   }
+  },
+  "2026-10-28": {
+   "trades": 200,
+   "trade_rows": 990981,
+   "1h": {
+    "official": 404,
+    "rebuilt_bars": 24
+   },
+   "5m": {
+    "official": 404,
+    "rebuilt_bars": 288
+   }
+  }
+ },
+ "ADAUSDT": {
+  "2026-10-27": {
+   "trades": 200,
+   "trade_rows": 279251,
+   "1h": {
+    "official": 200,
+    "rebuilt_bars": 24,
+    "official_bars": 24,
+    "common": 24,
+    "ohlc_equal": 24,
+    "volume_equal": 24,
+    "ohlc_mismatch_examples": []
+   },
+   "5m": {
+    "official": 200,
+    "rebuilt_bars": 288,
+    "official_bars": 288,
+    "common": 288,
+    "ohlc_equal": 288,
+    "volume_equal": 288,
+    "ohlc_mismatch_examples": []
+   }
+  },
+  "2026-10-29": {
+   "trades": 200,
+   "trade_rows": 632419,
+   "1h": {
+    "official": 200,
+    "rebuilt_bars": 24,
+    "official_bars": 24,
+    "common": 24,
+    "ohlc_equal": 23,
+    "volume_equal": 21,
+    "ohlc_mismatch_examples": [
+     {
+      "utc": "2026-10-29T23:00:00+00:00",
+      "official": [
+       0.1916,
+       0.1925,
+       0.1897,
+       0.1902,
+       69248170.0,
+       36843556.0
+      ],
+      "rebuilt": [
+       0.1915,
+       0.1925,
+       0.1897,
+       0.1902,
+       14112329.0,
+       6110409.0
+      ]
+     }
+    ]
+   },
+   "5m": {
+    "official": 200,
+    "rebuilt_bars": 288,
+    "official_bars": 288,
+    "common": 288,
+    "ohlc_equal": 276,
+    "volume_equal": 258,
+    "ohlc_mismatch_examples": [
+     {
+      "utc": "2026-10-29T22:10:00+00:00",
+      "official": [
+       0.1909,
+       0.1925,
+       0.1907,
+       0.1914,
+       6468552.0,
+       4344033.0
+      ],
+      "rebuilt": [
+       0.191,
+       0.1925,
+       0.1907,
+       0.1914,
+       5299059.0,
+       3613801.0
+      ]
+     },
+     {
+      "utc": "2026-10-29T22:35:00+00:00",
+      "official": [
+       0.193,
+       0.1937,
+       0.1924,
+       0.1931,
+       4940897.0,
+       2706343.0
+      ],
+      "rebuilt": [
+       0.1929,
+       0.1937,
+       0.1924,
+       0.1931,
+       1941686.0,
+       825389.0
+      ]
+     },
+     {
+      "utc": "2026-10-29T22:45:00+00:00",
+      "official": [
+       0.1925,
+       0.1926,
+       0.1919,
+       0.1922,
+       2751899.0,
+       1362788.0
+      ],
+      "rebuilt": [
+       0.1925,
+       0.1926,
+       0.1919,
+       0.1921,
+       1397613.0,
+       655372.0
+      ]
+     }
+    ]
+   }
+  },
+  "2026-10-28": {
+   "trades": 200,
+   "trade_rows": 375903,
+   "1h": {
+    "official": 404,
+    "rebuilt_bars": 24
+   },
+   "5m": {
+    "official": 404,
+    "rebuilt_bars": 288
+   }
+  }
+ },
+ "DOGEUSDT": {
+  "2026-10-27": {
+   "trades": 200,
+   "trade_rows": 574228,
+   "1h": {
+    "official": 200,
+    "rebuilt_bars": 24,
+    "official_bars": 24,
+    "common": 24,
+    "ohlc_equal": 24,
+    "volume_equal": 24,
+    "ohlc_mismatch_examples": []
+   },
+   "5m": {
+    "official": 200,
+    "rebuilt_bars": 288,
+    "official_bars": 288,
+    "common": 288,
+    "ohlc_equal": 288,
+    "volume_equal": 288,
+    "ohlc_mismatch_examples": []
+   }
+  },
+  "2026-10-29": {
+   "trades": 200,
+   "trade_rows": 1256782,
+   "1h": {
+    "official": 200,
+    "rebuilt_bars": 24,
+    "official_bars": 24,
+    "common": 24,
+    "ohlc_equal": 22,
+    "volume_equal": 21,
+    "ohlc_mismatch_examples": [
+     {
+      "utc": "2026-10-29T22:00:00+00:00",
+      "official": [
+       0.0761,
+       0.0766,
+       0.07542,
+       0.07613,
+       662898037.0,
+       333676626.0
+      ],
+      "rebuilt": [
+       0.0761,
+       0.07659,
+       0.07542,
+       0.07613,
+       454565731.0,
+       251216300.0
+      ]
+     },
+     {
+      "utc": "2026-10-29T23:00:00+00:00",
+      "official": [
+       0.07613,
+       0.07628,
+       0.07501,
+       0.07521,
+       372273355.0,
+       154758655.0
+      ],
+      "rebuilt": [
+       0.07613,
+       0.07628,
+       0.07501,
+       0.07522,
+       142084203.0,
+       50039523.0
+      ]
+     }
+    ]
+   },
+   "5m": {
+    "official": 200,
+    "rebuilt_bars": 288,
+    "official_bars": 288,
+    "common": 288,
+    "ohlc_equal": 273,
+    "volume_equal": 259,
+    "ohlc_mismatch_examples": [
+     {
+      "utc": "2026-10-29T22:20:00+00:00",
+      "official": [
+       0.07614,
+       0.07637,
+       0.076,
+       0.0763,
+       32627970.0,
+       16316867.0
+      ],
+      "rebuilt": [
+       0.07613,
+       0.07637,
+       0.076,
+       0.0763,
+       21950153.0,
+       11352720.0
+      ]
+     },
+     {
+      "utc": "2026-10-29T22:25:00+00:00",
+      "official": [
+       0.0763,
+       0.07639,
+       0.07606,
+       0.07607,
+       29461620.0,
+       12931708.0
+      ],
+      "rebuilt": [
+       0.0763,
+       0.07638,
+       0.07606,
+       0.07607,
+       17161520.0,
+       8116611.0
+      ]
+     },
+     {
+      "utc": "2026-10-29T22:35:00+00:00",
+      "official": [
+       0.07625,
+       0.0766,
+       0.07608,
+       0.0763,
+       138013971.0,
+       32264664.0
+      ],
+      "rebuilt": [
+       0.07625,
+       0.07659,
+       0.07608,
+       0.0763,
+       53757582.0,
+       17322411.0
+      ]
+     }
+    ]
+   }
+  },
+  "2026-10-28": {
+   "trades": 200,
+   "trade_rows": 825512,
+   "1h": {
+    "official": 404,
+    "rebuilt_bars": 24
+   },
+   "5m": {
+    "official": 404,
+    "rebuilt_bars": 288
+   }
+  }
+ },
+ "LTCUSDT": {
+  "2026-10-27": {
+   "trades": 200,
+   "trade_rows": 198531,
+   "1h": {
+    "official": 200,
+    "rebuilt_bars": 24,
+    "official_bars": 24,
+    "common": 24,
+    "ohlc_equal": 24,
+    "volume_equal": 24,
+    "ohlc_mismatch_examples": []
+   },
+   "5m": {
+    "official": 200,
+    "rebuilt_bars": 288,
+    "official_bars": 288,
+    "common": 288,
+    "ohlc_equal": 288,
+    "volume_equal": 288,
+    "ohlc_mismatch_examples": []
+   }
+  },
+  "2026-10-29": {
+   "trades": 200,
+   "trade_rows": 470739,
+   "1h": {
+    "official": 200,
+    "rebuilt_bars": 24,
+    "official_bars": 24,
+    "common": 24,
+    "ohlc_equal": 23,
+    "volume_equal": 21,
+    "ohlc_mismatch_examples": [
+     {
+      "utc": "2026-10-29T22:00:00+00:00",
+      "official": [
+       55.28,
+       55.86,
+       54.79,
+       55.42,
+       91726.679,
+       47326.541
+      ],
+      "rebuilt": [
+       55.28,
+       55.84,
+       54.79,
+       55.42,
+       74074.07,
+       37499.621
+      ]
+     }
+    ]
+   },
+   "5m": {
+    "official": 200,
+    "rebuilt_bars": 288,
+    "official_bars": 288,
+    "common": 288,
+    "ohlc_equal": 275,
+    "volume_equal": 259,
+    "ohlc_mismatch_examples": [
+     {
+      "utc": "2026-10-29T22:30:00+00:00",
+      "official": [
+       55.57,
+       55.75,
+       55.48,
+       55.7,
+       7343.135,
+       3879.039
+      ],
+      "rebuilt": [
+       55.56,
+       55.75,
+       55.48,
+       55.71,
+       6076.486,
+       3122.428
+      ]
+     },
+     {
+      "utc": "2026-10-29T22:35:00+00:00",
+      "official": [
+       55.69,
+       55.86,
+       55.54,
+       55.67,
+       5134.582,
+       2541.622
+      ],
+      "rebuilt": [
+       55.69,
+       55.84,
+       55.54,
+       55.66,
+       2924.434,
+       1168.254
+      ]
+     },
+     {
+      "utc": "2026-10-29T22:45:00+00:00",
+      "official": [
+       55.66,
+       55.67,
+       55.47,
+       55.6,
+       7348.643,
+       2347.329
+      ],
+      "rebuilt": [
+       55.67,
+       55.67,
+       55.47,
+       55.59,
+       5126.779,
+       1083.295
+      ]
+     }
+    ]
+   }
+  },
+  "2026-10-28": {
+   "trades": 200,
+   "trade_rows": 361126,
+   "1h": {
+    "official": 404,
+    "rebuilt_bars": 24
+   },
+   "5m": {
+    "official": 404,
+    "rebuilt_bars": 288
+   }
+  }
+ }
+}
