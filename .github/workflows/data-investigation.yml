@@ -4,7 +4,7 @@ on:
   push:
     branches: ["research/data-investigation-*"]
     paths:
-      - "research/data_investigation/investigate2.py"
+      - "research/data_investigation/investigate3.py"
       - ".github/workflows/data-investigation.yml"
 permissions:
   contents: write
@@ -21,7 +21,7 @@ jobs:
         with:
           python-version: "3.13"
       - name: Investigate archive gaps (read-only public data)
-        run: python research/data_investigation/investigate2.py research/data_investigation/out
+        run: python research/data_investigation/investigate3.py research/data_investigation/out
       - uses: actions/upload-artifact@v4
         if: always()
         with:
