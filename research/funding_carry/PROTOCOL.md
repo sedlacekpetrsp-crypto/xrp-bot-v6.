@@ -62,3 +62,8 @@ První běh (run 42208143113) skončil chybou „chybí klines BTCUSDT 2026-10-2
 žádné metriky nebyly vypsány ani uloženy. Den chybějící v měsíčním archivu se doplní z oficiálního **denního**
 archivu Binance Vision (`data/<spot|futures/um>/daily/klines/<S>/1d/<S>-1d-YYYY-MM-DD.zip`), SHA-256 do manifestu
 (`filled_missing_day`). Chybí-li i denní archiv ⇒ chyba. Pravidla, dělení ani kritéria se nemění.
+
+## Dodatek 2 (2026-11-06 11:25 UTC, PŘED zobrazením jakéhokoli výsledku)
+Run 42208760679: perp 1d klines BTCUSDT i ETHUSDT za 2026-10-28 chybí v měsíčním i denním archivu (HTTP 404).
+Bez doplňování ⇒ závěrečný test (i B&H) končí **2026-10-27** (posledním dnem před mezerou), tj. 2025-01-01 … 2026-10-27.
+Nic jiného se nemění; žádné metriky zatím nebyly vypsány ani uloženy.

@@ -26,7 +26,7 @@ INFO = (0.05, 0.30)
 NEIGHBOR = {0.10: 0.05, 0.20: 0.30}
 PERIODS = {"tuning": ("2020-09-01", "2022-12-31"),
            "validation": ("2023-01-01", "2024-12-31"),
-           "final_test": ("2025-01-01", "2026-10-31")}
+           "final_test": ("2025-01-01", "2026-10-27")}  # dodatek 2: perp 1d 2026-10-28 chybí
 WF_YEARS = (2021, 2022, 2023, 2024)
 SLEEVE = 5_000.0
 M_LO, M_HI = 0.30, 0.70
@@ -109,7 +109,7 @@ def load(cache, fetcher=fetch):
             series[kind] = {day(t): dedup[t] for t in sorted(dedup)}
             # dodatek protokolu (2026-11-06, před zobrazením výsledků): den chybějící v měsíčním archivu
             # se doplní z oficiálního DENNÍHO archivu Binance Vision (stejný zdroj, SHA-256 do manifestu)
-            need = daterange(date(2020, 8, 24), date(LAST_MONTH[0], LAST_MONTH[1], 31))
+            need = daterange(date(2020, 8, 24), date.fromisoformat(PERIODS["final_test"][1]))
             for d in need:
                 if d in series[kind]:
                     continue
