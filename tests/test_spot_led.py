@@ -126,3 +126,76 @@ def test_neighbors_and_gap_audit():
     m = market_with(drop_perp=(5, 6))
     a = sl.gap_audit(m["BTCUSDT"])
     assert a["perp_missing_5m"] == 2 and a["spot_only"] == 2
+
+
+# ---- oponentura ChatGPT kolo 2, bod G a společné opravy (B&H funding, nedefinované DSR, latence) ----
+def test_G_overnight_position_enters_daily_mtm():
+    i_sig = 24 * 12 - 3  # signál 23:45, vstup 23:50, výstup 00:05 dalšího dne
+    m = market_with({i_sig: (100.5, 0.8, 100.0)}, n_bars=3 * 288)
+    t_last = T0 + (24 * 12 - 1) * BAR  # svíčka 23:55 dne 1
+    m["BTCUSDT"]["perp"][t_last] = (100.0, 110.0)  # close 23:55 = 110
+    trades, curve = sl.simulate(m, START, date(2021, 1, 2), 0.65, 15, 1)
+    tr = trades[0]
+    assert tr["entry_ts"] < T0 + sl.DAY_MS < tr["exit_ts"]
+    expected = sl.START_EQUITY + tr["qty"] * (110.0 - 100.0) - tr["cost_in"]
+    assert curve[START] == pytest.approx(expected)
+    assert curve[date(2021, 1, 2)] == pytest.approx(sl.START_EQUITY + tr["net_pnl"])
+
+
+def test_G_exit_delay_is_bounded():
+    # mezera 30 min ⇒ první dostupný open, data_gap 1
+    m = market_with({10: (100.5, 0.8, 100.0)}, drop_perp=range(14, 20))
+    x = sl.candidates(m["BTCUSDT"], "BTCUSDT", T0, T0 + 1000 * BAR, 0.65, 15)[0]
+    assert x["exit_ts"] == T0 + 20 * BAR and x["data_gap"] == 1
+    # mezera > 60 min ⇒ DATA_GAP 2, cena = poslední close před plánovaným výstupem, čas = plán + 60 min
+    m = market_with({10: (100.5, 0.8, 100.0)}, drop_perp=range(14, 40))
+    m["BTCUSDT"]["perp"][T0 + 13 * BAR] = (100.0, 97.0)
+    x = sl.candidates(m["BTCUSDT"], "BTCUSDT", T0, T0 + 1000 * BAR, 0.65, 15)[0]
+    assert x["data_gap"] == 2 and x["exit"] == 97.0 and x["exit_ts"] == T0 + 14 * BAR + sl.MAX_EXIT_DELAY_MS
+
+
+def test_G_no_exit_beyond_period_end_time_based():
+    m = market_with({10: (100.5, 0.8, 100.0)})
+    end = T0 + 14 * BAR + sl.MAX_EXIT_DELAY_MS  # plán + max. zpoždění = konec ⇒ nebrat
+    assert sl.candidates(m["BTCUSDT"], "BTCUSDT", T0, end, 0.65, 15) == []
+    assert len(sl.candidates(m["BTCUSDT"], "BTCUSDT", T0, end + BAR, 0.65, 15)) == 1
+
+
+def test_G_simultaneous_entries_independent_of_symbol_order(monkeypatch):
+    def mk():
+        m = {}
+        for a in sl.ASSETS:
+            spot, perp = flat()
+            t = T0 + 10 * BAR
+            spot[t] = (100.5, 10.0, 8.0)
+            perp[T0 + 14 * BAR] = (101.0 if a == "ETHUSDT" else 99.0, 100.0)
+            m[a] = sl.prepare(spot, perp, {})
+        return m
+    m = mk()
+    a1, _ = sl.simulate(m, START, date(2021, 1, 6), 0.65, 15, 1)
+    monkeypatch.setattr(sl, "ASSETS", tuple(reversed(sl.ASSETS)))
+    a2, _ = sl.simulate(m, START, date(2021, 1, 6), 0.65, 15, 1)
+    key = lambda t: (t["asset"], t["notional"], round(t["net_pnl"], 9))
+    assert sorted(map(key, a1)) == sorted(map(key, a2))
+    assert all(t["notional"] == pytest.approx(1000.0) for t in a1) and len(a1) == 3
+
+
+def test_latency_sensitivity_enters_one_bar_later():
+    m = market_with({10: (100.5, 0.8, 100.0)})
+    x = sl.candidates(m["BTCUSDT"], "BTCUSDT", T0, T0 + 1000 * BAR, 0.65, 15, delay_bars=1)[0]
+    assert x["entry_ts"] == T0 + 12 * BAR and x["exit_ts"] == T0 + 15 * BAR
+
+
+def test_buy_hold_accounts_funding_sign():
+    res = {}
+    for r in (0.0, 0.01, -0.01):
+        fund = {T0 + k * 8 * H: r for k in range(1, 6)}
+        m = market_with(n_bars=2000, fund=fund)
+        res[r] = sl.buy_hold(m, START, date(2021, 1, 6), 1)
+    assert res[0.01]["net_pnl"] < res[0.0]["net_pnl"] < res[-0.01]["net_pnl"]
+    assert res[0.01]["funding"] == pytest.approx(-0.01 * sl.START_EQUITY * (1 - (sl.FEE + sl.SLIP)) * 5)
+
+
+def test_undefined_dsr_is_null_not_zero():
+    out = sl.safe_dsr([0.0] * 731, 159, 0.5)
+    assert out["dsr"] is None and out["undefined_reason"]

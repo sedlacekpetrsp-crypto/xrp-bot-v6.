@@ -80,3 +80,17 @@ round-trip náklady 0,23 % (×1) proti krátkodobému pohybu.
 - Equity pro velikost pozice = počáteční kapitál + net P/L obchodů uzavřených nejpozději v čase vstupu.
 - Výběr varianty při shodě zisku = první v pořadí mřížky. `trades.csv` nad 50 MB se uloží jako `trades.csv.gz`.
 Pravidla, dělení ani kritéria se nemění.
+
+## Dodatek 1 (2026-11-06 ~16:55 UTC, po oponentuře ChatGPT kolo 2; před stažením dat — žádný tržní výsledek dosud neexistuje)
+Opravy a upřesnění implementace (signál, mřížka, dělení ani kritéria se nemění):
+- **Denní equity** zahrnuje pozice otevřené přes půlnoc: close poslední svíčky dne, vstupní náklady, funding do půlnoci.
+- **Výstup při mezeře** nejvýš o 60 min později (první dostupný perp open ≤ plán + 60 min, `data_gap = 1`); jinak
+  `data_gap = 2` = poslední pozorovaný close před plánem, čas plán + 60 min — označeno jako **nerealizovatelné**.
+- **Konec období** posuzován jen časem: plánovaný výstup + 60 min < konec období (žádný pohled na existenci budoucích dat).
+- Souběžné vstupy na více aktivech se dimenzují ze stejné realizované equity ⇒ nezávisí na pořadí symbolů (test).
+- **B&H 3 perpů účtuje skutečný funding** (long platí kladnou sazbu) — stejná chyba jako R2 v PR #29.
+- **Nedefinované DSR** (nulový rozptyl) = `null` + důvod, brána neprošla; scénáře DSR N ∈ {159, 318, 636} × V[SR] ∈ {0,5; 1; 2}.
+- **Citlivost na latenci** (předem, bez výběru): zvolená varianta se vstupem o 1 svíčku později (open T+10 min),
+  validace a závěrečný test ×1/×2, jen informativně. Je-li výsledek „prošlo“, ale latence +5 min dává ve validaci ×2
+  ztrátu, nebo existují výstupy `data_gap = 2` ⇒ verdikt „NEROZHODNUTO“ do ruční revize.
+- „Walk-forward“ 2021–24 = roční stabilita fixní varianty (pro 2021–22 ne čistý OOS).

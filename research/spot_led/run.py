@@ -178,17 +178,22 @@ def perp_price_at(m, t):
     return m["perp"][m["perp_ts"][i]][1]
 
 
-def candidates(m, asset, start_ms, end_ms, th, hold):
-    """Kandidátní obchody jednoho aktiva (nezávislé na equity): bez překryvu, výstup uvnitř období."""
+MAX_EXIT_DELAY_MS = 60 * 60_000  # dodatek 1: výstup se smí kvůli mezeře zpozdit nejvýš o 60 min
+
+
+def candidates(m, asset, start_ms, end_ms, th, hold, delay_bars=0):
+    """Kandidátní obchody jednoho aktiva (nezávislé na equity): bez překryvu, výstup uvnitř období.
+    delay_bars: informativní citlivost na latenci (vstup o N svíček později), výběr varianty neovlivňuje.
+    Okraj období se posuzuje jen podle času (plánovaný výstup + max. zpoždění < konec), ne podle existence dat."""
     hold_ms = hold * 60_000
     out, free_from = [], -1
     feats = m["features"]
     i = bisect.bisect_left(feats, (start_ms - BAR,))  # vstup (T+5m) ≥ start
     for T, share, rs, rp in feats[i:]:
-        entry_t = T + BAR
+        entry_t = T + BAR * (1 + delay_bars)
         if entry_t >= end_ms:
             break
-        if entry_t < start_ms or entry_t < free_from:
+        if entry_t < start_ms or T + BAR < free_from:
             continue
         if share > th and rs > R_SPOT and rp < R_PERP:
             side = 1
@@ -196,38 +201,50 @@ def candidates(m, asset, start_ms, end_ms, th, hold):
             side = -1
         else:
             continue
+        planned = entry_t + hold_ms
+        if planned + MAX_EXIT_DELAY_MS >= end_ms:
+            continue
         if entry_t not in m["perp"]:
             continue
-        planned = entry_t + hold_ms
         j = bisect.bisect_left(m["perp_ts"], planned)
-        if j >= len(m["perp_ts"]):
-            continue
-        exit_t = m["perp_ts"][j]
-        if exit_t >= end_ms:
-            continue
-        f_unit = 0.0
-        # funding: události s entry_t < t < exit_t
-        lo = (entry_t // HOUR_MS + 1) * HOUR_MS
-        t = lo
+        if j < len(m["perp_ts"]) and m["perp_ts"][j] <= planned + MAX_EXIT_DELAY_MS:
+            exit_t = m["perp_ts"][j]
+            exit_px = m["perp"][exit_t][0]
+            gap = int(exit_t != planned)
+        else:  # mezera delší než limit ⇒ DATA_GAP: poslední pozorovaný close před plánovaným výstupem (nerealizovatelné)
+            k = bisect.bisect_left(m["perp_ts"], planned) - 1
+            exit_t = planned + MAX_EXIT_DELAY_MS
+            exit_px = m["perp"][m["perp_ts"][k]][1]
+            gap = 2
+        # funding: události s entry_t < t < exit_t (seznam pro denní ocenění přes půlnoc)
+        f_events = []
+        t = (entry_t // HOUR_MS + 1) * HOUR_MS
         while t < exit_t:
             if t in m["funding"]:
-                f_unit += -side * m["funding"][t] * perp_price_at(m, t)
+                f_events.append((t, -side * m["funding"][t] * perp_price_at(m, t)))
             t += HOUR_MS
         out.append({"asset": asset, "side": side, "signal_ts": T, "entry_ts": entry_t, "exit_ts": exit_t,
-                    "entry": m["perp"][entry_t][0], "exit": m["perp"][exit_t][0], "funding_unit": f_unit,
-                    "share": share, "r_spot": rs, "r_perp": rp, "data_gap": int(exit_t != planned)})
+                    "entry": m["perp"][entry_t][0], "exit": exit_px, "funding_unit": sum(x for _, x in f_events),
+                    "funding_events": f_events, "share": share, "r_spot": rs, "r_perp": rp, "data_gap": gap})
         free_from = exit_t
     return out
 
 
-def simulate(market, start, end, th, hold, mult, variant=""):
-    """Sdílená equity: notional = 10 % realizované equity při vstupu. Vrací (obchody, denní equity)."""
+def close_before(m, t):
+    """close poslední perp svíčky uzavřené nejpozději v t (svíčka s open ≤ t − 5 min)."""
+    i = bisect.bisect_right(m["perp_ts"], t - BAR) - 1
+    return m["perp"][m["perp_ts"][i]][1] if i >= 0 else None
+
+
+def simulate(market, start, end, th, hold, mult, variant="", delay_bars=0):
+    """Sdílená equity: notional = 10 % realizované equity při vstupu. Vrací (obchody, denní equity).
+    Denní equity = realizované obchody + ocenění pozic otevřených přes půlnoc (close poslední svíčky dne,
+    vstupní náklady, funding do půlnoci) — oprava podle oponentury (bod G)."""
     c = (FEE + SLIP) * mult
     s_ms, e_ms = ms_of(start), ms_of(end) + DAY_MS
-    cands = sorted((x for a in ASSETS for x in candidates(market[a], a, s_ms, e_ms, th, hold)),
+    cands = sorted((x for a in ASSETS for x in candidates(market[a], a, s_ms, e_ms, th, hold, delay_bars)),
                    key=lambda x: (x["entry_ts"], x["asset"]))
     cash, pending, trades = START_EQUITY, [], []
-    realized_by_day = {}
     for x in cands:
         while pending and pending[0][0] <= x["entry_ts"]:
             _, _, tr = heapq.heappop(pending)
@@ -238,17 +255,26 @@ def simulate(market, start, end, th, hold, mult, variant=""):
         costs = notional * c + qty * x["exit"] * c
         fund = qty * x["funding_unit"]
         tr = {**x, "variant": variant, "cost_mult": mult, "qty": qty, "notional": notional, "gross": gross,
-              "funding": fund, "costs": costs, "net_pnl": gross + fund - costs,
+              "funding": fund, "costs": costs, "net_pnl": gross + fund - costs, "cost_in": notional * c,
               "gross_bp": x["side"] * (x["exit"] / x["entry"] - 1) * 1e4}
         trades.append(tr)
         heapq.heappush(pending, (x["exit_ts"], len(trades), tr))
+    realized_by_day, overnight = {}, {}
     for tr in trades:
-        d = date_of(tr["exit_ts"])
+        d = date_of(tr["exit_ts"] - 1)  # výstup přesně v 00:00 patří do dne, který právě skončil
         realized_by_day[d] = realized_by_day.get(d, 0.0) + tr["net_pnl"]
+        day_end = (tr["entry_ts"] // DAY_MS + 1) * DAY_MS
+        while day_end < tr["exit_ts"]:  # otevřeno přes půlnoc
+            p = close_before(market[tr["asset"]], day_end)
+            mtm = tr["side"] * tr["qty"] * (p - tr["entry"]) - tr["cost_in"] + \
+                tr["qty"] * sum(v for t, v in tr["funding_events"] if t <= day_end)
+            dd = date_of(day_end - 1)
+            overnight[dd] = overnight.get(dd, 0.0) + mtm
+            day_end += DAY_MS
     curve, eq, d = {}, START_EQUITY, start
     while d <= end:
         eq += realized_by_day.get(d, 0.0)
-        curve[d] = eq
+        curve[d] = eq + overnight.get(d, 0.0)
         d += timedelta(days=1)
     return trades, curve
 
@@ -281,14 +307,15 @@ def trade_metrics(trades, start, end):
             "costs": round(sum(t["costs"] for t in trades), 4),
             "long_trades": sum(1 for t in trades if t["side"] == 1),
             "short_trades": sum(1 for t in trades if t["side"] == -1),
-            "data_gap_exits": sum(t["data_gap"] for t in trades),
+            "data_gap_exits": sum(1 for t in trades if t["data_gap"]),
+            "data_gap_unrealizable_exits": sum(1 for t in trades if t["data_gap"] == 2),
             "avg_gross_bp": round(sum(t["gross_bp"] for t in trades) / len(trades), 3) if trades else None,
             "trades_per_year_per_asset": {a: round(sum(1 for t in trades if t["asset"] == a) / years, 1)
                                           for a in ASSETS}}
 
 
-def run(market, start, end, mult, th, hold, variant):
-    trades, curve = simulate(market, start, end, th, hold, mult, variant)
+def run(market, start, end, mult, th, hold, variant, delay_bars=0):
+    trades, curve = simulate(market, start, end, th, hold, mult, variant, delay_bars)
     cm, rets = curve_metrics(curve, START_EQUITY)
     return {**cm, **trade_metrics(trades, start, end)}, trades, rets
 
@@ -300,20 +327,38 @@ def day_close(m, d):
 
 
 def buy_hold(market, start, end, mult):
+    """B&H 3 perpů stejnými vahami, 1× bez páky, včetně skutečného fundingu (long platí kladnou sazbu)."""
     c = (FEE + SLIP) * mult
     t0 = ms_of(start)
+    t_end = ms_of(end) + DAY_MS
     qty = {}
     for a in ASSETS:
         m = market[a]
         j = bisect.bisect_left(m["perp_ts"], t0)
         qty[a] = START_EQUITY / len(ASSETS) * (1 - c) / m["perp"][m["perp_ts"][j]][0]
-    curve, d = {}, start
+    events = sorted((t, a) for a in ASSETS for t in market[a]["funding"] if t0 < t < t_end)
+    k, funding, curve, d = 0, 0.0, {}, start
     while d <= end:
-        curve[d] = sum(q * day_close(market[a], d) for a, q in qty.items())
+        t_day = ms_of(d) + DAY_MS
+        while k < len(events) and events[k][0] < t_day:
+            te, a = events[k]
+            funding -= market[a]["funding"][te] * qty[a] * perp_price_at(market[a], te)
+            k += 1
+        curve[d] = funding + sum(q * day_close(market[a], d) for a, q in qty.items())
         d += timedelta(days=1)
-    curve[end] *= (1 - c)
+    curve[end] = funding + (curve[end] - funding) * (1 - c)
     cm, _ = curve_metrics(curve, START_EQUITY)
-    return {**cm, "net_pnl": round(curve[end] - START_EQUITY, 4)}
+    return {**cm, "net_pnl": round(curve[end] - START_EQUITY, 4), "funding": round(funding, 4)}
+
+
+def safe_dsr(rets, n, var_annual):
+    """Nedefinované DSR (nulový rozptyl, např. 0 obchodů) = None + důvod; brána pak neprošla."""
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+    from tools.research.deflated_sharpe import dsr_from_returns
+    try:
+        return {**dsr_from_returns(rets, n, var_annual / 365), "undefined_reason": None}
+    except (ValueError, ZeroDivisionError) as e:
+        return {"dsr": None, "undefined_reason": str(e), "n_trials": n, "var_trials": var_annual / 365}
 
 
 def evaluate(res, bh):
@@ -397,18 +442,27 @@ def main(argv=None):
     res = results[ctag]
     track_a, track_b = evaluate(res, bh)
     passed_a, passed_b = all(track_a.values()), all(track_b.values())
-    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-    from tools.research.deflated_sharpe import dsr_from_returns
-    dsr = dsr_from_returns(rets_store[(ctag, "validation", 1)], DSR_N, DSR_VAR_ANNUAL / 365)
+    vrets = rets_store[(ctag, "validation", 1)]
+    dsr = safe_dsr(vrets, DSR_N, DSR_VAR_ANNUAL)
+    dsr_sens = {f"N{n}_V{v}": safe_dsr(vrets, n, v)["dsr"] for n in (159, 318, 636) for v in (0.5, 1.0, 2.0)}
+    latency = {p: {f"x{m}": run(market, pdate(PERIODS[p][0]), pdate(PERIODS[p][1]), m, chosen[0], chosen[1],
+                                ctag + "_lat5m", delay_bars=1)[0] for m in (1, 2)} for p in ("validation", "final_test")}
     nb = {vt(*g): results[vt(*g)]["validation"]["x2"]["net_pnl"] for g in neighbors(*chosen)}
     wf_pos = sum(1 for y in wf.values() if y["net_pnl"] > 0)
-    robust = {"dsr_ge_0_95": dsr["dsr"] >= 0.95, "neighbors_val_x2_profit": all(v > 0 for v in nb.values()),
+    robust = {"dsr_ge_0_95": dsr["dsr"] is not None and dsr["dsr"] >= 0.95, "neighbors_val_x2_profit": all(v > 0 for v in nb.values()),
               "walk_forward_ge_3_of_4": wf_pos >= 3}
     verdict = ("KANDIDÁT NA FORWARD PAPER" if (passed_a or passed_b) and all(robust.values()) else "ZAMÍTNUTO")
+    gap_flags = sum(res[p]["x1"]["data_gap_unrealizable_exits"] for p in PERIODS)
+    if verdict.startswith("KANDIDÁT") and (gap_flags or latency["validation"]["x2"]["net_pnl"] <= 0):
+        verdict = "NEROZHODNUTO — nerealizovatelné výstupy kvůli mezerám nebo ztráta při latenci +5 min, nutná revize"
     payload = {"protocol": "research/spot_led/PROTOCOL.md", "chosen": ctag, "tuning_selection_x1": tune,
                "strategy": results, "buy_hold_equal_3": bh, "walk_forward_x2": wf, "neighbors_val_x2": nb,
                "track_a": track_a, "track_b": track_b, "passed_a": passed_a, "passed_b": passed_b,
-               "dsr_validation_x1": dsr, "robustness": robust, "gap_audit": audit, "verdict": verdict}
+               "dsr_validation_x1": dsr,
+               "dsr_note": "N = 159 je pracovní odhad (ne doložená horní mez); V[SR] = 0,5 p.a. je předpoklad",
+               "dsr_sensitivity_scenarios": dsr_sens, "latency_plus_5m_info": latency,
+               "walk_forward_note": "roční stabilita fixní varianty vybrané na 2020-02…2022; pro 2021–22 NE čistý OOS",
+               "robustness": robust, "gap_audit": audit, "verdict": verdict}
     (out / "results.json").write_text(json.dumps(payload, indent=1, default=str))
     with open(out / "trades.csv", "w", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=list(rows[0].keys()) if rows else ["period"])
@@ -420,7 +474,8 @@ def main(argv=None):
             dst.write(src.read())
         (out / "trades.csv").unlink()
     print("SUMMARY", json.dumps({"chosen": ctag, "verdict": verdict, "track_a": track_a, "track_b": track_b,
-                                 "robust": robust, "dsr": round(dsr["dsr"], 4), "neighbors": nb,
+                                 "robust": robust, "dsr": dsr["dsr"], "dsr_sens": dsr_sens, "neighbors": nb,
+                                 "latency_val_x2": latency["validation"]["x2"]["net_pnl"],
                                  "val": res["validation"], "final": res["final_test"], "tuning": res["tuning"],
                                  "bh_val": bh["validation"]["x1"], "bh_final": bh["final_test"]["x2"],
                                  "wf": {k: v["net_pnl"] for k, v in wf.items()}}, default=str))
