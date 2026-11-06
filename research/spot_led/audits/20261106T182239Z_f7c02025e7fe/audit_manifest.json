@@ -1,0 +1,24 @@
+{
+ "mode": "audit",
+ "run_id": "f7c02025e7fe4f569bcce79f64724c41",
+ "run_utc": "2026-11-06T18:22:40.568239+00:00",
+ "produced_by_this_run": [
+  "data_source.json",
+  "data_audit.json",
+  "audit_manifest.json"
+ ],
+ "files_sha256": {
+  "data_source.json": "587c9f3656a6b953a77dc4b388f8e855ef57f0554432b05b0a791fb811fd819f",
+  "data_audit.json": "5d11aaba24a89ad66385c73ba669cce140ad3817e324d5876a4bf0aaa200fedb"
+ },
+ "impl_sha256": "762ec8bc11ea8dcae365aa3f528cc873b93bbe596c4f82db9b98c21350077e9a",
+ "data_manifest_sha256": "a36df730f3419a870639b9a0e5432b05e85c2bcbbee3c56c11192569c1f3d902",
+ "preexisting_performance_files_not_from_this_run": [],
+ "note": "audit nepo\u010d\u00edt\u00e1 v\u00fdkonnost; p\u0159\u00edpadn\u00e9 results.json/trades.csv nejsou v\u00fdstupem tohoto b\u011bhu",
+ "outdir_performance_files_not_from_this_run": [],
+ "environment": {
+  "python": "3.13.18",
+  "implementation": "CPython",
+  "platform": "Linux-7.0.0-1017-azure-x86_64-with-glibc2.39"
+ }
+}
