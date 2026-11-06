@@ -131,3 +131,8 @@ Opravy implementace, aby kód odpovídal textu protokolu (pravidla obchodování
   `funding_interval_hours` s okolními časy a počet nesouladů rozestupu pro sémantiku A „interval od události k další“
   a B „interval úseku končícího událostí“, počet chybějících hodin). Sémantiku rozhodne člověk z konkrétních přechodů
   a zapíše ji sem jako dodatek **před** během výkonnosti; vyjde-li B, kód se upraví a znovu otestuje, teprve pak výkonnost.
+
+## Dodatek 4 (2026-11-06 ~17:00 UTC, pokyn vlastníka; před výpočtem výkonnosti)
+Runner odmítne výpočet výkonnosti (kód 3, `PERFORMANCE_REFUSED`) ještě před stažením dat, pokud v této složce chybí
+`FUNDING_SEMANTICS.json` s `semantics` ∈ {A, B}, `evidence` a `decided_utc`, nebo pokud rozhodnutá sémantika neodpovídá
+implementované (kód implementuje A). Audit dat (`AUDIT`) zámek neblokuje. Rozhodnutí se zapisuje až z `data_audit.json`.

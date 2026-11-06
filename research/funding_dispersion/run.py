@@ -523,6 +523,30 @@ def evaluate(res, bh):
     return a, b
 
 
+IMPLEMENTED_SEMANTICS = "A"  # kód počítá rozestup podle intervalu DŘÍVĚJŠÍ události
+SEMANTICS_FILE = "FUNDING_SEMANTICS.json"
+
+
+def semantics_gate(outdir):
+    """Dodatek 4: výpočet výkonnosti se odmítne, dokud v `<outdir>/FUNDING_SEMANTICS.json` není zapsané rozhodnutí o sémantice
+    `funding_interval_hours` (z data_audit.json), a to rozhodnutí musí odpovídat tomu, co kód implementuje.
+    Vrací (povoleno, důvod)."""
+    f = Path(outdir) / SEMANTICS_FILE
+    if not f.exists():
+        return False, f"chybí {SEMANTICS_FILE} (rozhodnutí o sémantice intervalu fundingu)"
+    try:
+        d = json.loads(f.read_text())
+    except ValueError as e:
+        return False, f"{SEMANTICS_FILE} není platný JSON: {e}"
+    if d.get("semantics") not in ("A", "B"):
+        return False, f"{SEMANTICS_FILE}: semantics musí být 'A' nebo 'B'"
+    if not d.get("evidence") or not d.get("decided_utc"):
+        return False, f"{SEMANTICS_FILE}: chybí evidence nebo decided_utc"
+    if d["semantics"] != IMPLEMENTED_SEMANTICS:
+        return False, f"rozhodnutá sémantika {d['semantics']} ≠ implementovaná {IMPLEMENTED_SEMANTICS} — nejdřív upravit kód"
+    return True, "ok"
+
+
 def data_audit(market):
     """Kontrola dat oddělená od výkonnosti (dodatek 3): všechny přechody funding_interval_hours s okolními časy a počet
     nesouladů rozestupu pro dvě možné sémantiky pole — A: interval platí od dané události k další (předpoklad kódu),
@@ -591,6 +615,11 @@ def main(argv=None):
     ap.add_argument("--audit-only", action="store_true", help="jen kontrola dat, bez výpočtu výkonnosti")
     args = ap.parse_args(argv)
     out = Path(args.outdir)
+    if not args.audit_only:
+        ok, why = semantics_gate(out)
+        if not ok:  # kontrola PŘED stažením dat a před jakýmkoli výpočtem
+            print("PERFORMANCE_REFUSED", why)
+            sys.exit(3)
     market, manifest, missing, fatal = load(args.cache)
     (out / "data_source.json").write_text(json.dumps({"archives": manifest, "missing": missing}, indent=1))
     if fatal:

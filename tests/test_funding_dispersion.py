@@ -282,6 +282,8 @@ def test_R4_no_trades_still_writes_results_with_null_dsr(tmp_path, monkeypatch):
     for a in fd.ASSETS:
         market[a]["first_funding"] = None
     monkeypatch.setattr(fd, "load", lambda cache: (market, [], [], []))
+    import json as _j
+    (tmp_path / fd.SEMANTICS_FILE).write_text(_j.dumps({"semantics": "A", "evidence": "test", "decided_utc": "test"}))
     fd.main(["--outdir", str(tmp_path)])
     import json
     r = json.loads((tmp_path / "results.json").read_text())
@@ -377,3 +379,28 @@ def test_K3_audit_only_mode_writes_audit_without_performance(tmp_path, monkeypat
     fd.main(["--outdir", str(tmp_path), "--audit-only"])
     assert (tmp_path / "data_audit.json").exists()
     assert not (tmp_path / "results.json").exists() and not (tmp_path / "trades.csv").exists()
+
+
+# ---- dodatek 4: zámek výkonnosti bez rozhodnutí o sémantice ----
+def test_gate_refuses_performance_without_semantics_decision(tmp_path, monkeypatch):
+    called = []
+    monkeypatch.setattr(fd, "load", lambda cache: called.append(1) or ({}, [], [], []))
+    with pytest.raises(SystemExit) as e:
+        fd.main(["--outdir", str(tmp_path)])
+    assert e.value.code == 3 and called == []  # odmítnuto ještě před načtením dat
+    import json
+    for bad in ({"semantics": "C", "evidence": "x", "decided_utc": "x"}, {"semantics": "A"},
+                {"semantics": "B", "evidence": "x", "decided_utc": "x"}):
+        (tmp_path / fd.SEMANTICS_FILE).write_text(json.dumps(bad))
+        assert fd.semantics_gate(tmp_path)[0] is False
+    (tmp_path / fd.SEMANTICS_FILE).write_text("{nejson")
+    assert fd.semantics_gate(tmp_path)[0] is False
+    (tmp_path / fd.SEMANTICS_FILE).write_text(json.dumps({"semantics": "A", "evidence": "run 1", "decided_utc": "t"}))
+    assert fd.semantics_gate(tmp_path) == (True, "ok")
+
+
+def test_gate_does_not_block_audit_only(tmp_path, monkeypatch):
+    m = make_market(rates=ranked_rates)
+    monkeypatch.setattr(fd, "load", lambda cache: (m, [], [], []))
+    fd.main(["--outdir", str(tmp_path), "--audit-only"])
+    assert (tmp_path / "data_audit.json").exists() and not (tmp_path / "results.json").exists()
