@@ -4,6 +4,12 @@ Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá
 Výhradně PAPER.
 
 
+## 2026-11-06 16:20 SEČ (běh #24)
+- Nasazeno: `fd6065b` (PR #26, váš ruční deploy 14:18 SEČ) – PR #5 ano. Produkce v pořádku: 6× HTTP 200, 239 testů OK, 0 nových duplicit, nové epochy LH-WHALE a LIQUIDITY běží (0 obchodů, 10 000), P/L součet −3 144,10.
+- Výzkum R5 **Blízkost ročnímu maximu, 8 aktiv** — připraveno ([PR #28](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/28)): protokol commitnut předem, kód + 13 testů OK. Backtest se spustí po půlnoci UTC (denní limit 3 nových hypotéz vyčerpán) — zatím žádná čísla.
+- Anomálie: žádné; jen error logy Renderu nešly načíst (výpadek jejich log API, 503) — ověřím příště.
+- DB 20,7 %. Od vás nic nového; PR #8/#9/#10 dál čekají na review.
+
 ## 2026-11-06 14:30 SEČ (běh #23)
 - Nasazeno: `083e7e7` (PR #25, váš ruční deploy 13:59 SEČ) – PR #5 ano. PR #26 (`fd6065b`) čeká na ruční deploy. Produkce v pořádku: 6× HTTP 200, pozastaveny WHALE/BEST-OF (+ FAST/FLY/LEADLAG/TV), 239 testů OK, 0 chyb, 0 nových duplicit, P/L součet −3 176,78.
 - Výzkum R4: **Volatilitní cílení BTC 40 % — ZAMÍTNUTO** ([PR #27](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/27)). Poprvé splněna kritéria A1–A4: validace 2023–24 ×1 +392 % (Sharpe 2,14, DD 20,7 %, 35 úprav) vs buy & hold BTC +464 % (Sharpe 2,02, DD 26,2 %).
