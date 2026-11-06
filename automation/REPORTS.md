@@ -3,6 +3,15 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## 2026-11-06 12:35 SEČ (běh #22)
+- Nasazeno: `edaa938` – PR #5 ano. Produkce beze změny (6× HTTP 200, 238 testů OK, 0 chyb, 0 událostí, 0 nových duplicit, P/L součet −3 176,78).
+- Výzkum R3: **Delta-neutrální funding carry BTC/ETH (spot long + perp short) — ZAMÍTNUTO** ([PR #23](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/23)).
+  Validace 2023–24 ×2: +8,8 % s propadem jen 0,5 % (B&H +321 %, DD 34 %); závěrečný test ×2: +0,2 % (DD 0,3 %) vs B&H −21,9 %. DSR 1,00, walk-forward 3/4 let kladných.
+  Neprošlo na počet obchodů (6 ve validaci, 11 celkem); navíc výnos 2025–26 byl pod úrokem z hotovosti ⇒ výhoda zmizela. Obchody přepočteny: 19 bloků, 0 neshod.
+- Hotov i nástroj Deflated Sharpe (R2, [PR #22](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/22)). Data: perp svíčka 2026-10-28 na Binance Vision chybí ⇒ závěrečný test do 27. 10.
+- DB 20,6 %. Další: volatilitní cílení BTC 40 % (R4).
+- Od vás nic nového; PR #8/#9/#10 dál čekají na review.
+
 ## 2026-11-06 10:35 SEČ (běh #21)
 - Nasazeno: `edaa938` – PR #5 ano. Produkce beze změny (6× HTTP 200, 238 testů OK, 0 chyb, 0 událostí, 0 nových duplicit, P/L součet −3 176,78).
 - Výzkum (rámec v2, R1): **přehodnocení 10 dosavadních hypotéz stopou B „řízené riziko“ — 0 z 10 prošlo** ([PR #21](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/21)).

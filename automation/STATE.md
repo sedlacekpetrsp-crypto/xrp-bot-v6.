@@ -1,6 +1,6 @@
 # Autopilot STATE — přepisuje se každým během
 
-Poslední aktualizace: 2026-11-06 09:35 UTC (autopilot běh #21, run 42192244238; produkce beze změny; výzkum R1: přehodnocení #11–#20 stopou B — 0/10 prošlo, PR #21; další R2).
+Poslední aktualizace: 2026-11-06 11:35 UTC (autopilot běh #22, run 42207516705; produkce beze změny; R2 DSR nástroj PR #22; R3 funding carry ZAMÍTNUTO (málo obchodů), PR #23; další R4).
 
 Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h). Vypnout/změnit: claude.ai → plánované úlohy.
 
@@ -25,7 +25,7 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h)
 
 ## Databáze `xrp-bot-db` (1 GB, bez auto-zvětšení)
 
-Poslední kontrola 2026-11-06 09:04 UTC: 220,6 MB = 20,5 % (+0,8 MB za 2 h); produkce beze změny (live edaa938 = HEAD, 0 událostí od 07:00, 0 error logů 07:00–09:04, dup jen id 129, BEST-OF 132, P/L −3 176,78, 238 passed). Předchozí 07:04 UTC: 219,8 MB = 20,5 % (+0,9 MB za 2 h); produkce beze změny (live edaa938 = HEAD, 0 událostí od 05:00, 0 error logů 05:00–07:04, dup jen id 129, BEST-OF 132 (+1), P/L −3 176,78, testy OK). Předchozí 05:04 UTC: 218,9 MB = 20,4 % (+0,8 MB za 2 h); produkce beze změny (live edaa938 = HEAD, 0 událostí od 03:00, 0 error logů 03:04–05:04, dup jen id 129, BEST-OF 131, P/L −3 176,32, 238 passed). Předchozí 03:04 UTC: 218,1 MB = 20,3 % (+0,8 MB za 2 h); produkce beze změny (live edaa938 = HEAD, 0 událostí od 01:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 176,32, testy OK). Předchozí 01:04 UTC: 217,3 MB = 20,2 % (+0,8 MB za 2 h); produkce 01:04 beze změny (live edaa938 = HEAD, 0 událostí od 23:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 176,32, testy OK). Předchozí 23:03: 216,5 MB = 20,2 % (+0,9 MB za 2 h, trend beze změny); produkce 23:03 beze změny (live edaa938, 0 událostí od 21:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 166,91). Předchozí 21:03: 215,6 MB = 20,1 %. Produkce 21:03 beze změny (live edaa938, 0 událostí od 19:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 166,91, 238 passed). Předchozí 19:04: beze změny (live edaa938 = HEAD, obsahuje da2f665, 0 událostí od 17:00, 0 error logů 17:05–19:05, BEST-OF 131 obchodů, dup_groups jen známý id 129, P/L součet −3 197,26, tests OK).
+Poslední kontrola 2026-11-06 11:05 UTC: 221,5 MB = 20,6 % (+0,9 MB za 2 h); produkce beze změny (live edaa938 = HEAD, 0 událostí od 09:00, 0 error logů 09:04–11:05, dup jen id 129, BEST-OF 132, P/L −3 176,78, 238 passed). Předchozí 09:04 UTC: 220,6 MB = 20,5 % (+0,8 MB za 2 h); produkce beze změny (live edaa938 = HEAD, 0 událostí od 07:00, 0 error logů 07:00–09:04, dup jen id 129, BEST-OF 132, P/L −3 176,78, 238 passed). Předchozí 07:04 UTC: 219,8 MB = 20,5 % (+0,9 MB za 2 h); produkce beze změny (live edaa938 = HEAD, 0 událostí od 05:00, 0 error logů 05:00–07:04, dup jen id 129, BEST-OF 132 (+1), P/L −3 176,78, testy OK). Předchozí 05:04 UTC: 218,9 MB = 20,4 % (+0,8 MB za 2 h); produkce beze změny (live edaa938 = HEAD, 0 událostí od 03:00, 0 error logů 03:04–05:04, dup jen id 129, BEST-OF 131, P/L −3 176,32, 238 passed). Předchozí 03:04 UTC: 218,1 MB = 20,3 % (+0,8 MB za 2 h); produkce beze změny (live edaa938 = HEAD, 0 událostí od 01:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 176,32, testy OK). Předchozí 01:04 UTC: 217,3 MB = 20,2 % (+0,8 MB za 2 h); produkce 01:04 beze změny (live edaa938 = HEAD, 0 událostí od 23:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 176,32, testy OK). Předchozí 23:03: 216,5 MB = 20,2 % (+0,9 MB za 2 h, trend beze změny); produkce 23:03 beze změny (live edaa938, 0 událostí od 21:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 166,91). Předchozí 21:03: 215,6 MB = 20,1 %. Produkce 21:03 beze změny (live edaa938, 0 událostí od 19:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 166,91, 238 passed). Předchozí 19:04: beze změny (live edaa938 = HEAD, obsahuje da2f665, 0 událostí od 17:00, 0 error logů 17:05–19:05, BEST-OF 131 obchodů, dup_groups jen známý id 129, P/L součet −3 197,26, tests OK).
 
 | UTC | Velikost | % z 1 GB | Top tabulky |
 |---|---|---|---|
@@ -62,11 +62,14 @@ Hodnotit vždy stopou A i B, u „prošlo“ Deflated Sharpe + robustnost (ráme
 R1. ~~Přehodnotit 10 výsledků (PR #11–#20) stopou B~~ — HOTOVO 2026-11-06 09:30 UTC: **0/10 prošlo** (post-hoc). PR #21,
     `reports/track-b-rescore-20261106.md`, nástroj `tools/research/track_b_rescore.py`. RSI(2) #13 splnil B1–B5, ale B6 ✘
     (ladění ×1 −46,94 USD) ⇒ není kandidát; výjimka jen rozhodnutím vlastníka. Ostatní ✘ B2 (DD > 0,6× B&H), většinou i B3.
-R2. **DALŠÍ NA ŘADĚ →** Nástroje: `tools/research/deflated_sharpe.py` + test; forward PAPER runner `research/forward/` (denní svíčky
-    Binance Vision přes GitHub Actions, trades.csv + equity.csv) — R1 kandidáty nedal ⇒ forward runner až pro první „prošlo“; teď jen DSR + test, pak hned R3.
-R3. Delta-neutrální funding carry BTC/ETH: spot long + USDT-M perp short, jen když 7denní průměr fundingu > práh
-    (mřížka 2 prahy); data Binance Vision `futures/um/monthly/fundingRate` + klines spot i perp; náklady obou nohou ×1/×2/×3.
-R4. Volatilitní cílení BTC 40 % (bod 12 níže) — stopa B je pro ni přirozená.
+R2. ~~Deflated Sharpe nástroj~~ — HOTOVO 2026-11-06 11:08 UTC: `tools/research/deflated_sharpe.py` + test (příklad z článku DSR 0,9004), PR #22.
+    Forward PAPER runner `research/forward/` až pro první „prošlo“.
+R3. ~~Delta-neutrální funding carry BTC/ETH~~ — HOTOVO 2026-11-06 11:30 UTC: **ZAMÍTNUTO** (A2, B5: jen 6 obchodů ve validaci, 11 celkem).
+    H=10 %; validace ×2 +8,76 % (DD 0,50 %), závěrečný ×2 +0,22 % (DD 0,31 %) vs B&H −21,9 %; DSR 1,00, WF 3/4, soused OK. PR #23,
+    `research/funding_carry/RESULTS.md`. Poučení: výnos carry sleduje páku trhu (2021 vysoký, 2025–26 < úrok z hotovosti); případná v2 =
+    nová hypotéza s excess return nad úrokem, levnějšími nohami a širším košem (víc epizod) — ne ladění této.
+R4. **DALŠÍ NA ŘADĚ →** Volatilitní cílení BTC 40 % (bod 12 níže; protokol už commitnut ve `research/vol-target-20261106`, `fc9b4a4`) —
+    pokračovat `run.py` + testy + workflow podle vzoru `research/funding_carry`, vyhodnotit stopou A i B + DSR (nástroj z PR #22).
 R5. Blízkost 52týdennímu maximu průřezově, 8 aktiv (bod 14 níže).
 R6. Audit produkčních PAPER botů (jen čtení, Render SQL): za 30 a 90 dní na bota obchody, čistý P/L, PF, náklady,
     max DD ⇒ `reports/production-bot-audit-<datum>.md` s návrhem, které pozastavit (jen návrh, čeká na vlastníka).
