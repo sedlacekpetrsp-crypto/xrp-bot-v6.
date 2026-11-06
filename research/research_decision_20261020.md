@@ -509,3 +509,9 @@ Decision: **TEST NEDOKONČEN**, not PROŠEL. No post-preregistration forward PAP
 ## BTC_MINER_REVENUE_RECOVERY_XRP_V1: forward PAPER gate frozen (2026-11-06)
 
 Before accepting any post-registration observation, quantify the previously mandatory but unquantified forward gate: at least 365 elapsed days, at least 20 closed non-overlapping PAPER trades, positive net and expectancy at base and doubled costs, stressed PF above 1.0, stressed marked drawdown no more than 10%, and no single trade above 35% of total positive forward profit. Add an isolated append-only runner that freezes observations on first sight, rejects revisions, excludes incomplete candles and historical backfill, and is idempotent across repeated runs. This supplement does not change the historical signal, execution or result and may not be weakened after forward observations appear.
+
+## BTC_MINER_REVENUE_RECOVERY_XRP_V1: forward PAPER initialized (2026-11-06)
+
+The first isolated snapshot at `2026-11-06T05:04:29.653Z` confirms the source is unchanged at 1,624 observations ending 2026-10-27, SHA256 `1b75573b0bdbfba5c57ea7c73ffa35d19b369a6e266cf71d61b868b46e761f72`. The Binance response SHA256 is `d0b698b6a5033853f1b3db752f95ee177950d5a9f28198d1809be37328189dd8`. The ledger froze only 30 pre-forward warmup candles, counted no historical candle as forward evidence and has zero closed trades. All 335 repository tests pass, including revision blocking, idempotence, incomplete-candle exclusion and no-backfill regressions.
+
+Status remains **TEST NEDOKONČEN**. Concrete blocker: the source has not published a first observation after the preregistration start, and the 365-day/20-trade prospective gate cannot yet be evaluated. Next cycle reruns the same append-only collector; it must not create another hypothesis that competes for the same evidence or alter this candidate's parameters. Production, Render, LIVE, main and `v8-fly-layer-test` remain untouched.
