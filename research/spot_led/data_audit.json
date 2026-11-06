@@ -1,0 +1,51 @@
+{
+ "gaps": {
+  "BTCUSDT": {
+   "spot_bars": 718386,
+   "perp_bars": 718560,
+   "spot_missing_5m": 462,
+   "perp_missing_5m": 288,
+   "spot_only": 288,
+   "perp_only": 462,
+   "usable_signal_bars": 718039
+  },
+  "ETHUSDT": {
+   "spot_bars": 718386,
+   "perp_bars": 718560,
+   "spot_missing_5m": 462,
+   "perp_missing_5m": 288,
+   "spot_only": 288,
+   "perp_only": 462,
+   "usable_signal_bars": 718039
+  },
+  "XRPUSDT": {
+   "spot_bars": 718386,
+   "perp_bars": 715580,
+   "spot_missing_5m": 462,
+   "perp_missing_5m": 1728,
+   "spot_only": 3268,
+   "perp_only": 462,
+   "usable_signal_bars": 715057
+  }
+ },
+ "funding": {
+  "BTCUSDT": {
+   "funding_events": 7488,
+   "interval_transitions": [],
+   "spacing_mismatch_semantics_A": 0,
+   "spacing_mismatch_semantics_B": 0
+  },
+  "ETHUSDT": {
+   "funding_events": 7488,
+   "interval_transitions": [],
+   "spacing_mismatch_semantics_A": 0,
+   "spacing_mismatch_semantics_B": 0
+  },
+  "XRPUSDT": {
+   "funding_events": 7472,
+   "interval_transitions": [],
+   "spacing_mismatch_semantics_A": 0,
+   "spacing_mismatch_semantics_B": 0
+  }
+ }
+}
