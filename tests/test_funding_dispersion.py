@@ -1172,3 +1172,59 @@ def test_K9_2_ops_fingerprint_protocol_or_workflow_change_invalidates(tmp_path, 
     (tmp_path / fd.SEMANTICS_FILE).write_text(json.dumps(valid_decision(ops_sha256=None)))
     assert fd.semantics_gate(tmp_path)[0] is False
     assert set(fd.ops_fingerprint()) == {"protocol", "workflow"} and fd.impl_fingerprint() not in fd.ops_fingerprint().values()
+
+
+# ---- kolo 10, bod 5: rozšířené NEZÁVISLÉ přepočty (literály z calc/indep10.py, Decimal, bez importu runneru) ----
+def _econ_market_x(ltc_spike=None, rate_after=0.0003):
+    D = fd.ms_of(START)
+    spike_t = D + 11 * H  # 4. 1. 12:00 (po události 08:00)
+
+    def price(a, t):
+        p = _P0.get(a, 100.0) if t <= D + H else _P1.get(a, 100.0)
+        if a == "LTCUSDT" and ltc_spike and t == spike_t:
+            return ltc_spike(p)
+        return p
+    return make_market(days=60, price=price, rates=lambda a, t: 0.0001 * fd.ASSETS.index(a) if t <= D else rate_after)
+
+
+def test_K10_5_costs_x1_x2_x3_independent():
+    exp = {1: (90.655, -107.855, 103.485, -95.485, 9990.8), 2: (88.24, -110.04, 101.3, -97.9, 9981.6),
+           3: (85.825, -112.225, 99.115, -100.315, 9972.4)}
+    for mult, (b, e, d, l, eq) in exp.items():
+        legs, curve, _ = fd.simulate(_econ_market(), START, date(2021, 1, 11), 7, 7, mult)
+        got = {lg["asset"]: lg["net_pnl"] for lg in legs}
+        for a, v in zip(("BTCUSDT", "ETHUSDT", "DOGEUSDT", "LTCUSDT"), (b, e, d, l)):
+            assert abs(got[a] - v) <= TOL, (mult, a, got[a], v)
+        assert abs(curve[date(2021, 1, 11)] - eq) <= TOL
+
+
+def test_K10_5_short_liquidation_and_model_limit():
+    legs, _, _ = fd.simulate(_econ_market_x(ltc_spike=lambda p: (p, 170.0)), START, date(2021, 1, 11), 7, 7, 1)
+    ltc = next(lg for lg in legs if lg["asset"] == "LTCUSDT")
+    assert ltc["liquidated"] == 1 and abs(ltc["net_pnl"] - (-1000.82)) <= TOL
+    # OMEZENÍ: runner likviduje při high ≥ 2 × vstup; skutečná 1× izolovaná short pozice s udržovací marží m
+    # se likviduje už při 2·P0/(1+m) (m = 0,5 % ⇒ 159,20398 místo 160) a platí poplatek za likvidaci.
+    legs2, _, _ = fd.simulate(_econ_market_x(ltc_spike=lambda p: (p, 159.5)), START, date(2021, 1, 11), 7, 7, 1)
+    assert next(lg for lg in legs2 if lg["asset"] == "LTCUSDT")["liquidated"] == 0  # reálně by likvidována byla
+
+
+def test_K10_5_extreme_funding_independent():
+    legs, _, _ = fd.simulate(_econ_market_x(rate_after=0.03), START, date(2021, 1, 11), 7, 7, 1)
+    exp = {"BTCUSDT": -595.415, "ETHUSDT": -669.185, "DOGEUSDT": 664.815, "LTCUSDT": 590.585}
+    for lg in legs:
+        assert abs(lg["net_pnl"] - exp[lg["asset"]]) <= TOL
+
+
+def test_K10_5_complete_walk_forward_fold_independent():
+    m = make_market(days=400, rates=ranked_rates)
+    r, legs, _, _ = fd.run(m, date(2021, 1, 1), date(2021, 12, 31), 2, 7, 7, "wf")
+    assert r["baskets"] == 51 and abs(r["net_pnl"] - 352.7616182178) <= 1e-4  # runner zaokrouhluje na 4 místa
+    assert abs(sum(lg["net_pnl"] for lg in legs) - 352.7616182178) <= TOL
+
+
+def test_K10_5_intraday_drawdown_is_not_captured_limitation():
+    """OMEZENÍ (dokumentační test): DD se počítá z denní equity. Intradenní propad (LTC short, 150 ve 12:00, do 23:00
+    zpět 88) nezávisle = 7,796 %, runner hlásí výrazně méně."""
+    _, curve, _ = fd.simulate(_econ_market_x(ltc_spike=lambda p: 150.0), START, date(2021, 1, 11), 7, 7, 1)
+    cm, _ = fd.curve_metrics(curve, fd.START_EQUITY)
+    assert cm["max_drawdown_pct"] < 1.0 < 7.796

@@ -194,3 +194,13 @@ implementované (kód implementuje A). Audit dat (`AUDIT`) zámek neblokuje. Roz
 - **Nález z auditu reálných dat (R9-1):** XRP/SOL/LTC 2022-02-26 (72 h) a 2022-04-01 (48 h), všech 8 aktiv 2026-10-28
   (24 h) bez 1h svíček. Dřívější `Prices.get` po 6 h vyhodilo KeyError ⇒ výkonnostní běh by spadl. Nově se použije starší
   close, počítá se jako náhrada (blokující) a zvlášť jako `stale`. Budoucí cena se nikdy nepoužije.
+
+## Dodatek 9 (2026-11-06, kolo 10; výkonnost dál nespuštěna, návrh na kontrolu)
+- **Stopa B dočasně nemůže sama udělit KANDIDÁTA** (`decision_gate.TRACK_B_CAN_GRANT_CANDIDATE = False`).
+  Zamítnutí přes B zůstává platné.
+- `tools/research/trade_stats.py` (znaménkový test, stationary bootstrap, efektivní n, koncentrace, potřebné n) je zatím
+  jen diagnostika; pravidlo navrženo v CHATGPT_ROUND10_REVIEW.md, do verdiktu nezapojeno.
+- **Omezení modelu (doloženo testy):**
+  - likvidace short při 2× vstupu bez udržovací marže a poplatku za likvidaci (skutečně dřív, 2·P0/(1+m));
+  - drawdown jen z denní equity (intradenní propady chybí);
+  - funding z ceny posledního obchodu, ne z mark ceny.
