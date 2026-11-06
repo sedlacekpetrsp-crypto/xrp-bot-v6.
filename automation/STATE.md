@@ -4,6 +4,14 @@ Poslední aktualizace: 2026-11-06 11:35 UTC (autopilot běh #22, run 42207516705
 
 Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h). Vypnout/změnit: claude.ai → plánované úlohy.
 
+## ZMĚNA PRODUKCE 2 — 2026-11-06 14:15 SEČ (žádost vlastníka 14:02)
+- PR #26 sloučen ⇒ HEAD **`fd6065b`**: dashboard skrývá neběžící boty; jednorázová nová epocha 10 000 USDT pro LIQUIDITY v2
+  (po uzavření aktuální pozice) a LH-WHALE (hned), archiv v `paper_epoch_resets`, tabulky obchodů beze změny. Testy 246 passed.
+- Auto Deploy nefunguje ⇒ čeká na ruční deploy vlastníkem. „live ≠ HEAD“ je do té doby očekávané.
+- Po nasazení ověřit: live `fd6065b`; v logu `PAPER EPOCH RESET LH_WHALE`; `paper_epoch_resets` 1 řádek (LH_WHALE), po uzavření
+  pozice LIQUIDITY 2 řádky; zůstatky 10 000; počty v tabulkách obchodů beze změny (liquidity 21+, lh 2).
+- Při výpočtu P/L a auditu od teď u LIQUIDITY v2 a LH-WHALE rozlišovat epochu (stav = od resetu, tabulka obchodů = celá historie).
+
 ## ZMĚNA PRODUKCE 2026-11-06 (schváleno vlastníkem 13:46 SEČ)
 - PR #25 sloučen do `v8-fly-layer-test` 12:52 UTC ⇒ HEAD **`083e7e7`**: pozastaveny nové vstupy WHALE, BEST-OF a obou SWING
   (výstupy běží dál). Testy 243 passed (obě pořadí), run 42220780705.
