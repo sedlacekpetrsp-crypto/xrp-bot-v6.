@@ -25,9 +25,10 @@ class StopOverlay(unittest.TestCase):
     def test_swing_both_sides_and_two_families(self):
         import swing_paper as s
         from test_swing_paper import ready,quote,frame,NOW
-        for family in s.CONFIG:
-            for side in (1,-1):
-                self.compare(lambda:s.advance(ready(),family,quote(),frame(side),NOW)[0]['positions']['XRPUSDT'])
+        with patch.object(s,'PAUSED_FAMILIES',frozenset()):
+            for family in s.CONFIG:
+                for side in (1,-1):
+                    self.compare(lambda:s.advance(ready(),family,quote(),frame(side),NOW)[0]['positions']['XRPUSDT'])
 
     def test_news_quantity_target_and_net_risk(self):
         import news_paper as n
