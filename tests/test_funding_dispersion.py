@@ -386,7 +386,7 @@ def test_K3_audit_only_mode_writes_audit_without_performance(tmp_path, monkeypat
     m = make_market(rates=ranked_rates)
     monkeypatch.setattr(fd, "load", lambda cache: (m, [], [], []))
     fd.main(["--outdir", str(tmp_path), "--audit-only"])
-    assert (tmp_path / "data_audit.json").exists()
+    assert (fd.latest_audit_dir(tmp_path) / "data_audit.json").exists()
     assert not (tmp_path / "results.json").exists() and not (tmp_path / "trades.csv").exists()
 
 
@@ -422,7 +422,7 @@ def test_gate_does_not_block_audit_only(tmp_path, monkeypatch):
     m = make_market(rates=ranked_rates)
     monkeypatch.setattr(fd, "load", lambda cache: (m, [], [], []))
     fd.main(["--outdir", str(tmp_path), "--audit-only"])
-    assert (tmp_path / "data_audit.json").exists() and not (tmp_path / "results.json").exists()
+    assert (fd.latest_audit_dir(tmp_path) / "data_audit.json").exists() and not (tmp_path / "results.json").exists()
 
 
 def test_semantics_B_real_SOL_november_2022_pattern():
@@ -622,9 +622,9 @@ def test_K6_5_audit_never_simulates_and_disowns_old_results(tmp_path, monkeypatc
     (tmp_path / "results.json").write_text("{\"stary\": true}")
     _guard(monkeypatch, market=make_market(rates=ranked_rates))
     fd.main(["--outdir", str(tmp_path), "--mode", "audit"])
-    man = json.loads((tmp_path / fd.AUDIT_MANIFEST_FILE).read_text())
+    man = json.loads((fd.latest_audit_dir(tmp_path) / fd.AUDIT_MANIFEST_FILE).read_text())
     assert man["mode"] == "audit" and "results.json" not in man["produced_by_this_run"]
-    assert man["preexisting_performance_files_not_from_this_run"] == ["results.json"]
+    assert man["outdir_performance_files_not_from_this_run"] == ["results.json"]
     assert json.loads((tmp_path / "results.json").read_text()) == {"stary": True}  # nepřepsáno, nevydáváno za nové
 
 
@@ -903,9 +903,11 @@ def test_K8_5_concurrent_run_refused_before_load(tmp_path, monkeypatch):
         with pytest.raises(SystemExit) as e:
             fd.main(["--outdir", str(tmp_path), "--mode", "audit"])
     assert e.value.code == 5 and calls["load"] == 0
-    assert not (tmp_path / fd.LOCK_FILE).exists()  # zámek uvolněn
+    import json
+    rec = [json.loads(x) for x in (tmp_path / fd.CONFLICT_LOG).read_text().splitlines()]
+    assert len(rec) == 1 and rec[0]["event"] == "lock_conflict"  # auditní záznam konfliktu
     fd.main(["--outdir", str(tmp_path), "--mode", "audit"])  # po uvolnění projde
-    assert not (tmp_path / fd.LOCK_FILE).exists()
+    assert calls["load"] == 1
 
 
 def test_K8_5_atomic_write_keeps_old_content_on_failure(tmp_path, monkeypatch):
@@ -924,12 +926,15 @@ def test_K8_5_audit_bundle_hashes_detect_mixed_runs(tmp_path, monkeypatch):
     import json
     _guard(monkeypatch, market=make_market(rates=ranked_rates))
     fd.main(["--outdir", str(tmp_path), "--mode", "audit"])
-    man = json.loads((tmp_path / fd.AUDIT_MANIFEST_FILE).read_text())
-    src = json.loads((tmp_path / "data_source.json").read_text())
+    d = fd.latest_audit_dir(tmp_path)
+    man = json.loads((d / fd.AUDIT_MANIFEST_FILE).read_text())
+    src = json.loads((d / "data_source.json").read_text())
     assert man["run_id"] == src["run_id"] and set(man["files_sha256"]) == {"data_source.json", "data_audit.json"}
-    assert fd.verify_audit_bundle(tmp_path) == (True, [])
-    (tmp_path / "data_audit.json").write_text("{}")  # soubor z jiného běhu
-    assert fd.verify_audit_bundle(tmp_path) == (False, ["data_audit.json"])
+    assert fd.verify_audit_bundle(d) == (True, [])
+    (d / "data_audit.json").write_text("{}")  # soubor z jiného běhu
+    assert fd.verify_audit_bundle(d) == (False, ["data_audit.json"])
+    fd.main(["--outdir", str(tmp_path), "--mode", "audit"])  # druhý audit nepřepíše první
+    assert len(list((tmp_path / fd.AUDITS_DIR).iterdir())) == 2 and (d / "data_audit.json").read_text() == "{}"
 
 
 def test_K8_5_audit_does_not_touch_performance_files(tmp_path, monkeypatch):
@@ -972,3 +977,55 @@ def test_K8_5_results_bind_trades_csv_hash(tmp_path, monkeypatch):
     fd.main(["--outdir", str(tmp_path), "--mode", "perf"])
     r = json.loads((tmp_path / "results.json").read_text())
     assert r["trades_csv_sha256"] == fd.file_sha256(tmp_path / "trades.csv") and r["run_id"]
+
+
+# ---- kolo 9, Q5: zámek spravovaný OS ----
+_HOLDER = """
+import sys, time
+sys.path.insert(0, sys.argv[1])
+from research.funding_dispersion import run as fd
+with fd.RunLock(sys.argv[2]):
+    print("LOCKED", flush=True)
+    time.sleep(60)
+"""
+
+
+def _spawn_holder(tmp_path):
+    import subprocess, sys as _s
+    from pathlib import Path
+    root = str(Path(fd.__file__).resolve().parents[2])
+    p = subprocess.Popen([_s.executable, "-c", _HOLDER, root, str(tmp_path)], stdout=subprocess.PIPE, text=True)
+    assert p.stdout.readline().strip() == "LOCKED"
+    return p
+
+
+def test_K9_5_lock_held_by_other_process_refuses_and_logs(tmp_path, monkeypatch):
+    import json
+    p = _spawn_holder(tmp_path)
+    try:
+        calls = _guard(monkeypatch, market=make_market(rates=ranked_rates))
+        with pytest.raises(SystemExit) as e:
+            fd.main(["--outdir", str(tmp_path), "--mode", "audit"])
+        assert e.value.code == 5 and calls["load"] == 0
+        rec = json.loads((tmp_path / fd.CONFLICT_LOG).read_text().splitlines()[-1])
+        assert json.loads(rec["holder"])["pid"] == p.pid
+    finally:
+        p.kill()
+        p.wait()
+
+
+def test_K9_5_sigkill_releases_lock_without_age_based_deletion(tmp_path, monkeypatch):
+    import signal
+    p = _spawn_holder(tmp_path)
+    p.send_signal(signal.SIGKILL)
+    p.wait()
+    assert (tmp_path / fd.LOCK_FILE).exists()  # soubor zůstal (nemaže se), zámek ale jádro uvolnilo
+    calls = _guard(monkeypatch, market=make_market(rates=ranked_rates))
+    fd.main(["--outdir", str(tmp_path), "--mode", "audit"])  # opětovné spuštění projde
+    assert calls["load"] == 1 and not (tmp_path / fd.CONFLICT_LOG).exists()
+
+
+def test_K9_5_lock_code_has_no_age_based_removal():
+    import inspect
+    src = inspect.getsource(fd.RunLock)
+    assert "unlink" not in src and "st_mtime" not in src and "getmtime" not in src

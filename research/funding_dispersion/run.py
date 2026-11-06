@@ -6,6 +6,7 @@ PAPER výzkum, veřejná data Binance Vision, bez klíčů a objednávek.
 import argparse
 import ast
 import bisect
+import fcntl
 import csv
 import hashlib
 import io
@@ -792,6 +793,18 @@ def final_verdict(track_a, track_b, robust, flags, bench_bad_periods=None):
 
 
 LOCK_FILE = ".run.lock"
+AUDITS_DIR = "audits"
+
+
+def latest_audit_dir(outdir):
+    d = sorted((Path(outdir) / AUDITS_DIR).glob("*_*"))
+    return d[-1] if d else None
+
+
+def environment_info():
+    import platform
+    return {"python": platform.python_version(), "implementation": platform.python_implementation(),
+            "platform": platform.platform()}
 
 
 def atomic_write(path, text):
@@ -806,23 +819,41 @@ def atomic_write(path, text):
             tmp.unlink()
 
 
+CONFLICT_LOG = "run_conflicts.jsonl"
+
+
 class RunLock:
-    """Výhradní zámek výstupního adresáře (O_EXCL). Souběžný běh ⇒ exit 5 ještě před načtením dat."""
+    """Kolo 9, Q5: zámek spravovaný OS (fcntl.flock na `.run.lock`). Jádro ho uvolní při jakémkoli ukončení procesu
+    (i SIGKILL), soubor se proto nemaže a stáří se nikdy neposuzuje. Souběh ⇒ auditní záznam do run_conflicts.jsonl
+    a exit 5 ještě před načtením dat."""
     def __init__(self, outdir):
-        self.path = Path(outdir) / LOCK_FILE
+        self.dir = Path(outdir)
+        self.path = self.dir / LOCK_FILE
+        self.fh = None
 
     def __enter__(self):
+        self.fh = open(self.path, "a+")
         try:
-            fd_ = os.open(self.path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
-        except FileExistsError:
-            print("RUN_REFUSED", f"výstupní adresář je zamčen jiným během ({self.path})")
+            fcntl.flock(self.fh.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            self.fh.seek(0)
+            holder = self.fh.read().strip()
+            self.fh.close()
+            rec = {"utc": datetime.now(timezone.utc).isoformat(), "pid": os.getpid(), "holder": holder,
+                   "event": "lock_conflict", "lock": str(self.path)}
+            with open(self.dir / CONFLICT_LOG, "a") as log:
+                log.write(json.dumps(rec) + "\n")
+            print("RUN_REFUSED", json.dumps(rec))
             sys.exit(5)
-        os.write(fd_, str(os.getpid()).encode())
-        os.close(fd_)
+        self.fh.seek(0)
+        self.fh.truncate()
+        self.fh.write(json.dumps({"pid": os.getpid(), "since_utc": datetime.now(timezone.utc).isoformat()}))
+        self.fh.flush()
         return self
 
     def __exit__(self, *exc):
-        self.path.unlink(missing_ok=True)
+        fcntl.flock(self.fh.fileno(), fcntl.LOCK_UN)
+        self.fh.close()
         return False
 
 
@@ -982,18 +1013,26 @@ def _execute(mode, args, out):
         if not ok:  # data se načetla, ale simulace nesmí proběhnout; nic se nezapisuje
             print("PERFORMANCE_REFUSED", why)
             sys.exit(3)
-    atomic_write(out / "data_source.json", json.dumps({"run_id": run_id, "archives": manifest, "missing": missing,
-                                                       "data_manifest_sha256": data_fp}, indent=1))
+    # Kolo 9, Q4: audit zapisuje do vlastního podadresáře audits/<UTC>_<run_id>/ ⇒ nikdy nepřepíše dřívější audit ani
+    # výsledky výkonnosti v outdir; výkonnostní běh zapisuje jako dosud do outdir.
+    dest = out
+    if mode == "audit":
+        dest = out / AUDITS_DIR / f"{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}_{run_id[:12]}"
+        dest.mkdir(parents=True, exist_ok=False)
+    atomic_write(dest / "data_source.json", json.dumps({"run_id": run_id, "archives": manifest, "missing": missing,
+                                                        "data_manifest_sha256": data_fp}, indent=1))
     if fatal:
         print("FATAL missing archives after first available month", json.dumps(fatal[:30]))
         sys.exit(2)
     audit = data_audit(market)
-    atomic_write(out / "data_audit.json", json.dumps(audit, indent=1, default=str))
+    atomic_write(dest / "data_audit.json", json.dumps(audit, indent=1, default=str))
     print("DATA_AUDIT", json.dumps({a: {k: v for k, v in x.items() if k != "interval_transitions"} | {
         "interval_transitions": len(x["interval_transitions"])} for a, x in audit.items()}, default=str))
     if mode == "audit":
-        man = audit_manifest(out, ("data_source.json", "data_audit.json", AUDIT_MANIFEST_FILE), data_fp, run_id)
-        atomic_write(out / AUDIT_MANIFEST_FILE, json.dumps(man, indent=1))  # zapisuje se poslední, s hashi souborů
+        man = audit_manifest(dest, ("data_source.json", "data_audit.json", AUDIT_MANIFEST_FILE), data_fp, run_id)
+        man["outdir_performance_files_not_from_this_run"] = [f for f in PERFORMANCE_FILES if (out / f).exists()]
+        man["environment"] = environment_info()
+        atomic_write(dest / AUDIT_MANIFEST_FILE, json.dumps(man, indent=1))  # zapisuje se poslední, s hashi souborů
         print("AUDIT_MANIFEST", json.dumps(man))
         return
     first_bar = {a: date_of(market[a]["first_bar"]).isoformat() if market[a]["first_bar"] else None for a in ASSETS}
