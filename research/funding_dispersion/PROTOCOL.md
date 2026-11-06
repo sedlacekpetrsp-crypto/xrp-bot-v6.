@@ -121,3 +121,13 @@ Opravy implementace, aby kód odpovídal textu protokolu (pravidla obchodování
   stabilita fixní varianty (pro 2021–22 ne čistý OOS); rozhodnutí v D + 1 s (po zveřejnění sazby vypořádané v D).
 - Je-li výsledek „prošlo“, ale existují hrany fundingu, náhrady cen nebo mezery fundingu v držení ⇒ verdikt
   „NEROZHODNUTO“ do ruční revize, ne kandidát.
+
+## Dodatek 3 (2026-11-06 ~17:00 UTC, po oponentuře ChatGPT kolo 3; stále před stažením dat)
+- **Výběr jen z informací v D.** Způsobilost = listing, 1h svíčky uzavřené do D ([D − W, D − 1 h]) a souvislý funding
+  (D − W, D]. Existence vstupní svíčky (D + 1 h) výběr ani pořadí neovlivňuje. Chybí-li vstupní svíčka vybraného aktiva,
+  noha se **neotevře** (slot zůstane v hotovosti, `unfilled_legs`), bez přerankování; při „prošlo“ ⇒ „NEROZHODNUTO“.
+  Chybějící data nejsou důkazem, že aktivum nebylo obchodovatelné — jen nehodnotitelnosti.
+- **Kontrola dat oddělená od výkonnosti.** Nejdřív běh s `RUN_REQUEST` = `AUDIT …` ⇒ jen `data_audit.json` (všechny přechody
+  `funding_interval_hours` s okolními časy a počet nesouladů rozestupu pro sémantiku A „interval od události k další“
+  a B „interval úseku končícího událostí“, počet chybějících hodin). Sémantiku rozhodne člověk z konkrétních přechodů
+  a zapíše ji sem jako dodatek **před** během výkonnosti; vyjde-li B, kód se upraví a znovu otestuje, teprve pak výkonnost.

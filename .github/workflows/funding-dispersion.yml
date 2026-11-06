@@ -27,7 +27,9 @@ jobs:
         run: |
           set -o pipefail
           if [ ! -f research/funding_dispersion/RUN_REQUEST ]; then echo "RUN_REQUEST chybí - jen testy"; exit 0; fi
-          python -m research.funding_dispersion.run --cache /tmp/vision-fd --outdir research/funding_dispersion | tee summary.txt
+          # RUN_REQUEST začínající "AUDIT" = jen kontrola dat (data_audit.json), bez výpočtu výkonnosti (dodatek 3)
+          if head -1 research/funding_dispersion/RUN_REQUEST | grep -q '^AUDIT'; then MODE=--audit-only; else MODE=; fi
+          python -m research.funding_dispersion.run --cache /tmp/vision-fd --outdir research/funding_dispersion $MODE | tee summary.txt
       - uses: actions/upload-artifact@v4
         if: always()
         with:

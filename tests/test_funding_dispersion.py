@@ -323,3 +323,57 @@ def test_E_edge_funding_impact_is_quantified():
     legs, _, _ = fd.simulate(m, START, date(2021, 1, 11), 7, 7, 1)
     n, impact = fd.simulate_edge_events(m, legs, True)
     assert n == 4 and impact == pytest.approx(4 * 0.01 * 1000)
+
+
+# ---- kolo 3 oponentury ChatGPT ----
+def test_K3_1_missing_future_entry_bar_does_not_change_selection():
+    D = fd.ms_of(START)
+    rates = lambda a, t: 0.0001 * ((fd.ASSETS.index(a) * 3) % 8)
+    m = make_market(rates=rates)
+    _, _, d0 = fd.simulate(m, START, date(2021, 1, 11), 7, 7, 1)
+    gone = d0[0]["longs"][0]
+    b = dict(m[gone]["bars"])
+    del b[D + H]
+    m[gone] = fd.prepare(b, m[gone]["funding"])
+    legs, _, d1 = fd.simulate(m, START, date(2021, 1, 11), 7, 7, 1)
+    assert d1[0]["signal"] == d0[0]["signal"]
+    assert (d1[0]["longs"], d1[0]["shorts"]) == (d0[0]["longs"], d0[0]["shorts"])
+    assert d1[0]["decision_utc"] == "2021-01-04T00:00:01+00:00"
+    assert d1[0]["unfilled_legs"] == [gone] and gone not in {lg["asset"] for lg in legs}
+    assert len(legs) == 3  # žádné přerankování, slot zůstal v hotovosti
+
+
+def test_K3_eligibility_uses_only_bars_closed_by_decision():
+    D = fd.ms_of(START)
+    m = make_market(rates=ranked_rates)
+    b = dict(m["BTCUSDT"]["bars"])
+    del b[D]  # svíčka 00:00–01:00 se uzavře až po rozhodnutí ⇒ nesmí ovlivnit způsobilost
+    m["BTCUSDT"] = fd.prepare(b, m["BTCUSDT"]["funding"])
+    assert fd.eligibility(m, "BTCUSDT", D, 7) == (True, "ok")
+    del b[D - H]  # svíčka 23:00–24:00 uzavřená v D ⇒ mezera
+    m["BTCUSDT"] = fd.prepare(b, m["BTCUSDT"]["funding"])
+    assert fd.eligibility(m, "BTCUSDT", D, 7) == (False, "price_gap_in_window")
+
+
+def test_K3_data_audit_reports_interval_transitions_for_both_semantics():
+    D = fd.ms_of(START)
+    bars = {D - 10 * DAY + i * H: (100.0,) * 4 for i in range(12 * 24)}
+    f, t = {}, D - 10 * DAY
+    while t <= D:
+        iv = 8 if t < D - 5 * DAY else 4
+        f[t] = (0.0001, float(iv))
+        t += iv * H
+    m = {a: fd.prepare(bars, f) for a in fd.ASSETS}
+    a = fd.data_audit(m)["BTCUSDT"]
+    assert len(a["interval_transitions"]) == 1
+    tr = a["interval_transitions"][0]
+    assert (tr["from_h"], tr["to_h"], tr["spacing_h"]) == (8.0, 4.0, 8.0)
+    assert a["spacing_mismatch_semantics_A"] == 0 and a["spacing_mismatch_semantics_B"] == 1
+
+
+def test_K3_audit_only_mode_writes_audit_without_performance(tmp_path, monkeypatch):
+    m = make_market(rates=ranked_rates)
+    monkeypatch.setattr(fd, "load", lambda cache: (m, [], [], []))
+    fd.main(["--outdir", str(tmp_path), "--audit-only"])
+    assert (tmp_path / "data_audit.json").exists()
+    assert not (tmp_path / "results.json").exists() and not (tmp_path / "trades.csv").exists()
