@@ -34,6 +34,10 @@ Bitcoin miner revenue is a non-macro, public blockchain-economics observable. A 
 - Acceptance gates, all mandatory before forward promotion: at least 75 aggregate annual OOS trades; positive net P/L and expectancy at base and stress; base PF >1.15; stress PF >1.02; at least four positive annual folds at both costs; positive 2026 fold at both costs; continuous conservative marked drawdown <=10% at both costs; no month contributes >25% of total positive monthly profit; independent audit passes.
 - `PROŠEL` additionally requires new independent forward PAPER evidence. No historical outcome alone can pass. If historical gates pass but forward evidence is absent, status remains `TEST NEDOKONČEN`.
 
+## Prospective forward gate supplement (2026-11-06, before any forward observation)
+
+The original registration required independent forward PAPER evidence but did not quantify it. Before accepting any post-registration observation, freeze the forward gate as: at least 365 elapsed calendar days after `2026-11-05T19:58:57Z`, at least 20 closed non-overlapping PAPER trades, positive net P/L and expectancy at base and doubled costs, stressed PF >1.0, stressed marked drawdown <=10%, and no single trade above 35% of total positive forward-trade profit. Every source observation and closed XRP candle is frozen on first sight; later revisions stop the runner rather than rewriting evidence. Repeated runs must be idempotent. These requirements may not be weakened after forward results appear.
+
 ## Mandatory audits
 
 Source hashes/rows, duplicates, gaps, strict-past 90-observation window, two-observation lag, exact date alignment, next-open timing, ATR past-only use, stop-first ambiguity, gap-stop, end liquidation, fees/slippage, 2× stress, risk/notional cap, one-position/no-overlap, equity reconciliation, marked drawdown, annual/monthly concentration and prefix invariance.
