@@ -24,7 +24,7 @@ Výhradně PAPER. Návrhy níže čekají na souhlas vlastníka.
 | FLY (`v8fixed_trades`, bez 3 vyloučených) | 287 | −821,80 | 0,56 | 2026-10-11 |
 | TV consensus | 112 | −436,87 | 0,45 | 2026-10-11 |
 | FAST scalp | 104 | −413,46 | 0,13 | 2026-10-05 |
-| LEADLAG | 8 | −50,44 | 0,05 | 2025-09-25 → 2026-09-25 |
+| LEADLAG | 8 | −50,44 | 0,05 | 2026-09-25 |
 
 Návrh: nechat pozastavené; při příští úpravě kódu jejich smyčky vůbec nespouštět (teď běží naprázdno).
 
