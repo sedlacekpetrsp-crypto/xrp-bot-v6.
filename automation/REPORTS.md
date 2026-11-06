@@ -3,6 +3,12 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## 2026-11-06 20:20 SEČ (běh #26)
+- Nasazeno: `fd6065b` – PR #5 ano. Produkce beze změny: 6× HTTP 200, testy OK, 0 chyb (log API už funguje), 0 událostí, 0 nových duplicit, P/L součet −3 144,10.
+- Výzkum R7 **Kontrariánský žebřík (dokupování při propadu 20/30/40 % pod ročním maximem), 8 aktiv** — připraveno ([PR #31](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/31)): protokol commitnut předem, kód + 13 testů OK. Zatím žádná čísla — denní limit 3 nových hypotéz je dnes vyčerpán; zítra poběží R5 a R7.
+- Rozšířil jsem ho z BTC na koš 8 aktiv (před daty): samotné BTC má málo propadových cyklů a nesplnilo by počet obchodů z konstrukce.
+- DB 21,0 %. Od vás: R8/R9 dál čekají na uvolnění; PR #8/#9/#10 na review. Běh #25 (18:04 SEČ) skončil bez reportu, nic se nepoškodilo.
+
 
 ## 2026-11-06 18:35 SEČ (ruční běh — audit dat, sémantika fundingu)
 - Audit dat obou PR proběhl (žádná výkonnost). Interval fundingu se v 2020–2026 měnil jen u SOL v 11/2022; rozhodnuto čtení „B“ (záznam popisuje úsek, který jím končí), kód upraven, 0 nesouladů na skutečných datech.
