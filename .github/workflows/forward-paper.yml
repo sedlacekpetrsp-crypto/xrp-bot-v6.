@@ -1,0 +1,46 @@
+name: Forward PAPER (research only, public data)
+# Výhradně PAPER výzkum: žádné secrets, žádný Render, žádné objednávky.
+# Spouští se při každém běhu autopilota (push automation/RUN_REQUEST, každé 2 h) a ručně.
+# Přepočítá forward z veřejných denních svíček Binance Vision a commitne výsledky do research/autopilot.
+on:
+  push:
+    branches: ["research/autopilot"]
+    paths:
+      - "automation/RUN_REQUEST"
+      - ".github/workflows/forward-paper.yml"
+      - "research/forward/**/run.py"
+      - "research/forward/**/assets.json"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: forward-paper
+  cancel-in-progress: false
+jobs:
+  forward:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/autopilot
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install pytest
+      - name: Mechanics test (synthetic)
+        run: python -m pytest -q -p no:cacheprovider tests/test_forward_rsi2.py
+      - name: Forward RSI(2) pullback
+        run: python research/forward/rsi2_pullback/run.py --cache /tmp/vision --outdir research/forward/rsi2_pullback
+      - name: Commit results (retry on concurrent pushes)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          git add research/forward/
+          git diff --cached --quiet && exit 0
+          git commit -m "Forward PAPER: update (run ${GITHUB_RUN_ID}) [skip ci]"
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin research/autopilot && git push origin HEAD:research/autopilot && exit 0
+            sleep $((i * 10))
+          done
+          exit 1
