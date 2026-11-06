@@ -27,7 +27,7 @@ jobs:
           python-version: "3.13"
       - run: pip install pytest
       - name: Mechanics tests (synthetic, not profitability evidence)
-        run: python -m pytest -q -p no:cacheprovider tests/test_spot_led.py tests/test_deflated_sharpe.py tests/test_decision_gate.py
+        run: python -m pytest -q -p no:cacheprovider tests/test_spot_led.py tests/test_deflated_sharpe.py tests/test_decision_gate.py tests/test_trade_stats.py
       - name: Backtest per PROTOCOL.md (only when RUN_REQUEST exists)
         run: |
           set -o pipefail

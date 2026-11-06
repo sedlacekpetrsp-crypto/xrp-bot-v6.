@@ -26,6 +26,9 @@ CRITERIA_DATA = {
     "B6_tuning_x1_profit": {"strategy": ("tuning",), "benchmark": ()},
 }
 ROBUSTNESS_CHECKS = ("dsr_ge_0_95", "neighbors_val_x2_profit", "walk_forward_ge_3_of_4")
+# Kolo 10: stopa B dočasně NESMÍ sama udělit KANDIDÁTA (reprodukce R9-7: projde se 4 obchody ve validaci).
+# Zamítnutí přes stopu B zůstává platné (selhání na čistých datech je důkaz proti, ne pro).
+TRACK_B_CAN_GRANT_CANDIDATE = False
 WF_NEEDED = 3
 
 
@@ -112,10 +115,13 @@ def decide(track_a, track_b, robust_ctx, strat_bad=(), bench_bad=(), global_defe
         detail["rejection_reasons"] = ta[1] + tb[1]
         return "ZAMÍTNUTO", detail
     clean_robust = all(s == "pass" for s in rs.values())
-    if "pass" in (ta[0], tb[0]) and clean_robust and not blocking and not strat_bad and not bench_bad \
+    granting = (ta[0], tb[0]) if TRACK_B_CAN_GRANT_CANDIDATE else (ta[0],)
+    if "pass" in granting and clean_robust and not blocking and not strat_bad and not bench_bad \
             and candidate_extra_ok:
         return "KANDIDÁT NA FORWARD PAPER", detail
     why = []
+    if tb[0] == "pass" and ta[0] != "pass" and not TRACK_B_CAN_GRANT_CANDIDATE:
+        why.append("prošla jen stopa B, která je dočasně pozastavena (nemůže udělit KANDIDÁTA)")
     if "pass" in (ta[0], tb[0]):
         if blocking or strat_bad or bench_bad:
             why.append("blokující datové závady: " + ", ".join(sorted(blocking or {})))

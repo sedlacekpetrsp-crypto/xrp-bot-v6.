@@ -916,3 +916,22 @@ def test_K9_2_ops_fingerprint_protocol_or_workflow_change_invalidates(tmp_path):
         (tmp_path / sl.SEMANTICS_FILE).write_text(json.dumps(valid_decision(ops_sha256={**sl.ops_fingerprint(), k: "0" * 64})))
         ok, why = sl.semantics_gate(tmp_path)
         assert ok is False and "ops_sha256" in why
+
+
+# ---- kolo 10, bod 5: náklady ×1/×2/×3 nezávisle (literály z calc/indep10.py) ----
+def test_K10_5_costs_x1_x2_x3_independent():
+    exp = {1: (6.6845, 7.7166547522, 27.1921034555, 10041.5932582077),
+           2: (4.373, 5.4253714779, 24.8428180883, 10034.6411895662),
+           3: (2.0615, 3.1351461772, 22.4956841393, 10027.6923303164)}
+    for mult, (n1, n2, n3, eq) in exp.items():
+        trades, curve = sl.simulate(_econ_market(), START, date(2021, 1, 2), 0.65, 30, mult)
+        for t, n in zip(trades, (n1, n2, n3)):
+            assert abs(t["net_pnl"] - n) <= TOL, (mult, t["net_pnl"], n)
+        assert abs(curve[date(2021, 1, 2)] - eq) <= TOL
+
+
+def test_K10_track_b_alone_cannot_grant_candidate_in_runner():
+    a = {c: c != "A2_trades_ge_30" for c in CRIT_A}
+    b = {c: True for c in CRIT_B}
+    v, _, d = sl.final_verdict(a, b, ROBUST_OK, NO_FLAGS, {}, 1.0)
+    assert v.startswith("NEROZHODNUTO") and d["track_b"] == "pass"

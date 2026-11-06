@@ -88,3 +88,12 @@ def test_no_threshold_or_exclusion_parameters_exist():
     src = inspect.getsource(dg)
     for word in ("threshold", "exclude", "drop_trades", "recompute"):
         assert word not in src.lower()
+
+
+def test_track_b_alone_cannot_grant_candidate_kolo10():
+    a, b = tr(fail=("A2_trades_ge_30",))  # A neprošla na čistých datech, B prošla
+    verdict, d = dg.decide(a, b, CLEAN)
+    assert verdict.startswith("NEROZHODNUTO") and "stopa B" in verdict and d["track_b"] == "pass"
+    a, b = tr(fail=("B3_final_x2_profit",))  # A prošla ⇒ kandidát možný
+    assert dg.decide(a, b, CLEAN)[0] == "KANDIDÁT NA FORWARD PAPER"
+    assert dg.TRACK_B_CAN_GRANT_CANDIDATE is False

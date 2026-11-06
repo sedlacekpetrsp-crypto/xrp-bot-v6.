@@ -167,3 +167,11 @@ Opravy a upřesnění implementace (signál, mřížka, dělení ani kritéria s
 - **Audit reálných dat (run 42268957661):** BTC/ETH spot 462, perp 288 chybějících 5m svíček; XRP perp 1 728, spot_only
   3 268. Bez duplicit, bez přechodů intervalu fundingu, sémantika B s tolerancí 0 nesouladů. Otisk dat shodný s auditem
   3b5a838 (reprodukovatelné).
+
+## Dodatek 8 (2026-11-06, kolo 10; výkonnost dál nespuštěna, návrh na kontrolu)
+- **Stopa B dočasně nemůže sama udělit KANDIDÁTA** (sdílený `decision_gate`). `trade_stats` je jen diagnostika.
+- **Omezení exekučního modelu:**
+  - vstup za open další 5m svíčky = okamžik zveřejnění signálu (nulová latence);
+  - skluz 2 bp bez ohledu na spread a velikost ticku;
+  - likvidace se nemodeluje (1×, 10 %, držení ≤ 30 min);
+  - měření realizovatelné ceny viz CHATGPT_ROUND10_REVIEW.md.
