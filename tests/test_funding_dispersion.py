@@ -219,11 +219,12 @@ def test_R1_missing_funding_event_inside_window_makes_ineligible_not_zero():
 def test_R1_interval_change_8h_4h_1h_is_continuous():
     D = fd.ms_of(START)
     bars = {D - 10 * DAY + i * H: (100.0, 100.0, 100.0, 100.0) for i in range(12 * 24)}
-    f, t = {}, D - 10 * DAY
+    ts, t = [], D - 10 * DAY
     while t <= D + 3 * DAY:
-        iv = 8 if t < D - 5 * DAY else (4 if t < D - 2 * DAY else 1)
-        f[t] = (0.0001, float(iv))
-        t += iv * H
+        ts.append(t)
+        t += (8 if t < D - 5 * DAY else (4 if t < D - 2 * DAY else 1)) * H
+    # sémantika B: interval záznamu = délka úseku končícího touto událostí
+    f = {t: (0.0001, float((t - p) // H if p is not None else 8)) for p, t in zip([None] + ts[:-1], ts)}
     m = {"BTCUSDT": fd.prepare(bars, f)}
     assert fd.eligibility(m, "BTCUSDT", D, 7, D + H) == (True, "ok")
     # počet událostí v okně odpovídá intervalům: 8h do D−5 d, 4h do D−2 d, 1h do D
@@ -283,7 +284,8 @@ def test_R4_no_trades_still_writes_results_with_null_dsr(tmp_path, monkeypatch):
         market[a]["first_funding"] = None
     monkeypatch.setattr(fd, "load", lambda cache: (market, [], [], []))
     import json as _j
-    (tmp_path / fd.SEMANTICS_FILE).write_text(_j.dumps({"semantics": "A", "evidence": "test", "decided_utc": "test"}))
+    (tmp_path / fd.SEMANTICS_FILE).write_text(_j.dumps({"semantics": "B", "evidence": "test", "decided_utc": "test",
+                                                         "performance_hold": False}))
     fd.main(["--outdir", str(tmp_path)])
     import json
     r = json.loads((tmp_path / "results.json").read_text())
@@ -371,6 +373,7 @@ def test_K3_data_audit_reports_interval_transitions_for_both_semantics():
     tr = a["interval_transitions"][0]
     assert (tr["from_h"], tr["to_h"], tr["spacing_h"]) == (8.0, 4.0, 8.0)
     assert a["spacing_mismatch_semantics_A"] == 0 and a["spacing_mismatch_semantics_B"] == 1
+    assert a["spacing_mismatch_semantics_B_tolerant_implemented"] == 0
 
 
 def test_K3_audit_only_mode_writes_audit_without_performance(tmp_path, monkeypatch):
@@ -389,14 +392,24 @@ def test_gate_refuses_performance_without_semantics_decision(tmp_path, monkeypat
         fd.main(["--outdir", str(tmp_path)])
     assert e.value.code == 3 and called == []  # odmítnuto ještě před načtením dat
     import json
-    for bad in ({"semantics": "C", "evidence": "x", "decided_utc": "x"}, {"semantics": "A"},
-                {"semantics": "B", "evidence": "x", "decided_utc": "x"}):
+    ok = {"semantics": "B", "evidence": "run 1", "decided_utc": "t", "performance_hold": False}
+    for bad in ({**ok, "semantics": "C"}, {"semantics": "B"}, {**ok, "semantics": "A"},  # A ≠ implementace
+                {**ok, "performance_hold": True}, {k: v for k, v in ok.items() if k != "performance_hold"}):
         (tmp_path / fd.SEMANTICS_FILE).write_text(json.dumps(bad))
         assert fd.semantics_gate(tmp_path)[0] is False
     (tmp_path / fd.SEMANTICS_FILE).write_text("{nejson")
     assert fd.semantics_gate(tmp_path)[0] is False
-    (tmp_path / fd.SEMANTICS_FILE).write_text(json.dumps({"semantics": "A", "evidence": "run 1", "decided_utc": "t"}))
+    (tmp_path / fd.SEMANTICS_FILE).write_text(json.dumps(ok))
     assert fd.semantics_gate(tmp_path) == (True, "ok")
+
+
+def test_committed_decision_keeps_performance_blocked():
+    """Zapsané rozhodnutí ve větvi: sémantika B, ale výkonnost pozastavena vlastníkem ⇒ runner výpočet odmítne."""
+    from pathlib import Path
+    import json
+    d = json.loads((Path(fd.__file__).parent / fd.SEMANTICS_FILE).read_text())
+    assert d["semantics"] == "B" == fd.IMPLEMENTED_SEMANTICS and d["performance_hold"] is True
+    assert fd.semantics_gate(Path(fd.__file__).parent)[0] is False
 
 
 def test_gate_does_not_block_audit_only(tmp_path, monkeypatch):
@@ -404,3 +417,21 @@ def test_gate_does_not_block_audit_only(tmp_path, monkeypatch):
     monkeypatch.setattr(fd, "load", lambda cache: (m, [], [], []))
     fd.main(["--outdir", str(tmp_path), "--audit-only"])
     assert (tmp_path / "data_audit.json").exists() and not (tmp_path / "results.json").exists()
+
+
+def test_semantics_B_real_SOL_november_2022_pattern():
+    """Skutečný sled SOLUSDT z data_audit.json (run 42256020278): 8 h → 4 h → 2 h (změna uprostřed úseku) → 8 h."""
+    seq = [("2022-11-09T00", 8), ("2022-11-09T08", 8), ("2022-11-09T16", 8), ("2022-11-09T20", 4), ("2022-11-10T00", 4),
+           ("2022-11-10T04", 2), ("2022-11-10T06", 2), ("2022-11-10T08", 2)]
+    from datetime import datetime, timezone
+    ms = lambda x: int(datetime.fromisoformat(x + ":00:00").replace(tzinfo=timezone.utc).timestamp() * 1000)
+    f = {ms(t): (0.0001, float(iv)) for t, iv in seq}
+    f.update({ms("2022-11-18T04") + k * 2 * H: (0.0001, 2.0) for k in range(3)})
+    f.update({ms("2022-11-18T16"): (0.0001, 8.0), ms("2022-11-19T00"): (0.0001, 8.0)})
+    m = fd.prepare({}, f)
+    lo, hi = ms("2022-11-09T00"), ms("2022-11-10T08")
+    assert fd.funding_chain_gaps(m, lo, hi) == 0
+    assert fd.funding_chain_gaps(m, ms("2022-11-18T04"), ms("2022-11-19T00")) == 0
+    assert fd.funding_chain_gaps(m, lo, hi) == 0 and fd.funding_chain_gaps(m, lo - 1, hi) is None
+    del f[ms("2022-11-10T06")]  # skutečně chybějící událost se dál označí
+    assert fd.funding_chain_gaps(fd.prepare({}, f), lo, hi) == 1

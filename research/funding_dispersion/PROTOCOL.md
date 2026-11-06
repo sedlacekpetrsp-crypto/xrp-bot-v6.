@@ -136,3 +136,11 @@ Opravy implementace, aby kód odpovídal textu protokolu (pravidla obchodování
 Runner odmítne výpočet výkonnosti (kód 3, `PERFORMANCE_REFUSED`) ještě před stažením dat, pokud v této složce chybí
 `FUNDING_SEMANTICS.json` s `semantics` ∈ {A, B}, `evidence` a `decided_utc`, nebo pokud rozhodnutá sémantika neodpovídá
 implementované (kód implementuje A). Audit dat (`AUDIT`) zámek neblokuje. Rozhodnutí se zapisuje až z `data_audit.json`.
+
+## Dodatek 5 (2026-11-06 ~17:10 UTC, rozhodnutí o sémantice z auditu dat; výkonnost dál nespuštěna)
+- Audit run 42256020278 (`data_audit.json`, commit `e037402` — pozor, automatická zpráva commitu chybně říká „backtest
+  results“; obsahuje jen audit a manifest, žádné metriky): 7 z 8 aktiv bez přechodu intervalu (vždy 8 h). SOLUSDT 3 přechody
+  v 2022-11 (A 2 nesoulady, B 1). Rozhodnuto **B s tolerancí změny uprostřed úseku** (0 nesouladů), detail a evidence
+  v `FUNDING_SEMANTICS.json`. Kód (`spacing_ok`, `funding_chain_gaps`) přepnut z A na B; vliv jen SOLUSDT 2022-11-09…19.
+- Zámek výkonnosti nově vyžaduje i `performance_hold = false`; zapsané rozhodnutí má `true` (pokyn vlastníka nespouštět
+  výkonnost) ⇒ runner výpočet odmítne, dokud to vlastník neuvolní.
