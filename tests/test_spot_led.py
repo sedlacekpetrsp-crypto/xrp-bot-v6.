@@ -332,7 +332,7 @@ def test_audit_only_mode_writes_funding_audit(tmp_path, monkeypatch):
     m = {a: sl.prepare(*flat(), fund) for a in sl.ASSETS}
     monkeypatch.setattr(sl, "load", lambda cache: (m, [], [], []))
     sl.main(["--outdir", str(tmp_path), "--audit-only"])
-    a = json.loads((tmp_path / "data_audit.json").read_text())["funding"]["BTCUSDT"]
+    a = json.loads((sl.latest_audit_dir(tmp_path) / "data_audit.json").read_text())["funding"]["BTCUSDT"]
     assert not (tmp_path / "results.json").exists()
     assert len(a["interval_transitions"]) == 1 and a["interval_transitions"][0]["spacing_h"] == 4.0
     assert a["spacing_mismatch_semantics_A"] == 1 and a["spacing_mismatch_semantics_B"] == 0
@@ -494,8 +494,8 @@ def test_K6_5_audit_never_simulates_and_disowns_old_results(tmp_path, monkeypatc
     (tmp_path / "trades.csv").write_text("stary")
     _guard(monkeypatch, market=market_with())
     sl.main(["--outdir", str(tmp_path), "--mode", "audit"])
-    man = json.loads((tmp_path / sl.AUDIT_MANIFEST_FILE).read_text())
-    assert man["preexisting_performance_files_not_from_this_run"] == ["trades.csv"]
+    man = json.loads((sl.latest_audit_dir(tmp_path) / sl.AUDIT_MANIFEST_FILE).read_text())
+    assert man["outdir_performance_files_not_from_this_run"] == ["trades.csv"]
     assert "trades.csv" not in man["produced_by_this_run"] and (tmp_path / "trades.csv").read_text() == "stary"
 
 
@@ -726,9 +726,9 @@ def test_K8_5_concurrent_run_refused_before_load(tmp_path, monkeypatch):
     with sl.RunLock(tmp_path):
         with pytest.raises(SystemExit) as e:
             sl.main(["--outdir", str(tmp_path), "--mode", "audit"])
-    assert e.value.code == 5 and calls["load"] == 0 and not (tmp_path / sl.LOCK_FILE).exists()
+    assert e.value.code == 5 and calls["load"] == 0 and (tmp_path / sl.CONFLICT_LOG).exists()
     sl.main(["--outdir", str(tmp_path), "--mode", "audit"])
-    assert not (tmp_path / sl.LOCK_FILE).exists()
+    assert calls["load"] == 1
 
 
 def test_K8_5_atomic_write_keeps_old_content_on_failure(tmp_path, monkeypatch):
@@ -748,11 +748,12 @@ def test_K8_5_audit_bundle_hashes_and_perf_files_untouched(tmp_path, monkeypatch
     (tmp_path / "results.json").write_text("PERF")
     _guard(monkeypatch, market=market_with())
     sl.main(["--outdir", str(tmp_path), "--mode", "audit"])
-    man = json.loads((tmp_path / sl.AUDIT_MANIFEST_FILE).read_text())
-    assert man["run_id"] == json.loads((tmp_path / "data_source.json").read_text())["run_id"]
-    assert sl.verify_audit_bundle(tmp_path) == (True, []) and (tmp_path / "results.json").read_text() == "PERF"
-    (tmp_path / "data_source.json").write_text("{}")
-    assert sl.verify_audit_bundle(tmp_path) == (False, ["data_source.json"])
+    d = sl.latest_audit_dir(tmp_path)
+    man = json.loads((d / sl.AUDIT_MANIFEST_FILE).read_text())
+    assert man["run_id"] == json.loads((d / "data_source.json").read_text())["run_id"]
+    assert sl.verify_audit_bundle(d) == (True, []) and (tmp_path / "results.json").read_text() == "PERF"
+    (d / "data_source.json").write_text("{}")
+    assert sl.verify_audit_bundle(d) == (False, ["data_source.json"])
 
 
 def test_K8_integration_main_rejected_vs_undecided_and_trades_hash(tmp_path, monkeypatch):
@@ -775,3 +776,44 @@ def test_K8_integration_main_rejected_vs_undecided_and_trades_hash(tmp_path, mon
     assert clean["verdict"] == "ZAMÍTNUTO" and clean["trades_sha256"] == sl.file_sha256(tmp_path / clean["trades_file"])
     bad = go(market_with(fund=fund, drop_perp=(sl.DAY_MS * 2 // BAR + 96,)))
     assert bad["verdict"].startswith("NEROZHODNUTO") and "validation" in bad["verdict_detail"]["benchmark_defect_periods"]
+
+
+# ---- kolo 9, Q5: zámek spravovaný OS ----
+_HOLDER = """
+import sys, time
+sys.path.insert(0, sys.argv[1])
+from research.spot_led import run as sl
+with sl.RunLock(sys.argv[2]):
+    print("LOCKED", flush=True)
+    time.sleep(60)
+"""
+
+
+def _spawn_holder(tmp_path):
+    import subprocess, sys as _s
+    from pathlib import Path
+    root = str(Path(sl.__file__).resolve().parents[2])
+    p = subprocess.Popen([_s.executable, "-c", _HOLDER, root, str(tmp_path)], stdout=subprocess.PIPE, text=True)
+    assert p.stdout.readline().strip() == "LOCKED"
+    return p
+
+
+def test_K9_5_lock_conflict_logged_and_sigkill_releases(tmp_path, monkeypatch):
+    import json, signal
+    p = _spawn_holder(tmp_path)
+    calls = _guard(monkeypatch, market=market_with())
+    with pytest.raises(SystemExit) as e:
+        sl.main(["--outdir", str(tmp_path), "--mode", "audit"])
+    assert e.value.code == 5 and calls["load"] == 0
+    assert json.loads(json.loads((tmp_path / sl.CONFLICT_LOG).read_text().splitlines()[-1])["holder"])["pid"] == p.pid
+    p.send_signal(signal.SIGKILL)
+    p.wait()
+    assert (tmp_path / sl.LOCK_FILE).exists()
+    sl.main(["--outdir", str(tmp_path), "--mode", "audit"])  # po násilném ukončení držitele projde
+    assert calls["load"] == 1
+
+
+def test_K9_5_lock_code_has_no_age_based_removal():
+    import inspect
+    src = inspect.getsource(sl.RunLock)
+    assert "unlink" not in src and "st_mtime" not in src and "getmtime" not in src
