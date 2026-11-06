@@ -12,6 +12,8 @@ Formát řádku: `YYYY-MM-DD SCHVÁLENO|ZAMÍTNUTO: <co>`
 2026-11-06 SCHVÁLENO: výkonnost PAPER výzkumných strategií v izolovaných větvích podle předem stanovených protokolů a datových/validačních bran.
 2026-11-06 SCHVÁLENO: výkonnost PR #29 — jako první nejvýše jeden zmrazený diagnostický běh s branami kola 10 a závěry Q11; finální období s vadnými daty zůstává NEROZHODNUTO, bez udělení KANDIDÁTA.
 
+2026-11-06 23:42 SEČ POTVRZENO vlastníkem přímo v chatu s Claudem („Potvrzuji“): obě schválení zapsaná ChatGPT ve 22:12 (zápis rozhodnutí za vlastníka oběma agenty; výkonnost PAPER výzkumu v izolovaných větvích vč. PR #29 v uvedeném rozsahu) platí. Zapsal Claude na pokyn vlastníka. Produkce (deploy, merge, Render, LIVE) tím schválena NENÍ.
+
 ### Původ a rozsah rozhodnutí (zapsal ChatGPT za vlastníka)
 V přímém Work chatu dne 2026-11-06:
 - Po vysvětlení, že před výkonnostními testy potřebujeme výslovné schválení, vlastník odpověděl: „Ano máte to schváleno“.
