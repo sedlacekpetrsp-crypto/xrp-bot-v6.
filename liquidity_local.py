@@ -12,6 +12,7 @@ from datetime import datetime, timezone
 import httpx
 from swing_paper import connect
 from liquidity_hunter import signal_from_closed_candles
+import paper_epoch
 
 BUILD = 'LIQUIDITY-LOCAL-2026-10-23-1'
 SYMBOL = 'XRPUSDT'
@@ -83,11 +84,13 @@ def init_db(url):
         conn.execute('CREATE TABLE IF NOT EXISTS liquidity_v2_state (id INTEGER PRIMARY KEY, state JSONB NOT NULL)')
         conn.execute('CREATE TABLE IF NOT EXISTS liquidity_v2_trades (id TEXT PRIMARY KEY, trade JSONB NOT NULL)')
         conn.execute('INSERT INTO liquidity_v2_state VALUES (1,%s::jsonb) ON CONFLICT DO NOTHING',(json.dumps(initial()),))
+        paper_epoch.ensure_table(conn)
 
 def tick(url,quote,analysis,now):
     with connect(url) as conn:
         state = conn.execute('SELECT state FROM liquidity_v2_state WHERE id=1 FOR UPDATE').fetchone()[0]
         if state.get('last_cycle_at') and state['last_cycle_at']>=iso(now): return state
+        state = paper_epoch.maybe_reset(conn,'LIQUIDITY_V2',state,initial,iso(now))
         previous_count = state['count']; state = advance(state,quote,analysis,now)
         if state['count']>previous_count:
             t = state['trades'][0]

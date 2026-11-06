@@ -12,6 +12,7 @@ from datetime import datetime, timezone
 import httpx
 from swing_paper import connect
 from lh_sweep import signal_from_closed_candles
+import paper_epoch
 
 BUILD = 'LH-WHALE-OKX-2026-10-23-4'
 _futures_retry_at = 0.0
@@ -92,6 +93,7 @@ def init_db(url):
         conn.execute('CREATE TABLE IF NOT EXISTS lh_whale_state (id INTEGER PRIMARY KEY, state JSONB NOT NULL)')
         conn.execute('CREATE TABLE IF NOT EXISTS lh_whale_trades (id TEXT PRIMARY KEY, trade JSONB NOT NULL)')
         conn.execute('INSERT INTO lh_whale_state VALUES (1,%s::jsonb) ON CONFLICT DO NOTHING',(json.dumps(initial()),))
+        paper_epoch.ensure_table(conn)
 
 def tick(url,quote,analysis,now):
     if url=='remote':
@@ -100,6 +102,7 @@ def tick(url,quote,analysis,now):
     with connect(url) as conn:
         state = conn.execute('SELECT state FROM lh_whale_state WHERE id=1 FOR UPDATE').fetchone()[0]
         if state.get('last_cycle_at') and state['last_cycle_at']>=iso(now): return state
+        state = paper_epoch.maybe_reset(conn,'LH_WHALE',state,initial,iso(now))
         previous_count = state['count']; state = advance(state,quote,analysis,now)
         if state['count']>previous_count:
             t = state['trades'][0]
