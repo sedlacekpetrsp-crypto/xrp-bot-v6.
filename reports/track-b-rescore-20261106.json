@@ -1,0 +1,293 @@
+{
+ "donchian_trend": {
+  "checks": {
+   "B1_val_x2_net_gt0_pf_gt_1_2": true,
+   "B2_dd_le_0_6_bh_val_and_final": false,
+   "B3_final_x2_net_gt0": false,
+   "B4_val_x1_without_top3_gt0": true,
+   "B5_trades_val_plus_final_ge_20": true,
+   "B6_tuning_x1_net_gt0": true
+  },
+  "failed": [
+   "B2",
+   "B3"
+  ],
+  "passed": false,
+  "metrics": {
+   "tuning_x1_net": 98232.99591237034,
+   "val_x1_ret_pct": 162.34807252202526,
+   "val_x1_dd_pct": 26.61942605977785,
+   "val_bh_dd_pct": 34.94793673807332,
+   "val_x2_net": 15511.88175099414,
+   "val_x2_pf": 2.9318832565197863,
+   "val_x1_wo_top3": 3095.96939823159,
+   "final_x1_dd_pct": 37.498280827437,
+   "final_bh_dd_pct": 63.713191646665294,
+   "final_x2_ret_pct": -21.086126679410043,
+   "final_bh_x2_ret_pct": -35.03983608286126,
+   "trades_val_final": 93
+  }
+ },
+ "turn_of_month": {
+  "checks": {
+   "B1_val_x2_net_gt0_pf_gt_1_2": false,
+   "B2_dd_le_0_6_bh_val_and_final": false,
+   "B3_final_x2_net_gt0": false,
+   "B4_val_x1_without_top3_gt0": false,
+   "B5_trades_val_plus_final_ge_20": true,
+   "B6_tuning_x1_net_gt0": true
+  },
+  "failed": [
+   "B1",
+   "B2",
+   "B3",
+   "B4"
+  ],
+  "passed": false,
+  "metrics": {
+   "tuning_x1_net": 24162.607406346404,
+   "val_x1_ret_pct": -32.626957827047185,
+   "val_x1_dd_pct": 36.56539009005058,
+   "val_bh_dd_pct": 34.03469236201778,
+   "val_x2_net": -3609.836951432677,
+   "val_x2_pf": 0.36652572313625964,
+   "val_x1_wo_top3": -4426.455619894932,
+   "final_x1_dd_pct": 24.050603386072712,
+   "final_bh_dd_pct": 59.9552916378004,
+   "final_x2_ret_pct": -16.686211952460695,
+   "final_bh_x2_ret_pct": -25.101486789476624,
+   "trades_val_final": 88
+  }
+ },
+ "rsi2_pullback": {
+  "checks": {
+   "B1_val_x2_net_gt0_pf_gt_1_2": true,
+   "B2_dd_le_0_6_bh_val_and_final": true,
+   "B3_final_x2_net_gt0": true,
+   "B4_val_x1_without_top3_gt0": true,
+   "B5_trades_val_plus_final_ge_20": true,
+   "B6_tuning_x1_net_gt0": false
+  },
+  "failed": [
+   "B6"
+  ],
+  "passed": false,
+  "metrics": {
+   "tuning_x1_net": -46.939088200164406,
+   "val_x1_ret_pct": 21.226264848575216,
+   "val_x1_dd_pct": 17.089160452355856,
+   "val_bh_dd_pct": 34.03469236201778,
+   "val_x2_net": 1414.2931327769984,
+   "val_x2_pf": 1.3811605116391157,
+   "val_x1_wo_top3": 898.7702966477717,
+   "final_x1_dd_pct": 5.871952283472515,
+   "final_bh_dd_pct": 59.9552916378004,
+   "final_x2_ret_pct": 11.537522203546512,
+   "final_bh_x2_ret_pct": -25.101486789476624,
+   "trades_val_final": 78
+  }
+ },
+ "sma200_overlay": {
+  "checks": {
+   "B1_val_x2_net_gt0_pf_gt_1_2": true,
+   "B2_dd_le_0_6_bh_val_and_final": false,
+   "B3_final_x2_net_gt0": false,
+   "B4_val_x1_without_top3_gt0": true,
+   "B5_trades_val_plus_final_ge_20": true,
+   "B6_tuning_x1_net_gt0": true
+  },
+  "failed": [
+   "B2",
+   "B3"
+  ],
+  "passed": false,
+  "metrics": {
+   "tuning_x1_net": 29234.779128483533,
+   "val_x1_ret_pct": 187.01678891647893,
+   "val_x1_dd_pct": 25.30521033177712,
+   "val_bh_dd_pct": 34.03469236201778,
+   "val_x2_net": 18228.71271647136,
+   "val_x2_pf": 13.616281758773644,
+   "val_x1_wo_top3": 2906.407822185995,
+   "final_x1_dd_pct": 29.9543432008317,
+   "final_bh_dd_pct": 59.9552916378004,
+   "final_x2_ret_pct": -7.245744997757287,
+   "final_bh_x2_ret_pct": -25.101486789476624,
+   "trades_val_final": 32
+  }
+ },
+ "vol_breakout": {
+  "checks": {
+   "B1_val_x2_net_gt0_pf_gt_1_2": false,
+   "B2_dd_le_0_6_bh_val_and_final": false,
+   "B3_final_x2_net_gt0": false,
+   "B4_val_x1_without_top3_gt0": true,
+   "B5_trades_val_plus_final_ge_20": true,
+   "B6_tuning_x1_net_gt0": true
+  },
+  "failed": [
+   "B1",
+   "B2",
+   "B3"
+  ],
+  "passed": false,
+  "metrics": {
+   "tuning_x1_net": 386.9405479994839,
+   "val_x1_ret_pct": 58.828110134411645,
+   "val_x1_dd_pct": 23.933774114642436,
+   "val_bh_dd_pct": 34.03469236201778,
+   "val_x2_net": -2099.00524512431,
+   "val_x2_pf": 0.9115755117244323,
+   "val_x1_wo_top3": 3533.0749455349055,
+   "final_x1_dd_pct": 39.479478195987994,
+   "final_bh_dd_pct": 59.9552916378004,
+   "final_x2_ret_pct": -66.30214377414651,
+   "final_bh_x2_ret_pct": -25.101486789476624,
+   "trades_val_final": 1164
+  }
+ },
+ "ts_momentum_vote": {
+  "checks": {
+   "B1_val_x2_net_gt0_pf_gt_1_2": true,
+   "B2_dd_le_0_6_bh_val_and_final": false,
+   "B3_final_x2_net_gt0": false,
+   "B4_val_x1_without_top3_gt0": true,
+   "B5_trades_val_plus_final_ge_20": true,
+   "B6_tuning_x1_net_gt0": true
+  },
+  "failed": [
+   "B2",
+   "B3"
+  ],
+  "passed": false,
+  "metrics": {
+   "tuning_x1_net": 28450.24140373162,
+   "val_x1_ret_pct": 108.27447695476468,
+   "val_x1_dd_pct": 32.39723743078653,
+   "val_bh_dd_pct": 34.03469236201778,
+   "val_x2_net": 10671.836655944142,
+   "val_x2_pf": 2.4617551743442108,
+   "val_x1_wo_top3": 3007.038505435492,
+   "final_x1_dd_pct": 33.04888941929759,
+   "final_bh_dd_pct": 59.9552916378004,
+   "final_x2_ret_pct": -21.97347542411513,
+   "final_bh_x2_ret_pct": -25.101486789476624,
+   "trades_val_final": 58
+  }
+ },
+ "ethbtc_switch": {
+  "checks": {
+   "B1_val_x2_net_gt0_pf_gt_1_2": true,
+   "B2_dd_le_0_6_bh_val_and_final": false,
+   "B3_final_x2_net_gt0": true,
+   "B4_val_x1_without_top3_gt0": true,
+   "B5_trades_val_plus_final_ge_20": true,
+   "B6_tuning_x1_net_gt0": true
+  },
+  "failed": [
+   "B2"
+  ],
+  "passed": false,
+  "metrics": {
+   "tuning_x1_net": 11584.81850630196,
+   "val_x1_ret_pct": 184.04835870355657,
+   "val_x1_dd_pct": 30.282821139007943,
+   "val_bh_dd_pct": 34.03469236201778,
+   "val_x2_net": 14125.252682798717,
+   "val_x2_pf": 1.51086006075846,
+   "val_x1_wo_top3": 3358.7599352024026,
+   "final_x1_dd_pct": 59.325303106904514,
+   "final_bh_dd_pct": 59.9552916378004,
+   "final_x2_ret_pct": 31.495579116582384,
+   "final_bh_x2_ret_pct": -25.101486789476624,
+   "trades_val_final": 94
+  }
+ },
+ "rebalance_band": {
+  "checks": {
+   "B1_val_x2_net_gt0_pf_gt_1_2": true,
+   "B2_dd_le_0_6_bh_val_and_final": false,
+   "B3_final_x2_net_gt0": false,
+   "B4_val_x1_without_top3_gt0": true,
+   "B5_trades_val_plus_final_ge_20": true,
+   "B6_tuning_x1_net_gt0": true
+  },
+  "failed": [
+   "B2",
+   "B3"
+  ],
+  "passed": false,
+  "metrics": {
+   "tuning_x1_net": 11666.036329703493,
+   "val_x1_ret_pct": 303.18031548526784,
+   "val_x1_dd_pct": 35.463891903696556,
+   "val_bh_dd_pct": 34.03469236201778,
+   "val_x2_net": 30210.852535049264,
+   "val_x2_pf": 8.858378066683049,
+   "val_x1_wo_top3": 6739.328790444324,
+   "final_x1_dd_pct": 60.01579169652245,
+   "final_bh_dd_pct": 59.9552916378004,
+   "final_x2_ret_pct": -22.265017663052078,
+   "final_bh_x2_ret_pct": -25.101486789476624,
+   "trades_val_final": 24
+  }
+ },
+ "xrpbtc_switch": {
+  "checks": {
+   "B1_val_x2_net_gt0_pf_gt_1_2": true,
+   "B2_dd_le_0_6_bh_val_and_final": false,
+   "B3_final_x2_net_gt0": false,
+   "B4_val_x1_without_top3_gt0": true,
+   "B5_trades_val_plus_final_ge_20": true,
+   "B6_tuning_x1_net_gt0": true
+  },
+  "failed": [
+   "B2",
+   "B3"
+  ],
+  "passed": false,
+  "metrics": {
+   "tuning_x1_net": 8096.371070806981,
+   "val_x1_ret_pct": 627.2515952511653,
+   "val_x1_dd_pct": 37.53235427385279,
+   "val_bh_dd_pct": 32.184375538283874,
+   "val_x2_net": 56638.816923857594,
+   "val_x2_pf": 3.9897237430571444,
+   "val_x1_wo_top3": 649.8159053681084,
+   "final_x1_dd_pct": 73.8589655371551,
+   "final_bh_dd_pct": 62.29982266855241,
+   "final_x2_ret_pct": -53.86050549737029,
+   "final_bh_x2_ret_pct": -28.83235496427493,
+   "trades_val_final": 96
+  }
+ },
+ "ethbtc_meanrev": {
+  "checks": {
+   "B1_val_x2_net_gt0_pf_gt_1_2": true,
+   "B2_dd_le_0_6_bh_val_and_final": false,
+   "B3_final_x2_net_gt0": false,
+   "B4_val_x1_without_top3_gt0": true,
+   "B5_trades_val_plus_final_ge_20": true,
+   "B6_tuning_x1_net_gt0": true
+  },
+  "failed": [
+   "B2",
+   "B3"
+  ],
+  "passed": false,
+  "metrics": {
+   "tuning_x1_net": 2717.5072760496478,
+   "val_x1_ret_pct": 353.8736014289477,
+   "val_x1_dd_pct": 39.20591475284208,
+   "val_bh_dd_pct": 34.03469236201778,
+   "val_x2_net": 32479.926105105835,
+   "val_x2_pf": 2.270656594798572,
+   "val_x1_wo_top3": 6123.345056315069,
+   "final_x1_dd_pct": 61.02256340007992,
+   "final_bh_dd_pct": 59.9552916378004,
+   "final_x2_ret_pct": -45.90026331315353,
+   "final_bh_x2_ret_pct": -25.101486789476624,
+   "trades_val_final": 53
+  }
+ }
+}
