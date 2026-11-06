@@ -33,19 +33,22 @@
    "funding_events": 7488,
    "interval_transitions": [],
    "spacing_mismatch_semantics_A": 0,
-   "spacing_mismatch_semantics_B": 0
+   "spacing_mismatch_semantics_B": 0,
+   "spacing_mismatch_semantics_B_tolerant_implemented": 0
   },
   "ETHUSDT": {
    "funding_events": 7488,
    "interval_transitions": [],
    "spacing_mismatch_semantics_A": 0,
-   "spacing_mismatch_semantics_B": 0
+   "spacing_mismatch_semantics_B": 0,
+   "spacing_mismatch_semantics_B_tolerant_implemented": 0
   },
   "XRPUSDT": {
    "funding_events": 7472,
    "interval_transitions": [],
    "spacing_mismatch_semantics_A": 0,
-   "spacing_mismatch_semantics_B": 0
+   "spacing_mismatch_semantics_B": 0,
+   "spacing_mismatch_semantics_B_tolerant_implemented": 0
   }
  }
 }
