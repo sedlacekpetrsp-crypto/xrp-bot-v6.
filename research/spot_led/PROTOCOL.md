@@ -162,3 +162,8 @@ Opravy a upřesnění implementace (signál, mřížka, dělení ani kritéria s
 - **Zámek** `fcntl.flock`, **audit** do `audits/<UTC>_<run_id>/` (jako PR #29).
 - **Nezávislý ekonomický přepočet** (Decimal, bez importu runneru): 3 obchody (long s fundingem, short se sizingem
   z realizované equity, long přes půlnoc s MTM) a benchmark, shoda na 1e-6 USDT.
+- **Provozní otisk (Q2):** `ops_sha256` = sha256 bajtů `PROTOCOL.md` a workflow. Jakákoli změna ⇒ rozhodnutí o výkonnosti
+  neplatí.
+- **Audit reálných dat (run 42268957661):** BTC/ETH spot 462, perp 288 chybějících 5m svíček; XRP perp 1 728, spot_only
+  3 268. Bez duplicit, bez přechodů intervalu fundingu, sémantika B s tolerancí 0 nesouladů. Otisk dat shodný s auditem
+  3b5a838 (reprodukovatelné).

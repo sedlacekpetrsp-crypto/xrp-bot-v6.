@@ -15,6 +15,7 @@ def valid_decision(manifest=(), missing=(), **kw):
     """Úplný záznam rozhodnutí (kolo 6, bod 5) pro syntetické testy brány."""
     return {"semantics": "B", "evidence": "test", "decided_utc": "test", "audit_id": "run-test",
             "impl_sha256": sl.impl_fingerprint(), "data_manifest_sha256": sl.manifest_fingerprint(list(manifest), list(missing)),
+            "ops_sha256": sl.ops_fingerprint(),
             "performance_hold": False, **kw}
 
 
@@ -905,3 +906,13 @@ def test_K9_6_independent_trade_accounting_sizing_mtm_and_equity():
 def test_K9_6_independent_benchmark_accounting():
     bh = sl.buy_hold(_econ_market(), START, START, 1)
     assert abs(bh["funding"] - (-10.001818)) <= 1e-4 and abs(bh["net_pnl"] - 33.5248285) <= 1e-4  # runner: 4 místa
+
+
+def test_K9_2_ops_fingerprint_protocol_or_workflow_change_invalidates(tmp_path):
+    import json
+    (tmp_path / sl.SEMANTICS_FILE).write_text(json.dumps(valid_decision()))
+    assert sl.semantics_gate(tmp_path) == (True, "ok")
+    for k in sl.OPS_SOURCES:
+        (tmp_path / sl.SEMANTICS_FILE).write_text(json.dumps(valid_decision(ops_sha256={**sl.ops_fingerprint(), k: "0" * 64})))
+        ok, why = sl.semantics_gate(tmp_path)
+        assert ok is False and "ops_sha256" in why

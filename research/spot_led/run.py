@@ -560,7 +560,10 @@ AUDIT_MANIFEST_FILE = "audit_manifest.json"
 PERFORMANCE_FILES = ("results.json", "trades.csv", "trades.csv.gz")
 # Kolo 8, bod 2: otisk celé implementace (tento soubor + modul DSR) z AST bez docstringů a komentářů + Python major.minor.
 FINGERPRINT_SOURCES = ("research/spot_led/run.py", "tools/research/deflated_sharpe.py", "tools/research/decision_gate.py")
-REQUIRED_DECISION_FIELDS = ("semantics", "evidence", "decided_utc", "audit_id", "impl_sha256", "data_manifest_sha256")
+REQUIRED_DECISION_FIELDS = ("semantics", "evidence", "decided_utc", "audit_id", "impl_sha256", "data_manifest_sha256",
+                            "ops_sha256")
+# Kolo 9, Q2: provozní otisky (bajty); předem stanovené pravidlo: změna protokolu nebo workflow ⇒ rozhodnutí neplatí.
+OPS_SOURCES = {"protocol": "research/spot_led/PROTOCOL.md", "workflow": ".github/workflows/spot-led.yml"}
 
 
 def _strip_docstrings(tree):
@@ -583,6 +586,11 @@ def code_fingerprint(sources):
 def impl_fingerprint():
     root = Path(__file__).resolve().parents[2]
     return code_fingerprint({rel: (root / rel).read_text() for rel in FINGERPRINT_SOURCES})
+
+
+def ops_fingerprint():
+    root = Path(__file__).resolve().parents[2]
+    return {k: hashlib.sha256((root / rel).read_bytes()).hexdigest() for k, rel in OPS_SOURCES.items()}
 
 
 def manifest_fingerprint(manifest, missing=()):
@@ -619,6 +627,9 @@ def check_decision(d):
         return False, f"{SEMANTICS_FILE}: chybí {', '.join(missing)} (vazba rozhodnutí na audit, implementaci a data)"
     if d["impl_sha256"] != impl_fingerprint():
         return False, "impl_sha256 neodpovídá běžící implementaci — rozhodnutí platí pro jinou verzi kódu"
+    ops = ops_fingerprint()
+    if not isinstance(d["ops_sha256"], dict) or any(d["ops_sha256"].get(k) != v for k, v in ops.items()):
+        return False, "ops_sha256 (protokol/workflow) neodpovídá — rozhodnutí platí pro jiný protokol nebo workflow"
     if not (isinstance(d["data_manifest_sha256"], str) and len(d["data_manifest_sha256"]) == 64):
         return False, "data_manifest_sha256 není sha256"
     return True, "ok"
@@ -818,6 +829,7 @@ def audit_manifest(outdir, produced, data_fp, run_id=None):
             "produced_by_this_run": list(produced),
             "files_sha256": {f: file_sha256(out / f) for f in produced if f != AUDIT_MANIFEST_FILE and (out / f).exists()},
             "impl_sha256": impl_fingerprint(), "data_manifest_sha256": data_fp,
+               "ops_sha256": ops_fingerprint(), "environment": environment_info(),
             "preexisting_performance_files_not_from_this_run": [f for f in PERFORMANCE_FILES if (out / f).exists()],
             "note": "audit nepočítá výkonnost; případné results.json/trades.csv nejsou výstupem tohoto běhu"}
 
@@ -880,6 +892,7 @@ def main(argv=None):
     args = ap.parse_args(argv)
     if args.print_fingerprints:
         print("IMPL_SHA256", impl_fingerprint())
+        print("OPS_SHA256", json.dumps(ops_fingerprint()))
         return
     modes = {m for m in ("audit" if args.audit_only else None, args.mode,
                          mode_from_request(args.request_file) if args.request_file else None) if m}
@@ -931,6 +944,7 @@ def _execute(mode, args, out):
         man = audit_manifest(dest, ("data_source.json", "data_audit.json", AUDIT_MANIFEST_FILE), data_fp, run_id)
         man["outdir_performance_files_not_from_this_run"] = [f for f in PERFORMANCE_FILES if (out / f).exists()]
         man["environment"] = environment_info()
+        man["ops_sha256"] = ops_fingerprint()
         atomic_write(dest / AUDIT_MANIFEST_FILE, json.dumps(man, indent=1))  # zapisuje se poslední, s hashi souborů
         print("AUDIT_MANIFEST", json.dumps(man))
         return
