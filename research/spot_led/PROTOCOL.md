@@ -140,3 +140,15 @@ Opravy a upřesnění implementace (signál, mřížka, dělení ani kritéria s
 - **Nevyplněné vstupy (bod 4).** Signál bez vstupní svíčky se eviduje (`unfilled_entries`, aktivum, strana, časy,
   plánovaný notional z equity v portfolio simulátoru, důvod) bez pozice, poplatku a cooldownu; > 0 ⇒ blokující závada.
 - Zapsané rozhodnutí nová pole nemá a `performance_hold` zůstává `true` ⇒ výkonnost dál odmítnuta; uvolní jen vlastník.
+
+## Dodatek 6 (2026-11-06, oponentura kola 8; výkonnost dál nespuštěna, návrh na kontrolu)
+- **Zamítnutí a vadný benchmark.** `BENCHMARK_DEPENDENCY`: A1 ← validace, A5 ← finální test, B2 ← validace + finální test,
+  ostatní kritéria benchmark nepoužívají (ověřeno testem změnou benchmarku po obdobích); neznámé kritérium = závislé na všech
+  obdobích. Neprošla-li žádná stopa a některá stojí jen na kritériích s vadným benchmarkem ⇒ NEROZHODNUTO. Selhání
+  robustnosti ⇒ ZAMÍTNUTO. Latence +5 min zůstává podmínkou kandidáta. Závady strategie zamítnutí zatím nemění.
+- **Otisk implementace** = sha256 normalizovaného AST celého `run.py` + `tools/research/deflated_sharpe.py` (bez komentářů
+  a docstringů) + Python major.minor.
+- **Duplicitní řádky** (funding i svíčky): stejná hodnota se počítá (`duplicate_rows_same_value`, informativní), jiná ⇒ chyba
+  načtení. Dřív se tiše přepsala pozdější hodnotou.
+- **Prázdné držení** nehlásí mezeru. **Souběh a atomicita** jako v PR #29 (zámek `.run.lock` ⇒ kód 5, workflow
+  `concurrency`, atomické zápisy, `run_id` a hashe v `audit_manifest.json`, `trades_sha256` v `results.json`).

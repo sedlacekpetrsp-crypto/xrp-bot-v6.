@@ -4,6 +4,7 @@ PAPER výzkum, veřejná data Binance Vision, bez klíčů a objednávek.
     python -m research.spot_led.run --cache /tmp/vision-5m --outdir research/spot_led
 """
 import argparse
+import ast
 import bisect
 import csv
 import hashlib
@@ -11,7 +12,9 @@ import heapq
 import io
 import json
 import math
+import os
 import sys
+import uuid
 import urllib.error
 import urllib.request
 import zipfile
@@ -101,6 +104,7 @@ def load(cache, fetcher=fetch):
     parsers = {"spot": parse_spot, "perp": parse_perp, "fr": parse_funding}
     for a in ASSETS:
         raw = {"spot": {}, "perp": {}, "fr": {}}
+        load_audit = {"duplicates_same_value": 0}
         present, miss = {k: [] for k in raw}, {k: [] for k in raw}
         for kind, ym, url in urls(a):
             p = Path(cache) / kind / url.rsplit("/", 1)[1]
@@ -117,7 +121,7 @@ def load(cache, fetcher=fetch):
             present[kind].append(ym)
             rows = parsers[kind](payload)
             for r in rows:
-                raw[kind][r[0]] = r[1:] if kind != "fr" else (r[1], r[2])
+                add_row(raw[kind], r[0], r[1:] if kind != "fr" else (r[1], r[2]), a, kind, load_audit)
             manifest.append({"url": url, "sha256": hashlib.sha256(payload).hexdigest(), "rows": len(rows)})
         for kind in raw:
             if present[kind]:
@@ -126,7 +130,19 @@ def load(cache, fetcher=fetch):
             else:
                 fatal.append({"asset": a, "kind": kind, "month": "all"})
         market[a] = prepare(raw["spot"], raw["perp"], raw["fr"])
+        market[a]["load_audit"] = load_audit
     return market, manifest, missing, fatal
+
+
+def add_row(store, ts, value, asset, kind, audit):
+    """Kolo 8 (nález R8-2): duplicitní čas se stejnou hodnotou = počítat; s jinou hodnotou = chyba. Dřív se tiše
+    přepsal pozdějším řádkem (u fundingu i svíček)."""
+    if ts in store:
+        if store[ts] != value:
+            raise ValueError(f"konfliktní duplicita {kind} {asset} {ts}: {store[ts]} vs {value}")
+        audit["duplicates_same_value"] += 1
+        return
+    store[ts] = value
 
 
 def prepare(spot, perp, fund):
@@ -222,6 +238,8 @@ def funding_window(m, entry, exit_):
 def funding_completeness(m, entry, exit_):
     """Úplnost fundingu pro držení (entry, exit) se stejnými hranicemi jako funding_window (kolo 6, body 1 a 2):
     nesouvislosti (= funding_chain_gaps na (entry, exit − 1]), odhad chybějících událostí a neznámé pokrytí."""
+    if exit_ <= entry:  # kolo 8: prázdné držení nemá co pokrýt
+        return {"discontinuities": 0, "missing_events": 0, "unknown_coverage": False}
     hi = exit_ - 1
     disc = funding_chain_gaps(m, entry, hi)
     if disc is None:
@@ -533,15 +551,31 @@ IMPLEMENTED_SEMANTICS = "B"  # spacing_ok: interval záznamu = úsek končící 
 SEMANTICS_FILE = "FUNDING_SEMANTICS.json"
 AUDIT_MANIFEST_FILE = "audit_manifest.json"
 PERFORMANCE_FILES = ("results.json", "trades.csv", "trades.csv.gz")
-SEMANTICS_IMPL_FUNCS = ("spacing_ok", "funding_chain_gaps", "funding_window", "funding_completeness")
+# Kolo 8, bod 2: otisk celé implementace (tento soubor + modul DSR) z AST bez docstringů a komentářů + Python major.minor.
+FINGERPRINT_SOURCES = ("research/spot_led/run.py", "tools/research/deflated_sharpe.py")
 REQUIRED_DECISION_FIELDS = ("semantics", "evidence", "decided_utc", "audit_id", "impl_sha256", "data_manifest_sha256")
 
 
+def _strip_docstrings(tree):
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.Module, ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) and node.body \
+                and isinstance(node.body[0], ast.Expr) and isinstance(node.body[0].value, ast.Constant) \
+                and isinstance(node.body[0].value.value, str):
+            node.body = node.body[1:] or [ast.Pass()]
+    return tree
+
+
+def code_fingerprint(sources):
+    h = hashlib.sha256(f"python{sys.version_info[0]}.{sys.version_info[1]}".encode())
+    for name in sorted(sources):
+        tree = _strip_docstrings(ast.parse(sources[name]))
+        h.update(name.encode() + b"\0" + ast.dump(tree, include_attributes=False).encode() + b"\0")
+    return h.hexdigest()
+
+
 def impl_fingerprint():
-    """sha256 zdrojového kódu funkcí sémantiky a hranic fundingu (kolo 6, bod 5)."""
-    import inspect
-    src = "\n".join(inspect.getsource(globals()[f]) for f in SEMANTICS_IMPL_FUNCS)
-    return hashlib.sha256(src.encode()).hexdigest()
+    root = Path(__file__).resolve().parents[2]
+    return code_fingerprint({rel: (root / rel).read_text() for rel in FINGERPRINT_SOURCES})
 
 
 def manifest_fingerprint(manifest, missing=()):
@@ -551,18 +585,20 @@ def manifest_fingerprint(manifest, missing=()):
     return hashlib.sha256(json.dumps({"archives": rows, "missing": gone}, separators=(",", ":")).encode()).hexdigest()
 
 
-def semantics_gate(outdir):
-    """Dodatek 3 + kolo 6, bod 5 — kontrola PŘED načtením dat: rozhodnutí A/B, evidence, decided_utc, audit_id,
-    impl_sha256 shodný s běžícím kódem, data_manifest_sha256 z auditu a performance_hold=false. Vrací (povoleno, důvod)."""
+def read_decision(outdir):
     f = Path(outdir) / SEMANTICS_FILE
     if not f.exists():
-        return False, f"chybí {SEMANTICS_FILE} (rozhodnutí o sémantice intervalu fundingu)"
+        return None, f"chybí {SEMANTICS_FILE} (rozhodnutí o sémantice intervalu fundingu)"
     try:
         d = json.loads(f.read_text())
     except ValueError as e:
-        return False, f"{SEMANTICS_FILE} není platný JSON: {e}"
+        return None, f"{SEMANTICS_FILE} není platný JSON: {e}"
     if not isinstance(d, dict):
-        return False, f"{SEMANTICS_FILE}: očekáván objekt"
+        return None, f"{SEMANTICS_FILE}: očekáván objekt"
+    return d, "ok"
+
+
+def check_decision(d):
     if d.get("semantics") not in ("A", "B"):
         return False, f"{SEMANTICS_FILE}: semantics musí být 'A' nebo 'B'"
     if not d.get("evidence") or not d.get("decided_utc"):
@@ -575,18 +611,21 @@ def semantics_gate(outdir):
     if missing:
         return False, f"{SEMANTICS_FILE}: chybí {', '.join(missing)} (vazba rozhodnutí na audit, implementaci a data)"
     if d["impl_sha256"] != impl_fingerprint():
-        return False, "impl_sha256 neodpovídá běžící implementaci sémantiky — rozhodnutí platí pro jinou verzi kódu"
+        return False, "impl_sha256 neodpovídá běžící implementaci — rozhodnutí platí pro jinou verzi kódu"
     if not (isinstance(d["data_manifest_sha256"], str) and len(d["data_manifest_sha256"]) == 64):
         return False, "data_manifest_sha256 není sha256"
     return True, "ok"
 
 
-def data_gate(outdir, manifest, missing):
-    """Kolo 6, bod 5 — PO načtení a PŘED první simulací: načtená data = auditovaná data."""
-    d = json.loads((Path(outdir) / SEMANTICS_FILE).read_text())
+def semantics_gate(outdir):
+    d, why = read_decision(outdir)
+    return (False, why) if d is None else check_decision(d)
+
+
+def data_gate(decision, manifest, missing):
     got = manifest_fingerprint(manifest, missing)
-    if got != d.get("data_manifest_sha256"):
-        return False, f"načtená data ({got[:12]}…) ≠ auditovaný manifest ({str(d.get('data_manifest_sha256'))[:12]}…)"
+    if got != decision.get("data_manifest_sha256"):
+        return False, f"načtená data ({got[:12]}…) ≠ auditovaný manifest ({str(decision.get('data_manifest_sha256'))[:12]}…)"
     return True, "ok"
 
 
@@ -605,6 +644,22 @@ DATA_DEFECTS = {
     "benchmark_funding_discontinuities": "blocking",
     "benchmark_funding_unknown_coverage_assets": "blocking",
     "data_gap_exits_within_limit": "informational",  # výstup zpožděný ≤ 60 min podle dodatku 1
+    "duplicate_rows_same_value": "informational",
+}
+BENCHMARK_DEFECT_KEYS = {
+    "benchmark_stale_valuations": lambda r: r["stale_valuations"],
+    "benchmark_unavailable_at_start": lambda r: len(r["unavailable_at_start"]),
+    "benchmark_funding_price_fallbacks": lambda r: r["funding_price_fallbacks"],
+    "benchmark_funding_missing_events": lambda r: r["funding_missing_events"],
+    "benchmark_funding_discontinuities": lambda r: r["funding_discontinuities"],
+    "benchmark_funding_unknown_coverage_assets": lambda r: r["funding_unknown_coverage_assets"],
+}
+# Kolo 8, bod 1: kritéria používající benchmark a období (viz evaluate); chybějící kritérium = závislé na všech obdobích.
+BENCHMARK_DEPENDENCY = {
+    "A1_sharpe_dd": ("validation",), "A2_trades_ge_30": (), "A3_x2_pf_profit": (), "A4_wo_top3": (),
+    "A5_final_x2": ("final_test",),
+    "B1_val_x2_profit_pf": (), "B2_dd_le_0_6_bh": ("validation", "final_test"), "B3_final_x2_profit": (),
+    "B4_val_wo_top3": (), "B5_trades_ge_20": (), "B6_tuning_x1_profit": (),
 }
 
 
@@ -615,36 +670,113 @@ def blocking_defects(flags):
     return {k: v for k, v in flags.items() if DATA_DEFECTS[k] == "blocking" and v}
 
 
-def defect_flags(res, bh):
+def defect_flags(res, bh, market=None):
     """Strategie i benchmark z x1 každého období (nákladové scénáře mají stejná data, nenásobí se)."""
-    s = lambda k: sum(res[p]["x1"][k] for p in PERIODS)
-    b = lambda k: sum(bh[p]["x1"][k] for p in PERIODS)
-    return {"data_gap_unrealizable_exits": s("data_gap_unrealizable_exits"),
-            "funding_price_fallback_trades": s("funding_price_fallback_trades"),
-            "funding_gap_trades": s("funding_gap_trades"), "unevaluable_trades": s("unevaluable_trades"),
-            "stale_mtm_trades": s("stale_mtm_trades"), "unfilled_entries": s("unfilled_entries"),
-            "benchmark_stale_valuations": b("stale_valuations"),
-            "benchmark_unavailable_at_start": sum(len(bh[p]["x1"]["unavailable_at_start"]) for p in PERIODS),
-            "benchmark_funding_price_fallbacks": b("funding_price_fallbacks"),
-            "benchmark_funding_missing_events": b("funding_missing_events"),
-            "benchmark_funding_discontinuities": b("funding_discontinuities"),
-            "benchmark_funding_unknown_coverage_assets": b("funding_unknown_coverage_assets"),
-            "data_gap_exits_within_limit": s("data_gap_exits") - s("data_gap_unrealizable_exits")}
+    st = lambda k: sum(res[p]["x1"][k] for p in PERIODS)
+    f = {"data_gap_unrealizable_exits": st("data_gap_unrealizable_exits"),
+         "funding_price_fallback_trades": st("funding_price_fallback_trades"),
+         "funding_gap_trades": st("funding_gap_trades"), "unevaluable_trades": st("unevaluable_trades"),
+         "stale_mtm_trades": st("stale_mtm_trades"), "unfilled_entries": st("unfilled_entries"),
+         "data_gap_exits_within_limit": st("data_gap_exits") - st("data_gap_unrealizable_exits")}
+    f.update({k: sum(get(bh[p]["x1"]) for p in PERIODS) for k, get in BENCHMARK_DEFECT_KEYS.items()})
+    if market is not None:
+        f["duplicate_rows_same_value"] = sum((market[a].get("load_audit") or {}).get("duplicates_same_value", 0)
+                                             for a in ASSETS)
+    return f
 
 
-def final_verdict(passed_a, passed_b, robust, flags, latency_val_x2_net):
-    """Datová brána na úrovni finálního verdiktu; ztráta při latenci +5 min je samostatná (nedatová) podmínka."""
-    verdict = "KANDIDÁT NA FORWARD PAPER" if (passed_a or passed_b) and all(robust.values()) else "ZAMÍTNUTO"
+def benchmark_defect_periods(bh):
+    out = {}
+    for p in PERIODS:
+        d = {k: get(bh[p]["x1"]) for k, get in BENCHMARK_DEFECT_KEYS.items()}
+        d = {k: v for k, v in d.items() if v and DATA_DEFECTS[k] == "blocking"}
+        if d:
+            out[p] = d
+    return out
+
+
+def track_status(track, bad_periods):
+    """pass | fail (aspoň jedno porušené kritérium nezávislé na vadném benchmarku) | unknown."""
+    failing = [c for c, ok in track.items() if not ok]
+    if not failing:
+        return "pass", []
+    reliable = [c for c in failing if not (set(BENCHMARK_DEPENDENCY.get(c, tuple(PERIODS))) & set(bad_periods))]
+    return ("fail", reliable) if reliable else ("unknown", failing)
+
+
+def final_verdict(track_a, track_b, robust, flags, bench_bad_periods=None, latency_val_x2_net=1.0):
+    """Datová brána na úrovni finálního verdiktu (kolo 6 bod 3, kolo 8 bod 1); latence +5 min je samostatná nedatová
+    podmínka kandidáta. Robustnost benchmark nepoužívá ⇒ její selhání = ZAMÍTNUTO. Vrací (verdikt, blokující, detail)."""
+    bad = dict(bench_bad_periods or {})
     blocking = blocking_defects(flags)
-    if verdict.startswith("KANDIDÁT") and (blocking or latency_val_x2_net <= 0):
-        why = ", ".join(sorted(blocking)) + ("" if latency_val_x2_net > 0 else (", " if blocking else "") + "latence +5 min")
-        verdict = "NEROZHODNUTO — datové závady nebo ztráta při latenci +5 min: " + why
-    return verdict, blocking
+    sa, sb = track_status(track_a, bad), track_status(track_b, bad)
+    detail = {"track_a": sa[0], "track_b": sb[0], "track_a_reasons": sa[1], "track_b_reasons": sb[1],
+              "benchmark_defect_periods": bad, "robust": all(robust.values()), "latency_val_x2_net": latency_val_x2_net}
+    if not all(robust.values()):
+        return "ZAMÍTNUTO", blocking, detail
+    if "pass" in (sa[0], sb[0]):
+        if blocking or latency_val_x2_net <= 0:
+            why = ", ".join(sorted(blocking)) + ("" if latency_val_x2_net > 0 else (", " if blocking else "") + "latence +5 min")
+            return "NEROZHODNUTO — datové závady nebo ztráta při latenci +5 min: " + why, blocking, detail
+        return "KANDIDÁT NA FORWARD PAPER", blocking, detail
+    if "unknown" in (sa[0], sb[0]):
+        crit = set(sa[1] if sa[0] == "unknown" else []) | set(sb[1] if sb[0] == "unknown" else [])
+        return "NEROZHODNUTO — zamítnutí stojí jen na kritériích s vadným benchmarkem: " + ", ".join(sorted(crit)), \
+            blocking, detail
+    return "ZAMÍTNUTO", blocking, detail
 
 
-def audit_manifest(outdir, produced, data_fp):
+LOCK_FILE = ".run.lock"
+
+
+def atomic_write(path, data):
+    """Kolo 8, bod 5: zápis přes dočasný soubor a os.replace (text i bytes)."""
+    path = Path(path)
+    tmp = path.with_name(f".{path.name}.{os.getpid()}.{uuid.uuid4().hex}.tmp")
+    try:
+        tmp.write_bytes(data) if isinstance(data, bytes) else tmp.write_text(data)
+        os.replace(tmp, path)
+    finally:
+        if tmp.exists():
+            tmp.unlink()
+
+
+class RunLock:
+    """Výhradní zámek výstupního adresáře (O_EXCL). Souběžný běh ⇒ exit 5 ještě před načtením dat."""
+    def __init__(self, outdir):
+        self.path = Path(outdir) / LOCK_FILE
+
+    def __enter__(self):
+        try:
+            fd_ = os.open(self.path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+        except FileExistsError:
+            print("RUN_REFUSED", f"výstupní adresář je zamčen jiným během ({self.path})")
+            sys.exit(5)
+        os.write(fd_, str(os.getpid()).encode())
+        os.close(fd_)
+        return self
+
+    def __exit__(self, *exc):
+        self.path.unlink(missing_ok=True)
+        return False
+
+
+def file_sha256(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def verify_audit_bundle(outdir):
     out = Path(outdir)
-    return {"mode": "audit", "run_utc": datetime.now(timezone.utc).isoformat(), "produced_by_this_run": list(produced),
+    man = json.loads((out / AUDIT_MANIFEST_FILE).read_text())
+    bad = [f for f, h in man.get("files_sha256", {}).items() if not (out / f).exists() or file_sha256(out / f) != h]
+    return (not bad), bad
+
+
+def audit_manifest(outdir, produced, data_fp, run_id=None):
+    out = Path(outdir)
+    return {"mode": "audit", "run_id": run_id, "run_utc": datetime.now(timezone.utc).isoformat(),
+            "produced_by_this_run": list(produced),
+            "files_sha256": {f: file_sha256(out / f) for f in produced if f != AUDIT_MANIFEST_FILE and (out / f).exists()},
             "impl_sha256": impl_fingerprint(), "data_manifest_sha256": data_fp,
             "preexisting_performance_files_not_from_this_run": [f for f in PERFORMANCE_FILES if (out / f).exists()],
             "note": "audit nepočítá výkonnost; případné results.json/trades.csv nejsou výstupem tohoto běhu"}
@@ -719,30 +851,40 @@ def main(argv=None):
         print("MODE_REFUSED zadej --mode audit nebo --mode perf")
         sys.exit(4)
     out = Path(args.outdir)
+    with RunLock(out):  # kolo 8, bod 5: souběžný běh nad stejným adresářem ⇒ exit 5
+        return _execute(mode, args, out)
+
+
+def _execute(mode, args, out):
+    run_id = uuid.uuid4().hex
+    decision = None
     if mode == "perf":
-        ok, why = semantics_gate(out)
+        decision, why = read_decision(out)  # čte se jednou, obě brány používají tentýž obsah
+        ok, why = (False, why) if decision is None else check_decision(decision)
         if not ok:  # kontrola PŘED stažením dat a před jakýmkoli výpočtem
             print("PERFORMANCE_REFUSED", why)
             sys.exit(3)
     market, manifest, missing, fatal = load(args.cache)
     data_fp = manifest_fingerprint(manifest, missing)
     if mode == "perf":
-        ok, why = data_gate(out, manifest, missing)
+        ok, why = data_gate(decision, manifest, missing)
         if not ok:  # data načtena, simulace nesmí proběhnout; nic se nezapisuje
             print("PERFORMANCE_REFUSED", why)
             sys.exit(3)
-    (out / "data_source.json").write_text(json.dumps({"archives": manifest, "missing": missing,
-                                                      "data_manifest_sha256": data_fp}, indent=1))
+    atomic_write(out / "data_source.json", json.dumps({"run_id": run_id, "archives": manifest, "missing": missing,
+                                                       "data_manifest_sha256": data_fp}, indent=1))
     if fatal:
         print("FATAL missing archives after first available month", json.dumps(fatal[:30]))
         sys.exit(2)
     audit = {a: gap_audit(market[a]) for a in ASSETS}
     print("GAP_AUDIT", json.dumps(audit))
     fa = {a: funding_audit(market[a]) for a in ASSETS}
-    (out / "data_audit.json").write_text(json.dumps({"gaps": audit, "funding": fa}, indent=1, default=str))
+    atomic_write(out / "data_audit.json", json.dumps({"gaps": audit, "funding": fa,
+                                                      "load_audit": {a: market[a].get("load_audit") for a in ASSETS}},
+                                                     indent=1, default=str))
     if mode == "audit":
-        man = audit_manifest(out, ("data_source.json", "data_audit.json", AUDIT_MANIFEST_FILE), data_fp)
-        (out / AUDIT_MANIFEST_FILE).write_text(json.dumps(man, indent=1))
+        man = audit_manifest(out, ("data_source.json", "data_audit.json", AUDIT_MANIFEST_FILE), data_fp, run_id)
+        atomic_write(out / AUDIT_MANIFEST_FILE, json.dumps(man, indent=1))  # zapisuje se poslední, s hashi souborů
         print("AUDIT_MANIFEST", json.dumps(man))
         return
 
@@ -777,8 +919,9 @@ def main(argv=None):
     latency = latency_info(market, chosen, ctag)
     nb = {vt(*g): results[vt(*g)]["validation"]["x2"]["net_pnl"] for g in neighbors(*chosen)}
     robust = robustness_checks(dsr, nb, wf)
-    flags = defect_flags(res, bh)
-    verdict, blocking = final_verdict(passed_a, passed_b, robust, flags, latency["validation"]["x2"]["net_pnl"])
+    flags = defect_flags(res, bh, market)
+    verdict, blocking, verdict_detail = final_verdict(track_a, track_b, robust, flags, benchmark_defect_periods(bh),
+                                                      latency["validation"]["x2"]["net_pnl"])
     payload = {"protocol": "research/spot_led/PROTOCOL.md", "chosen": ctag, "tuning_selection_x1": tune,
                "strategy": results, "buy_hold_equal_3": bh, "walk_forward_x2": wf, "neighbors_val_x2": nb,
                "track_a": track_a, "track_b": track_b, "passed_a": passed_a, "passed_b": passed_b,
@@ -788,17 +931,24 @@ def main(argv=None):
                "walk_forward_note": "roční stabilita fixní varianty vybrané na 2020-02…2022; pro 2021–22 NE čistý OOS",
                "robustness": robust, "gap_audit": audit, "data_defect_flags": flags,
                "blocking_data_defects": blocking, "data_defect_classes": DATA_DEFECTS,
+               "verdict_detail": verdict_detail, "benchmark_dependency": BENCHMARK_DEPENDENCY, "run_id": run_id,
                "impl_sha256": impl_fingerprint(), "data_manifest_sha256": data_fp, "verdict": verdict}
-    (out / "results.json").write_text(json.dumps(payload, indent=1, default=str))
-    with open(out / "trades.csv", "w", newline="") as fh:
-        w = csv.DictWriter(fh, fieldnames=list(rows[0].keys()) if rows else ["period"])
-        w.writeheader()
-        w.writerows(rows)
-    if (out / "trades.csv").stat().st_size > 50 * 2 ** 20:  # limit souborů GitHubu
+    buf = io.StringIO()
+    w = csv.DictWriter(buf, fieldnames=list(rows[0].keys()) if rows else ["period"])
+    w.writeheader()
+    w.writerows(rows)
+    data = buf.getvalue().encode()
+    if len(data) > 50 * 2 ** 20:  # limit souborů GitHubu
         import gzip
-        with open(out / "trades.csv", "rb") as src, gzip.open(out / "trades.csv.gz", "wb") as dst:
-            dst.write(src.read())
-        (out / "trades.csv").unlink()
+        name = "trades.csv.gz"
+        atomic_write(out / name, gzip.compress(data))
+        (out / "trades.csv").unlink(missing_ok=True)
+    else:
+        name = "trades.csv"
+        atomic_write(out / name, data)
+        (out / "trades.csv.gz").unlink(missing_ok=True)
+    payload["trades_file"], payload["trades_sha256"] = name, file_sha256(out / name)
+    atomic_write(out / "results.json", json.dumps(payload, indent=1, default=str))  # poslední, váže soubor obchodů
     print("SUMMARY", json.dumps({"chosen": ctag, "verdict": verdict, "track_a": track_a, "track_b": track_b,
                                  "robust": robust, "dsr": dsr["dsr"], "dsr_sens": dsr_sens, "neighbors": nb,
                                  "latency_val_x2": latency["validation"]["x2"]["net_pnl"],
