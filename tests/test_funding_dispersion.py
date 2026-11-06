@@ -1228,3 +1228,31 @@ def test_K10_5_intraday_drawdown_is_not_captured_limitation():
     _, curve, _ = fd.simulate(_econ_market_x(ltc_spike=lambda p: 150.0), START, date(2021, 1, 11), 7, 7, 1)
     cm, _ = fd.curve_metrics(curve, fd.START_EQUITY)
     assert cm["max_drawdown_pct"] < 1.0 < 7.796
+
+
+def test_K10_1_monthly_gap_patched_only_from_official_daily_archive(tmp_path, monkeypatch):
+    import urllib.error
+    monkeypatch.setattr(fd, "ASSETS", ("BTCUSDT",))
+    monkeypatch.setattr(fd, "FIRST_MONTH", (2022, 2))
+    monkeypatch.setattr(fd, "LAST_MONTH", (2022, 2))
+    t0 = fd.ms_of(date(2022, 2, 25))
+    gap = {t0 + DAY + k * H for k in range(3)}  # 26. 2. 00:00–02:00 chybí v měsíčním archivu
+    month = [(t0 + k * H, 1, 1, 1, 1) for k in range(72) if t0 + k * H not in gap]
+
+    def fetcher(conflict=False, daily_missing=False):
+        def f(url):
+            if "/daily/" in url:
+                if daily_missing:
+                    raise urllib.error.HTTPError(url, 404, "nf", None, None)
+                day = fd.ms_of(date.fromisoformat(url[-14:-4]))
+                return _zip_csv([(day + k * H, 2 if conflict and k == 5 else 1, 1, 1, 1) for k in range(24)])
+            return _zip_csv([(t0, 8, 0.0001)]) if "fundingRate" in url else _zip_csv(month)
+        return f
+    market, manifest, _, fatal = fd.load(tmp_path / "a", fetcher())
+    m = market["BTCUSDT"]
+    assert all(t in m["bars"] for t in gap) and m["load_audit"]["daily_patch_rows"] == 3 and not fatal
+    assert any(x.get("daily_patch") for x in manifest)  # denní archiv je v manifestu (otisk dat se tím mění)
+    with pytest.raises(ValueError):
+        fd.load(tmp_path / "b", fetcher(conflict=True))
+    market, _, _, _ = fd.load(tmp_path / "c", fetcher(daily_missing=True))
+    assert not any(t in market["BTCUSDT"]["bars"] for t in gap)  # bez denního archivu zůstane mezera, nic umělého

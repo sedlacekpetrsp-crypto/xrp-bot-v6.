@@ -144,9 +144,48 @@ def load(cache, fetcher=fetch):
                 fatal += [{"asset": a, "kind": kind, "month": f"{y}-{m:02d}"} for (y, m) in miss[kind] if (y, m) > first]
             else:
                 fatal.append({"asset": a, "kind": kind, "month": "all"})
+        audit.update(patch_from_daily(bars, a, cache, fetcher, manifest))
         market[a] = prepare(bars, fund)
         market[a]["load_audit"] = audit
     return market, manifest, missing, fatal
+
+
+def patch_from_daily(bars, asset, cache, fetcher=fetch, manifest=None):
+    """Kolo 10 (nález z vyšetření mezer): měsíční archiv Binance Vision u XRP/SOL/LTC postrádá 2022-02-26…28 a 2022-04-01…02,
+    denní archivy jsou úplné. Mezery uvnitř řady se doplní VÝHRADNĚ z oficiálních denních archivů (sha256 v manifestu).
+    Řádek, který už existuje s jinou hodnotou ⇒ chyba. Nikdy se nevytváří umělá cena; co denní archiv nemá, zůstane mezerou."""
+    bts = sorted(bars)
+    days = set()
+    for x, y in zip(bts, bts[1:]):
+        t = x + HOUR_MS
+        while t < y:
+            days.add(date_of(t))
+            t += HOUR_MS
+    added, statuses = 0, {}
+    for d in sorted(days):
+        url = f"https://data.binance.vision/data/futures/um/daily/klines/{asset}/1h/{asset}-1h-{d.isoformat()}.zip"
+        p = Path(cache) / "kl_daily" / url.rsplit("/", 1)[1]
+        try:
+            payload = p.read_bytes() if p.exists() else fetcher(url)
+        except urllib.error.HTTPError as e:
+            statuses[d.isoformat()] = e.code
+            continue
+        if not p.exists():
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_bytes(payload)
+        rows = parse_klines(payload)
+        statuses[d.isoformat()] = 200
+        if manifest is not None:
+            manifest.append({"url": url, "sha256": hashlib.sha256(payload).hexdigest(), "rows": len(rows),
+                             "daily_patch": True})
+        for r in rows:
+            if r[0] in bars:
+                if tuple(bars[r[0]]) != tuple(r[1:]):
+                    raise ValueError(f"denní archiv {asset} {r[0]} nesouhlasí s měsíčním: {bars[r[0]]} vs {r[1:]}")
+                continue
+            bars[r[0]] = r[1:]
+            added += 1
+    return {"daily_patch_rows": added, "daily_patch_days": statuses}
 
 
 def prepare(bars, fund):
