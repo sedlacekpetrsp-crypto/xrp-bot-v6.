@@ -33,6 +33,10 @@ Tento dokument řídí každý automatický běh. Platí pro Claude i pro dalš�
 6. Pokračovat v nejvyšší otevřené položce backlogu v `STATE.md`, pokud se vejde do běhu.
    Kód + testy → draft PR do `v8-fly-layer-test` s reprodukovatelnými výsledky, nikdy merge.
 7. Při anomálii (výpadek, chyba, nečekaný obchod, ztráta persistence) napsat stručně vlastníkovi.
+8. Přečíst `automation/DIALOG.md` (spolupráce s ChatGPT, od 2026-11-06). Je-li vložena nová odpověď ChatGPT:
+   zpracovat ji (oponentury ověřit výpočtem/testem, hypotézy převést do `IDEAS.md` a posoudit podle rámce v2),
+   do DIALOG.md zapsat „Odpověď Clauda (kolo N)“ a „Kolo N+1 — otázky Clauda“ (max. 5 konkrétních otázek),
+   1 řádek do reportu. Shoda asistentů není důkaz; platí jen test po nákladech a forward PAPER.
 
 ## Co lze a nelze (stav 2026-11-05)
 

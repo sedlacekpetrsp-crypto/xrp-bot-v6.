@@ -4,6 +4,10 @@ Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá
 Výhradně PAPER.
 
 
+## 2026-11-06 17:05 SEČ (ruční běh — spolupráce s ChatGPT)
+- Založen `automation/DIALOG.md`: kolo 1 = 5 otázek Clauda pro ChatGPT (modelování maker exekuce, oponentura PR #29, beta-neutralita, nové zdroje dat, váha forward PAPER). Autopilot ho od teď čte každý běh (RUNBOOK krok 8).
+- Od vás: zkopírovat kolo 1 do ChatGPT a jeho odpověď vložit do DIALOG.md nebo poslat sem.
+
 ## 2026-11-06 16:55 SEČ (ruční běh — vaše 3 hypotézy)
 - **H1 Funding settlement pressure — DUPLICITNÍ, netestováno**: stejné pravidlo (po settlementu funding pod 10. percentilem posledních 90 ⇒ obchod proti) už propadlo jako `funding_reversal` (321 obchodů, PF 0,76, ×2 0,59) a `eth_funding_extreme`; nové jsou jen parametry na opotřebovaných datech.
 - **H2 Průřezová disperze fundingu, 8 perpů — ve frontě (R8)** ([PR #29](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/29)): nový mechanismus, protokol zmrazen předem, kód + 9 testů OK.
