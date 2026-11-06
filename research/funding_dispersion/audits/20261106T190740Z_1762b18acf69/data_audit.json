@@ -1,0 +1,290 @@
+{
+ "BTCUSDT": {
+  "funding_events": 6849,
+  "interval_transitions": [],
+  "spacing_mismatch_semantics_A": 0,
+  "spacing_mismatch_semantics_B": 0,
+  "spacing_mismatch_semantics_B_tolerant_implemented": 0,
+  "hour_bars": 54768,
+  "missing_hour_ranges": [
+   {
+    "from": "2026-10-28T00:00:00+00:00",
+    "hours": 24
+   }
+  ],
+  "missing_hours_since_listing": 24,
+  "load_audit": {
+   "duplicates_same_value": 0,
+   "daily_patch_rows": 0,
+   "daily_patch_days": {
+    "2026-10-28": 404
+   }
+  }
+ },
+ "ETHUSDT": {
+  "funding_events": 6849,
+  "interval_transitions": [],
+  "spacing_mismatch_semantics_A": 0,
+  "spacing_mismatch_semantics_B": 0,
+  "spacing_mismatch_semantics_B_tolerant_implemented": 0,
+  "hour_bars": 54768,
+  "missing_hour_ranges": [
+   {
+    "from": "2026-10-28T00:00:00+00:00",
+    "hours": 24
+   }
+  ],
+  "missing_hours_since_listing": 24,
+  "load_audit": {
+   "duplicates_same_value": 0,
+   "daily_patch_rows": 0,
+   "daily_patch_days": {
+    "2026-10-28": 404
+   }
+  }
+ },
+ "XRPUSDT": {
+  "funding_events": 6849,
+  "interval_transitions": [],
+  "spacing_mismatch_semantics_A": 0,
+  "spacing_mismatch_semantics_B": 0,
+  "spacing_mismatch_semantics_B_tolerant_implemented": 0,
+  "hour_bars": 54768,
+  "missing_hour_ranges": [
+   {
+    "from": "2026-10-28T00:00:00+00:00",
+    "hours": 24
+   }
+  ],
+  "missing_hours_since_listing": 24,
+  "load_audit": {
+   "duplicates_same_value": 0,
+   "daily_patch_rows": 120,
+   "daily_patch_days": {
+    "2022-02-26": 200,
+    "2022-02-27": 200,
+    "2022-02-28": 200,
+    "2022-04-01": 200,
+    "2022-04-02": 200,
+    "2026-10-28": 404
+   }
+  }
+ },
+ "SOLUSDT": {
+  "funding_events": 6793,
+  "interval_transitions": [
+   {
+    "at": "2022-11-09T20:00:00+00:00",
+    "from_h": 8.0,
+    "to_h": 4.0,
+    "spacing_h": 4.0,
+    "context": [
+     [
+      "2022-11-09T00:00:00+00:00",
+      8.0
+     ],
+     [
+      "2022-11-09T08:00:00+00:00",
+      8.0
+     ],
+     [
+      "2022-11-09T16:00:00+00:00",
+      8.0
+     ],
+     [
+      "2022-11-09T20:00:00+00:00",
+      4.0
+     ],
+     [
+      "2022-11-10T00:00:00+00:00",
+      4.0
+     ],
+     [
+      "2022-11-10T04:00:00+00:00",
+      2.0
+     ]
+    ]
+   },
+   {
+    "at": "2022-11-10T04:00:00+00:00",
+    "from_h": 4.0,
+    "to_h": 2.0,
+    "spacing_h": 4.0,
+    "context": [
+     [
+      "2022-11-09T16:00:00+00:00",
+      8.0
+     ],
+     [
+      "2022-11-09T20:00:00+00:00",
+      4.0
+     ],
+     [
+      "2022-11-10T00:00:00+00:00",
+      4.0
+     ],
+     [
+      "2022-11-10T04:00:00+00:00",
+      2.0
+     ],
+     [
+      "2022-11-10T06:00:00+00:00",
+      2.0
+     ],
+     [
+      "2022-11-10T08:00:00+00:00",
+      2.0
+     ]
+    ]
+   },
+   {
+    "at": "2022-11-18T16:00:00+00:00",
+    "from_h": 2.0,
+    "to_h": 8.0,
+    "spacing_h": 8.0,
+    "context": [
+     [
+      "2022-11-18T04:00:00+00:00",
+      2.0
+     ],
+     [
+      "2022-11-18T06:00:00+00:00",
+      2.0
+     ],
+     [
+      "2022-11-18T08:00:00+00:00",
+      2.0
+     ],
+     [
+      "2022-11-18T16:00:00+00:00",
+      8.0
+     ],
+     [
+      "2022-11-19T00:00:00+00:00",
+      8.0
+     ],
+     [
+      "2022-11-19T08:00:00+00:00",
+      8.0
+     ]
+    ]
+   }
+  ],
+  "spacing_mismatch_semantics_A": 2,
+  "spacing_mismatch_semantics_B": 1,
+  "spacing_mismatch_semantics_B_tolerant_implemented": 0,
+  "hour_bars": 53705,
+  "missing_hour_ranges": [
+   {
+    "from": "2026-10-28T00:00:00+00:00",
+    "hours": 24
+   }
+  ],
+  "missing_hours_since_listing": 24,
+  "load_audit": {
+   "duplicates_same_value": 0,
+   "daily_patch_rows": 120,
+   "daily_patch_days": {
+    "2022-02-26": 200,
+    "2022-02-27": 200,
+    "2022-02-28": 200,
+    "2022-04-01": 200,
+    "2022-04-02": 200,
+    "2026-10-28": 404
+   }
+  }
+ },
+ "BNBUSDT": {
+  "funding_events": 6849,
+  "interval_transitions": [],
+  "spacing_mismatch_semantics_A": 0,
+  "spacing_mismatch_semantics_B": 0,
+  "spacing_mismatch_semantics_B_tolerant_implemented": 0,
+  "hour_bars": 54768,
+  "missing_hour_ranges": [
+   {
+    "from": "2026-10-28T00:00:00+00:00",
+    "hours": 24
+   }
+  ],
+  "missing_hours_since_listing": 24,
+  "load_audit": {
+   "duplicates_same_value": 0,
+   "daily_patch_rows": 0,
+   "daily_patch_days": {
+    "2026-10-28": 404
+   }
+  }
+ },
+ "ADAUSDT": {
+  "funding_events": 6849,
+  "interval_transitions": [],
+  "spacing_mismatch_semantics_A": 0,
+  "spacing_mismatch_semantics_B": 0,
+  "spacing_mismatch_semantics_B_tolerant_implemented": 0,
+  "hour_bars": 54768,
+  "missing_hour_ranges": [
+   {
+    "from": "2026-10-28T00:00:00+00:00",
+    "hours": 24
+   }
+  ],
+  "missing_hours_since_listing": 24,
+  "load_audit": {
+   "duplicates_same_value": 0,
+   "daily_patch_rows": 0,
+   "daily_patch_days": {
+    "2026-10-28": 404
+   }
+  }
+ },
+ "DOGEUSDT": {
+  "funding_events": 6849,
+  "interval_transitions": [],
+  "spacing_mismatch_semantics_A": 0,
+  "spacing_mismatch_semantics_B": 0,
+  "spacing_mismatch_semantics_B_tolerant_implemented": 0,
+  "hour_bars": 54768,
+  "missing_hour_ranges": [
+   {
+    "from": "2026-10-28T00:00:00+00:00",
+    "hours": 24
+   }
+  ],
+  "missing_hours_since_listing": 24,
+  "load_audit": {
+   "duplicates_same_value": 0,
+   "daily_patch_rows": 0,
+   "daily_patch_days": {
+    "2026-10-28": 404
+   }
+  }
+ },
+ "LTCUSDT": {
+  "funding_events": 6849,
+  "interval_transitions": [],
+  "spacing_mismatch_semantics_A": 0,
+  "spacing_mismatch_semantics_B": 0,
+  "spacing_mismatch_semantics_B_tolerant_implemented": 0,
+  "hour_bars": 54768,
+  "missing_hour_ranges": [
+   {
+    "from": "2026-10-28T00:00:00+00:00",
+    "hours": 24
+   }
+  ],
+  "missing_hours_since_listing": 24,
+  "load_audit": {
+   "duplicates_same_value": 0,
+   "daily_patch_rows": 120,
+   "daily_patch_days": {
+    "2022-02-26": 200,
+    "2022-02-27": 200,
+    "2022-02-28": 200,
+    "2022-04-01": 200,
+    "2022-04-02": 200,
+    "2026-10-28": 404
+   }
+  }
+ }
+}
