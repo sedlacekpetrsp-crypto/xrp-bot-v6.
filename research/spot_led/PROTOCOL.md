@@ -152,3 +152,13 @@ Opravy a upřesnění implementace (signál, mřížka, dělení ani kritéria s
   načtení. Dřív se tiše přepsala pozdější hodnotou.
 - **Prázdné držení** nehlásí mezeru. **Souběh a atomicita** jako v PR #29 (zámek `.run.lock` ⇒ kód 5, workflow
   `concurrency`, atomické zápisy, `run_id` a hashe v `audit_manifest.json`, `trades_sha256` v `results.json`).
+
+## Dodatek 7 (2026-11-06, kolo 9; výkonnost dál nespuštěna, návrh na kontrolu)
+- **Rozhodování (Q1/Q3)** přes sdílený `tools/research/decision_gate.py`, totožný s PR #29: závislosti kritérií na
+  datech strategie i benchmarku, robustní testy podle zasažených dat a foldů, globální závady ladicího období ⇒ NEROZHODNUTO.
+  Latence +5 min zůstává dodatečnou podmínkou kandidáta.
+- Nová blokující závada `signal_bars_lost_to_gaps`: 5m časy období bez příznaku (chybí spot/perp svíčka T nebo T − 5 min).
+  Chybějící svíčky jinak tiše ruší signály, a tím mění výběr obchodů.
+- **Zámek** `fcntl.flock`, **audit** do `audits/<UTC>_<run_id>/` (jako PR #29).
+- **Nezávislý ekonomický přepočet** (Decimal, bez importu runneru): 3 obchody (long s fundingem, short se sizingem
+  z realizované equity, long přes půlnoc s MTM) a benchmark, shoda na 1e-6 USDT.

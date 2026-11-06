@@ -402,7 +402,7 @@ def test_K6_3_registry_complete_unknown_raises_informational_ok():
     res = {p: {"x1": sl.run(m, START, date(2021, 1, 5), 1, 0.65, 15, "t")[0]} for p in sl.PERIODS}
     bh = {p: {"x1": sl.buy_hold(m, START, date(2021, 1, 5), 1)} for p in sl.PERIODS}
     flags = sl.defect_flags(res, bh, m)
-    assert set(flags) == set(sl.DATA_DEFECTS)
+    assert set(flags) | {"walk_forward_defects", "neighbor_defects"} == set(sl.DATA_DEFECTS)
     with pytest.raises(KeyError):
         sl.blocking_defects({**flags, "nove": 1})
     info = {k: 0 for k in sl.DATA_DEFECTS} | {"data_gap_exits_within_limit": 4}
@@ -530,13 +530,15 @@ def test_K6_integration_final_verdict_blocked_by_benchmark_fallback_else_candida
     """Celá větev main → buy_hold → defect_flags → final_verdict → results.json; kritéria, robustnost a latence
     vynuceně splněné (mock), rozhoduje jen datová brána."""
     import json
-    monkeypatch.setattr(sl, "PERIODS", {"tuning": ("2021-01-01", "2021-01-02"), "validation": ("2021-01-03", "2021-01-04"),
+    monkeypatch.setattr(sl, "PERIODS", {"tuning": ("2021-01-02", "2021-01-02"), "validation": ("2021-01-03", "2021-01-04"),
                                         "final_test": ("2021-01-05", "2021-01-06")})
     monkeypatch.setattr(sl, "WF_YEARS", ())
     monkeypatch.setattr(sl, "evaluate", lambda res, bh: ({"A": True}, {"B": True}))
     monkeypatch.setattr(sl, "robustness_checks", lambda dsr, nb, wf: {"mock": True})
     monkeypatch.setattr(sl, "safe_dsr", lambda r, n, v: {"dsr": None, "undefined_reason": "mock"})
     monkeypatch.setattr(sl, "latency_info", lambda *a: {"validation": {"x2": {"net_pnl": 1.0}}})
+    monkeypatch.setattr(sl, "robustness_context", lambda *a: {"dsr": 0.99, "dsr_defects": {}, "neighbors": {"n": (1.0, {})},
+                                                              "wf": {y: (1.0, 5, {}) for y in "abc"}})
     (tmp_path / sl.SEMANTICS_FILE).write_text(json.dumps(valid_decision()))
     fund = {T0 - 8 * H + k * 8 * H: 0.0001 for k in range(25)}
 
@@ -548,7 +550,8 @@ def test_K6_integration_final_verdict_blocked_by_benchmark_fallback_else_candida
     assert clean["verdict"] == "KANDIDÁT NA FORWARD PAPER" and clean["blocking_data_defects"] == {}
     bad = go(market_with(fund=fund, drop_perp=(sl.DAY_MS * 2 // BAR + 96,)))  # 3. 1. 08:00: chybí svíčka v čase fundingu
     assert bad["verdict"].startswith("NEROZHODNUTO")
-    assert bad["blocking_data_defects"] == {"benchmark_funding_price_fallbacks": 3}
+    assert bad["blocking_data_defects"]["benchmark_funding_price_fallbacks"] == 3
+    assert bad["blocking_data_defects"]["signal_bars_lost_to_gaps"] == 6  # kolo 9: chybějící svíčka ruší i signály (3 aktiva × 2)
 
 
 # ---- kolo 8: rozhodovací logika, otisk implementace, hranice fundingu, atomické audity ----
@@ -606,7 +609,7 @@ def _src():
 
 def test_K8_2_fingerprint_ignores_comments_docstrings_but_not_code_or_constants():
     src = _src()
-    run_py, dsr_py = sl.FINGERPRINT_SOURCES
+    run_py, dsr_py = sl.FINGERPRINT_SOURCES[:2]
     base = sl.code_fingerprint(src)
     assert base == sl.impl_fingerprint()
     assert sl.code_fingerprint({**src, run_py: src[run_py].replace("# limit souborů GitHubu", "# jiný")}) == base
@@ -616,7 +619,7 @@ def test_K8_2_fingerprint_ignores_comments_docstrings_but_not_code_or_constants(
                      ("MAX_EXIT_DELAY_MS = 60 * 60_000", "MAX_EXIT_DELAY_MS = 61 * 60_000"),
                      ("return fts[bisect.bisect_right(fts, entry)", "return fts[bisect.bisect_left(fts, entry)"),
                      ('"benchmark_funding_price_fallbacks": "blocking"', '"benchmark_funding_price_fallbacks": "informational"'),
-                     ("if blocking or latency_val_x2_net <= 0:", "if latency_val_x2_net <= 0:")):
+                     ("candidate_extra_ok=latency_val_x2_net > 0", "candidate_extra_ok=True")):
         assert old in src[run_py], old
         assert sl.code_fingerprint({**src, run_py: src[run_py].replace(old, new, 1)}) != base, old
     assert sl.code_fingerprint({**src, dsr_py: src[dsr_py] + "\nX_NEW = 1\n"}) != base
@@ -758,13 +761,15 @@ def test_K8_5_audit_bundle_hashes_and_perf_files_untouched(tmp_path, monkeypatch
 
 def test_K8_integration_main_rejected_vs_undecided_and_trades_hash(tmp_path, monkeypatch):
     import json
-    monkeypatch.setattr(sl, "PERIODS", {"tuning": ("2021-01-01", "2021-01-02"), "validation": ("2021-01-03", "2021-01-04"),
+    monkeypatch.setattr(sl, "PERIODS", {"tuning": ("2021-01-02", "2021-01-02"), "validation": ("2021-01-03", "2021-01-04"),
                                         "final_test": ("2021-01-05", "2021-01-06")})
     monkeypatch.setattr(sl, "WF_YEARS", ())
     monkeypatch.setattr(sl, "evaluate", lambda res, bh: tracks(fail=("A1_sharpe_dd", "B2_dd_le_0_6_bh")))
     monkeypatch.setattr(sl, "robustness_checks", lambda dsr, nb, wf: dict(ROBUST_OK))
     monkeypatch.setattr(sl, "safe_dsr", lambda r, n, v: {"dsr": None, "undefined_reason": "mock"})
     monkeypatch.setattr(sl, "latency_info", lambda *a: {"validation": {"x2": {"net_pnl": 1.0}}})
+    monkeypatch.setattr(sl, "robustness_context", lambda *a: {"dsr": 0.99, "dsr_defects": {}, "neighbors": {"n": (1.0, {})},
+                                                              "wf": {y: (1.0, 5, {}) for y in "abc"}})
     (tmp_path / sl.SEMANTICS_FILE).write_text(json.dumps(valid_decision()))
     fund = {T0 - 8 * H + k * 8 * H: 0.0001 for k in range(25)}
 
@@ -775,7 +780,7 @@ def test_K8_integration_main_rejected_vs_undecided_and_trades_hash(tmp_path, mon
     clean = go(market_with(fund=fund))
     assert clean["verdict"] == "ZAMÍTNUTO" and clean["trades_sha256"] == sl.file_sha256(tmp_path / clean["trades_file"])
     bad = go(market_with(fund=fund, drop_perp=(sl.DAY_MS * 2 // BAR + 96,)))
-    assert bad["verdict"].startswith("NEROZHODNUTO") and "validation" in bad["verdict_detail"]["benchmark_defect_periods"]
+    assert bad["verdict"].startswith("NEROZHODNUTO") and "validation" in bad["verdict_detail"]["benchmark_bad_periods"]
 
 
 # ---- kolo 9, Q5: zámek spravovaný OS ----
@@ -817,3 +822,86 @@ def test_K9_5_lock_code_has_no_age_based_removal():
     import inspect
     src = inspect.getsource(sl.RunLock)
     assert "unlink" not in src and "st_mtime" not in src and "getmtime" not in src
+
+
+# ---- kolo 9, Q1/Q3: závislosti kritérií na datech strategie, ztracené signály, globální závady ----
+def test_K9_1_strategy_dependency_map_matches_evaluate_by_perturbation():
+    from tools.research import decision_gate as dg
+    base = {"sharpe": 1.0, "max_drawdown_pct": 10.0, "trades": 15, "profit_factor": 1.5, "net_pnl": 100.0,
+            "net_without_top3": 50.0}
+    bh = {p: {f"x{m}": {"sharpe": 0.5, "max_drawdown_pct": 20.0} for m in (1, 2, 3)} for p in sl.PERIODS}
+    found = {c: set() for c in dg.CRITERIA_DATA}
+    for p in sl.PERIODS:
+        for alt in ({"sharpe": 5.0, "max_drawdown_pct": 1.0, "trades": 500, "profit_factor": 9.0, "net_pnl": 1e4,
+                     "net_without_top3": 1e4},
+                    {"sharpe": -5.0, "max_drawdown_pct": 99.0, "trades": 0, "profit_factor": 0.1, "net_pnl": -1e4,
+                     "net_without_top3": -1e4}):
+            res = {q: {f"x{m}": dict(base) for m in (1, 2, 3)} for q in sl.PERIODS}
+            ref = {**sl.evaluate(res, bh)[0], **sl.evaluate(res, bh)[1]}
+            res[p] = {f"x{m}": dict(alt) for m in (1, 2, 3)}
+            new = {**sl.evaluate(res, bh)[0], **sl.evaluate(res, bh)[1]}
+            found.update({c: found[c] | {p} for c in ref if ref[c] != new[c]})
+    assert {c: tuple(sorted(x)) for c, x in found.items()} == \
+        {c: tuple(sorted(d["strategy"])) for c, d in dg.CRITERIA_DATA.items()}
+
+
+def test_K9_1_missing_bar_silently_removing_signals_is_counted():
+    clean = sl.run(market_with(), date(2021, 1, 2), date(2021, 1, 3), 1, 0.65, 15, "t")[0]
+    assert clean["signal_bars_lost_to_gaps"] == 0
+    r = sl.run(market_with(drop_perp=(400,)), date(2021, 1, 2), date(2021, 1, 3), 1, 0.65, 15, "t")[0]
+    assert r["signal_bars_lost_to_gaps"] == 6 and sl.strategy_defects(r) == {"signal_bars_lost_to_gaps": 6}
+
+
+def test_K9_1_tuning_gap_is_global(tmp_path, monkeypatch):
+    import json
+    monkeypatch.setattr(sl, "PERIODS", {"tuning": ("2021-01-02", "2021-01-02"), "validation": ("2021-01-03", "2021-01-04"),
+                                        "final_test": ("2021-01-05", "2021-01-06")})
+    monkeypatch.setattr(sl, "WF_YEARS", ())
+    monkeypatch.setattr(sl, "evaluate", lambda res, bh: tracks(fail=("A2_trades_ge_30", "B3_final_x2_profit")))
+    (tmp_path / sl.SEMANTICS_FILE).write_text(json.dumps(valid_decision()))
+    fund = {T0 - 8 * H + k * 8 * H: 0.0001 for k in range(25)}
+    for drop, expect in (((), "ZAMÍTNUTO"), ((300,), "NEROZHODNUTO — globální")):  # bar 300 = 2. 1. 01:00 (ladění)
+        monkeypatch.setattr(sl, "load", lambda cache: (market_with(fund=fund, drop_perp=drop), [], [], []))
+        sl.main(["--outdir", str(tmp_path), "--mode", "perf"])
+        assert json.loads((tmp_path / "results.json").read_text())["verdict"].startswith(expect)
+
+
+# ---- kolo 9, bod 6: NEZÁVISLÝ ekonomický přepočet ----
+# Literály z ručního přepočtu v Decimal (calc/indep_sl.py, bez importu runneru). Předem stanovená přesnost 1e-6 USDT.
+TOL = 1e-6
+
+
+def _econ_market():
+    m = {}
+    fund = {T0 + k * H: (0.0, 1.0) for k in range(-3, 41)}
+    fund[T0 + H] = (0.001, 1.0)
+    fund[T0 + 24 * H] = (0.0005, 1.0)
+    for a in sl.ASSETS:
+        spot, perp = flat()
+        if a == "BTCUSDT":
+            spot[T0 + 10 * BAR] = (100.5, 10.0, 8.0)   # long signál
+            spot[T0 + 30 * BAR] = (99.5, 10.0, 2.0)    # short signál
+            spot[T0 + 284 * BAR] = (100.5, 10.0, 8.0)  # long přes půlnoc
+            perp[T0 + 12 * BAR] = (100.4, 100.0)       # open v 01:00 = cena pro funding
+            perp[T0 + 17 * BAR] = (101.0, 101.0)       # výstup 1
+            perp[T0 + 37 * BAR] = (99.0, 99.0)         # výstup 2
+            perp[T0 + 287 * BAR] = (100.0, 102.0)      # close 23:55 = ocenění přes půlnoc
+            perp[T0 + 288 * BAR] = (102.5, 102.5)      # open 00:00 = cena pro funding
+            perp[T0 + 291 * BAR] = (103.0, 103.0)      # výstup 3
+        m[a] = sl.prepare(spot, perp, fund)
+    return m
+
+
+def test_K9_6_independent_trade_accounting_sizing_mtm_and_equity():
+    trades, curve = sl.simulate(_econ_market(), START, date(2021, 1, 2), 0.65, 30, 1)
+    assert [(t["side"], (t["entry_ts"] - T0) // BAR, (t["exit_ts"] - T0) // BAR) for t in trades] == \
+        [(1, 11, 17), (-1, 31, 37), (1, 285, 291)]
+    for t, (q, n) in zip(trades, ((10.0, 6.6845), (10.0066845, 7.7166547522), (10.0144011548, 27.1921034555))):
+        assert abs(t["qty"] - q) <= TOL and abs(t["net_pnl"] - n) <= TOL, (t["qty"], t["net_pnl"])
+    assert abs(curve[date(2021, 1, 1)] - 10033.2783009289) <= TOL   # 2 realizované + MTM přes půlnoc
+    assert abs(curve[date(2021, 1, 2)] - 10041.5932582077) <= TOL   # equity po uzavření všech
+
+
+def test_K9_6_independent_benchmark_accounting():
+    bh = sl.buy_hold(_econ_market(), START, START, 1)
+    assert abs(bh["funding"] - (-10.001818)) <= 1e-4 and abs(bh["net_pnl"] - 33.5248285) <= 1e-4  # runner: 4 místa
