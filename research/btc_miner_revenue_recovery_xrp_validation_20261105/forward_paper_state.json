@@ -651,21 +651,50 @@
       "price_url": "https://data-api.binance.vision/api/v3/klines?symbol=XRPUSDT&interval=1d&startTime=1790467200000&endTime=1793923199999&limit=1000",
       "price_sha256": "d0b698b6a5033853f1b3db752f95ee177950d5a9f28198d1809be37328189dd8",
       "price_rows": 40
+    },
+    {
+      "observed_at_utc": "2026-11-06T08:05:27.379000+00:00",
+      "source_url": "https://api.blockchain.info/charts/miners-revenue?timespan=all&format=json",
+      "source_sha256": "1b75573b0bdbfba5c57ea7c73ffa35d19b369a6e266cf71d61b868b46e761f72",
+      "source_rows": 1624,
+      "price_url": "https://data-api.binance.vision/api/v3/klines?symbol=XRPUSDT&interval=1d&startTime=1790467200000&endTime=1793923199999&limit=1000",
+      "price_sha256": "d0b698b6a5033853f1b3db752f95ee177950d5a9f28198d1809be37328189dd8",
+      "price_rows": 40
     }
   ],
-  "last_run_utc": "2026-11-06T05:04:29.653000+00:00",
+  "last_run_utc": "2026-11-06T08:05:27.379000+00:00",
   "base_metrics": {
     "trades": 0,
     "net_pnl": 0,
     "expectancy": null,
-    "profit_factor": null
+    "profit_factor": null,
+    "gross_profit": 0,
+    "gross_loss": 0,
+    "no_losing_trades": false
   },
   "stress_metrics": {
     "trades": 0,
     "net_pnl": 0,
     "expectancy": null,
-    "profit_factor": null
+    "profit_factor": null,
+    "gross_profit": 0,
+    "gross_loss": 0,
+    "no_losing_trades": false
   },
   "marked_min_equity_base": 10000.0,
-  "marked_min_equity_stress": 10000.0
+  "marked_min_equity_stress": 10000.0,
+  "max_drawdown_pct_base": 0.0,
+  "max_drawdown_pct_stress": 0.0,
+  "single_trade_positive_profit_concentration": null,
+  "forward_gates": {
+    "elapsed_365_days": false,
+    "minimum_20_trades": false,
+    "base_net_positive": false,
+    "base_expectancy_positive": false,
+    "stress_net_positive": false,
+    "stress_expectancy_positive": false,
+    "stress_pf_above_1": false,
+    "stress_drawdown_at_most_10": true,
+    "single_trade_concentration_at_most_35": false
+  }
 }

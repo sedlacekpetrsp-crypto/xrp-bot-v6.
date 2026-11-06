@@ -71,6 +71,9 @@ test_gap_stop_sizing_and_cap (test_btc_mempool_clearance_xrp_v1.Tests.test_gap_s
 test_stop_first_and_double_cost (test_btc_mempool_clearance_xrp_v1.Tests.test_stop_first_and_double_cost) ... ok
 test_strict_past_window_and_empirical_tercile (test_btc_mempool_clearance_xrp_v1.Tests.test_strict_past_window_and_empirical_tercile) ... ok
 test_weekly_nonoverlap_and_time_exit (test_btc_mempool_clearance_xrp_v1.Tests.test_weekly_nonoverlap_and_time_exit) ... ok
+test_atomic_state_write_replaces_file (test_btc_miner_revenue_forward_paper.ForwardPaperTests.test_atomic_state_write_replaces_file) ... ok
+test_forward_gate_can_pass_without_json_infinity (test_btc_miner_revenue_forward_paper.ForwardPaperTests.test_forward_gate_can_pass_without_json_infinity) ... ok
+test_forward_gates_are_explicit_and_initially_fail (test_btc_miner_revenue_forward_paper.ForwardPaperTests.test_forward_gates_are_explicit_and_initially_fail) ... ok
 test_incomplete_candle_excluded (test_btc_miner_revenue_forward_paper.ForwardPaperTests.test_incomplete_candle_excluded) ... ok
 test_no_historical_backfill (test_btc_miner_revenue_forward_paper.ForwardPaperTests.test_no_historical_backfill) ... ok
 test_repeat_is_idempotent (test_btc_miner_revenue_forward_paper.ForwardPaperTests.test_repeat_is_idempotent) ... ok
@@ -335,6 +338,6 @@ test_no_growth_or_gap_no_signal (test_xrpl_dex_liquidity_replenishment_v1.Tests.
 test_stop_first_and_stress (test_xrpl_dex_liquidity_replenishment_v1.Tests.test_stop_first_and_stress) ... ok
 
 ----------------------------------------------------------------------
-Ran 335 tests in 0.336s
+Ran 338 tests in 0.336s
 
 OK
