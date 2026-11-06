@@ -1,0 +1,28 @@
+{
+ "mode": "audit",
+ "run_id": "afe84bcddc064d689b7f3439b94eb1be",
+ "run_utc": "2026-11-06T19:22:45.376453+00:00",
+ "produced_by_this_run": [
+  "data_source.json",
+  "data_audit.json",
+  "audit_manifest.json"
+ ],
+ "files_sha256": {
+  "data_source.json": "754cd782c979717da01a394d50bd199ed96dda883e18ac45ce95e5e33b1b2b91",
+  "data_audit.json": "ec0f496d0d27f8e332cc9fc2942c0b7a6ccfc4e453ac474004c8e6e55d550e3e"
+ },
+ "impl_sha256": "c8e709a81878463209010009b94057851c099c61bdfd8c9f561dfd46f52511c5",
+ "data_manifest_sha256": "6377271df7cd72b027d82c94ff8f08d5efc290fa52339e00a0b4816f00e33c92",
+ "ops_sha256": {
+  "protocol": "4932876cba97fb75105a5c8ba47d56e7672b19fe8e04a6592f5e2f3b33e15418",
+  "workflow": "7d1ada390ec7eb7a83ec1351c4dab264183bc7bcb1225418cd3ac973f9269bf3"
+ },
+ "environment": {
+  "python": "3.13.18",
+  "implementation": "CPython",
+  "platform": "Linux-7.0.0-1017-azure-x86_64-with-glibc2.39"
+ },
+ "preexisting_performance_files_not_from_this_run": [],
+ "note": "audit nepo\u010d\u00edt\u00e1 v\u00fdkonnost; p\u0159\u00edpadn\u00e9 results.json/trades.csv nejsou v\u00fdstupem tohoto b\u011bhu",
+ "outdir_performance_files_not_from_this_run": []
+}

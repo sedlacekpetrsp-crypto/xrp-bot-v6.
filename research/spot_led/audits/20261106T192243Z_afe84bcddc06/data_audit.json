@@ -1,0 +1,178 @@
+{
+ "gaps": {
+  "BTCUSDT": {
+   "spot_bars": 718386,
+   "perp_bars": 718560,
+   "spot_missing_5m": 462,
+   "perp_missing_5m": 288,
+   "spot_only": 288,
+   "perp_only": 462,
+   "usable_signal_bars": 718039
+  },
+  "ETHUSDT": {
+   "spot_bars": 718386,
+   "perp_bars": 718560,
+   "spot_missing_5m": 462,
+   "perp_missing_5m": 288,
+   "spot_only": 288,
+   "perp_only": 462,
+   "usable_signal_bars": 718039
+  },
+  "XRPUSDT": {
+   "spot_bars": 718386,
+   "perp_bars": 717020,
+   "spot_missing_5m": 462,
+   "perp_missing_5m": 288,
+   "spot_only": 1828,
+   "perp_only": 462,
+   "usable_signal_bars": 716499
+  }
+ },
+ "funding": {
+  "BTCUSDT": {
+   "funding_events": 7488,
+   "interval_transitions": [],
+   "spacing_mismatch_semantics_A": 0,
+   "spacing_mismatch_semantics_B": 0,
+   "spacing_mismatch_semantics_B_tolerant_implemented": 0
+  },
+  "ETHUSDT": {
+   "funding_events": 7488,
+   "interval_transitions": [],
+   "spacing_mismatch_semantics_A": 0,
+   "spacing_mismatch_semantics_B": 0,
+   "spacing_mismatch_semantics_B_tolerant_implemented": 0
+  },
+  "XRPUSDT": {
+   "funding_events": 7472,
+   "interval_transitions": [],
+   "spacing_mismatch_semantics_A": 0,
+   "spacing_mismatch_semantics_B": 0,
+   "spacing_mismatch_semantics_B_tolerant_implemented": 0
+  }
+ },
+ "load_audit": {
+  "BTCUSDT": {
+   "duplicates_same_value": 0,
+   "spot_daily_patch": {
+    "rows_added": 0,
+    "days": {
+     "2020-02-09": 200,
+     "2020-02-19": 200,
+     "2020-03-04": 200,
+     "2020-04-25": 200,
+     "2020-06-28": 200,
+     "2020-11-30": 200,
+     "2020-12-21": 200,
+     "2020-12-25": 200,
+     "2021-02-11": 200,
+     "2021-03-06": 200,
+     "2021-04-20": 200,
+     "2021-04-25": 200,
+     "2021-08-13": 200,
+     "2021-09-29": 200,
+     "2023-03-24": 200
+    },
+    "conflicts": [
+     1608556500000,
+     1608556800000,
+     1608557100000,
+     1608557400000,
+     1608557700000,
+     1608558000000,
+     1608558300000
+    ]
+   },
+   "perp_daily_patch": {
+    "rows_added": 0,
+    "days": {
+     "2026-10-28": 404
+    },
+    "conflicts": []
+   }
+  },
+  "ETHUSDT": {
+   "duplicates_same_value": 0,
+   "spot_daily_patch": {
+    "rows_added": 0,
+    "days": {
+     "2020-02-09": 200,
+     "2020-02-19": 200,
+     "2020-03-04": 200,
+     "2020-04-25": 200,
+     "2020-06-28": 200,
+     "2020-11-30": 200,
+     "2020-12-21": 200,
+     "2020-12-25": 200,
+     "2021-02-11": 200,
+     "2021-03-06": 200,
+     "2021-04-20": 200,
+     "2021-04-25": 200,
+     "2021-08-13": 200,
+     "2021-09-29": 200,
+     "2023-03-24": 200
+    },
+    "conflicts": [
+     1608556500000,
+     1608556800000,
+     1608557100000,
+     1608557400000,
+     1608557700000,
+     1608558000000,
+     1608558300000
+    ]
+   },
+   "perp_daily_patch": {
+    "rows_added": 0,
+    "days": {
+     "2026-10-28": 404
+    },
+    "conflicts": []
+   }
+  },
+  "XRPUSDT": {
+   "duplicates_same_value": 0,
+   "spot_daily_patch": {
+    "rows_added": 0,
+    "days": {
+     "2020-02-09": 200,
+     "2020-02-19": 200,
+     "2020-03-04": 200,
+     "2020-04-25": 200,
+     "2020-06-28": 200,
+     "2020-11-30": 200,
+     "2020-12-21": 200,
+     "2020-12-25": 200,
+     "2021-02-11": 200,
+     "2021-03-06": 200,
+     "2021-04-20": 200,
+     "2021-04-25": 200,
+     "2021-08-13": 200,
+     "2021-09-29": 200,
+     "2023-03-24": 200
+    },
+    "conflicts": [
+     1608556500000,
+     1608556800000,
+     1608557100000,
+     1608557400000,
+     1608557700000,
+     1608558000000,
+     1608558300000
+    ]
+   },
+   "perp_daily_patch": {
+    "rows_added": 1440,
+    "days": {
+     "2022-02-26": 200,
+     "2022-02-27": 200,
+     "2022-02-28": 200,
+     "2022-04-01": 200,
+     "2022-04-02": 200,
+     "2026-10-28": 404
+    },
+    "conflicts": []
+   }
+  }
+ }
+}
