@@ -130,9 +130,49 @@ def load(cache, fetcher=fetch):
                 fatal += [{"asset": a, "kind": kind, "month": f"{y}-{m:02d}"} for (y, m) in miss[kind] if (y, m) > first]
             else:
                 fatal.append({"asset": a, "kind": kind, "month": "all"})
+        for kind in ("spot", "perp"):
+            load_audit[f"{kind}_daily_patch"] = patch_from_daily(raw[kind], a, kind, cache, fetcher, manifest, load_audit)
         market[a] = prepare(raw["spot"], raw["perp"], raw["fr"])
         market[a]["load_audit"] = load_audit
     return market, manifest, missing, fatal
+
+
+def patch_from_daily(store, asset, kind, cache, fetcher=fetch, manifest=None, audit=None):
+    """Kolo 10: mezery uvnitř řady doplnit VÝHRADNĚ z oficiálních denních archivů Binance Vision (sha256 v manifestu;
+    XRP perp 2022-02-26…28 a 2022-04-01…02 v měsíčním archivu chybí, v denním jsou). Konflikt ⇒ chyba (add_row).
+    Spotové výpadky 2020–2023 chybí i v denních a 1m archivech (skutečná údržba burzy) ⇒ zůstanou mezerou."""
+    ts = sorted(store)
+    days = set()
+    for x, y in zip(ts, ts[1:]):
+        t = x + BAR
+        while t < y:
+            days.add(date_of(t))
+            t += BAR
+    base = "spot/daily/klines" if kind == "spot" else "futures/um/daily/klines"
+    parser = parse_spot if kind == "spot" else parse_perp
+    added, statuses = 0, {}
+    for d in sorted(days):
+        url = f"https://data.binance.vision/data/{base}/{asset}/5m/{asset}-5m-{d.isoformat()}.zip"
+        p = Path(cache) / f"{kind}_daily" / url.rsplit("/", 1)[1]
+        try:
+            payload = p.read_bytes() if p.exists() else fetcher(url)
+        except urllib.error.HTTPError as e:
+            statuses[d.isoformat()] = e.code
+            continue
+        if not p.exists():
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_bytes(payload)
+        rows = parser(payload)
+        statuses[d.isoformat()] = 200
+        if manifest is not None:
+            manifest.append({"url": url, "sha256": hashlib.sha256(payload).hexdigest(), "rows": len(rows),
+                             "daily_patch": True})
+        before = len(store)
+        scratch = {"duplicates_same_value": 0}
+        for r in rows:
+            add_row(store, r[0], r[1:], asset, kind, scratch)
+        added += len(store) - before
+    return {"rows_added": added, "days": statuses}
 
 
 def add_row(store, ts, value, asset, kind, audit):

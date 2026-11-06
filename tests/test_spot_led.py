@@ -935,3 +935,31 @@ def test_K10_track_b_alone_cannot_grant_candidate_in_runner():
     b = {c: True for c in CRIT_B}
     v, _, d = sl.final_verdict(a, b, ROBUST_OK, NO_FLAGS, {}, 1.0)
     assert v.startswith("NEROZHODNUTO") and d["track_b"] == "pass"
+
+
+def test_K10_1_monthly_gap_patched_only_from_official_daily_archive(tmp_path, monkeypatch):
+    import urllib.error
+    monkeypatch.setattr(sl, "ASSETS", ("XRPUSDT",))
+    monkeypatch.setattr(sl, "FIRST_MONTH", (2022, 2))
+    monkeypatch.setattr(sl, "LAST_MONTH", (2022, 2))
+    t0 = sl.ms_of(date(2022, 2, 25))
+    gap = {t0 + sl.DAY_MS + k * BAR for k in range(3)}
+    k_row = lambda t, c=1: (t, 1, 1, 1, c, 1, 0, 0, 0, 1, 0, 0)
+
+    def fetcher(daily_missing=False):
+        def f(url):
+            if "/daily/" in url:
+                if daily_missing:
+                    raise urllib.error.HTTPError(url, 404, "nf", None, None)
+                day = sl.ms_of(date.fromisoformat(url[-14:-4]))
+                return _zip_csv([k_row(day + k * BAR) for k in range(288)])
+            if "fundingRate" in url:
+                return _zip_csv([(t0, 8, 0.0001)])
+            rows = [k_row(t0 + k * BAR) for k in range(3 * 288)]
+            return _zip_csv([r for r in rows if not ("/um/" in url and r[0] in gap)])  # mezera jen v perp
+        return f
+    market, manifest, _, _ = sl.load(tmp_path / "a", fetcher())
+    assert all(t in market["XRPUSDT"]["perp"] for t in gap)
+    assert market["XRPUSDT"]["load_audit"]["perp_daily_patch"]["rows_added"] == 3 and any(x.get("daily_patch") for x in manifest)
+    market, _, _, _ = sl.load(tmp_path / "b", fetcher(daily_missing=True))
+    assert not any(t in market["XRPUSDT"]["perp"] for t in gap)
