@@ -1,0 +1,552 @@
+{
+ "strategy": {
+  "tuning/x1": {
+   "final_equity": 21666.036329703493,
+   "net_pnl": 11666.036329703493,
+   "return_pct": 116.66036329703493,
+   "sharpe": 0.8175205481158339,
+   "max_drawdown_pct": 76.40457194400834,
+   "trades": 32,
+   "profit_factor": 1.1109662105164264,
+   "win_rate_pct": 62.5,
+   "net_without_top3": -31248.183552064922,
+   "fees": 124.15369427282403,
+   "avg_hold_days": 53.1875,
+   "excess_vs_bh_pnl": 827.3265818252621
+  },
+  "tuning/x2": {
+   "final_equity": 21574.747643041534,
+   "net_pnl": 11574.747643041534,
+   "return_pct": 115.74747643041535,
+   "sharpe": 0.815250255883162,
+   "max_drawdown_pct": 76.41350251009177,
+   "trades": 32,
+   "profit_factor": 1.1103229948922442,
+   "win_rate_pct": 62.5,
+   "net_without_top3": -31235.135820930933,
+   "fees": 247.7422452588729,
+   "avg_hold_days": 53.1875,
+   "excess_vs_bh_pnl": 783.9119353915376
+  },
+  "tuning/x3": {
+   "final_equity": 21483.838212501596,
+   "net_pnl": 11483.838212501596,
+   "return_pct": 114.83838212501598,
+   "sharpe": 0.8129795329375474,
+   "max_drawdown_pct": 76.422430804804,
+   "trades": 32,
+   "profit_factor": 1.109680267888663,
+   "win_rate_pct": 62.5,
+   "net_without_top3": -31221.96976162156,
+   "fees": 370.767960473253,
+   "avg_hold_days": 53.1875,
+   "excess_vs_bh_pnl": 740.7667047296709
+  },
+  "validation/x1": {
+   "final_equity": 40318.03154852678,
+   "net_pnl": 30318.03154852678,
+   "return_pct": 303.18031548526784,
+   "sharpe": 1.6435484544723626,
+   "max_drawdown_pct": 35.463891903696556,
+   "trades": 8,
+   "profit_factor": 8.881803071993966,
+   "win_rate_pct": 75.0,
+   "net_without_top3": 6739.328790444324,
+   "fees": 66.89621200649496,
+   "avg_hold_days": 182.5,
+   "excess_vs_bh_pnl": -1822.1080959994797
+  },
+  "validation/x2": {
+   "final_equity": 40210.852535049264,
+   "net_pnl": 30210.852535049264,
+   "return_pct": 302.10852535049264,
+   "sharpe": 1.6408933627465818,
+   "max_drawdown_pct": 35.47214056346883,
+   "trades": 8,
+   "profit_factor": 8.858378066683049,
+   "win_rate_pct": 75.0,
+   "net_without_top3": 6691.78337135792,
+   "fees": 133.59123583963404,
+   "avg_hold_days": 182.5,
+   "excess_vs_bh_pnl": -1832.4759937710041
+  },
+  "validation/x3": {
+   "final_equity": 40103.95644113551,
+   "net_pnl": 30103.95644113551,
+   "return_pct": 301.03956441135506,
+   "sharpe": 1.638232026456136,
+   "max_drawdown_pct": 35.4803892044342,
+   "trades": 8,
+   "profit_factor": 8.834995985816692,
+   "win_rate_pct": 75.0,
+   "net_without_top3": 6644.3661087508135,
+   "fees": 200.0857066909379,
+   "avg_hold_days": 182.5,
+   "excess_vs_bh_pnl": -1842.783091666126
+  },
+  "final_test/x1": {
+   "final_equity": 7798.345231958017,
+   "net_pnl": -2201.6547680419826,
+   "return_pct": -22.01654768041983,
+   "sharpe": 0.01255226783112314,
+   "max_drawdown_pct": 60.01579169652245,
+   "trades": 16,
+   "profit_factor": 0.7762488330012639,
+   "win_rate_pct": 50.0,
+   "net_without_top3": -7861.502400840151,
+   "fees": 29.05241098431213,
+   "avg_hold_days": 83.5,
+   "excess_vs_bh_pnl": 291.24739669674636
+  },
+  "final_test/x2": {
+   "final_equity": 7773.498233694792,
+   "net_pnl": -2226.5017663052076,
+   "return_pct": -22.265017663052078,
+   "sharpe": 0.00928910347596663,
+   "max_drawdown_pct": 60.02048125941055,
+   "trades": 16,
+   "profit_factor": 0.77374816023393,
+   "win_rate_pct": 50.0,
+   "net_without_top3": -7874.659065472238,
+   "fees": 58.01596203156975,
+   "avg_hold_days": 83.5,
+   "excess_vs_bh_pnl": 283.6469126424545
+  },
+  "final_test/x3": {
+   "final_equity": 7748.729476886896,
+   "net_pnl": -2251.270523113104,
+   "return_pct": -22.512705231131036,
+   "sharpe": 0.006028517322050292,
+   "max_drawdown_pct": 60.02517081160648,
+   "trades": 16,
+   "profit_factor": 0.7712554203705316,
+   "win_rate_pct": 50.0,
+   "net_without_top3": -7887.761114320483,
+   "fees": 86.89094695237196,
+   "avg_hold_days": 83.5,
+   "excess_vs_bh_pnl": 276.08510030693196
+  }
+ },
+ "buy_hold": {
+  "tuning/x1": {
+   "basket_50_50": {
+    "final_equity": 20838.70974787823,
+    "net_pnl": 10838.70974787823,
+    "return_pct": 108.3870974787823,
+    "sharpe": 0.7976746737438547,
+    "max_drawdown_pct": 76.85214022381805,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "net_without_top3": 0.0,
+    "fees": 0,
+    "avg_hold_days": 0.0
+   },
+   "BTC_only": {
+    "final_equity": 14167.459568342689,
+    "net_pnl": 4167.459568342689,
+    "return_pct": 41.67459568342689,
+    "sharpe": 0.5662438254090276,
+    "max_drawdown_pct": 76.62925431645935,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "net_without_top3": 0.0,
+    "fees": 0,
+    "avg_hold_days": 0.0
+   },
+   "ETH_only": {
+    "final_equity": 27509.959927413773,
+    "net_pnl": 17509.959927413773,
+    "return_pct": 175.09959927413772,
+    "sharpe": 0.933849068654958,
+    "max_drawdown_pct": 79.30253453633334,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "net_without_top3": 0.0,
+    "fees": 0,
+    "avg_hold_days": 0.0
+   }
+  },
+  "tuning/x2": {
+   "basket_50_50": {
+    "final_equity": 20790.835707649996,
+    "net_pnl": 10790.835707649996,
+    "return_pct": 107.90835707649995,
+    "sharpe": 0.7964763555524579,
+    "max_drawdown_pct": 76.85214022381805,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "net_without_top3": 0.0,
+    "fees": 0,
+    "avg_hold_days": 0.0
+   },
+   "BTC_only": {
+    "final_equity": 14134.911798470528,
+    "net_pnl": 4134.911798470528,
+    "return_pct": 41.34911798470529,
+    "sharpe": 0.5648598151608221,
+    "max_drawdown_pct": 76.62925431645935,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "net_without_top3": 0.0,
+    "fees": 0,
+    "avg_hold_days": 0.0
+   },
+   "ETH_only": {
+    "final_equity": 27446.759616829462,
+    "net_pnl": 17446.759616829462,
+    "return_pct": 174.46759616829462,
+    "sharpe": 0.932827066591003,
+    "max_drawdown_pct": 79.30253453633334,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "net_without_top3": 0.0,
+    "fees": 0,
+    "avg_hold_days": 0.0
+   }
+  },
+  "tuning/x3": {
+   "basket_50_50": {
+    "final_equity": 20743.071507771925,
+    "net_pnl": 10743.071507771925,
+    "return_pct": 107.43071507771927,
+    "sharpe": 0.7952779222952505,
+    "max_drawdown_pct": 76.85214022381805,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "net_without_top3": 0.0,
+    "fees": 0,
+    "avg_hold_days": 0.0
+   },
+   "BTC_only": {
+    "final_equity": 14102.438704945353,
+    "net_pnl": 4102.438704945353,
+    "return_pct": 41.02438704945352,
+    "sharpe": 0.5634760860724314,
+    "max_drawdown_pct": 76.62925431645935,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "net_without_top3": 0.0,
+    "fees": 0,
+    "avg_hold_days": 0.0
+   },
+   "ETH_only": {
+    "final_equity": 27383.704310598496,
+    "net_pnl": 17383.704310598496,
+    "return_pct": 173.83704310598497,
+    "sharpe": 0.9318048963735153,
+    "max_drawdown_pct": 79.30253453633334,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "net_without_top3": 0.0,
+    "fees": 0,
+    "avg_hold_days": 0.0
+   }
+  },
+  "validation/x1": {
+   "basket_50_50": {
+    "final_equity": 42140.13964452626,
+    "net_pnl": 32140.139644526258,
+    "return_pct": 321.40139644526255,
+    "sharpe": 1.705464215539066,
+    "max_drawdown_pct": 34.03469236201778,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "net_without_top3": 0.0,
+    "fees": 0,
+    "avg_hold_days": 0.0
+   },
+   "BTC_only": {
+    "final_equity": 56439.56025565037,
+    "net_pnl": 46439.56025565037,
+    "return_pct": 464.3956025565037,
+    "sharpe": 2.0151779339631224,
+    "max_drawdown_pct": 26.15137505386781,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "net_without_top3": 0.0,
+    "fees": 0,
+    "avg_hold_days": 0.0
+   },
+   "ETH_only": {
+    "final_equity": 27840.719033402147,
+    "net_pnl": 17840.719033402147,
+    "return_pct": 178.40719033402146,
+    "sharpe": 1.183519119727317,
+    "max_drawdown_pct": 45.256101161188745,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "net_without_top3": 0.0,
+    "fees": 0,
+    "avg_hold_days": 0.0
+   }
+  },
+  "validation/x2": {
+   "basket_50_50": {
+    "final_equity": 42043.32852882027,
+    "net_pnl": 32043.328528820268,
+    "return_pct": 320.43328528820274,
+    "sharpe": 1.703120887828242,
+    "max_drawdown_pct": 34.03469236201779,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "net_without_top3": 0.0,
+    "fees": 0,
+    "avg_hold_days": 0.0
+   },
+   "BTC_only": {
+    "final_equity": 56309.898207911654,
+    "net_pnl": 46309.898207911654,
+    "return_pct": 463.0989820791165,
+    "sharpe": 2.0128313518823377,
+    "max_drawdown_pct": 26.15137505386781,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "net_without_top3": 0.0,
+    "fees": 0,
+    "avg_hold_days": 0.0
+   },
+   "ETH_only": {
+    "final_equity": 27776.758849728885,
+    "net_pnl": 17776.758849728885,
+    "return_pct": 177.76758849728887,
+    "sharpe": 1.181472661962596,
+    "max_drawdown_pct": 45.256101161188745,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "net_without_top3": 0.0,
+    "fees": 0,
+    "avg_hold_days": 0.0
+   }
+  },
+  "validation/x3": {
+   "basket_50_50": {
+    "final_equity": 41946.739532801636,
+    "net_pnl": 31946.739532801636,
+    "return_pct": 319.4673953280163,
+    "sharpe": 1.7007709555416375,
+    "max_drawdown_pct": 34.03469236201779,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "net_without_top3": 0.0,
+    "fees": 0,
+    "avg_hold_days": 0.0
+   },
+   "BTC_only": {
+    "final_equity": 56180.533651770835,
+    "net_pnl": 46180.533651770835,
+    "return_pct": 461.8053365177084,
+    "sharpe": 2.0104761806840568,
+    "max_drawdown_pct": 26.1513750538678,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "net_without_top3": 0.0,
+    "fees": 0,
+    "avg_hold_days": 0.0
+   },
+   "ETH_only": {
+    "final_equity": 27712.94541383244,
+    "net_pnl": 17712.94541383244,
+    "return_pct": 177.1294541383244,
+    "sharpe": 1.1794237974048338,
+    "max_drawdown_pct": 45.256101161188745,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "net_without_top3": 0.0,
+    "fees": 0,
+    "avg_hold_days": 0.0
+   }
+  },
+  "final_test/x1": {
+   "basket_50_50": {
+    "final_equity": 7507.097835261271,
+    "net_pnl": -2492.902164738729,
+    "return_pct": -24.929021647387295,
+    "sharpe": -0.03867548195721731,
+    "max_drawdown_pct": 59.9552916378004,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "net_without_top3": 0.0,
+    "fees": 0,
+    "avg_hold_days": 0.0
+   },
+   "BTC_only": {
+    "final_equity": 8271.756257646657,
+    "net_pnl": -1728.243742353343,
+    "return_pct": -17.282437423533427,
+    "sharpe": -0.026453813230131847,
+    "max_drawdown_pct": 52.9717659135106,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "net_without_top3": 0.0,
+    "fees": 0,
+    "avg_hold_days": 0.0
+   },
+   "ETH_only": {
+    "final_equity": 6742.439412875885,
+    "net_pnl": -3257.560587124115,
+    "return_pct": -32.57560587124115,
+    "sharpe": 0.026509875858992938,
+    "max_drawdown_pct": 67.55345017766713,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "net_without_top3": 0.0,
+    "fees": 0,
+    "avg_hold_days": 0.0
+   }
+  },
+  "final_test/x2": {
+   "basket_50_50": {
+    "final_equity": 7489.851321052338,
+    "net_pnl": -2510.148678947662,
+    "return_pct": -25.101486789476624,
+    "sharpe": -0.04108817395872973,
+    "max_drawdown_pct": 59.9552916378004,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "net_without_top3": 0.0,
+    "fees": 0,
+    "avg_hold_days": 0.0
+   },
+   "BTC_only": {
+    "final_equity": 8252.753046957134,
+    "net_pnl": -1747.2469530428662,
+    "return_pct": -17.472469530428658,
+    "sharpe": -0.029391172056247673,
+    "max_drawdown_pct": 52.9717659135106,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "net_without_top3": 0.0,
+    "fees": 0,
+    "avg_hold_days": 0.0
+   },
+   "ETH_only": {
+    "final_equity": 6726.949595147543,
+    "net_pnl": -3273.050404852457,
+    "return_pct": -32.730504048524566,
+    "sharpe": 0.02467509891897762,
+    "max_drawdown_pct": 67.55345017766713,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "net_without_top3": 0.0,
+    "fees": 0,
+    "avg_hold_days": 0.0
+   }
+  },
+  "final_test/x3": {
+   "basket_50_50": {
+    "final_equity": 7472.644376579964,
+    "net_pnl": -2527.355623420036,
+    "return_pct": -25.273556234200356,
+    "sharpe": -0.043497963747981726,
+    "max_drawdown_pct": 59.955291637800414,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "net_without_top3": 0.0,
+    "fees": 0,
+    "avg_hold_days": 0.0
+   },
+   "BTC_only": {
+    "final_equity": 8233.793436500773,
+    "net_pnl": -1766.2065634992268,
+    "return_pct": -17.662065634992263,
+    "sharpe": -0.032325104083234385,
+    "max_drawdown_pct": 52.97176591351062,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "net_without_top3": 0.0,
+    "fees": 0,
+    "avg_hold_days": 0.0
+   },
+   "ETH_only": {
+    "final_equity": 6711.495316659155,
+    "net_pnl": -3288.504683340845,
+    "return_pct": -32.88504683340845,
+    "sharpe": 0.02284231879540685,
+    "max_drawdown_pct": 67.55345017766713,
+    "trades": 0,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "net_without_top3": 0.0,
+    "fees": 0,
+    "avg_hold_days": 0.0
+   }
+  }
+ },
+ "rebalances": {
+  "tuning/x1": 15,
+  "tuning/x2": 15,
+  "tuning/x3": 15,
+  "validation/x1": 3,
+  "validation/x2": 3,
+  "validation/x3": 3,
+  "final_test/x1": 7,
+  "final_test/x2": 7,
+  "final_test/x3": 7
+ },
+ "info_validation_x1": {
+  "band10": {
+   "final_equity": 40938.23828384743,
+   "net_pnl": 30938.23828384743,
+   "return_pct": 309.38238283847426,
+   "sharpe": 1.6630846562082184,
+   "max_drawdown_pct": 34.95617496306811,
+   "trades": 4,
+   "profit_factor": Infinity,
+   "win_rate_pct": 100.0,
+   "net_without_top3": 1731.2834906863845,
+   "fees": 66.37041164736557,
+   "avg_hold_days": 365.0,
+   "rebalances": 1
+  },
+  "monthly": {
+   "final_equity": 40285.272514077085,
+   "net_pnl": 30285.272514077085,
+   "return_pct": 302.8527251407708,
+   "sharpe": 1.6420195676240028,
+   "max_drawdown_pct": 35.575698132381895,
+   "trades": 48,
+   "profit_factor": 2.4286099303454884,
+   "win_rate_pct": 68.75,
+   "net_without_top3": 12362.763264780266,
+   "fees": 77.08842796301425,
+   "avg_hold_days": 30.416666666666668,
+   "rebalances": 23
+  }
+ },
+ "verdict": {
+  "checks": {
+   "1_validation_sharpe_and_dd_beat_bh_x1": false,
+   "2_validation_trades_ge_30": false,
+   "3_validation_x2_pf_gt_1_2_and_net_gt_0": true,
+   "4_validation_x1_net_without_top3_gt_0": true,
+   "5_final_x2_net_gt_0_sharpe_and_dd_beat_bh": false
+  },
+  "status": "ZAM\u00cdTNUTO"
+ }
+}

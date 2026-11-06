@@ -1,0 +1,43 @@
+name: Rebalance band backtest (PAPER research, public data only)
+# Jen výzkumná větev. Žádné secrets, žádný Render, žádné objednávky.
+# Výsledky (trades.csv, results.json, RESULTS.md, data_source.json) commitne zpět do stejné větve.
+on:
+  push:
+    branches: ["research/rebalance-band-*"]
+    paths:
+      - ".github/workflows/rebalance-band.yml"
+      - "research/rebalance_band/run.py"
+      - "tests/test_rebalance_band.py"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install pytest
+      - name: Mechanics tests (synthetic, not profitability evidence)
+        run: python -m pytest -q -p no:cacheprovider tests/test_rebalance_band.py
+      - name: Backtest per PROTOCOL.md
+        run: |
+          set -o pipefail
+          python -m research.rebalance_band.run --cache /tmp/vision-1d --outdir research/rebalance_band | tee summary.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rebalance-band
+          path: research/rebalance_band/
+      - name: Commit results to this research branch
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          git add research/rebalance_band/
+          git diff --cached --quiet && exit 0
+          git commit -m "Rebalance band: backtest results (run ${GITHUB_RUN_ID}) [skip ci]"
+          git push origin HEAD:${GITHUB_REF_NAME}
