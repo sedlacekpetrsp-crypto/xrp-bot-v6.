@@ -74,3 +74,9 @@ round-trip náklady 0,23 % (×1) proti krátkodobému pohybu.
 ## Výstupy
 `trades.csv`, `results.json`, `RESULTS.md`, `data_source.json`; řádek v `automation/STRATEGY_REGISTRY.md`; draft PR do
 `research/autopilot`. Spuštění: commit UTC času do `research/spot_led/RUN_REQUEST` (nejdřív 2026-11-07 UTC, denní limit).
+
+## Dodatek 0 (2026-11-06, před kódem i před stažením jakýchkoli dat)
+- Cena pro funding: perp open svíčky v čase události; chybí-li, close poslední dřívější perp svíčky.
+- Equity pro velikost pozice = počáteční kapitál + net P/L obchodů uzavřených nejpozději v čase vstupu.
+- Výběr varianty při shodě zisku = první v pořadí mřížky. `trades.csv` nad 50 MB se uloží jako `trades.csv.gz`.
+Pravidla, dělení ani kritéria se nemění.
