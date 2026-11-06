@@ -291,12 +291,31 @@ def test_gate_refuses_performance_without_semantics_decision(tmp_path, monkeypat
     with pytest.raises(SystemExit) as e:
         sl.main(["--outdir", str(tmp_path)])
     assert e.value.code == 3 and called == []
-    for bad in ({"semantics": "C", "evidence": "x", "decided_utc": "x"}, {"semantics": "A"},
-                {"semantics": "B", "evidence": "x", "decided_utc": "x"}):
+    ok = {"semantics": "B", "evidence": "run 1", "decided_utc": "t", "performance_hold": False}
+    for bad in ({**ok, "semantics": "C"}, {"semantics": "B"}, {**ok, "semantics": "A"},
+                {**ok, "performance_hold": True}, {k: v for k, v in ok.items() if k != "performance_hold"}):
         (tmp_path / sl.SEMANTICS_FILE).write_text(json.dumps(bad))
         assert sl.semantics_gate(tmp_path)[0] is False
-    (tmp_path / sl.SEMANTICS_FILE).write_text(json.dumps({"semantics": "A", "evidence": "run 1", "decided_utc": "t"}))
+    (tmp_path / sl.SEMANTICS_FILE).write_text(json.dumps(ok))
     assert sl.semantics_gate(tmp_path) == (True, "ok")
+
+
+def test_committed_decision_keeps_performance_blocked():
+    from pathlib import Path
+    import json
+    d = json.loads((Path(sl.__file__).parent / sl.SEMANTICS_FILE).read_text())
+    assert d["semantics"] == "B" == sl.IMPLEMENTED_SEMANTICS and d["performance_hold"] is True
+    assert sl.semantics_gate(Path(sl.__file__).parent)[0] is False
+
+
+def test_semantics_B_mid_period_change_tolerated_and_real_gap_flagged():
+    # 8 h → 4 h (záznam 20:00 nese 4) → 2 h se změnou uprostřed úseku (00:00 → 04:00 rozestup 4, záznam nese 2)
+    seq = [(0, 8), (8, 8), (16, 8), (20, 4), (24, 4), (28, 2), (30, 2), (32, 2)]
+    f = {T0 + h * H: (0.0001, float(iv)) for h, iv in seq}
+    m = sl.prepare({}, {}, f)
+    assert sl.funding_chain_gaps(m, T0, T0 + 32 * H) == 0
+    del f[T0 + 30 * H]
+    assert sl.funding_chain_gaps(sl.prepare({}, {}, f), T0, T0 + 32 * H) == 1
 
 
 def test_audit_only_mode_writes_funding_audit(tmp_path, monkeypatch):
@@ -310,3 +329,4 @@ def test_audit_only_mode_writes_funding_audit(tmp_path, monkeypatch):
     assert not (tmp_path / "results.json").exists()
     assert len(a["interval_transitions"]) == 1 and a["interval_transitions"][0]["spacing_h"] == 4.0
     assert a["spacing_mismatch_semantics_A"] == 1 and a["spacing_mismatch_semantics_B"] == 0
+    assert a["spacing_mismatch_semantics_B_tolerant_implemented"] == 0

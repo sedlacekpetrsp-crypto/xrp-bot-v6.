@@ -114,3 +114,11 @@ Opravy a upřesnění implementace (signál, mřížka, dělení ani kritéria s
   pro sémantiku A i B), žádná výkonnost.
 - Výkonnost se odmítne (kód 3, `PERFORMANCE_REFUSED`) ještě před stažením dat, pokud ve složce chybí `FUNDING_SEMANTICS.json`
   (`semantics` A/B, `evidence`, `decided_utc`) nebo neodpovídá implementaci (A).
+
+## Dodatek 4 (2026-11-06 ~17:20 UTC, rozhodnutí o sémantice; výkonnost dál nespuštěna)
+- Audit run 42256137116 (commit `3b5a838`; automatická zpráva chybně říká „backtest results“, obsahuje jen `data_audit.json`
+  a `data_source.json`): BTCUSDT / ETHUSDT / XRPUSDT 2020-01…2026-10 bez jediného přechodu `funding_interval_hours`
+  (A i B 0 nesouladů). 5m mezery: BTC/ETH spot 462, perp 288 chybějících svíček; XRP spot 462, perp 1 728.
+- Sémantika převzata z auditu PR #29: **B s tolerancí změny uprostřed úseku** (`FUNDING_SEMANTICS.json`); kód přepnut z A na B.
+  Pro tato 3 aktiva jsou A i B v datech totožné.
+- Zámek výkonnosti vyžaduje `performance_hold = false`; zapsané rozhodnutí má `true` (pokyn vlastníka) ⇒ výpočet odmítnut.

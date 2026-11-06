@@ -186,20 +186,29 @@ def perp_price_at(m, t):
     return m["perp"][ts][1], t - (ts + BAR), True
 
 
+def spacing_ok(prev_ts, prev_iv, ts, iv):
+    """Sémantika B (rozhodnutí z data_audit.json, viz FUNDING_SEMANTICS.json): `funding_interval_hours` záznamu = nastavení
+    platné v okamžiku jeho vypořádání, tj. délka úseku KONČÍCÍHO touto událostí. Při změně nastavení uprostřed úseku smí
+    rozestup odpovídat intervalu kterékoli ze dvou sousedních událostí (SOLUSDT 2022-11-10 00:00 → 04:00)."""
+    sp = ts - prev_ts
+    return sp == iv * HOUR_MS or (iv != prev_iv and sp == prev_iv * HOUR_MS)
+
+
 def funding_chain_gaps(m, lo, hi):
-    """Úplnost funding řady pro (lo, hi]: chybí předchozí událost ≤ lo (None), rozestup ≠ interval dřívější události,
-    nebo chybí očekávaná událost ≤ hi. Chybějící událost se nikdy nepočítá jako nulová sazba — jen se označí."""
+    """Počet nesouvislostí funding řady pokrývající (lo, hi] podle sémantiky B: chybí předchozí událost ≤ lo (None),
+    rozestup sousedních událostí neodpovídá (spacing_ok), nebo po poslední události ≤ hi chybí další, očekávaná
+    nejpozději za interval poslední události (konzervativní: změna nastavení po ní se může projevit jako mezera)."""
     fts = m["fts"]
     i = bisect.bisect_right(fts, lo) - 1
     if i < 0:
         return None
     gaps, k = 0, i
     while k + 1 < len(fts) and fts[k + 1] <= hi:
-        if fts[k + 1] - fts[k] != m["finterval"][fts[k]] * HOUR_MS:
+        if not spacing_ok(fts[k], m["finterval"][fts[k]], fts[k + 1], m["finterval"][fts[k + 1]]):
             gaps += 1
         k += 1
     if fts[k] + m["finterval"][fts[k]] * HOUR_MS <= hi:
-        gaps += 1
+        gaps += 1  # očekávaná událost ≤ hi chybí
     return gaps
 
 
@@ -467,7 +476,7 @@ def trade_row(period, t):
             "net_pnl": round(t["net_pnl"], 6)}
 
 
-IMPLEMENTED_SEMANTICS = "A"  # funding_chain_gaps: rozestup podle intervalu DŘÍVĚJŠÍ události
+IMPLEMENTED_SEMANTICS = "B"  # spacing_ok: interval záznamu = úsek končící událostí, tolerance při změně nastavení
 SEMANTICS_FILE = "FUNDING_SEMANTICS.json"
 
 
@@ -487,6 +496,8 @@ def semantics_gate(outdir):
         return False, f"{SEMANTICS_FILE}: chybí evidence nebo decided_utc"
     if d["semantics"] != IMPLEMENTED_SEMANTICS:
         return False, f"rozhodnutá sémantika {d['semantics']} ≠ implementovaná {IMPLEMENTED_SEMANTICS} — nejdřív upravit kód"
+    if d.get("performance_hold", True) is not False:
+        return False, "performance_hold: výpočet výkonnosti pozastaven vlastníkem (uvolní jen vlastník: performance_hold=false)"
     return True, "ok"
 
 
@@ -494,17 +505,19 @@ def funding_audit(m):
     """Přechody funding_interval_hours a nesoulady rozestupu pro sémantiku A (interval od události k další)
     a B (interval úseku končícího událostí). Jen diagnostika; rozhoduje člověk z konkrétních přechodů."""
     fts = m["fts"]
-    trans, mis_a, mis_b = [], 0, 0
+    trans, mis_a, mis_b, mis_bt = [], 0, 0, 0
     for k in range(len(fts) - 1):
         sp = (fts[k + 1] - fts[k]) / HOUR_MS
         ia, ib = m["finterval"][fts[k]], m["finterval"][fts[k + 1]]
         mis_a += sp != ia
         mis_b += sp != ib
+        mis_bt += not spacing_ok(fts[k], ia, fts[k + 1], ib)
         if ia != ib:
             trans.append({"at": iso(fts[k + 1]), "from_h": ia, "to_h": ib, "spacing_h": sp,
                           "context": [(iso(fts[j]), m["finterval"][fts[j]]) for j in range(max(0, k - 2), min(len(fts), k + 4))]})
     return {"funding_events": len(fts), "interval_transitions": trans,
-            "spacing_mismatch_semantics_A": mis_a, "spacing_mismatch_semantics_B": mis_b}
+            "spacing_mismatch_semantics_A": mis_a, "spacing_mismatch_semantics_B": mis_b,
+            "spacing_mismatch_semantics_B_tolerant_implemented": mis_bt}
 
 
 def main(argv=None):
