@@ -94,3 +94,17 @@ Opravy a upřesnění implementace (signál, mřížka, dělení ani kritéria s
   validace a závěrečný test ×1/×2, jen informativně. Je-li výsledek „prošlo“, ale latence +5 min dává ve validaci ×2
   ztrátu, nebo existují výstupy `data_gap = 2` ⇒ verdikt „NEROZHODNUTO“ do ruční revize.
 - „Walk-forward“ 2021–24 = roční stabilita fixní varianty (pro 2021–22 ne čistý OOS).
+
+## Dodatek 2 (2026-11-06 ~17:15 UTC, po oponentuře ChatGPT kolo 3; stále před stažením dat)
+- **Jednotná konvence dne** pro strategii i benchmark: den d = [d 00:00, d+1 00:00). Ocenění na konci dne proběhne
+  **před** událostmi v přesně 00:00 — funding, výstup i vstup v 00:00 patří novému dni; pozice otevřená v okamžiku
+  konce dne (vstup < konec ≤ výstup) se ocení close poslední uzavřené svíčky dne a fundingem t < konec.
+- **Nikdy budoucí cena:** `day_close`, `close_before` i `perp_price_at` berou jen svíčky uzavřené do daného času;
+  prázdný prefix ⇒ None. Benchmark kupuje aktivum za open první svíčky v [začátek, začátek + 60 min], jinak je aktivum
+  po celé období hotovost (`unavailable_at_start`).
+- **Náhradní ceny s auditem:** každá náhrada má účel, stáří a označení obchodu (`funding_price_fallbacks`, max. stáří,
+  `stale_mtm`); stáří > 60 min ⇒ obchod `unevaluable`. Totéž u benchmarku (`stale_valuations`, `funding_price_fallbacks`).
+- **Úplnost fundingu:** `parse_funding` drží `funding_interval_hours`; každý obchod má `funding_gaps` (chybějící očekávaná
+  událost ve držení se neodhaduje jako nula, jen se označí). Sémantika pole stejná jako v PR #29 (A) — o ní rozhodne
+  datový audit PR #29 (`data_audit.json`) před během výkonnosti; R9 se spustí až po tomto rozhodnutí.
+- Cokoli z výše uvedeného nenulové + „prošlo“ ⇒ verdikt „NEROZHODNUTO“.

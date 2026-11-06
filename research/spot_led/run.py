@@ -83,7 +83,8 @@ def normalize_funding_ts(ts):
 
 
 def parse_funding(payload):
-    return [(normalize_funding_ts(_ms(int(r[0]))), float(r[2])) for r in _csv_rows(payload)]
+    """→ [(normalizovaný čas, sazba, funding_interval_hours)] (dodatek 2: interval kvůli kontrole úplnosti)."""
+    return [(normalize_funding_ts(_ms(int(r[0]))), float(r[2]), float(r[1])) for r in _csv_rows(payload)]
 
 
 def urls(asset):
@@ -116,7 +117,7 @@ def load(cache, fetcher=fetch):
             present[kind].append(ym)
             rows = parsers[kind](payload)
             for r in rows:
-                raw[kind][r[0]] = r[1:] if kind != "fr" else r[1]
+                raw[kind][r[0]] = r[1:] if kind != "fr" else (r[1], r[2])
             manifest.append({"url": url, "sha256": hashlib.sha256(payload).hexdigest(), "rows": len(rows)})
         for kind in raw:
             if present[kind]:
@@ -129,10 +130,12 @@ def load(cache, fetcher=fetch):
 
 
 def prepare(spot, perp, fund):
-    """spot {ts: (close, vol, taker_buy)}, perp {ts: (open, close)}, fund {ts: rate}."""
+    """spot {ts: (close, vol, taker_buy)}, perp {ts: (open, close)}, fund {ts: rate | (rate, interval_h)}.
+    Holá sazba (syntetické testy) = interval 8 h."""
     perp_ts = sorted(perp)
-    return {"spot": spot, "perp": perp, "perp_ts": perp_ts, "funding": dict(sorted(fund.items())),
-            "features": features(spot, perp)}
+    f = {ts: (v if isinstance(v, tuple) else (v, 8.0)) for ts, v in sorted(fund.items())}
+    return {"spot": spot, "perp": perp, "perp_ts": perp_ts, "funding": {ts: v[0] for ts, v in f.items()},
+            "finterval": {ts: v[1] for ts, v in f.items()}, "fts": list(f), "features": features(spot, perp)}
 
 
 def features(spot, perp):
@@ -167,15 +170,37 @@ def date_of(ms):
     return datetime.fromtimestamp(ms / 1000, tz=timezone.utc).date()
 
 
+MAX_PRICE_AGE_MS = 60 * 60_000  # dodatek 2: náhradní cena starší než 60 min ⇒ obchod/den nehodnotitelný
+
+
 def perp_price_at(m, t):
-    """open svíčky v t; chybí-li, close poslední dřívější svíčky."""
+    """(cena, stáří ms, náhrada?): open svíčky v t (stáří 0, bez náhrady); chybí-li, close poslední svíčky UZAVŘENÉ
+    do t (stáří = t − čas uzavření, náhrada = True). Žádná dřívější svíčka ⇒ None — nikdy budoucí cena (dodatek 2)."""
     b = m["perp"].get(t)
     if b is not None:
-        return b[0]
-    i = bisect.bisect_left(m["perp_ts"], t) - 1
+        return b[0], 0, False
+    i = bisect.bisect_right(m["perp_ts"], t - BAR) - 1
     if i < 0:
-        raise KeyError(t)
-    return m["perp"][m["perp_ts"][i]][1]
+        return None
+    ts = m["perp_ts"][i]
+    return m["perp"][ts][1], t - (ts + BAR), True
+
+
+def funding_chain_gaps(m, lo, hi):
+    """Úplnost funding řady pro (lo, hi]: chybí předchozí událost ≤ lo (None), rozestup ≠ interval dřívější události,
+    nebo chybí očekávaná událost ≤ hi. Chybějící událost se nikdy nepočítá jako nulová sazba — jen se označí."""
+    fts = m["fts"]
+    i = bisect.bisect_right(fts, lo) - 1
+    if i < 0:
+        return None
+    gaps, k = 0, i
+    while k + 1 < len(fts) and fts[k + 1] <= hi:
+        if fts[k + 1] - fts[k] != m["finterval"][fts[k]] * HOUR_MS:
+            gaps += 1
+        k += 1
+    if fts[k] + m["finterval"][fts[k]] * HOUR_MS <= hi:
+        gaps += 1
+    return gaps
 
 
 MAX_EXIT_DELAY_MS = 60 * 60_000  # dodatek 1: výstup se smí kvůli mezeře zpozdit nejvýš o 60 min
@@ -217,23 +242,35 @@ def candidates(m, asset, start_ms, end_ms, th, hold, delay_bars=0):
             exit_px = m["perp"][m["perp_ts"][k]][1]
             gap = 2
         # funding: události s entry_t < t < exit_t (seznam pro denní ocenění přes půlnoc)
-        f_events = []
+        f_events, f_fallbacks, f_max_age, unevaluable = [], 0, 0, 0
         t = (entry_t // HOUR_MS + 1) * HOUR_MS
         while t < exit_t:
             if t in m["funding"]:
-                f_events.append((t, -side * m["funding"][t] * perp_price_at(m, t)))
+                pa = perp_price_at(m, t)
+                if pa is None or pa[1] > MAX_PRICE_AGE_MS:
+                    unevaluable = 1
+                if pa is not None:
+                    f_fallbacks += pa[2]
+                    f_max_age = max(f_max_age, pa[1])
+                    f_events.append((t, -side * m["funding"][t] * pa[0]))
             t += HOUR_MS
+        fg = funding_chain_gaps(m, entry_t, exit_t - 1)
         out.append({"asset": asset, "side": side, "signal_ts": T, "entry_ts": entry_t, "exit_ts": exit_t,
                     "entry": m["perp"][entry_t][0], "exit": exit_px, "funding_unit": sum(x for _, x in f_events),
-                    "funding_events": f_events, "share": share, "r_spot": rs, "r_perp": rp, "data_gap": gap})
+                    "funding_events": f_events, "share": share, "r_spot": rs, "r_perp": rp, "data_gap": gap,
+                    "funding_price_fallbacks": f_fallbacks, "funding_price_max_age_min": f_max_age / 60_000,
+                    "funding_gaps": 1 if fg is None else fg, "unevaluable": unevaluable})
         free_from = exit_t
     return out
 
 
 def close_before(m, t):
-    """close poslední perp svíčky uzavřené nejpozději v t (svíčka s open ≤ t − 5 min)."""
+    """(close, stáří ms) poslední perp svíčky uzavřené nejpozději v t; žádná ⇒ None (nikdy budoucí cena)."""
     i = bisect.bisect_right(m["perp_ts"], t - BAR) - 1
-    return m["perp"][m["perp_ts"][i]][1] if i >= 0 else None
+    if i < 0:
+        return None
+    ts = m["perp_ts"][i]
+    return m["perp"][ts][1], t - (ts + BAR)
 
 
 def simulate(market, start, end, th, hold, mult, variant="", delay_bars=0):
@@ -259,15 +296,20 @@ def simulate(market, start, end, th, hold, mult, variant="", delay_bars=0):
               "gross_bp": x["side"] * (x["exit"] / x["entry"] - 1) * 1e4}
         trades.append(tr)
         heapq.heappush(pending, (x["exit_ts"], len(trades), tr))
+    # Jednotná konvence dne (dodatek 2, stejná pro benchmark): den d = [d 00:00, d+1 00:00); ocenění na konci dne
+    # proběhne PŘED událostmi v přesně 00:00 (funding, výstup, vstup v 00:00 patří novému dni). Pozice otevřená v
+    # okamžiku konce dne (vstup < konec ≤ výstup) se ocení close poslední uzavřené svíčky dne.
     realized_by_day, overnight = {}, {}
     for tr in trades:
-        d = date_of(tr["exit_ts"] - 1)  # výstup přesně v 00:00 patří do dne, který právě skončil
+        d = date_of(tr["exit_ts"])
         realized_by_day[d] = realized_by_day.get(d, 0.0) + tr["net_pnl"]
+        tr["stale_mtm"] = 0
         day_end = (tr["entry_ts"] // DAY_MS + 1) * DAY_MS
-        while day_end < tr["exit_ts"]:  # otevřeno přes půlnoc
-            p = close_before(market[tr["asset"]], day_end)
+        while day_end <= tr["exit_ts"]:
+            p, age = close_before(market[tr["asset"]], day_end)
+            tr["stale_mtm"] += age > MAX_PRICE_AGE_MS
             mtm = tr["side"] * tr["qty"] * (p - tr["entry"]) - tr["cost_in"] + \
-                tr["qty"] * sum(v for t, v in tr["funding_events"] if t <= day_end)
+                tr["qty"] * sum(v for t, v in tr["funding_events"] if t < day_end)
             dd = date_of(day_end - 1)
             overnight[dd] = overnight.get(dd, 0.0) + mtm
             day_end += DAY_MS
@@ -309,6 +351,11 @@ def trade_metrics(trades, start, end):
             "short_trades": sum(1 for t in trades if t["side"] == -1),
             "data_gap_exits": sum(1 for t in trades if t["data_gap"]),
             "data_gap_unrealizable_exits": sum(1 for t in trades if t["data_gap"] == 2),
+            "funding_price_fallback_trades": sum(1 for t in trades if t["funding_price_fallbacks"]),
+            "funding_price_max_age_min": max([t["funding_price_max_age_min"] for t in trades], default=0),
+            "funding_gap_trades": sum(1 for t in trades if t["funding_gaps"]),
+            "unevaluable_trades": sum(t["unevaluable"] for t in trades),
+            "stale_mtm_trades": sum(1 for t in trades if t.get("stale_mtm")),
             "avg_gross_bp": round(sum(t["gross_bp"] for t in trades) / len(trades), 3) if trades else None,
             "trades_per_year_per_asset": {a: round(sum(1 for t in trades if t["asset"] == a) / years, 1)
                                           for a in ASSETS}}
@@ -321,34 +368,49 @@ def run(market, start, end, mult, th, hold, variant, delay_bars=0):
 
 
 def day_close(m, d):
-    t = ms_of(d) + DAY_MS
-    i = bisect.bisect_left(m["perp_ts"], t) - 1
-    return m["perp"][m["perp_ts"][i]][1]
+    """(close, stáří ms) poslední svíčky uzavřené do konce dne d; prázdný prefix ⇒ None (oprava: dřív index −1 = budoucí cena)."""
+    return close_before(m, ms_of(d) + DAY_MS)
 
 
 def buy_hold(market, start, end, mult):
-    """B&H 3 perpů stejnými vahami, 1× bez páky, včetně skutečného fundingu (long platí kladnou sazbu)."""
+    """B&H 3 perpů stejnými vahami, 1× bez páky, včetně skutečného fundingu (long platí kladnou sazbu).
+    Konvence dne jako u strategie: událost v přesně 00:00 patří novému dni. Nákup za open první svíčky v [start, start + 60 min];
+    aktivum bez svíčky v tomto okně = hotovost po celé období (`unavailable_at_start`), nikdy pozdější/budoucí cena."""
     c = (FEE + SLIP) * mult
     t0 = ms_of(start)
     t_end = ms_of(end) + DAY_MS
-    qty = {}
+    share = START_EQUITY / len(ASSETS)
+    qty, cash, unavailable = {}, 0.0, []
     for a in ASSETS:
         m = market[a]
         j = bisect.bisect_left(m["perp_ts"], t0)
-        qty[a] = START_EQUITY / len(ASSETS) * (1 - c) / m["perp"][m["perp_ts"][j]][0]
-    events = sorted((t, a) for a in ASSETS for t in market[a]["funding"] if t0 < t < t_end)
-    k, funding, curve, d = 0, 0.0, {}, start
+        if j < len(m["perp_ts"]) and m["perp_ts"][j] <= t0 + MAX_PRICE_AGE_MS:
+            qty[a] = share * (1 - c) / m["perp"][m["perp_ts"][j]][0]
+        else:
+            cash += share
+            unavailable.append(a)
+    events = sorted((t, a) for a in qty for t in market[a]["funding"] if t0 < t < t_end)
+    k, funding, curve, d, stale, fb = 0, 0.0, {}, start, 0, 0
     while d <= end:
         t_day = ms_of(d) + DAY_MS
         while k < len(events) and events[k][0] < t_day:
             te, a = events[k]
-            funding -= market[a]["funding"][te] * qty[a] * perp_price_at(market[a], te)
+            pa = perp_price_at(market[a], te)
+            fb += pa[2]
+            stale += pa[1] > MAX_PRICE_AGE_MS
+            funding -= market[a]["funding"][te] * qty[a] * pa[0]
             k += 1
-        curve[d] = funding + sum(q * day_close(market[a], d) for a, q in qty.items())
+        val = 0.0
+        for a, q in qty.items():
+            p, age = day_close(market[a], d)
+            stale += age > MAX_PRICE_AGE_MS
+            val += q * p
+        curve[d] = cash + funding + val
         d += timedelta(days=1)
-    curve[end] = funding + (curve[end] - funding) * (1 - c)
+    curve[end] = cash + funding + (curve[end] - cash - funding) * (1 - c)
     cm, _ = curve_metrics(curve, START_EQUITY)
-    return {**cm, "net_pnl": round(curve[end] - START_EQUITY, 4), "funding": round(funding, 4)}
+    return {**cm, "net_pnl": round(curve[end] - START_EQUITY, 4), "funding": round(funding, 4),
+            "unavailable_at_start": unavailable, "stale_valuations": stale, "funding_price_fallbacks": fb}
 
 
 def safe_dsr(rets, n, var_annual):
@@ -400,6 +462,8 @@ def trade_row(period, t):
             "taker_buy_share": round(t["share"], 6), "r_spot": round(t["r_spot"], 6), "r_perp": round(t["r_perp"], 6),
             "qty": round(t["qty"], 10), "notional": round(t["notional"], 6), "gross": round(t["gross"], 6),
             "funding": round(t["funding"], 6), "costs": round(t["costs"], 6), "data_gap": t["data_gap"],
+            "funding_price_fallbacks": t["funding_price_fallbacks"], "funding_gaps": t["funding_gaps"],
+            "unevaluable": t["unevaluable"], "stale_mtm": t.get("stale_mtm", 0),
             "net_pnl": round(t["net_pnl"], 6)}
 
 
@@ -452,9 +516,12 @@ def main(argv=None):
     robust = {"dsr_ge_0_95": dsr["dsr"] is not None and dsr["dsr"] >= 0.95, "neighbors_val_x2_profit": all(v > 0 for v in nb.values()),
               "walk_forward_ge_3_of_4": wf_pos >= 3}
     verdict = ("KANDIDÁT NA FORWARD PAPER" if (passed_a or passed_b) and all(robust.values()) else "ZAMÍTNUTO")
-    gap_flags = sum(res[p]["x1"]["data_gap_unrealizable_exits"] for p in PERIODS)
+    gap_flags = sum(res[p]["x1"][k] for p in PERIODS for k in (
+        "data_gap_unrealizable_exits", "funding_price_fallback_trades", "funding_gap_trades", "unevaluable_trades",
+        "stale_mtm_trades")) + sum(bh[p]["x1"]["stale_valuations"] + len(bh[p]["x1"]["unavailable_at_start"])
+                                   for p in PERIODS)
     if verdict.startswith("KANDIDÁT") and (gap_flags or latency["validation"]["x2"]["net_pnl"] <= 0):
-        verdict = "NEROZHODNUTO — nerealizovatelné výstupy kvůli mezerám nebo ztráta při latenci +5 min, nutná revize"
+        verdict = "NEROZHODNUTO — problémy dat (mezery, náhradní/zastaralé ceny, neúplný funding) nebo ztráta při latenci +5 min"
     payload = {"protocol": "research/spot_led/PROTOCOL.md", "chosen": ctag, "tuning_selection_x1": tune,
                "strategy": results, "buy_hold_equal_3": bh, "walk_forward_x2": wf, "neighbors_val_x2": nb,
                "track_a": track_a, "track_b": track_b, "passed_a": passed_a, "passed_b": passed_b,

@@ -199,3 +199,85 @@ def test_buy_hold_accounts_funding_sign():
 def test_undefined_dsr_is_null_not_zero():
     out = sl.safe_dsr([0.0] * 731, 159, 0.5)
     assert out["dsr"] is None and out["undefined_reason"]
+
+
+# ---- oponentura ChatGPT kolo 3 ----
+def _overnight_market(fund=None, drop=()):
+    i_sig = 24 * 12 - 3  # signál 23:45, vstup 23:50, výstup 00:05
+    m = market_with({i_sig: (100.5, 0.8, 100.0)}, n_bars=3 * 288, fund=fund, drop_perp=drop)
+    return m
+
+
+def test_K3_2_midnight_funding_belongs_to_new_day_consistently():
+    m = _overnight_market(fund={T0 + sl.DAY_MS: 0.01})
+    trades, curve = sl.simulate(m, START, date(2021, 1, 2), 0.65, 15, 1)
+    tr = trades[0]
+    assert curve[START] == pytest.approx(9998.85)  # ocenění před událostmi v 00:00
+    assert curve[date(2021, 1, 2)] == pytest.approx(sl.START_EQUITY + tr["net_pnl"])
+    assert tr["funding"] == pytest.approx(-0.01 * tr["qty"] * 100.0)
+    # benchmark se stejnou konvencí: funding v 00:00 dne 2 se projeví až ve dni 2
+    bh_m = market_with(n_bars=3 * 288, fund={T0 + sl.DAY_MS: 0.01})
+    b1 = sl.buy_hold(bh_m, START, START, 1)
+    b2 = sl.buy_hold(bh_m, START, date(2021, 1, 2), 1)
+    assert b1["funding"] == 0.0 and b2["funding"] < 0
+
+
+def test_K3_2_exit_exactly_at_midnight_and_entry_at_midnight():
+    # vstup 23:45, výstup přesně 00:00 (15 min): den 1 = ocenění otevřené pozice, realizace ve dni 2
+    i_sig = 24 * 12 - 4
+    m = market_with({i_sig: (100.5, 0.8, 100.0)}, n_bars=3 * 288)
+    m["BTCUSDT"]["perp"][T0 + (24 * 12 - 1) * BAR] = (100.0, 105.0)
+    trades, curve = sl.simulate(m, START, date(2021, 1, 2), 0.65, 15, 1)
+    tr = trades[0]
+    assert tr["exit_ts"] == T0 + sl.DAY_MS
+    assert curve[START] == pytest.approx(sl.START_EQUITY + tr["qty"] * 5.0 - tr["cost_in"])
+    assert curve[date(2021, 1, 2)] == pytest.approx(sl.START_EQUITY + tr["net_pnl"])
+    # vstup přesně v 00:00 patří novému dni: den 1 beze změny
+    m2 = market_with({24 * 12 - 1: (100.5, 0.8, 100.0)}, n_bars=3 * 288)
+    t2, c2 = sl.simulate(m2, START, date(2021, 1, 2), 0.65, 15, 1)
+    assert t2[0]["entry_ts"] == T0 + sl.DAY_MS and c2[START] == sl.START_EQUITY
+
+
+def test_K3_3_day_close_never_uses_future_price():
+    perp = {T0 + sl.DAY_MS + k * BAR: (100.0, 100.0 if k == 0 else 200.0) for k in range(2 * 288)}
+    m = sl.prepare({}, perp, {})
+    assert sl.day_close(m, date(2021, 1, 1)) is None
+    assert sl.day_close(sl.prepare({}, {}, {}), date(2021, 1, 1)) is None
+    p, age = sl.day_close(m, date(2021, 1, 2))
+    assert p == 200.0 and age == 0
+
+
+def test_K3_3_benchmark_asset_unavailable_at_start_is_cash():
+    m = market_with(n_bars=2000)
+    late = {t + 3 * sl.DAY_MS: v for t, v in m["XRPUSDT"]["perp"].items()}  # první svíčka až za koncem období
+    m["XRPUSDT"] = sl.prepare(m["XRPUSDT"]["spot"], late, {})
+    b = sl.buy_hold(m, START, date(2021, 1, 2), 1)
+    assert b["unavailable_at_start"] == ["XRPUSDT"]
+    # 2/3 v aktivech (ploché ceny) − náklady, 1/3 hotovost
+    c = sl.FEE + sl.SLIP
+    assert b["net_pnl"] == pytest.approx(-(2 / 3) * sl.START_EQUITY * (1 - (1 - c) ** 2), abs=1e-3)
+
+
+def test_K3_4_funding_price_fallback_is_flagged_and_aged():
+    m = _overnight_market(fund={T0 + sl.DAY_MS: 0.01}, drop=(288,))
+    x = sl.candidates(m["BTCUSDT"], "BTCUSDT", T0, T0 + 3 * sl.DAY_MS, 0.65, 15)[0]
+    assert x["funding_price_fallbacks"] == 1 and x["funding_price_max_age_min"] == 0.0
+    assert x["unevaluable"] == 0
+    # náhrada starší než 60 min ⇒ nehodnotitelné: svíčky 23:55–01:00 chybí, výstup zpožděn na 01:05 (data_gap 1),
+    # funding v 01:00 (1h interval) by se počítal z close 23:55 ⇒ stáří 65 min
+    fund = {T0 + sl.DAY_MS: (0.01, 1.0), T0 + sl.DAY_MS + H: (0.01, 1.0)}
+    m = _overnight_market(fund=fund, drop=range(287, 301))
+    x = sl.candidates(m["BTCUSDT"], "BTCUSDT", T0, T0 + 3 * sl.DAY_MS, 0.65, 15)[0]
+    assert x["data_gap"] == 1 and x["exit_ts"] == T0 + sl.DAY_MS + H + BAR
+    assert x["funding_price_fallbacks"] == 2 and x["funding_price_max_age_min"] == 65.0 and x["unevaluable"] == 1
+
+
+def test_K3_4_missing_funding_event_is_flagged_not_zero():
+    # interval 8 h, ale událost 00:00 chybí (je jen 16:00 předchozího dne a 08:00) ⇒ mezera v úplnosti
+    fund = {T0 + 16 * H: (0.0001, 8.0), T0 + 32 * H: (0.0001, 8.0)}
+    m = _overnight_market(fund=fund)
+    x = sl.candidates(m["BTCUSDT"], "BTCUSDT", T0, T0 + 3 * sl.DAY_MS, 0.65, 15)[0]
+    assert x["funding_gaps"] == 1 and x["funding_unit"] == 0.0
+    ok = _overnight_market(fund={T0 + 16 * H: 0.0001, T0 + 24 * H: 0.0001, T0 + 32 * H: 0.0001})
+    y = sl.candidates(ok["BTCUSDT"], "BTCUSDT", T0, T0 + 3 * sl.DAY_MS, 0.65, 15)[0]
+    assert y["funding_gaps"] == 0 and y["funding_unit"] != 0.0
