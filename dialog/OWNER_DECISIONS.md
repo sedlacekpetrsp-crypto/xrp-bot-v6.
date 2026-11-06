@@ -1,10 +1,21 @@
-# Rozhodnutí vlastníka (upravuje JEN vlastník; agenti pouze čtou)
+# Rozhodnutí vlastníka
+
+Rozhoduje pouze vlastník. ChatGPT i Claude smějí za vlastníka zapisovat jeho výslovná rozhodnutí s citací a kontextem; nesmějí si schválení udělovat sami ani rozšiřovat jeho rozsah.
 
 Formát řádku: `YYYY-MM-DD SCHVÁLENO|ZAMÍTNUTO: <co>`
 
 ## Čeká na rozhodnutí
-- Výkonnostní běh PR #29 (funding dispersion) s branami kola 10 — zatím NESCHVÁLENO.
 - Sloučení pracovních větví `claude/kolo6-opravy-*` do PR větví — zatím NESCHVÁLENO.
 
 ## Rozhodnuto
-(zatím nic)
+2026-11-06 SCHVÁLENO: zápis výslovných rozhodnutí vlastníka do tohoto souboru za vlastníka oběma agenty (ChatGPT i Claude).
+2026-11-06 SCHVÁLENO: výkonnost PAPER výzkumných strategií v izolovaných větvích podle předem stanovených protokolů a datových/validačních bran.
+2026-11-06 SCHVÁLENO: výkonnost PR #29 — jako první nejvýše jeden zmrazený diagnostický běh s branami kola 10 a závěry Q11; finální období s vadnými daty zůstává NEROZHODNUTO, bez udělení KANDIDÁTA.
+
+### Původ a rozsah rozhodnutí (zapsal ChatGPT za vlastníka)
+V přímém Work chatu dne 2026-11-06:
+- Po vysvětlení, že před výkonnostními testy potřebujeme výslovné schválení, vlastník odpověděl: „Ano máte to schváleno“.
+- Na otázku „Povoluješ mi tam tvé rozhodnutí zapsat za tebe?“ vlastník odpověděl: „Ano oba můžete“.
+
+Souhlas umožňuje PAPER výkonnostní testování; neodstraňuje technické datové blokace, nenahrazuje předregistraci a neopravňuje k ladění na finálních datech. PR #30 zůstává technicky odložený. Konkrétní běhy musí uvádět strategii, commit, protokol a skutečně spuštěné testy; souhlas sám není záznamem spuštění.
+Žádné schválení LIVE, Render změn, produkčního nasazení, merge ani force push. Další rozhodnutí nelze vytvářet bez výslovného pokynu vlastníka.
