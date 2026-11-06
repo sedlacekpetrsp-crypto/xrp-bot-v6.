@@ -122,3 +122,21 @@ Opravy a upřesnění implementace (signál, mřížka, dělení ani kritéria s
 - Sémantika převzata z auditu PR #29: **B s tolerancí změny uprostřed úseku** (`FUNDING_SEMANTICS.json`); kód přepnut z A na B.
   Pro tato 3 aktiva jsou A i B v datech totožné.
 - Zámek výkonnosti vyžaduje `performance_hold = false`; zapsané rozhodnutí má `true` (pokyn vlastníka) ⇒ výpočet odmítnut.
+
+## Dodatek 5 (2026-11-06, oponentura kol 4–6 ChatGPT/Claude; výkonnost dál nespuštěna, návrh na kontrolu)
+- **Brána výkonnosti (bod 5).** Režim explicitní: `RUN_REQUEST` začíná `AUDIT` nebo `PERF`, jinak kód 4 bez metrik.
+  Před načtením dat musí `FUNDING_SEMANTICS.json` obsahovat i `audit_id`, `impl_sha256` (otisk `spacing_ok`,
+  `funding_chain_gaps`, `funding_window`, `funding_completeness`; vypíše `--print-fingerprints`) a `data_manifest_sha256`
+  z auditu. Po načtení a před první simulací se otisk načtených archivů porovná s auditovaným; neshoda ⇒ kód 3, nic se
+  nezapisuje. Audit nevolá simulaci a v `audit_manifest.json` označí staré výkonnostní soubory jako cizí.
+- **Opožděný nákup benchmarku (bod 2).** Každé aktivum má vlastní skutečný čas nákupu; funding se účtuje pro
+  vstup_aktiva < t < prodej (`funding_window`, totožné se strategií: dřív benchmark filtroval od t0 a započetl i událost
+  přesně v opožděném vstupu).
+- **Úplnost fundingu benchmarku (bod 1).** Nesouvislosti, odhad chybějících událostí a neznámé pokrytí pro každé držené
+  aktivum (3 aktiva), z x1 každého období. Chybějící sazba se nedosazuje nulou.
+- **Registr datových závad (bod 3).** Explicitní třídy `blocking`/`informational`; neregistrované počítadlo ⇒ chyba.
+  Nově blokují `funding_price_fallbacks` benchmarku (dřív jen exportováno) a závady fundingu benchmarku. Výstupy zpožděné
+  v limitu 60 min (dodatek 1) jsou informativní. Podmínka latence +5 min zůstává samostatná.
+- **Nevyplněné vstupy (bod 4).** Signál bez vstupní svíčky se eviduje (`unfilled_entries`, aktivum, strana, časy,
+  plánovaný notional z equity v portfolio simulátoru, důvod) bez pozice, poplatku a cooldownu; > 0 ⇒ blokující závada.
+- Zapsané rozhodnutí nová pole nemá a `performance_hold` zůstává `true` ⇒ výkonnost dál odmítnuta; uvolní jen vlastník.

@@ -27,9 +27,9 @@ jobs:
         run: |
           set -o pipefail
           if [ ! -f research/spot_led/RUN_REQUEST ]; then echo "RUN_REQUEST chybí - jen testy"; exit 0; fi
-          # RUN_REQUEST začínající "AUDIT" = jen kontrola dat (data_audit.json), bez výpočtu výkonnosti (dodatek 3)
-          if head -1 research/spot_led/RUN_REQUEST | grep -q '^AUDIT'; then MODE=--audit-only; else MODE=; fi
-          python -m research.spot_led.run --cache /tmp/vision-5m --outdir research/spot_led $MODE | tee summary.txt
+          # Režim určuje runner z RUN_REQUEST (whitelist, kolo 6 bod 5): AUDIT = jen kontrola dat, PERF = výkon za branou
+          # (rozhodnutí + otisk implementace + otisk dat), cokoli jiného = chyba bez metrik.
+          python -m research.spot_led.run --cache /tmp/vision-5m --outdir research/spot_led --request-file research/spot_led/RUN_REQUEST | tee summary.txt
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -42,6 +42,10 @@ jobs:
           git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
           git add research/spot_led/
           git diff --cached --quiet && exit 0
-          if head -1 research/spot_led/RUN_REQUEST | grep -q '^AUDIT'; then KIND="data audit only, no performance"; else KIND="backtest results"; fi
+          case "$(awk 'NR==1{print $1}' research/spot_led/RUN_REQUEST)" in
+            AUDIT) KIND="data audit only, no performance" ;;
+            PERF) KIND="backtest results" ;;
+            *) echo "neznámý režim RUN_REQUEST"; exit 1 ;;
+          esac
           git commit -m "Spot-led: ${KIND} (run ${GITHUB_RUN_ID}) [skip ci]"
           git push origin HEAD:${GITHUB_REF_NAME}
