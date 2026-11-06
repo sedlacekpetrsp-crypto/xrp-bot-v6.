@@ -188,22 +188,26 @@ class Prices:
     def __init__(self, market):
         self.m = market
         self.fallbacks = {p: 0 for p in FALLBACK_PURPOSES}
+        self.stale = {p: 0 for p in FALLBACK_PURPOSES}  # kolo 9: náhrada starší než FALLBACK_HOURS
         self.last_fallback = False
 
     def get(self, a, t, field, purpose):
-        """field: 0 open, 1 high, 2 low, 3 close. Chybí-li svíčka v t: close nejbližší dřívější do 6 h (dodatek 0);
-        náhrada se počítá podle účelu (dodatek 2) — je to náhradní ocenění, ne důkaz realizovatelné ceny."""
+        """field: 0 open, 1 high, 2 low, 3 close. Chybí-li svíčka v t: close nejbližší dřívější svíčky (dodatek 0);
+        náhrada se počítá podle účelu (dodatek 2) — je to náhradní ocenění, ne důkaz realizovatelné ceny, a v registru
+        je blokující. Kolo 9 (nález R9-1 z auditu reálných dat, 72h mezery XRP/SOL/LTC 2022-02): dřív KeyError po 6 h ⇒
+        pád celého běhu; nyní se použije i starší close a počítá se zvlášť jako `stale`. Nikdy budoucí cena."""
         self.last_fallback = False
         b = self.m[a]["bars"].get(t)
         if b is not None:
             return b[field]
-        for k in range(1, FALLBACK_HOURS + 1):
-            b = self.m[a]["bars"].get(t - k * HOUR_MS)
-            if b is not None:
-                self.fallbacks[purpose] += 1
-                self.last_fallback = True
-                return b[3]
-        raise KeyError(f"chybí cena {a} {datetime.fromtimestamp(t / 1000, tz=timezone.utc)}")
+        bts = self.m[a]["bts"]
+        i = bisect.bisect_left(bts, t) - 1
+        if i < 0:
+            raise KeyError(f"chybí cena {a} {datetime.fromtimestamp(t / 1000, tz=timezone.utc)} (žádná dřívější svíčka)")
+        self.fallbacks[purpose] += 1
+        self.stale[purpose] += (t - bts[i]) > FALLBACK_HOURS * HOUR_MS
+        self.last_fallback = True
+        return self.m[a]["bars"][bts[i]][3]
 
 
 def decision_time(D):
@@ -612,7 +616,12 @@ PERFORMANCE_FILES = ("results.json", "trades.csv")
 # protože tvar AST se mezi verzemi může lišit — jiná verze ⇒ jiný otisk ⇒ konzervativně odmítnuto.
 FINGERPRINT_SOURCES = ("research/funding_dispersion/run.py", "tools/research/deflated_sharpe.py",
                        "tools/research/decision_gate.py")
-REQUIRED_DECISION_FIELDS = ("semantics", "evidence", "decided_utc", "audit_id", "impl_sha256", "data_manifest_sha256")
+REQUIRED_DECISION_FIELDS = ("semantics", "evidence", "decided_utc", "audit_id", "impl_sha256", "data_manifest_sha256",
+                            "ops_sha256")
+# Kolo 9, Q2: provozní/auditní otisky (bajty souborů). Předem stanovené pravidlo: změna protokolu nebo workflow ⇒
+# rozhodnutí neplatí (protokol určuje kritéria, workflow režim a výstupy); patch verze Pythonu a platforma jsou jen
+# auditní údaj (major.minor je už v ekonomickém otisku). Datový manifest se ověřuje zvlášť (data_gate).
+OPS_SOURCES = {"protocol": "research/funding_dispersion/PROTOCOL.md", "workflow": ".github/workflows/funding-dispersion.yml"}
 
 
 def _strip_docstrings(tree):
@@ -636,6 +645,11 @@ def code_fingerprint(sources):
 def impl_fingerprint():
     root = Path(__file__).resolve().parents[2]
     return code_fingerprint({rel: (root / rel).read_text() for rel in FINGERPRINT_SOURCES})
+
+
+def ops_fingerprint():
+    root = Path(__file__).resolve().parents[2]
+    return {k: hashlib.sha256((root / rel).read_bytes()).hexdigest() for k, rel in OPS_SOURCES.items()}
 
 
 def manifest_fingerprint(manifest, missing=()):
@@ -674,6 +688,9 @@ def check_decision(d):
         return False, f"{SEMANTICS_FILE}: chybí {', '.join(missing)} (vazba rozhodnutí na audit, implementaci a data)"
     if d["impl_sha256"] != impl_fingerprint():
         return False, "impl_sha256 neodpovídá běžící implementaci — rozhodnutí platí pro jinou verzi kódu"
+    ops = ops_fingerprint()
+    if not isinstance(d["ops_sha256"], dict) or any(d["ops_sha256"].get(k) != v for k, v in ops.items()):
+        return False, "ops_sha256 (protokol/workflow) neodpovídá — rozhodnutí platí pro jiný protokol nebo workflow"
     if not (isinstance(d["data_manifest_sha256"], str) and len(d["data_manifest_sha256"]) == 64):
         return False, "data_manifest_sha256 není sha256"
     return True, "ok"
@@ -891,6 +908,7 @@ def audit_manifest(outdir, produced, data_fp, run_id=None):
             "produced_by_this_run": list(produced),
             "files_sha256": {f: file_sha256(out / f) for f in produced if f != AUDIT_MANIFEST_FILE and (out / f).exists()},
             "impl_sha256": impl_fingerprint(), "data_manifest_sha256": data_fp,
+               "ops_sha256": ops_fingerprint(), "environment": environment_info(),
             "preexisting_performance_files_not_from_this_run": [f for f in PERFORMANCE_FILES if (out / f).exists()],
             "note": "audit nepočítá výkonnost; případné results.json/trades.csv nejsou výstupem tohoto běhu"}
 
@@ -996,6 +1014,7 @@ def main(argv=None):
     args = ap.parse_args(argv)
     if args.print_fingerprints:
         print("IMPL_SHA256", impl_fingerprint())
+        print("OPS_SHA256", json.dumps(ops_fingerprint()))
         return
     modes = {m for m in ("audit" if args.audit_only else None, args.mode,
                          mode_from_request(args.request_file) if args.request_file else None) if m}
@@ -1046,6 +1065,7 @@ def _execute(mode, args, out):
         man = audit_manifest(dest, ("data_source.json", "data_audit.json", AUDIT_MANIFEST_FILE), data_fp, run_id)
         man["outdir_performance_files_not_from_this_run"] = [f for f in PERFORMANCE_FILES if (out / f).exists()]
         man["environment"] = environment_info()
+        man["ops_sha256"] = ops_fingerprint()
         atomic_write(dest / AUDIT_MANIFEST_FILE, json.dumps(man, indent=1))  # zapisuje se poslední, s hashi souborů
         print("AUDIT_MANIFEST", json.dumps(man))
         return
@@ -1115,7 +1135,7 @@ def _execute(mode, args, out):
                "verdict_detail": verdict_detail, "benchmark_dependency": BENCHMARK_DEPENDENCY, "run_id": run_id,
                "impl_sha256": impl_fingerprint(), "data_manifest_sha256": data_fp,
                "unfilled_entries_x1": {p: res[p]["x1"]["unfilled_entries"] for p in PERIODS},
-               "info": {**beta_info, "price_fallbacks_by_purpose": px.fallbacks, "first_bar": first_bar,
+               "info": {**beta_info, "price_fallbacks_by_purpose": px.fallbacks, "stale_fallbacks_by_purpose": px.stale, "first_bar": first_bar,
                         "first_funding": first_funding,
                         "load_audit": {a: market[a].get("load_audit") for a in ASSETS}},
                "verdict": verdict}

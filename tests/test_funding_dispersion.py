@@ -14,6 +14,7 @@ def valid_decision(manifest=(), missing=(), **kw):
     """Úplný záznam rozhodnutí (kolo 6, bod 5) pro syntetické testy brány."""
     return {"semantics": "B", "evidence": "test", "decided_utc": "test", "audit_id": "run-test",
             "impl_sha256": fd.impl_fingerprint(), "data_manifest_sha256": fd.manifest_fingerprint(list(manifest), list(missing)),
+            "ops_sha256": fd.ops_fingerprint(),
             "performance_hold": False, **kw}
 
 
@@ -1142,3 +1143,32 @@ def test_K9_6_independent_benchmark_accounting():
     assert abs(fd.START_EQUITY * (1 + rets[0]) - 9982.5069) <= TOL
     assert abs(bh["funding"] - (-14.98275)) <= 1e-4  # runner zaokrouhluje na 4 místa
     assert abs(bh["net_pnl"] - (-37.969525)) <= 1e-4
+
+
+def test_K9_4_real_data_72h_gap_no_crash_and_blocking():
+    """Nález R9-1 z auditu reálných dat: XRP/SOL/LTC 2022-02-26 chybí 72 h svíček. Dřív KeyError ⇒ pád běhu."""
+    m = make_market(days=60, rates=lambda a, t: 0.0001)
+    t0 = fd.ms_of(date(2021, 1, 5))
+    b = {t: v for t, v in m["XRPUSDT"]["bars"].items() if not (t0 <= t < t0 + 72 * H)}
+    m["XRPUSDT"] = fd.prepare(b, {t: (r, 8.0) for t, r in m["XRPUSDT"]["funding"].items()})
+    px = fd.Prices(m)
+    bh, _ = fd.buy_hold(m, date(2021, 1, 4), date(2021, 1, 10), 1, px)
+    assert bh["price_fallbacks"] > 0 and px.stale["benchmark"] > 0
+    r = fd.run(m, date(2021, 1, 4), date(2021, 1, 25), 1, 7, 7, "t")[0]
+    assert r["legs_with_price_fallback"] + r["ineligible_data_gap"] > 0 and fd.strategy_defects(r)
+    with pytest.raises(KeyError):
+        fd.Prices(m).get("XRPUSDT", fd.ms_of(date(2020, 11, 1)), 0, "entry")  # před prvními daty: žádná budoucí cena
+
+
+def test_K9_2_ops_fingerprint_protocol_or_workflow_change_invalidates(tmp_path, monkeypatch):
+    import json
+    (tmp_path / fd.SEMANTICS_FILE).write_text(json.dumps(valid_decision()))
+    assert fd.semantics_gate(tmp_path) == (True, "ok")
+    for k in fd.OPS_SOURCES:
+        bad = valid_decision(ops_sha256={**fd.ops_fingerprint(), k: "0" * 64})
+        (tmp_path / fd.SEMANTICS_FILE).write_text(json.dumps(bad))
+        ok, why = fd.semantics_gate(tmp_path)
+        assert ok is False and "ops_sha256" in why
+    (tmp_path / fd.SEMANTICS_FILE).write_text(json.dumps(valid_decision(ops_sha256=None)))
+    assert fd.semantics_gate(tmp_path)[0] is False
+    assert set(fd.ops_fingerprint()) == {"protocol", "workflow"} and fd.impl_fingerprint() not in fd.ops_fingerprint().values()

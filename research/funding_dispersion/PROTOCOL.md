@@ -189,3 +189,8 @@ implementované (kód implementuje A). Audit dat (`AUDIT`) zámek neblokuje. Roz
 - **Zámek** `fcntl.flock` (uvolní OS i při SIGKILL), konflikt ⇒ `run_conflicts.jsonl` a kód 5. Audit zapisuje do
   `audits/<UTC>_<run_id>/` (nikdy nepřepíše dřívější výstupy) i s údaji o prostředí.
 - **Nezávislý ekonomický přepočet** (Decimal, bez importu runneru) jedné sady 4 noh a benchmarku: shoda na 1e-6 USDT.
+- **Provozní otisk (Q2):** `ops_sha256` = sha256 bajtů `PROTOCOL.md` a workflow. Předem stanovené pravidlo: jakákoli změna
+  ⇒ rozhodnutí o výkonnosti neplatí. Patch verze Pythonu a platforma se jen zapisují (major.minor je v ekonomickém otisku).
+- **Nález z auditu reálných dat (R9-1):** XRP/SOL/LTC 2022-02-26 (72 h) a 2022-04-01 (48 h), všech 8 aktiv 2026-10-28
+  (24 h) bez 1h svíček. Dřívější `Prices.get` po 6 h vyhodilo KeyError ⇒ výkonnostní běh by spadl. Nově se použije starší
+  close, počítá se jako náhrada (blokující) a zvlášť jako `stale`. Budoucí cena se nikdy nepoužije.
