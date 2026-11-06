@@ -93,7 +93,7 @@ R3b. ~~Forward PAPER RSI(2)~~ — NASTAVENO 2026-11-06 ~13:00 UTC (ručně): run
 R4. **DALŠÍ NA ŘADĚ →** Volatilitní cílení BTC 40 % (bod 12 níže; protokol už commitnut ve `research/vol-target-20261106`, `fc9b4a4`) —
     pokračovat `run.py` + testy + workflow podle vzoru `research/funding_carry`, vyhodnotit stopou A i B + DSR (nástroj z PR #22).
 R5. Blízkost 52týdennímu maximu průřezově, 8 aktiv (bod 14 níže).
-R6. Audit produkčních PAPER botů (jen čtení, Render SQL): za 30 a 90 dní na bota obchody, čistý P/L, PF, náklady,
+R6. ~~Audit produkčních PAPER botů~~ — HOTOVO 2026-11-06 12:50 UTC ručně: `reports/production-bot-audit-20261106.md`; návrhy (pozastavit WHALE, BEST-OF, SWING; sběr research_market_samples) čekají na vlastníka. Původně: Audit produkčních PAPER botů (jen čtení, Render SQL): za 30 a 90 dní na bota obchody, čistý P/L, PF, náklady,
     max DD ⇒ `reports/production-bot-audit-<datum>.md` s návrhem, které pozastavit (jen návrh, čeká na vlastníka).
 R7. Kontrariánský žebřík BTC (bod 13 níže).
 
