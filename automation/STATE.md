@@ -4,6 +4,15 @@ Poslední aktualizace: 2026-11-06 11:35 UTC (autopilot běh #22, run 42207516705
 
 Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h). Vypnout/změnit: claude.ai → plánované úlohy.
 
+## ZMĚNA PRODUKCE 2026-11-06 (schváleno vlastníkem 13:46 SEČ)
+- PR #25 sloučen do `v8-fly-layer-test` 12:52 UTC ⇒ HEAD **`083e7e7`**: pozastaveny nové vstupy WHALE, BEST-OF a obou SWING
+  (výstupy běží dál). Testy 243 passed (obě pořadí), run 42220780705.
+- **Auto Deploy se NESPUSTIL** (žádná událost na Renderu ani po 4 min, i když služba hlásí autoDeploy=yes; všechny dosavadní
+  deploye byly ruční). Live zůstává `edaa938` ⇒ čeká na ruční deploy vlastníkem (Render → Manual Deploy → Deploy latest commit).
+  Do té doby je „live ≠ HEAD“ OČEKÁVANÝ stav — hlásit jen jako „čeká na ruční deploy“, ne jako anomálii.
+- Po nasazení: očekávaný live `083e7e7` (obsahuje `da2f665`); ověřit `/swing/status` paused=true, `paused_bots` obsahuje WHALE a BEST,
+  žádné nové vstupy těchto botů, duplicitní SELECT beze změny.
+
 ## Produkce (poslední známé hodnoty, 13:06 UTC — beze změny od 09:59 kromě níže uvedeného)
 
 - 13:06: live `edaa938` = HEAD `v8-fly-layer-test`, obsahuje `da2f665`; žádné události od 10:00; error logy 0 (10:00–13:06);
