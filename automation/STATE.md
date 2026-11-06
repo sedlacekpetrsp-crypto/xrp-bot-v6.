@@ -97,7 +97,7 @@ Fronta:
    Liší se od #85 `relative_strength` (XRP vs BTC+ETH 7d, 1h, jen XRP s hotovostí). Pozn.: stejná pravidla jako PR #17, jiné aktivum —
    předem dané, NE laděné podle výsledku PR #17; vyhodnotit stejnými kritérii.
 11. Mean-reversion poměru ETHBTC (long-only): výchozí 50/50; z-skóre ETHBTC vůči 20d průměru < −2 ⇒ 100 % ETH do z > 0;
-   z > +2 ⇒ 100 % BTC do z < 0. Měřítko B&H 50/50. Liší se od `sol_eth_pairs` (#, SOL/ETH, jiný pár i mechanika) a od PR #17 (trend).
+   z > +2 ⇒ 100 % BTC do z < 0. Měřítko B&H 50/50. Liší se od `sol_eth_pairs` (#91, SOL/ETH, jiný pár i mechanika) a od PR #17 (trend).
 
 ## Otevřené úkoly (priorita shora)
 
