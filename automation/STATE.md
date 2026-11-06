@@ -68,7 +68,12 @@ R3. ~~Delta-neutrální funding carry BTC/ETH~~ — HOTOVO 2026-11-06 11:30 UTC:
     H=10 %; validace ×2 +8,76 % (DD 0,50 %), závěrečný ×2 +0,22 % (DD 0,31 %) vs B&H −21,9 %; DSR 1,00, WF 3/4, soused OK. PR #23,
     `research/funding_carry/RESULTS.md`. Poučení: výnos carry sleduje páku trhu (2021 vysoký, 2025–26 < úrok z hotovosti); případná v2 =
     nová hypotéza s excess return nad úrokem, levnějšími nohami a širším košem (víc epizod) — ne ladění této.
-R3b. **DALŠÍ NA ŘADĚ → Forward PAPER RSI(2) pullback BTC/ETH — VÝJIMKA schválená vlastníkem 2026-11-06 12:37 SEČ**
+R3b. ~~Forward PAPER RSI(2)~~ — NASTAVENO 2026-11-06 ~13:00 UTC (ručně): runner `research/forward/rsi2_pullback/` + workflow
+    `forward-paper.yml` (běží při každém push RUN_REQUEST = každém běhu autopilota), start 2026-11-07, aktiva BTC, ETH, XRP, LTC
+    (`assets.json`). Křížový test PR #24: koš 8 aktiv ZAMÍTNUT (validace ×2 −1,6 %, DSR 0,07); XRP, LTC přidány pravidlem protokolu.
+    Každý běh: zkontrolovat, že `STATUS.md` má data za včerejšek, a 1 řádek do reportu (výnos ×2 od startu vs. B&H, obchody,
+    upozornění). Kontrola 2026-12-16, hlavní vyhodnocení po ≥ 30 obchodech a nejdřív 2027-01-05.
+    Původní zadání (pro evidenci): VÝJIMKA schválená vlastníkem 2026-11-06 12:37 SEČ
     („Sleduj RSI 2“). Značit vždy **(post-hoc, B6 nesplněno: ladění 2020–22 −0,5 %)**. Jen výzkum v `research/forward/rsi2_pullback/`,
     žádný produkční bot, žádný zásah do Renderu. Pravidla a parametry PŘESNĚ jako v PR #13 (`research/rsi2_pullback/PROTOCOL.md`,
     náklady ×1 a ×2), nic neladit. Start = první denní svíčka po 2026-11-06; data Binance Vision daily klines přes GitHub Actions
@@ -85,7 +90,7 @@ R3b. **DALŠÍ NA ŘADĚ → Forward PAPER RSI(2) pullback BTC/ETH — VÝJIMKA 
     (c) průběžné vyhodnocení po 40 dnech (2026-12-16) = jen kontrola, že forward odpovídá backtestu (počet obchodů,
         průměrný obchod, skluz) a stop-loss pravidlo: pokud forward ×2 < −10 % nebo 5 ztrát po sobě ⇒ hlásit vlastníkovi.
         Hlavní vyhodnocení až po ≥ 30 forward obchodech NEBO 60 dnech (co nastane později) — ani pak ne „zisková“.
-R4. Volatilitní cílení BTC 40 % (bod 12 níže; protokol už commitnut ve `research/vol-target-20261106`, `fc9b4a4`) —
+R4. **DALŠÍ NA ŘADĚ →** Volatilitní cílení BTC 40 % (bod 12 níže; protokol už commitnut ve `research/vol-target-20261106`, `fc9b4a4`) —
     pokračovat `run.py` + testy + workflow podle vzoru `research/funding_carry`, vyhodnotit stopou A i B + DSR (nástroj z PR #22).
 R5. Blízkost 52týdennímu maximu průřezově, 8 aktiv (bod 14 níže).
 R6. Audit produkčních PAPER botů (jen čtení, Render SQL): za 30 a 90 dní na bota obchody, čistý P/L, PF, náklady,

@@ -3,6 +3,11 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+
+## 2026-11-06 13:05 SEČ (ruční práce na žádost vlastníka)
+- RSI(2) křížový test na 8 aktivech se stejnými pravidly ([PR #24](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/24)): **koš zamítnut** — validace ×2 −1,6 %, DSR 0,07 ⇒ RSI(2) nemá obecnou výhodu napříč aktivy. Pravidlo protokolu splnily XRP a LTC.
+- Forward PAPER spuštěn: BTC, ETH (výjimka), XRP, LTC; start 2026-11-07, aktualizace při každém běhu autopilota, `research/forward/rsi2_pullback/STATUS.md`. Kontrola 16. 12., vyhodnocení po ≥ 30 obchodech.
+
 ## 2026-11-06 12:35 SEČ (běh #22)
 - Nasazeno: `edaa938` – PR #5 ano. Produkce beze změny (6× HTTP 200, 238 testů OK, 0 chyb, 0 událostí, 0 nových duplicit, P/L součet −3 176,78).
 - Výzkum R3: **Delta-neutrální funding carry BTC/ETH (spot long + perp short) — ZAMÍTNUTO** ([PR #23](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/23)).

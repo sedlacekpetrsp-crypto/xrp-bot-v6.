@@ -1,1 +1,1 @@
-{"symbols": ["BTCUSDT", "ETHUSDT"], "note": "BTC/ETH od startu; další aktiva jen podle křížového testu (research/rsi2-cross-asset-20261106)"}
+{"symbols": ["BTCUSDT", "ETHUSDT", "XRPUSDT", "LTCUSDT"], "note": "BTC/ETH = výjimka vlastníka 2026-11-06 (post-hoc, B6 nesplněno); XRP, LTC přidány předem daným pravidlem křížového testu (PR #24, koš 8 aktiv ZAMÍTNUT, DSR 0,07 — možná náhoda)."}
