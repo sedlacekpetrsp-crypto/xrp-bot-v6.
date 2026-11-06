@@ -1,6 +1,6 @@
 # Autopilot STATE — přepisuje se každým během
 
-Poslední aktualizace: 2026-11-06 03:15 UTC (autopilot běh #18, run 42154224645; produkce beze změny; výzkum: pásmový rebalance zamítnut, PR #18; protokol #10 XRPBTC commitnut).
+Poslední aktualizace: 2026-11-06 05:15 UTC (autopilot běh #19, run 42166129378; produkce beze změny; výzkum: XRPBTC switch zamítnut, PR #19; protokol #11 ETHBTC mean-reversion commitnut).
 
 Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h). Vypnout/změnit: claude.ai → plánované úlohy.
 
@@ -25,7 +25,7 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h)
 
 ## Databáze `xrp-bot-db` (1 GB, bez auto-zvětšení)
 
-Poslední kontrola 2026-11-06 03:04 UTC: 218,1 MB = 20,3 % (+0,8 MB za 2 h); produkce beze změny (live edaa938 = HEAD, 0 událostí od 01:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 176,32, testy OK). Předchozí 01:04 UTC: 217,3 MB = 20,2 % (+0,8 MB za 2 h); produkce 01:04 beze změny (live edaa938 = HEAD, 0 událostí od 23:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 176,32, testy OK). Předchozí 23:03: 216,5 MB = 20,2 % (+0,9 MB za 2 h, trend beze změny); produkce 23:03 beze změny (live edaa938, 0 událostí od 21:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 166,91). Předchozí 21:03: 215,6 MB = 20,1 %. Produkce 21:03 beze změny (live edaa938, 0 událostí od 19:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 166,91, 238 passed). Předchozí 19:04: beze změny (live edaa938 = HEAD, obsahuje da2f665, 0 událostí od 17:00, 0 error logů 17:05–19:05, BEST-OF 131 obchodů, dup_groups jen známý id 129, P/L součet −3 197,26, tests OK).
+Poslední kontrola 2026-11-06 05:04 UTC: 218,9 MB = 20,4 % (+0,8 MB za 2 h); produkce beze změny (live edaa938 = HEAD, 0 událostí od 03:00, 0 error logů 03:04–05:04, dup jen id 129, BEST-OF 131, P/L −3 176,32, 238 passed). Předchozí 03:04 UTC: 218,1 MB = 20,3 % (+0,8 MB za 2 h); produkce beze změny (live edaa938 = HEAD, 0 událostí od 01:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 176,32, testy OK). Předchozí 01:04 UTC: 217,3 MB = 20,2 % (+0,8 MB za 2 h); produkce 01:04 beze změny (live edaa938 = HEAD, 0 událostí od 23:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 176,32, testy OK). Předchozí 23:03: 216,5 MB = 20,2 % (+0,9 MB za 2 h, trend beze změny); produkce 23:03 beze změny (live edaa938, 0 událostí od 21:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 166,91). Předchozí 21:03: 215,6 MB = 20,1 %. Produkce 21:03 beze změny (live edaa938, 0 událostí od 19:00, 0 error logů, dup jen id 129, BEST-OF 131, P/L −3 166,91, 238 passed). Předchozí 19:04: beze změny (live edaa938 = HEAD, obsahuje da2f665, 0 událostí od 17:00, 0 error logů 17:05–19:05, BEST-OF 131 obchodů, dup_groups jen známý id 129, P/L součet −3 197,26, tests OK).
 
 | UTC | Velikost | % z 1 GB | Top tabulky |
 |---|---|---|---|
@@ -91,13 +91,13 @@ Fronta:
 
 9. ~~Pásmový rebalance BTC/ETH 50/50 ±5 p. b.~~ — HOTOVO 2026-11-06 03:10 UTC: **ZAMÍTNUTO** (krit. 1, 2, 5: validace ×1 +303 %, Sharpe 1,64, DD 35,5 %, jen 3 rebalance vs B&H 50/50 bez rebalance +321 %, 1,71, 34 %; závěrečný ×2 −22,3 % vs B&H −25,1 %, DD stejný 60 %). PR #18, `research/rebalance_band/RESULTS.md`.
    Poučení: rebalancing premium je malé (±1–8 % P/L), znaménko podle toho, zda poměr BTC/ETH osciluje (2020–22 +) nebo trenduje (2023–24 −). Netestovat dál varianty rebalance.
-10. **DALŠÍ NA ŘADĚ →** Přepínání XRP ↔ BTC podle trendu XRPBTC (close > SMA50 ⇒ XRP, jinak BTC; vždy investováno), měřítko B&H 50/50 XRP/BTC.
-   Liší se od #85 `relative_strength` (XRP vs BTC+ETH 7d, 1h, jen XRP s hotovostí). Pozn.: stejná pravidla jako PR #17, jiné aktivum —
-   předem dané, NE laděné podle výsledku PR #17; vyhodnotit stejnými kritérii.
-   PROTOKOL UŽ COMMITNUT (`research/xrpbtc-switch-20261106`, `f781438`, `research/xrpbtc_switch/PROTOCOL.md`). Pokračovat: zkopírovat
-   `research/ethbtc_switch/run.py` + test + workflow z PR #17, změnit SYMBOLS na BTCUSDT/XRPUSDT/XRPBTC (ETH→XRP), spustit, ověřit, PR.
-11. Mean-reversion poměru ETHBTC (long-only): výchozí 50/50; z-skóre ETHBTC vůči 20d průměru < −2 ⇒ 100 % ETH do z > 0;
+10. ~~Přepínání XRP ↔ BTC podle XRPBTC SMA50~~ — HOTOVO 2026-11-06 05:10 UTC: **ZAMÍTNUTO** (krit. 1, 5: validace ×1 +627 %, Sharpe 1,80, DD 37,5 %, 38 obch. vs B&H 50/50 XRP/BTC +489 %, 1,86, 32,2 %; závěrečný ×2 −53,9 % (DD 77 %) vs B&H −28,8 % (DD 62 %)). PR #19, `research/xrpbtc_switch/RESULTS.md`.
+   Poučení: relativní trend poměru selhal na ETH i XRP mimo vzorek; validační zisk stojí na jednom XRP úseku (bez top 3 ×2 záporné). Přepínání podle trendu poměru dál netestovat.
+11. **DALŠÍ NA ŘADĚ →** Mean-reversion poměru ETHBTC (long-only): výchozí 50/50; z-skóre ETHBTC vůči 20d průměru < −2 ⇒ 100 % ETH do z > 0;
    z > +2 ⇒ 100 % BTC do z < 0. Měřítko B&H 50/50. Liší se od `sol_eth_pairs` (#91, SOL/ETH, jiný pár i mechanika) a od PR #17 (trend).
+   PROTOKOL UŽ COMMITNUT (`research/ethbtc-meanrev-20261106`, `0f07b1d`, `research/ethbtc_meanrev/PROTOCOL.md`). Pokračovat: napsat
+   `run.py` (stavy N/E/B, segmenty N v trades.csv), testy + workflow podle vzoru PR #17/#18, spustit, ověřit, PR.
+   Po #11 je fronta prázdná ⇒ doplnit 3 nové hypotézy (nízký obrat; ne časování trhu vs B&H, ne trend poměru, ne rebalance).
 
 ## Otevřené úkoly (priorita shora)
 
