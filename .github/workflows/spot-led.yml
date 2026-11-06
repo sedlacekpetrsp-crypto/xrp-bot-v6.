@@ -27,7 +27,9 @@ jobs:
         run: |
           set -o pipefail
           if [ ! -f research/spot_led/RUN_REQUEST ]; then echo "RUN_REQUEST chybí - jen testy"; exit 0; fi
-          python -m research.spot_led.run --cache /tmp/vision-5m --outdir research/spot_led | tee summary.txt
+          # RUN_REQUEST začínající "AUDIT" = jen kontrola dat (data_audit.json), bez výpočtu výkonnosti (dodatek 3)
+          if head -1 research/spot_led/RUN_REQUEST | grep -q '^AUDIT'; then MODE=--audit-only; else MODE=; fi
+          python -m research.spot_led.run --cache /tmp/vision-5m --outdir research/spot_led $MODE | tee summary.txt
       - uses: actions/upload-artifact@v4
         if: always()
         with:

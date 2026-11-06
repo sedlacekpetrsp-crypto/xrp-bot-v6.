@@ -108,3 +108,9 @@ Opravy a upřesnění implementace (signál, mřížka, dělení ani kritéria s
   událost ve držení se neodhaduje jako nula, jen se označí). Sémantika pole stejná jako v PR #29 (A) — o ní rozhodne
   datový audit PR #29 (`data_audit.json`) před během výkonnosti; R9 se spustí až po tomto rozhodnutí.
 - Cokoli z výše uvedeného nenulové + „prošlo“ ⇒ verdikt „NEROZHODNUTO“.
+
+## Dodatek 3 (2026-11-06 ~17:05 UTC, pokyn vlastníka; před výpočtem výkonnosti)
+- `RUN_REQUEST` začínající `AUDIT` ⇒ jen `data_audit.json` (mezery 5m, přechody `funding_interval_hours` a nesoulady rozestupu
+  pro sémantiku A i B), žádná výkonnost.
+- Výkonnost se odmítne (kód 3, `PERFORMANCE_REFUSED`) ještě před stažením dat, pokud ve složce chybí `FUNDING_SEMANTICS.json`
+  (`semantics` A/B, `evidence`, `decided_utc`) nebo neodpovídá implementaci (A).

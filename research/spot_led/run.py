@@ -467,11 +467,57 @@ def trade_row(period, t):
             "net_pnl": round(t["net_pnl"], 6)}
 
 
+IMPLEMENTED_SEMANTICS = "A"  # funding_chain_gaps: rozestup podle intervalu DŘÍVĚJŠÍ události
+SEMANTICS_FILE = "FUNDING_SEMANTICS.json"
+
+
+def semantics_gate(outdir):
+    """Dodatek 3: výkonnost se odmítne bez zapsaného rozhodnutí o sémantice funding_interval_hours
+    (`<outdir>/FUNDING_SEMANTICS.json`: semantics A/B, evidence, decided_utc), nebo když neodpovídá implementaci."""
+    f = Path(outdir) / SEMANTICS_FILE
+    if not f.exists():
+        return False, f"chybí {SEMANTICS_FILE} (rozhodnutí o sémantice intervalu fundingu)"
+    try:
+        d = json.loads(f.read_text())
+    except ValueError as e:
+        return False, f"{SEMANTICS_FILE} není platný JSON: {e}"
+    if d.get("semantics") not in ("A", "B"):
+        return False, f"{SEMANTICS_FILE}: semantics musí být 'A' nebo 'B'"
+    if not d.get("evidence") or not d.get("decided_utc"):
+        return False, f"{SEMANTICS_FILE}: chybí evidence nebo decided_utc"
+    if d["semantics"] != IMPLEMENTED_SEMANTICS:
+        return False, f"rozhodnutá sémantika {d['semantics']} ≠ implementovaná {IMPLEMENTED_SEMANTICS} — nejdřív upravit kód"
+    return True, "ok"
+
+
+def funding_audit(m):
+    """Přechody funding_interval_hours a nesoulady rozestupu pro sémantiku A (interval od události k další)
+    a B (interval úseku končícího událostí). Jen diagnostika; rozhoduje člověk z konkrétních přechodů."""
+    fts = m["fts"]
+    trans, mis_a, mis_b = [], 0, 0
+    for k in range(len(fts) - 1):
+        sp = (fts[k + 1] - fts[k]) / HOUR_MS
+        ia, ib = m["finterval"][fts[k]], m["finterval"][fts[k + 1]]
+        mis_a += sp != ia
+        mis_b += sp != ib
+        if ia != ib:
+            trans.append({"at": iso(fts[k + 1]), "from_h": ia, "to_h": ib, "spacing_h": sp,
+                          "context": [(iso(fts[j]), m["finterval"][fts[j]]) for j in range(max(0, k - 2), min(len(fts), k + 4))]})
+    return {"funding_events": len(fts), "interval_transitions": trans,
+            "spacing_mismatch_semantics_A": mis_a, "spacing_mismatch_semantics_B": mis_b}
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--cache", default="/tmp/vision-5m")
     ap.add_argument("--outdir", default="research/spot_led")
+    ap.add_argument("--audit-only", action="store_true", help="jen kontrola dat, bez výpočtu výkonnosti")
     args = ap.parse_args(argv)
+    if not args.audit_only:
+        ok, why = semantics_gate(args.outdir)
+        if not ok:  # kontrola PŘED stažením dat a před jakýmkoli výpočtem
+            print("PERFORMANCE_REFUSED", why)
+            sys.exit(3)
     out = Path(args.outdir)
     market, manifest, missing, fatal = load(args.cache)
     (out / "data_source.json").write_text(json.dumps({"archives": manifest, "missing": missing}, indent=1))
@@ -480,6 +526,10 @@ def main(argv=None):
         sys.exit(2)
     audit = {a: gap_audit(market[a]) for a in ASSETS}
     print("GAP_AUDIT", json.dumps(audit))
+    fa = {a: funding_audit(market[a]) for a in ASSETS}
+    (out / "data_audit.json").write_text(json.dumps({"gaps": audit, "funding": fa}, indent=1, default=str))
+    if args.audit_only:
+        return
 
     rows, results, tune, rets_store = [], {}, {}, {}
     for (th, hold) in GRID:

@@ -281,3 +281,32 @@ def test_K3_4_missing_funding_event_is_flagged_not_zero():
     ok = _overnight_market(fund={T0 + 16 * H: 0.0001, T0 + 24 * H: 0.0001, T0 + 32 * H: 0.0001})
     y = sl.candidates(ok["BTCUSDT"], "BTCUSDT", T0, T0 + 3 * sl.DAY_MS, 0.65, 15)[0]
     assert y["funding_gaps"] == 0 and y["funding_unit"] != 0.0
+
+
+# ---- dodatek 3: zámek výkonnosti bez rozhodnutí o sémantice ----
+def test_gate_refuses_performance_without_semantics_decision(tmp_path, monkeypatch):
+    import json
+    called = []
+    monkeypatch.setattr(sl, "load", lambda cache: called.append(1) or ({}, [], [], []))
+    with pytest.raises(SystemExit) as e:
+        sl.main(["--outdir", str(tmp_path)])
+    assert e.value.code == 3 and called == []
+    for bad in ({"semantics": "C", "evidence": "x", "decided_utc": "x"}, {"semantics": "A"},
+                {"semantics": "B", "evidence": "x", "decided_utc": "x"}):
+        (tmp_path / sl.SEMANTICS_FILE).write_text(json.dumps(bad))
+        assert sl.semantics_gate(tmp_path)[0] is False
+    (tmp_path / sl.SEMANTICS_FILE).write_text(json.dumps({"semantics": "A", "evidence": "run 1", "decided_utc": "t"}))
+    assert sl.semantics_gate(tmp_path) == (True, "ok")
+
+
+def test_audit_only_mode_writes_funding_audit(tmp_path, monkeypatch):
+    import json
+    fund = {T0 + k * 8 * H: (0.0001, 8.0) for k in range(3)}
+    fund.update({T0 + 16 * H + k * 4 * H: (0.0001, 4.0) for k in range(1, 4)})
+    m = {a: sl.prepare(*flat(), fund) for a in sl.ASSETS}
+    monkeypatch.setattr(sl, "load", lambda cache: (m, [], [], []))
+    sl.main(["--outdir", str(tmp_path), "--audit-only"])
+    a = json.loads((tmp_path / "data_audit.json").read_text())["funding"]["BTCUSDT"]
+    assert not (tmp_path / "results.json").exists()
+    assert len(a["interval_transitions"]) == 1 and a["interval_transitions"][0]["spacing_h"] == 4.0
+    assert a["spacing_mismatch_semantics_A"] == 1 and a["spacing_mismatch_semantics_B"] == 0
