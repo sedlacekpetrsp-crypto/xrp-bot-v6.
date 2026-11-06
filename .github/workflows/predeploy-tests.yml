@@ -1,0 +1,31 @@
+name: Pre-deploy tests (read-only)
+# Spustí celou testovací sadu proti větvi uvedené v automation/PREDEPLOY_REF. Nic nenasazuje, žádné secrets.
+on:
+  push:
+    branches: [research/autopilot]
+    paths: ['automation/PREDEPLOY_REF', '.github/workflows/predeploy-tests.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with: {path: control}
+      - id: ref
+        run: echo "ref=$(head -1 control/automation/PREDEPLOY_REF | tr -d '[:space:]')" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        with: {ref: "${{ steps.ref.outputs.ref }}", path: target}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.13'}
+      - run: pip install -r target/requirements-dev.txt
+      - name: Full test suite (default order + reversed file order)
+        working-directory: target
+        run: |
+          python -m pytest -q -p no:cacheprovider 2>&1 | tee pytest.txt; r1=${PIPESTATUS[0]}
+          echo "PREDEPLOY_TESTS ${{ steps.ref.outputs.ref }} $(tail -1 pytest.txt)"
+          python -m pytest -q -p no:cacheprovider $(ls test_*.py tests/test_*.py | sort -r) 2>&1 | tee pytest_rev.txt; r2=${PIPESTATUS[0]}
+          echo "PREDEPLOY_TESTS_REVERSED $(tail -1 pytest_rev.txt)"
+          exit $(( r1 || r2 ))
