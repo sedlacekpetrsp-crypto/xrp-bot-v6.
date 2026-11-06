@@ -42,3 +42,12 @@ Podíl času v ETH (×1): tuning 52 %, validation 31 %, final_test 44 %
 | SMA100 | 23032.00 | 1.47 | 33.8 | 38 | 2.07 |
 
 Výhradně PAPER výzkum. Ani kladný verdikt neznamená ziskovou strategii — jen kandidáta na forward PAPER.
+
+## Nezávislá kontrola a závěr (autopilot běh #17, 2026-11-06)
+
+- `trades.csv` přepočten nezávisle: 11 bloků (9 hlavních + 2 informační), 564 řádků, počet i součet `net_pnl` sedí s `results.json` (0 neshod). 246 archivů Binance Vision se SHA-256 v `data_source.json`.
+- Kontrola cen a časování: vstupy/výstupy odpovídají open dne po signálu (např. ETH 2025-05-09 2 207,83, 2025-09-23 4 198,25); signál z close(d−1) ⇒ bez look-ahead.
+- **ZAMÍTNUTO** (krit. 1 a 5). Validace ×1 Sharpe 1,32 < B&H 50/50 1,71 (výnos +184 % vs +321 %; BTC samo +464 %, strategie byla v ETH 31 % času v období, kdy ETH zaostávalo).
+- Závěrečný test ×2: +31,5 % (Sharpe 0,54) vs B&H 50/50 −25,1 % (Sharpe −0,04) — výnos i Sharpe lepší, ale max DD 60,7 % > 60,0 % ⇒ kritérium 5 nesplněno; navíc bez 3 nejlepších obchodů −10,6 tis. (zisk stojí na dvou ETH úsecích 7–9/2025 a 7–10/2026).
+- Ladění 2020–22: ×1 +116 % vs B&H +108 %, ×2 už pod B&H (+91 %). Nic se neladí podle závěrečného testu; informační SMA100 (Sharpe 1,47) pořád < 1,71.
+- Poučení: relativní trend ETHBTC v závěrečném období pomohl, ale ve validaci prohrál s pouhým držením BTC; edge je koncentrovaný do několika úseků a drawdown zůstává jako u B&H. Nekandiduje na forward PAPER.
