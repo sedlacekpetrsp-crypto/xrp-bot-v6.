@@ -1,0 +1,44 @@
+name: Funding dispersion 8 perps backtest (PAPER research, public data only)
+# Jen výzkumná větev. Žádné secrets, žádný Render, žádné objednávky.
+# Backtest se spouští jen commitem research/funding_dispersion/RUN_REQUEST (nejdřív 2026-11-07 UTC, denní limit hypotéz).
+on:
+  push:
+    branches: ["research/funding-dispersion-*"]
+    paths:
+      - "research/funding_dispersion/RUN_REQUEST"
+      - "research/funding_dispersion/run.py"
+      - "tests/test_funding_dispersion.py"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install pytest
+      - name: Mechanics tests (synthetic, not profitability evidence)
+        run: python -m pytest -q -p no:cacheprovider tests/test_funding_dispersion.py tests/test_deflated_sharpe.py
+      - name: Backtest per PROTOCOL.md (only when RUN_REQUEST exists)
+        run: |
+          set -o pipefail
+          if [ ! -f research/funding_dispersion/RUN_REQUEST ]; then echo "RUN_REQUEST chybí - jen testy"; exit 0; fi
+          python -m research.funding_dispersion.run --cache /tmp/vision-fd --outdir research/funding_dispersion | tee summary.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: funding-dispersion
+          path: research/funding_dispersion/
+      - name: Commit results to this research branch
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          git add research/funding_dispersion/
+          git diff --cached --quiet && exit 0
+          git commit -m "Funding dispersion: backtest results (run ${GITHUB_RUN_ID}) [skip ci]"
+          git push origin HEAD:${GITHUB_REF_NAME}

@@ -85,3 +85,9 @@ obrat portfolia, malá velikost koše (2 + 2).
 `trades.csv` (každá noha), `results.json`, `RESULTS.md`, `data_source.json`; řádek v `automation/STRATEGY_REGISTRY.md`;
 draft PR do `research/autopilot`. Spuštění: commit UTC času do `research/funding_dispersion/RUN_REQUEST`
 (nejdřív 2026-11-07 UTC, denní limit 3 nových hypotéz).
+
+## Dodatek 0 (2026-11-06, před kódem i před stažením jakýchkoli dat)
+Chybí-li 1h svíčka v čase potřebném pro vstup, výstup, funding, likvidační kontrolu nebo denní ocenění, použije se close
+nejbližší dřívější svíčky téhož aktiva nejvýše 6 h zpět (počet náhrad do `results.json`, `price_fallbacks`); starší ⇒ chyba.
+Důvod: ojedinělé výpadky hodin na Binance by jinak zastavily celý běh. Pravidla, dělení ani kritéria se nemění.
+Shoda v pořadí fundingu se řeší abecedně, výběr varianty při shodě zisku první v pořadí mřížky.
