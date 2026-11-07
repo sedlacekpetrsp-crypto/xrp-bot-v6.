@@ -16,12 +16,23 @@ def evaluate(rows):
     gaps=[{"previous":a.isoformat(),"next":b.isoformat(),
            "missing_hours":int((b-a)/timedelta(hours=1))-1}
           for a,b in zip(times,times[1:]) if b-a!=timedelta(hours=1)]
-    if gaps:
-        raise ValueError(f"missing hourly candles: {gaps[:12]} (total gaps={len(gaps)})")
+    # Never fill absent candles. Exclude any decision whose 30-day forward
+    # window crosses an absent timestamp; same exclusion for both outcomes.
+    missing=set()
+    for a,b in zip(times,times[1:]):
+        while b-a>timedelta(hours=1):
+            a+=timedelta(hours=1)
+            missing.add(a)
+    if len(missing)>1000:
+        raise ValueError("too many missing hours; refuse census")
     result=defaultdict(lambda:{"matured":0,"growth":0,"risk":0,"both":0})
     growth_dates=[]; risk_dates=[]
+    excluded_by_year=defaultdict(int)
     for t in times:
         if t.hour!=1 or t+timedelta(days=30)>times[-1]: continue
+        if any(t+timedelta(hours=h) in missing for h in range(1,721)):
+            excluded_by_year[str(t.year)]+=1
+            continue
         p=by_time[t]
         up=any(by_time[t+timedelta(hours=h)]>=p*Decimal('1.30') for h in range(1,721))
         down=any(by_time[t+timedelta(hours=h)]<=p*Decimal('0.80') for h in range(1,337))
@@ -36,6 +47,8 @@ def evaluate(rows):
                 for e in group_positive_episodes(dates,[True]*len(dates),
                           max_separation=timedelta(days=horizon))]
     return {"per_decision_year":dict(result),
+            "excluded_decisions_missing_data_by_year":dict(excluded_by_year),
+            "missing_hour_ranges":gaps,
             "growth_episodes_30d":episodes(growth_dates,30),
             "risk_episodes_14d":episodes(risk_dates,14)}
 
