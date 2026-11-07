@@ -1,0 +1,49 @@
+name: Combined replay trade ledger export (PAPER research, public data only)
+# Runs ONLY on pushes to this research branch. No secrets, no Render, no orders.
+# Writes the per-trade ledger back to the SAME research branch ([skip ci]).
+on:
+  push:
+    branches: [research/combined-trade-ledger-20261105]
+    paths:
+      - '.github/workflows/combined-trade-ledger.yml'
+      - 'research/combined_selection_replay/export_trades.py'
+      - 'tests/test_combined_trade_export.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install test dependencies
+        run: pip install -r requirements-dev.txt
+      - name: Mechanics tests (synthetic, not profitability evidence)
+        run: python -m pytest -q -p no:cacheprovider tests/test_combined_selection_replay.py tests/test_combined_trade_export.py tests/test_combined_paper_execution.py
+      - name: Export per-trade ledger of the unchanged frozen replay
+        run: |
+          set -o pipefail
+          python -m research.combined_selection_replay.export_trades \
+            --cache /tmp/vision-1h --end 2026-11-01 \
+            --results research/combined_selection_replay/results.json \
+            --outdir research/combined_selection_replay/trades | tee export_summary.txt
+          echo "LEDGER_EXPORT_STATUS $(python -c "import json;print(json.load(open('research/combined_selection_replay/trades/export_report.json'))['status'])")"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: combined-trade-ledger
+          path: research/combined_selection_replay/trades/
+          if-no-files-found: warn
+      - name: Commit ledger to this research branch
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          git add research/combined_selection_replay/trades/
+          git diff --cached --quiet && exit 0
+          git commit -m "Combined replay: per-trade ledger export (run ${GITHUB_RUN_ID}) [skip ci]"
+          git push origin HEAD:${GITHUB_REF_NAME}

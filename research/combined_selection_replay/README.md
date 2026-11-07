@@ -71,3 +71,13 @@ Výsledný JSON obsahuje manifest se SHA-256 všech archivů, včetně nových m
   na začátku měsíce.
 - PAPER denní svíčky z `1d` klines; replay agreguje kompletní hodinové dny.
 - Rebalance timing byl v PAPER o den pozdě; opraveno v této větvi (není nasazeno).
+
+## Export jednotlivých obchodů (2026-11-05, autopilot)
+
+`export_trades.py` znovu přehraje **beze změny pravidel, parametrů a bloků** stejný replay
+(stejná data ověřená SHA-256, `--end 2026-11-01`) a uloží každý leg do
+`trades/trades.csv` a `trades/trades.json` (náklady 1×/2×/3×, blok, role, vstup/výstup, důvod,
+poplatky, čisté P/L). `trades/export_report.json` obsahuje kontrolu konzistence: metriky spočtené
+z exportovaných legů se musí shodovat s uloženým `results.json` (tolerance 1e-6), jinak stav
+`MISMATCH`. `trades/data_source.json` = zdroj dat (URL + SHA-256 archivů). Jde o auditní stopu,
+**ne o nový důkaz ziskovosti**; hodnocení „NEPROŠEL“ se nemění.
