@@ -18,9 +18,10 @@ class MultiYearCensusTests(unittest.TestCase):
         result=evaluate(rows)
         self.assertGreater(result["per_decision_year"]["2024"]["growth"],0)
         self.assertEqual(len(result["growth_episodes_30d"]),1)
-    def test_missing_hour_fails_closed(self):
-        with self.assertRaises(ValueError):
-            evaluate(series(32)[:10]+series(32)[11:])
+    def test_missing_hour_excludes_affected_decisions(self):
+        result=evaluate(series(32)[:10]+series(32)[11:])
+        self.assertEqual(len(result["missing_hour_ranges"]),1)
+        self.assertEqual(result["excluded_decisions_missing_data_by_year"]["2024"],1)
     def test_duplicate_hour_fails_closed(self):
         rows=series(32)
         with self.assertRaises(ValueError):
