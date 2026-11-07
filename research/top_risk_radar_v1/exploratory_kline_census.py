@@ -35,8 +35,10 @@ def load_month(month):
                 if row and row[0].lower().startswith("open"): continue
                 if len(row)!=12: raise ValueError("bad candle")
                 stamp=int(row[0])
-                if stamp < 10**12 or stamp >= 10**14: raise ValueError("unexpected timestamp")
-                dt=datetime.fromtimestamp(stamp/1000,tz=timezone.utc)
+                if 10**12 <= stamp < 10**14: divisor=1000
+                elif 10**15 <= stamp < 10**17: divisor=1000000
+                else: raise ValueError("unexpected timestamp")
+                dt=datetime.fromtimestamp(stamp/divisor,tz=timezone.utc)
                 close=Decimal(row[4])
                 if close<=0: raise ValueError("invalid price")
                 out.append((dt,close))
