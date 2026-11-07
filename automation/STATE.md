@@ -1,6 +1,6 @@
 # Autopilot STATE — přepisuje se každým během
 
-Poslední aktualizace: 2026-11-07 03:25 UTC (autopilot běh #29, run 42332237212; live `fd6065b` = HEAD v8-fly-layer-test; fronta doplněna o R11–R13; R11 BAB HOTOVO = ZAMÍTNUTO (PR #32); DALŠÍ: R12 (od 2026-11-08 UTC — limit 3 hypotéz/den 2026-11-07 vyčerpán: R5, R7, R11); R8/R9 drží vlastník).
+Poslední aktualizace: 2026-11-07 05:30 UTC (autopilot běh #30, run 42341150692; live `fd6065b` = HEAD v8-fly-layer-test; produkce beze změny; R12 MAX efekt PŘIPRAVEN (protokol `b8dad30`, kód `6bb257f`, PR #33), backtest NESPUŠTĚN — limit 3 hypotéz/den 2026-11-07 vyčerpán; DALŠÍ: 2026-11-08 UTC spustit R12 (commit UTC času do `research/max_effect/RUN_REQUEST` ve větvi `research/max-effect-20261107`), ověřit, přepočítat z trades.csv, pak R13; R8/R9 drží vlastník).
 
 Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h). Vypnout/změnit: claude.ai → plánované úlohy.
 
@@ -160,7 +160,7 @@ R9. **2026-11-07 PO R8 (3. hypotéza dne)** → Spot-led price discovery 5m BTC/
 R11. ~~Betting-against-beta, 8 USDT-M perpů, tržně neutrální~~ — HOTOVO 2026-11-07 03:20 UTC: **ZAMÍTNUTO** (A1, A3–A5, B1, B3, B4, DSR 0,01, soused W60_H7 ×2 −22 %, WF 2/4; zvolená W60_H14: ladění ×1 +102 %, validace ×1 +7,5 % Sharpe 0,32 DD 16 %, ×2 −0,0 %; závěrečný ×2 −3,0 % DD 12 % vs B&H koše −42,6 % DD 65 %; splněno B2, B5, B6). PR #32, `research/bab_beta/RESULTS.md`, výsledky `14c2458` (run 42332689419), přepočet z trades.csv 21 bloků / 6552 noh = results.json.
     Poučení: tržní neutralita funguje (realizovaná β 0,04–0,06, DD ~1/3 B&H), placebo obrácený BAB −16 % ⇒ znaménko BAB správné, ale hrana ~1–3 % p.a. je pod náklady 2 × 0,115 % na nohu při týdenním obratu. Long-short na 8 perpech potřebuje silnější signál nebo nižší obrat.
     Proč nové (zapsáno před daty): jediná rodina s nulovou expozicí vůči trhu; žádná ze 110 + R1–R9 neřadila podle bety.
-R12. **2026-11-08 UTC (1. hypotéza dne)** → MAX efekt (poptávka po „loterijních“ aktivech, Bali–Cakici–Whitelaw 2011), 8 USDT-M perpů, tržně neutrální:
+R12. **2026-11-08 UTC (1. hypotéza dne)** — PŘIPRAVENO 2026-11-07 05:25 UTC: větev `research/max-effect-20261107`, draft PR #33, protokol `b8dad30`, kód + 10 testů `6bb257f` (dolarově neutrální, každá noha 10 %, N = 170). Pokračovat: commit UTC času do `research/max_effect/RUN_REQUEST` ⇒ workflow `max-effect.yml` stáhne data, spustí a commitne výsledky; pak přepočet z trades.csv, RESULTS, registr. → MAX efekt (poptávka po „loterijních“ aktivech, Bali–Cakici–Whitelaw 2011), 8 USDT-M perpů, tržně neutrální:
     v pondělí seřadit podle max. denního výnosu za L dní (data do D−2); short 3 nejvyšší MAX, long 3 nejnižší, dolarově neutrální, gross 60 %,
     držení H; mřížka L ∈ {14, 28} × H ∈ {14, 28} (nižší obrat než R11 kvůli nákladům); měřítko B&H koše; stejný protokol, data a kód jako R11
     (`research/bab_beta/run.py` zkopírovat, změnit jen signál a váhy). Proč nové: řadí podle extrému rozdělení (skew/lotto), ne podle bety,
