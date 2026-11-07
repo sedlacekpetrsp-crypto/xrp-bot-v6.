@@ -13,8 +13,11 @@ def evaluate(rows):
     by_time=dict(rows)
     if len(by_time)!=len(rows): raise ValueError("duplicate timestamps")
     times=sorted(by_time)
-    if any(b-a!=timedelta(hours=1) for a,b in zip(times,times[1:])):
-        raise ValueError("missing hourly candles")
+    gaps=[{"previous":a.isoformat(),"next":b.isoformat(),
+           "missing_hours":int((b-a)/timedelta(hours=1))-1}
+          for a,b in zip(times,times[1:]) if b-a!=timedelta(hours=1)]
+    if gaps:
+        raise ValueError(f"missing hourly candles: {gaps[:12]} (total gaps={len(gaps)})")
     result=defaultdict(lambda:{"matured":0,"growth":0,"risk":0,"both":0})
     growth_dates=[]; risk_dates=[]
     for t in times:
