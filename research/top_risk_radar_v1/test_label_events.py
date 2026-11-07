@@ -28,5 +28,15 @@ class TestEventLabel(unittest.TestCase):
         with self.assertRaises(ValueError):
             tr(1, 1).__class__(datetime(2025,1,1), Decimal("1"))
 
-if __name__ == "__main__":
+    def test_future_hit_not_visible_as_of(self):
+        x = label_decision(T, [tr(1, 1), tr(3600, .5)], T + timedelta(minutes=1))
+        self.assertIsNone(x.outcome)
+        self.assertEqual(x.status, "unmatured")
+    def test_future_reference_not_visible_as_of(self):
+        x = label_decision(T, [tr(30, 1)], T + timedelta(seconds=10))
+        self.assertEqual(x.status, "missing_reference")
+    def test_as_of_before_decision_rejected(self):
+        with self.assertRaises(ValueError):
+            label_decision(T, [tr(1, 1)], T - timedelta(seconds=1))
+\nif __name__ == "__main__":
     unittest.main()
