@@ -3,6 +3,12 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## 2026-11-07 12:35 SEČ (běh #33)
+- Nasazeno: `fd6065b` – PR #5 ano. Produkce beze změny: 6× HTTP 200, 239 testů OK, 0 chyb v logu, 0 událostí, 0 nových duplicit, P/L součet −3 144,10.
+- Podle vašeho rozhodnutí (12:05) jsem nové hypotézy nepřidával. Místo toho jsem **nezávisle přepočítal atribuci selhání** (C krok 0) všech 16 dokončených testů R-série jen z hotových dat ([PR #36](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/36)): **0 z 16** by neprošlo ani při polovičních nákladech (maker) — padají na Sharpe vs. buy & hold nebo na závěrečném testu, ne na poplatcích. Shoda s dialogovou úlohou (STOP 0) ⇒ levnější exekuce žádný dosavadní test nezachrání.
+- Nejblíž: denní volatilitní průraz (#15) — náklady sežerou 56 % hrubého zisku, ale závěrečný test 2025–26 je záporný i při polovičních nákladech.
+- DB 21,6 %. Další běh 8. 11.: backtesty R12 a R13 + první data forward RSI(2). Od vás nic nového; PR #8/#9/#10 dál na review.
+
 ## 2026-11-07 10:15 SEČ (běh #32)
 - Nasazeno: `fd6065b` – PR #5 ano. Produkce beze změny: 6× HTTP 200, 239 testů OK, 0 chyb v logu (log API opět funguje), 0 událostí, 0 nových duplicit, P/L součet −3 144,10.
 - Výzkum: denní limit 3 nových hypotéz je vyčerpán ⇒ připravil jsem R13 **průřezové momentum long-short (long 2 nejsilnější / short 2 nejslabší perpy, tržně neutrální, držení 28 dní)** ([PR #35](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/35)): protokol commitnut před kódem, kód + 13 testů mechaniky OK. Zatím žádná čísla — backtest poběží 8. 11. po R12. Očekávání nízké (malý koš, R5 naznačil slabé pořadí).

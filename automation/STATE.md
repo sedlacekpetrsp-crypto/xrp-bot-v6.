@@ -1,6 +1,6 @@
 # Autopilot STATE — přepisuje se každým během
 
-Poslední aktualizace: 2026-11-07 09:15 UTC (autopilot běh #32, run 42358156096; live `fd6065b` = HEAD v8-fly-layer-test; produkce beze změny, error logy 0; R13 PŘIPRAVENO (PR #35, protokol `c37c529`, kód `a4583c6`); DALŠÍ: 2026-11-08 UTC (1) spustit R12 (commit UTC času do `research/max_effect/RUN_REQUEST` ve větvi `research/max-effect-20261107`), ověřit, přepočítat z trades.csv; (2) totéž R13 (`research/xs_momentum/RUN_REQUEST` ve větvi `research/xs-momentum-20261107`); (3) fronta pak prázdná ⇒ doplnit 3 nové hypotézy; DSR N = 198 po R13; R8/R9 drží vlastník).
+Poslední aktualizace: 2026-11-07 11:35 UTC (autopilot běh #33, run 42366592153; live `fd6065b` = HEAD v8-fly-layer-test; produkce beze změny, error logy 0; C krok 0 nezávisle přepočten (PR #36): 0/16 nákladově limitovaných ⇒ STOP 0 potvrzen (shoda s `b88214f`); DALŠÍ: 2026-11-08 UTC (1) spustit R12 (commit UTC času do `research/max_effect/RUN_REQUEST` ve větvi `research/max-effect-20261107`), ověřit, přepočítat z trades.csv; (2) totéž R13 (`research/xs_momentum/RUN_REQUEST` ve větvi `research/xs-momentum-20261107`); (3) R12/R13 doplnit do `tools/research/failure_attribution.py` (PR #36); (4) forward RSI(2) první data; NOVÉ HYPOTÉZY NEDOPLŇOVAT (rozhodnutí 12:05 SEČ); E vede dialogová úloha; R8/R9 schváleny v OWNER_DECISIONS, běh vede dialogová úloha).
 
 Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h). Vypnout/změnit: claude.ai → plánované úlohy.
 
@@ -24,6 +24,8 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h)
   žádné nové vstupy těchto botů, duplicitní SELECT beze změny.
 
 ## Produkce (poslední známé hodnoty, 13:06 UTC — beze změny od 09:59 kromě níže uvedeného)
+
+- **2026-11-07 11:04 UTC (běh #33):** beze změny — live `fd6065b` = HEAD, 0 událostí od 09:00, error logy 0 (09:00–11:04), 6× HTTP 200, 239 passed, P/L −3 144,10, LH/LIQ 0 obchodů, dup jen id 129 (BEST-OF 132), DB 231,6 MB = 21,6 %.
 
 - **2026-11-07 09:05 UTC (běh #32):** beze změny — live `fd6065b` = HEAD, 0 událostí od 07:00, error logy 0 (05:00–09:04, log API opět OK), 6× HTTP 200, 239 passed, P/L −3 144,10, LH/LIQ 0 obchodů, dup jen id 129 (BEST-OF 132), DB 229,7 MB = 21,4 % (mírný pokles, vacuum).
 
@@ -103,6 +105,8 @@ Dohoda s ChatGPT (dialog H0, zprávy 0115–0117): pořadí **C → B → E → 
        `research/maker_feasibility/PROTOCOL.md` (větev `claude/maker-feasibility-protocol-20261107`, `de1088f`): u každé hypotézy
        hrubý zisk vs náklady ×1, „bez top 3“, DSR, WF ⇒ označit NÁKLADOVĚ LIMITOVANÁ / JINÝ DŮVOD. Výstup
        `reports/failure-attribution-<datum>.md` + zpráva do dialogu. Žádná nová data, žádný backtest.
+   **Krok 0 HOTOVO:** dialogová úloha `b88214f` (73 výsledků, STOP 0, ChatGPT 0120 souhlasí, H1 uzavřeno) + nezávislý přepočet autopilota
+   2026-11-07 11:30 UTC (PR #36, `96397b5`, 16 R-výsledků, brány A1/A2/A5 při nákladech 0,5×): **0/16 nákladově limitovaných**. Po R12/R13 doplnit.
    (b) STOP 0, pokud žádná není nákladově limitovaná ⇒ téma C uzavřít; jinak kroky 2–3 protokolu (diagnostika, ne výkonnost).
    (c) E: #67 manifest + syntetické testy, #29 archiv V60 (dialogová úloha).
    (d) Pak forward PAPER RSI(2), kontrola produkce, údržba. Nové hypotézy (A) až po uzavření C a B a jen s odhadem hrany ≥ 3× náklad.
