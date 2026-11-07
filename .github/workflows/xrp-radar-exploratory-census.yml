@@ -1,0 +1,26 @@
+name: XRP exploratory historical census (not a backtest)
+on:
+  workflow_dispatch:
+  push:
+    branches: [research/xrp-top-risk-radar-v1-20261108]
+    paths:
+      - research/top_risk_radar_v1/exploratory_kline_census.py
+      - .github/workflows/xrp-radar-exploratory-census.yml
+permissions:
+  contents: read
+jobs:
+  census:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run checksum-verified exploratory event census
+        run: python -m research.top_risk_radar_v1.exploratory_kline_census | tee exploratory_census.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xrp-exploratory-2024-jan-apr
+          path: exploratory_census.json
+          retention-days: 30
