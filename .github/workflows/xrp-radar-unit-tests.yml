@@ -1,0 +1,24 @@
+name: XRP radar unit tests (research only)
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/xrp-top-risk-radar-v1-20261108
+    paths:
+      - 'research/top_risk_radar_v1/*.py'
+      - '.github/workflows/xrp-radar-unit-tests.yml'
+permissions:
+  contents: read
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile Python modules
+        run: python -m compileall -q research/top_risk_radar_v1
+      - name: Run deterministic unit tests (no network, no trading)
+        run: python -m unittest research.top_risk_radar_v1.test_label_events -v
