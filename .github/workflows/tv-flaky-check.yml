@@ -1,0 +1,21 @@
+name: TV flaky test check (one-off, test-only)
+on:
+  push:
+    branches: ['research/tv-flaky-check-*']
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.13'}
+      - run: pip install -r requirements-dev.txt
+      - name: Night-time simulation with fix
+        run: python tools/autopilot/tv_flaky_night_check.py
+      - name: Night-time simulation WITHOUT fix (expected FAIL at 00-02)
+        run: git show HEAD~1:test_tv_consensus.py > test_tv_consensus.py && (python tools/autopilot/tv_flaky_night_check.py || echo "BASELINE_FAILS_AS_EXPECTED")
+      - name: Full suite with fix
+        run: git checkout test_tv_consensus.py && python -m pytest -q -p no:cacheprovider | tail -1

@@ -168,7 +168,9 @@ class RiskTests(unittest.TestCase):
         self.assertGreaterEqual(tv.net_pnl_for_exit(p,p['tp'])[-1],1.5*p['risk_dollars']-1e-8)
 
     def test_daily_pause_disabled_allows_entry_without_resetting_losses(self):
-        trades=[dict(net_pnl=-30,closed_at=(self.now-timedelta(hours=2)).isoformat()) for _ in range(4)]
+        # closed today even when the test runs 00:00-02:00 UTC (daily_pnl counts only today's UTC date)
+        closed=max(self.now.replace(hour=0,minute=0,second=0,microsecond=0), self.now-timedelta(hours=2))
+        trades=[dict(net_pnl=-30,closed_at=closed.isoformat()) for _ in range(4)]
         tv.state['trades']=copy.deepcopy(trades)
         with patch.object(tv, 'DAILY_LOSS_GUARD_ENABLED', False), \
              patch.object(tv, 'analyze_market', new=AsyncMock(return_value=self.row('LONG'))), \
