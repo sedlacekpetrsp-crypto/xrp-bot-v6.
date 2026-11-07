@@ -52,6 +52,44 @@ class AggregateTests(unittest.TestCase):
             with self.subTest(req=req), self.assertRaises(ValueError):
                 aggregate({}, required=req)
 
+    def test_bad_required_types_raise_valueerror(self):
+        for req in [None, "calendar", [[]], [None], [""], [1], {"calendar"}]:
+            with self.subTest(req=req), self.assertRaises(ValueError):
+                aggregate({}, required=req)
+
+    def test_malformed_reports_never_raise_never_pass(self):
+        ok = {"status": "PASS", "reason_codes": []}
+        cases = [
+            None, [], "PASS", 5,
+            {"calendar": {"status": []}},
+            {"calendar": {"status": {}}},
+            {"calendar": {"status": "PASS", "reason_codes": None}},
+            {"calendar": {"status": "PASS", "reason_codes": 7}},
+            {"calendar": {"status": "PASS", "reason_codes": "AB"}},
+            {"calendar": {"status": "PASS", "reason_codes": [None]}},
+            {"calendar": {"status": "PASS", "reason_codes": [""]}},
+            {"calendar": ok, 1: ok},
+            {"calendar": ok, (1, 2): ok},
+            {"calendar": ok, None: {"status": "FAIL"}},
+        ]
+        for rep in cases:
+            with self.subTest(rep=rep):
+                r = aggregate(rep, required=["calendar"])
+                self.assertIn(r["status"], ("UNKNOWN", "FAIL"))
+
+    def test_string_reason_codes_not_split_into_chars(self):
+        r = aggregate({"calendar": {"status": "PASS", "reason_codes": "AB"}}, required=["calendar"])
+        self.assertEqual(r["components"]["calendar"]["reason_codes"], ["REASON_CODES_INVALID"])
+
+    def test_fail_with_bad_codes_stays_fail(self):
+        r = aggregate({"calendar": {"status": "FAIL", "reason_codes": None}}, required=["calendar"])
+        self.assertEqual(r["status"], "FAIL")
+
+    def test_bad_container_flagged(self):
+        r = aggregate(None, required=["calendar"])
+        self.assertEqual(r["input_reason_codes"], ["REPORTS_CONTAINER_INVALID"])
+        self.assertEqual(r["status"], "UNKNOWN")
+
     def test_deterministic(self):
         a = aggregate({"calendar": cal_pass()}, required=REQ)
         self.assertEqual(a, aggregate({"calendar": cal_pass()}, required=list(reversed(REQ))))
