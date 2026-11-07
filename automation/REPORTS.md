@@ -3,6 +3,11 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## 2026-11-07 10:15 SEČ (běh #32)
+- Nasazeno: `fd6065b` – PR #5 ano. Produkce beze změny: 6× HTTP 200, 239 testů OK, 0 chyb v logu (log API opět funguje), 0 událostí, 0 nových duplicit, P/L součet −3 144,10.
+- Výzkum: denní limit 3 nových hypotéz je vyčerpán ⇒ připravil jsem R13 **průřezové momentum long-short (long 2 nejsilnější / short 2 nejslabší perpy, tržně neutrální, držení 28 dní)** ([PR #35](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/35)): protokol commitnut před kódem, kód + 13 testů mechaniky OK. Zatím žádná čísla — backtest poběží 8. 11. po R12. Očekávání nízké (malý koš, R5 naznačil slabé pořadí).
+- DB 21,4 %. Další běh 8. 11.: backtesty R12 a R13, pak doplním frontu. Od vás: R8/R9 dál čekají na uvolnění; PR #8/#9/#10 na review; oprava flaky testu TV čeká na souhlas.
+
 ## 2026-11-07 08:45 SEČ (běh #31)
 - Nasazeno: `fd6065b` – PR #5 ano. Produkce beze změny: 6× HTTP 200, testy OK, 0 událostí, 0 nových duplicit, P/L součet −3 144,10. Error logy tentokrát neověřeny (Render log API vrací 503) — zkusím příště.
 - Výzkum: denní limit 3 nových hypotéz je vyčerpán ⇒ udělal jsem R10 **rekonstrukci počtu dosud zkoušených variant** ([PR #34](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/34)): doloženo **N = 190** (dosavadní odhad 159 byl nízký; 190 je jen dolní mez), rozptyl Sharpe pokusů 0,40.

@@ -1,6 +1,6 @@
 # Autopilot STATE — přepisuje se každým během
 
-Poslední aktualizace: 2026-11-07 07:45 UTC (autopilot běh #31, run 42349724419; live `fd6065b` = HEAD v8-fly-layer-test; produkce beze změny, error logy neověřeny (log API 503); R10 HOTOVO (PR #34: doložené N = 190, V[SR] 0,40); DALŠÍ: 2026-11-08 UTC spustit R12 (commit UTC času do `research/max_effect/RUN_REQUEST` ve větvi `research/max-effect-20261107`), ověřit, přepočítat z trades.csv, pak R13; DSR od R12 uvádět s N = 190 + nové varianty, V ∈ {0,40; 0,5}; R8/R9 drží vlastník).
+Poslední aktualizace: 2026-11-07 09:15 UTC (autopilot běh #32, run 42358156096; live `fd6065b` = HEAD v8-fly-layer-test; produkce beze změny, error logy 0; R13 PŘIPRAVENO (PR #35, protokol `c37c529`, kód `a4583c6`); DALŠÍ: 2026-11-08 UTC (1) spustit R12 (commit UTC času do `research/max_effect/RUN_REQUEST` ve větvi `research/max-effect-20261107`), ověřit, přepočítat z trades.csv; (2) totéž R13 (`research/xs_momentum/RUN_REQUEST` ve větvi `research/xs-momentum-20261107`); (3) fronta pak prázdná ⇒ doplnit 3 nové hypotézy; DSR N = 198 po R13; R8/R9 drží vlastník).
 
 Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h). Vypnout/změnit: claude.ai → plánované úlohy.
 
@@ -24,6 +24,8 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h)
   žádné nové vstupy těchto botů, duplicitní SELECT beze změny.
 
 ## Produkce (poslední známé hodnoty, 13:06 UTC — beze změny od 09:59 kromě níže uvedeného)
+
+- **2026-11-07 09:05 UTC (běh #32):** beze změny — live `fd6065b` = HEAD, 0 událostí od 07:00, error logy 0 (05:00–09:04, log API opět OK), 6× HTTP 200, 239 passed, P/L −3 144,10, LH/LIQ 0 obchodů, dup jen id 129 (BEST-OF 132), DB 229,7 MB = 21,4 % (mírný pokles, vacuum).
 
 - **2026-11-07 07:05 UTC (běh #31):** beze změny — live `fd6065b` = HEAD, 0 událostí od 05:00, error logy NEOVĚŘENY (Render log API 503, zkusit příště), 6× HTTP 200, testy OK, P/L −3 144,10, LH/LIQ 0 obchodů, dup jen id 129 (BEST-OF 132), DB 230,0 MB = 21,4 %. Forward RSI(2): zatím bez dat (první denní svíčka se uzavře 2026-11-08 00:00 UTC).
 
@@ -167,7 +169,7 @@ R12. **2026-11-08 UTC (1. hypotéza dne)** — PŘIPRAVENO 2026-11-07 05:25 UTC:
     držení H; mřížka L ∈ {14, 28} × H ∈ {14, 28} (nižší obrat než R11 kvůli nákladům); měřítko B&H koše; stejný protokol, data a kód jako R11
     (`research/bab_beta/run.py` zkopírovat, změnit jen signál a váhy). Proč nové: řadí podle extrému rozdělení (skew/lotto), ne podle bety,
     výnosu (`cross_sectional_rotation`, `relative_strength`), vzdálenosti od maxima (R5) ani fundingu (R8).
-R13. **2026-11-08 UTC (2. hypotéza dne)** → Průřezové momentum long-short, 8 USDT-M perpů: měsíčně (každé 4. pondělí) výnos za 28 dní
+R13. **2026-11-08 UTC (2. hypotéza dne, po R12)** — PŘIPRAVENO 2026-11-07 09:10 UTC: větev `research/xs-momentum-20261107`, draft PR #35, protokol `c37c529`, kód + 13 testů `a4583c6` (2 + 2 nohy po 15 %, držení 28 dní, N = 198). Pokračovat: commit UTC času do `research/xs_momentum/RUN_REQUEST` ⇒ workflow `xs-momentum.yml`; pak přepočet z trades.csv, RESULTS, registr. → Průřezové momentum long-short, 8 USDT-M perpů: měsíčně (každé 4. pondělí) výnos za 28 dní
     s vynecháním posledních 7 (data do D−2), long 2 nejsilnější / short 2 nejslabší, dolarově neutrální, gross 60 %; mřížka
     lookback ∈ {28, 56} × skip ∈ {0, 7}. Proč nové: `cross_sectional_rotation` a `relative_strength` byly long-only spot (porovnání s B&H);
     zde tržně neutrální long-short s fundingem — testuje samotnou průřezovou hranu bez beta expozice. Pozn.: R5 placebo naznačilo slabé
