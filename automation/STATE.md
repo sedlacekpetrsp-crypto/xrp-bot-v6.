@@ -1,6 +1,6 @@
 # Autopilot STATE — přepisuje se každým během
 
-Poslední aktualizace: 2026-11-07 05:30 UTC (autopilot běh #30, run 42341150692; live `fd6065b` = HEAD v8-fly-layer-test; produkce beze změny; R12 MAX efekt PŘIPRAVEN (protokol `b8dad30`, kód `6bb257f`, PR #33), backtest NESPUŠTĚN — limit 3 hypotéz/den 2026-11-07 vyčerpán; DALŠÍ: 2026-11-08 UTC spustit R12 (commit UTC času do `research/max_effect/RUN_REQUEST` ve větvi `research/max-effect-20261107`), ověřit, přepočítat z trades.csv, pak R13; R8/R9 drží vlastník).
+Poslední aktualizace: 2026-11-07 07:45 UTC (autopilot běh #31, run 42349724419; live `fd6065b` = HEAD v8-fly-layer-test; produkce beze změny, error logy neověřeny (log API 503); R10 HOTOVO (PR #34: doložené N = 190, V[SR] 0,40); DALŠÍ: 2026-11-08 UTC spustit R12 (commit UTC času do `research/max_effect/RUN_REQUEST` ve větvi `research/max-effect-20261107`), ověřit, přepočítat z trades.csv, pak R13; DSR od R12 uvádět s N = 190 + nové varianty, V ∈ {0,40; 0,5}; R8/R9 drží vlastník).
 
 Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h). Vypnout/změnit: claude.ai → plánované úlohy.
 
@@ -24,6 +24,8 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h)
   žádné nové vstupy těchto botů, duplicitní SELECT beze změny.
 
 ## Produkce (poslední známé hodnoty, 13:06 UTC — beze změny od 09:59 kromě níže uvedeného)
+
+- **2026-11-07 07:05 UTC (běh #31):** beze změny — live `fd6065b` = HEAD, 0 událostí od 05:00, error logy NEOVĚŘENY (Render log API 503, zkusit příště), 6× HTTP 200, testy OK, P/L −3 144,10, LH/LIQ 0 obchodů, dup jen id 129 (BEST-OF 132), DB 230,0 MB = 21,4 %. Forward RSI(2): zatím bez dat (první denní svíčka se uzavře 2026-11-08 00:00 UTC).
 
 - **2026-11-07 03:04 UTC (běh #29):** beze změny — live `fd6065b` = HEAD, 0 událostí od 01:00, error logy 0 (01:00–03:04), 6× HTTP 200, testy OK (mimo okno 00–02 UTC), P/L −3 144,10, LH/LIQ 0 obchodů, dup jen id 129 (BEST-OF 132), DB 227,6 MB = 21,2 %. Forward RSI(2): zatím bez dat (start 2026-11-07, první denní svíčka po jejím uzavření).
 
@@ -170,7 +172,7 @@ R13. **2026-11-08 UTC (2. hypotéza dne)** → Průřezové momentum long-short,
     lookback ∈ {28, 56} × skip ∈ {0, 7}. Proč nové: `cross_sectional_rotation` a `relative_strength` byly long-only spot (porovnání s B&H);
     zde tržně neutrální long-short s fundingem — testuje samotnou průřezovou hranu bez beta expozice. Pozn.: R5 placebo naznačilo slabé
     informační pořadí ⇒ očekávání nízké, ale levné (sdílí kód R11).
-R10. Rekonstrukce počtu variant (N) a Sharpe všech dřívějších pokusů z commitů/exportů bez nového ladění (oponentura ChatGPT
+R10. ~~Rekonstrukce N a V[SR]~~ — HOTOVO 2026-11-07 07:40 UTC (běh #31, mimo limit 3 hypotéz/den — bez dat z burzy): PR #34, `reports/variant-count-reconstruction-20261107.md`, nástroj `tools/research/variant_count.py`. **Doložené N = 190 (dolní mez)**: historie 137 (95 ze 110 hypotéz doloženo, horní 141), R-série 53 (16 testů, `variant` v trades.csv bez placeb). 15 nedoložených vypsáno; produkční ladění a nezaznamenané ELITE verze nezapočteny. V[SR] validace ×1 = 0,40 (41 směrových variant) / 2,67 s carry. DSR práh (T 731, V 0,5) 3,07 → 3,11 ⇒ na N necitlivé, závěry R1–R11 beze změny. Zbývá (nízká priorita): ručně doplnit 15 nedoložených. Původně: Rekonstrukce počtu variant (N) a Sharpe všech dřívějších pokusů z commitů/exportů bez nového ladění (oponentura ChatGPT
     kolo 2, bod 4): sjednotit období, frekvenci, náklady a definici Sharpe; oddělit doložený počet od odhadu. Do té doby
     N = 159 = pracovní odhad (ne horní mez), V[SR] = 0,5 jen předpoklad, DSR uvádět jako podmíněné. Nízká priorita, bez dat z Binance.
 Spolupráce s ChatGPT: `automation/DIALOG.md` (kolo 4 čeká na odpověď; ChatGPT zatím našel 8 skutečných chyb, vše opraveno před daty). Návrh forward vyhodnocení (365 dní, bootstrap, K = 4/rok)
