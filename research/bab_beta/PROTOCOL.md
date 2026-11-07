@@ -87,3 +87,8 @@ funding dražší na vysoko-betových aktivech v býčím trhu (short ho ale ink
 ## Výstupy
 `trades.csv` (každá noha), `results.json`, `RESULTS.md`, `data_source.json`; řádek v `automation/STRATEGY_REGISTRY.md`;
 draft PR do `research/autopilot`. Spuštění: commit UTC času do `research/bab_beta/RUN_REQUEST`.
+
+## Dodatek 0 (2026-11-07, před stažením jakýchkoli dat a před první metrikou)
+Chybí-li svíčka dne výstupu, noha se uzavře za **poslední známou close před dnem výstupu** (místo open dalšího dne) —
+výstup tak zůstane v hranicích bloku a nová noha se neotevírá dřív, než stará skončí. Příznak `exit_shifted=1` zůstává.
+Funding se u takové nohy počítá do 00:00 dne výstupu jako obvykle. Ostatní pravidla beze změny.
