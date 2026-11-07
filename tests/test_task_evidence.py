@@ -1,7 +1,10 @@
 """Synthetic regression tests for the research coordinator evidence gate."""
 import unittest
 
-from automation.task_evidence import idempotency_key, validate
+import subprocess
+import tempfile
+
+from automation.task_evidence import idempotency_key, validate, verify_in_repo
 
 SHA_A = "a" * 40
 SHA_B = "b" * 40
@@ -70,3 +73,38 @@ class EvidenceGateTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ClaudeReviewFindings(unittest.TestCase):
+    """Claude review 2026-11-07: cases the first version accepted or crashed on."""
+
+    def test_non_string_state_fails_closed_without_crash(self):
+        x = task(); x["state"] = ["DONE"]
+        self.assertIn("invalid state", validate(x))
+
+    def test_reviewer_same_as_owner_ignoring_case_and_spaces(self):
+        for r in ("Claude", " claude ", "CLAUDE"):
+            x = task(); x["reviewer"] = r
+            self.assertIn("DONE requires different reviewer", validate(x))
+
+    def test_reproduced_must_be_boolean(self):
+        x = task(); x["reproduced"] = "yes"
+        self.assertIn("reproduced must be true or false", validate(x))
+
+    def test_idempotency_key_unambiguous_with_colon(self):
+        a = task(); a["task_id"] = "a:b"
+        b = task(); b["task_id"] = "a"
+        self.assertNotEqual(idempotency_key(a), idempotency_key(b))
+
+    def test_verify_in_repo_rejects_fake_sha_and_missing_artifact(self):
+        with tempfile.TemporaryDirectory() as d:
+            g = lambda *a: subprocess.run(["git", "-C", d, *a], check=True, capture_output=True, text=True).stdout.strip()
+            g("init", "-q"); g("config", "user.email", "t@t"); g("config", "user.name", "t")
+            open(f"{d}/m.json", "w").write("{}"); g("add", "m.json"); g("commit", "-qm", "x")
+            sha = g("rev-parse", "HEAD")
+            ok = task(); ok.update(input_sha=sha, protocol_sha=sha, output_sha=sha, artifact_paths=["m.json"])
+            self.assertEqual(verify_in_repo(ok, d), [])
+            fake = dict(ok, output_sha="f" * 40)
+            self.assertTrue(any("not found" in e for e in verify_in_repo(fake, d)))
+            missing = dict(ok, artifact_paths=["neni.json"])
+            self.assertTrue(any("missing" in e for e in verify_in_repo(missing, d)))
