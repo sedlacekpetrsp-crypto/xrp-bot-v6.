@@ -1,0 +1,1528 @@
+{
+ "summary": {
+  "hist_hypotheses": 110,
+  "hist_documented_hypotheses": 95,
+  "hist_by_rule": {
+   "candidates": 26,
+   "variants": 7,
+   "config": 17,
+   "runs": 45,
+   "NEDOLOŽENO": 15
+  },
+  "hist_n_lower": 137,
+  "hist_n_upper": 141,
+  "hist_undocumented": [
+   "elite/V4",
+   "elite/V5",
+   "elite/V60",
+   "elite/V8",
+   "research/autocorr_regime",
+   "research/candle",
+   "research/combined_selection_replay",
+   "research/cross_market_dispersion",
+   "research/hourly_retest",
+   "research/polymarket_xrp",
+   "research/polymarket_xrp_signal",
+   "research/prospective_market_evidence",
+   "research/research",
+   "research/retest_cost_review",
+   "research/xrp_bank_credit_expansion"
+  ],
+  "r_tests": 16,
+  "r_n": 53,
+  "N_documented_lower": 190,
+  "N_documented_upper": 194,
+  "vsr": {
+   "n": 42,
+   "var_all": 2.666059332599868,
+   "mean_all": 1.476385668843598,
+   "n_directional": 41,
+   "var_directional": 0.39727459252438674,
+   "mean_directional": 1.2434706851568564
+  }
+ },
+ "historical": [
+  {
+   "hypothesis": "elite/V12",
+   "class": "NEPROŠEL",
+   "rule": "candidates",
+   "n": 3,
+   "n_upper": 3,
+   "file": "elite/results/20261014_v12/summary.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "elite/V15",
+   "class": "NEPROŠEL",
+   "rule": "candidates",
+   "n": 3,
+   "n_upper": 3,
+   "file": "elite/results/20261014_v15/summary.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "elite/V18",
+   "class": "NEPROŠEL",
+   "rule": "candidates",
+   "n": 3,
+   "n_upper": 3,
+   "file": "elite/results/20261014_v18/summary.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "elite/V21",
+   "class": "NEPROŠEL",
+   "rule": "candidates",
+   "n": 3,
+   "n_upper": 3,
+   "file": "elite/results/20261014_v21/summary.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "elite/V24",
+   "class": "NEPROŠEL",
+   "rule": "candidates",
+   "n": 2,
+   "n_upper": 2,
+   "file": "elite/results/20261014_v24/summary.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "elite/V26",
+   "class": "NEPROŠEL",
+   "rule": "candidates",
+   "n": 2,
+   "n_upper": 2,
+   "file": "elite/results/20261014_v26/summary.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "elite/V28",
+   "class": "NEPROŠEL",
+   "rule": "candidates",
+   "n": 2,
+   "n_upper": 2,
+   "file": "elite/results/20261014_v28/summary.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "elite/V30",
+   "class": "NEPROŠEL",
+   "rule": "candidates",
+   "n": 2,
+   "n_upper": 2,
+   "file": "elite/results/20261014_v30/summary.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "elite/V32",
+   "class": "NEPROŠEL",
+   "rule": "candidates",
+   "n": 2,
+   "n_upper": 2,
+   "file": "elite/results/20261014_v32/summary.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "elite/V34",
+   "class": "NEPROŠEL",
+   "rule": "candidates",
+   "n": 2,
+   "n_upper": 2,
+   "file": "elite/results/20261014_v34/summary.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "elite/V36",
+   "class": "NEPROŠEL",
+   "rule": "candidates",
+   "n": 2,
+   "n_upper": 2,
+   "file": "elite/results/20261015_v36/summary.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "elite/V38",
+   "class": "NEPROŠEL",
+   "rule": "candidates",
+   "n": 3,
+   "n_upper": 3,
+   "file": "elite/results/20261015_v38/summary.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "elite/V4",
+   "class": "NEPROŠEL",
+   "rule": "NEDOLOŽENO",
+   "n": 0,
+   "n_upper": 0,
+   "file": null,
+   "dup_of": null
+  },
+  {
+   "hypothesis": "elite/V40",
+   "class": "NEPROŠEL",
+   "rule": "candidates",
+   "n": 2,
+   "n_upper": 2,
+   "file": "elite/results/20261015_v40/summary.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "elite/V42",
+   "class": "NEPROŠEL",
+   "rule": "candidates",
+   "n": 2,
+   "n_upper": 2,
+   "file": "elite/results/20261015_v42/summary.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "elite/V44",
+   "class": "NEPROŠEL",
+   "rule": "candidates",
+   "n": 2,
+   "n_upper": 2,
+   "file": "elite/results/20261015_v44/summary.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "elite/V46",
+   "class": "NEPROŠEL",
+   "rule": "candidates",
+   "n": 2,
+   "n_upper": 2,
+   "file": "elite/results/20261015_v46/summary.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "elite/V48",
+   "class": "NEPROŠEL",
+   "rule": "candidates",
+   "n": 2,
+   "n_upper": 2,
+   "file": "elite/results/20261015_v48/summary.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "elite/V49",
+   "class": "NEPROŠEL",
+   "rule": "candidates",
+   "n": 2,
+   "n_upper": 2,
+   "file": "elite/results/20261015_v49/summary.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "elite/V5",
+   "class": "NEDOHLEDÁNO",
+   "rule": "NEDOLOŽENO",
+   "n": 0,
+   "n_upper": 0,
+   "file": null,
+   "dup_of": null
+  },
+  {
+   "hypothesis": "elite/V51",
+   "class": "NEPROŠEL",
+   "rule": "candidates",
+   "n": 2,
+   "n_upper": 2,
+   "file": "elite/results/20261016_v51/summary.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "elite/V52",
+   "class": "NEPROŠEL",
+   "rule": "candidates",
+   "n": 2,
+   "n_upper": 2,
+   "file": "elite/results/20261016_v52/summary.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "elite/V53",
+   "class": "NEPROŠEL",
+   "rule": "candidates",
+   "n": 2,
+   "n_upper": 2,
+   "file": "elite/results/20261016_v53/summary.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "elite/V54",
+   "class": "NEPROŠEL",
+   "rule": "candidates",
+   "n": 2,
+   "n_upper": 2,
+   "file": "elite/results/20261016_v54/summary.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "elite/V55",
+   "class": "NEPROŠEL",
+   "rule": "candidates",
+   "n": 2,
+   "n_upper": 2,
+   "file": "elite/results/20261016_v55/summary.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "elite/V56",
+   "class": "NEPROŠEL",
+   "rule": "candidates",
+   "n": 2,
+   "n_upper": 2,
+   "file": "elite/results/20261016_v56/summary.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "elite/V57",
+   "class": "NEPROŠEL",
+   "rule": "candidates",
+   "n": 3,
+   "n_upper": 3,
+   "file": "elite/results/20261017_v57/summary.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "elite/V59",
+   "class": "NEPROŠEL",
+   "rule": "candidates",
+   "n": 2,
+   "n_upper": 2,
+   "file": "elite/results/20261017_v59/summary.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "elite/V60",
+   "class": "NEDOKONČENO",
+   "rule": "NEDOLOŽENO",
+   "n": 0,
+   "n_upper": 0,
+   "file": null,
+   "dup_of": null
+  },
+  {
+   "hypothesis": "elite/V8",
+   "class": "NEPROŠEL",
+   "rule": "NEDOLOŽENO",
+   "n": 0,
+   "n_upper": 0,
+   "file": null,
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/ada_state_classifier",
+   "class": "NEPROŠEL",
+   "rule": "config",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/ada_state_classifier_results_20261024.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/aggressor_sell_burst",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/aggressor_sell_burst_validation_20261027/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/attention_share",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/attention_share_validation_20261026/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/autocorr",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 2,
+   "file": "research/autocorr_validation_20261024/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/autocorr_regime",
+   "class": "NEPROŠEL",
+   "rule": "NEDOLOŽENO",
+   "n": 0,
+   "n_upper": 0,
+   "file": null,
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/best",
+   "class": "NEPROŠEL",
+   "rule": "variants",
+   "n": 4,
+   "n_upper": 4,
+   "file": "research/best_validation/protocol.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/best_exits",
+   "class": "NEPROŠEL",
+   "rule": "variants",
+   "n": 2,
+   "n_upper": 2,
+   "file": "research/best_exits_20261011/protocol.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/beta_hedged_residual",
+   "class": "NEPROŠEL",
+   "rule": "config",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/beta_hedged_residual_results_20261023.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/bnb_volume_dryup",
+   "class": "NEPROŠEL",
+   "rule": "config",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/bnb_volume_dryup_results_20261024.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/breadth_capitulation",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/breadth_capitulation_validation_20261026/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/broad_dollar_downtrend",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/broad_dollar_downtrend_validation_20261028/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/broad_shock_rebound",
+   "class": "NEPROŠEL",
+   "rule": "config",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/broad_shock_rebound_results_20261021.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/btc_asset_manager_accumulation_xrp",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/btc_asset_manager_accumulation_xrp_validation_20261104/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/btc_etf_creation_impulse",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/btc_etf_creation_impulse_validation_20261030/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/btc_hashrate_shock_recovery",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/btc_hashrate_shock_recovery_validation_20261030/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/btc_lead_lag",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/btc_lead_lag_validation_20261025/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/btc_mempool_clearance_xrp",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/btc_mempool_clearance_xrp_validation_20261104/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/btc_option_skew_risk_on",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/btc_option_skew_risk_on_validation_20261030/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/btc_quarterly_carry",
+   "class": "NEPROŠEL",
+   "rule": "config",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/btc_quarterly_carry_results_20261024.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/btc_variance_risk_premium",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/btc_variance_risk_premium_validation_20261030/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/candle",
+   "class": "NEPROŠEL",
+   "rule": "NEDOLOŽENO",
+   "n": 0,
+   "n_upper": 0,
+   "file": null,
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/combined_selection_replay",
+   "class": "NEPROŠEL",
+   "rule": "NEDOLOŽENO",
+   "n": 0,
+   "n_upper": 0,
+   "file": null,
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/core_development_activity",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/core_development_activity_validation_20261029/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/cross_exchange_residual",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/cross_exchange_residual_validation_20261027/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/cross_market_dispersion",
+   "class": "NEPROŠEL",
+   "rule": "NEDOLOŽENO",
+   "n": 0,
+   "n_upper": 0,
+   "file": null,
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/cross_sectional_rotation",
+   "class": "NEPROŠEL",
+   "rule": "config",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/cross_sectional_rotation_results_20261020.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/defi_yield_rotation",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/defi_yield_rotation_validation_20261029/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/downside_imbalance_short",
+   "class": "NEPROŠEL",
+   "rule": "config",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/downside_imbalance_short_results_20261022.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/eth_funding_extreme",
+   "class": "NEPROŠEL",
+   "rule": "config",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/eth_funding_extreme_results_20261024.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/extreme_fear_contrarian",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/extreme_fear_contrarian_validation_20261029/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/fib_timeframe",
+   "class": "NEPROŠEL",
+   "rule": "variants",
+   "n": 2,
+   "n_upper": 2,
+   "file": "research/fib_timeframe_20261020/protocol.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/financial_conditions_easing",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/financial_conditions_easing_validation_20261029/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/float_expansion_slowdown",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/float_expansion_slowdown_validation_20261030/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/flow_pressure",
+   "class": "NEPROŠEL",
+   "rule": "config",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/flow_pressure_results_20261020.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/funding_reversal",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/funding_reversal_validation_20261025/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/holder_growth_divergence",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/holder_growth_divergence_validation_20261028/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/hourly_retest",
+   "class": "NEDOKONČENO",
+   "rule": "NEDOLOŽENO",
+   "n": 0,
+   "n_upper": 0,
+   "file": null,
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/illiquidity_reversal",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/illiquidity_reversal_validation_20261026/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/large_trade_followthrough",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/large_trade_followthrough_validation_20261025/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/ledger_activity_breadth",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/ledger_activity_breadth_validation_20261027/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/ledger_cadence_health",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/ledger_cadence_health_validation_20261029/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/network_fee_pressure",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/network_fee_pressure_validation_20261027/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/oi_crowding",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/oi_crowding_validation_20261025/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/orderbook_depth",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/orderbook_depth_validation_20261026/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/paper_overlap",
+   "class": "NEPROŠEL",
+   "rule": "variants",
+   "n": 2,
+   "n_upper": 2,
+   "file": "research/paper_overlap_20261018/protocol.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/polymarket_xrp",
+   "class": "NEDOKONČENO",
+   "rule": "NEDOLOŽENO",
+   "n": 0,
+   "n_upper": 0,
+   "file": null,
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/polymarket_xrp_signal",
+   "class": "NEDOKONČENO",
+   "rule": "NEDOLOŽENO",
+   "n": 0,
+   "n_upper": 0,
+   "file": null,
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/premium_recovery",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/premium_recovery_validation_20261026/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/prospective_market_evidence",
+   "class": "SBĚR DAT",
+   "rule": "NEDOLOŽENO",
+   "n": 0,
+   "n_upper": 0,
+   "file": null,
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/protocol_activation_event",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/protocol_activation_event_validation_20261029/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/range_harvest_limit",
+   "class": "NEPROŠEL",
+   "rule": "config",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/range_harvest_limit_results_20261023.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/real_yield_easing",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/real_yield_easing_validation_20261029/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/realized_value_discount",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/realized_value_discount_validation_20261028/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/recommendations",
+   "class": "NEPROŠEL",
+   "rule": "variants",
+   "n": 2,
+   "n_upper": 2,
+   "file": "research/recommendations_20261017/protocol.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/relative_strength",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/relative_strength_validation_20261024/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/research",
+   "class": "NEPROŠEL",
+   "rule": "NEDOLOŽENO",
+   "n": 0,
+   "n_upper": 0,
+   "file": null,
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/residual_snapback",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/residual_snapback_validation_20261025/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/retest_cost_review",
+   "class": "NEPROŠEL",
+   "rule": "NEDOLOŽENO",
+   "n": 0,
+   "n_upper": 0,
+   "file": null,
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/session_transfer",
+   "class": "NEPROŠEL",
+   "rule": "config",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/session_transfer_results_20261023.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/sol_basis_convergence",
+   "class": "NEPROŠEL",
+   "rule": "config",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/sol_basis_convergence_results_20261024.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/sol_eth_pairs",
+   "class": "NEPROŠEL",
+   "rule": "config",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/sol_eth_pairs_results_20261021.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/spot_perp_carry",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/spot_perp_carry_validation_20261027/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/stable_peg",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 3,
+   "file": "research/stable_peg_validation_20261025/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/stablecoin_liquidity_impulse",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/stablecoin_liquidity_impulse_validation_20261028/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/transfer_utilization_share",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/transfer_utilization_share_validation_20261030/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/triangular_parity",
+   "class": "NEPROŠEL",
+   "rule": "config",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/triangular_parity_results_20261024.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/tv",
+   "class": "NEPROŠEL",
+   "rule": "variants",
+   "n": 2,
+   "n_upper": 2,
+   "file": "research/tv_validation_20261012/protocol.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/vix_shock_recovery",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/vix_shock_recovery_validation_20261028/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/volatility_compression",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/volatility_compression_validation_20261027/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/volatility_contraction_spot",
+   "class": "NEPROŠEL",
+   "rule": "config",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/volatility_contraction_spot_results_20261023.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/volatility_managed_momentum",
+   "class": "NEPROŠEL",
+   "rule": "config",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/volatility_managed_momentum_results_20261022.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/weekend",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 2,
+   "file": "research/weekend_validation_20261024/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/weekend_carry",
+   "class": "NEPROŠEL",
+   "rule": "config",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/weekend_carry_results_20261023.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/weekly_inverse_vol_basket",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/weekly_inverse_vol_basket_validation_20261030/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/whale_vwap",
+   "class": "NEPROŠEL",
+   "rule": "variants",
+   "n": 3,
+   "n_upper": 3,
+   "file": "research/whale_vwap_validation_20261013/protocol.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/xrp_bank_credit_expansion",
+   "class": "NEDOKONČENO",
+   "rule": "NEDOLOŽENO",
+   "n": 0,
+   "n_upper": 0,
+   "file": null,
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/xrp_reverse_repo_liquidity_release",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/xrp_reverse_repo_liquidity_release_validation_20261104/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/xrp_session_handoff_reversal",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/xrp_session_handoff_reversal_validation_20261104/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/xrp_yield_curve_steepening",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/xrp_yield_curve_steepening_validation_20261105/results.json",
+   "dup_of": null
+  },
+  {
+   "hypothesis": "research/xrpl_dex_liquidity_replenishment",
+   "class": "NEPROŠEL",
+   "rule": "runs",
+   "n": 1,
+   "n_upper": 1,
+   "file": "research/xrpl_dex_liquidity_replenishment_validation_20261030/results.json",
+   "dup_of": null
+  }
+ ],
+ "r_series": [
+  {
+   "test": "donchian_trend",
+   "branch": "donchian-trend-20261105",
+   "variants_all": [
+    "N20_k2",
+    "N20_k3",
+    "N55_k2",
+    "N55_k3"
+   ],
+   "trials": [
+    "N20_k2",
+    "N20_k3",
+    "N55_k2",
+    "N55_k3"
+   ],
+   "n": 4
+  },
+  {
+   "test": "turn_of_month",
+   "branch": "turn-of-month-20261105",
+   "variants_all": [
+    "ToM",
+    "placebo_shift+1",
+    "placebo_shift+10",
+    "placebo_shift+11",
+    "placebo_shift+12",
+    "placebo_shift+13",
+    "placebo_shift+2",
+    "placebo_shift+3",
+    "placebo_shift+4",
+    "placebo_shift+5",
+    "placebo_shift+6",
+    "placebo_shift+7",
+    "placebo_shift+8",
+    "placebo_shift+9",
+    "placebo_shift-1",
+    "placebo_shift-10",
+    "placebo_shift-11",
+    "placebo_shift-12",
+    "placebo_shift-13",
+    "placebo_shift-14",
+    "placebo_shift-2",
+    "placebo_shift-3",
+    "placebo_shift-4",
+    "placebo_shift-5",
+    "placebo_shift-6",
+    "placebo_shift-7",
+    "placebo_shift-8",
+    "placebo_shift-9"
+   ],
+   "trials": [
+    "ToM"
+   ],
+   "n": 1
+  },
+  {
+   "test": "rsi2_pullback",
+   "branch": "rsi2-pullback-20261105",
+   "variants_all": [
+    "RSI2",
+    "no_sma200",
+    "rsi_lt15",
+    "rsi_lt5"
+   ],
+   "trials": [
+    "RSI2",
+    "no_sma200",
+    "rsi_lt15",
+    "rsi_lt5"
+   ],
+   "n": 4
+  },
+  {
+   "test": "sma200_overlay",
+   "branch": "sma200-overlay-20261105",
+   "variants_all": [
+    "SMA200",
+    "sma100",
+    "sma150",
+    "sma200_band2"
+   ],
+   "trials": [
+    "SMA200",
+    "sma100",
+    "sma150",
+    "sma200_band2"
+   ],
+   "n": 4
+  },
+  {
+   "test": "vol_breakout",
+   "branch": "vol-breakout-20261105",
+   "variants_all": [
+    "K05",
+    "k03",
+    "k05_sma200",
+    "k07"
+   ],
+   "trials": [
+    "K05",
+    "k03",
+    "k05_sma200",
+    "k07"
+   ],
+   "n": 4
+  },
+  {
+   "test": "ts_momentum_vote",
+   "branch": "ts-momentum-vote-20261105",
+   "variants_all": [
+    "H4_MONTHLY",
+    "h3_monthly",
+    "h4_weekly"
+   ],
+   "trials": [
+    "H4_MONTHLY",
+    "h3_monthly",
+    "h4_weekly"
+   ],
+   "n": 3
+  },
+  {
+   "test": "ethbtc_switch",
+   "branch": "ethbtc-switch-20261105",
+   "variants_all": [
+    "SMA100",
+    "SMA20",
+    "SMA50"
+   ],
+   "trials": [
+    "SMA100",
+    "SMA20",
+    "SMA50"
+   ],
+   "n": 3
+  },
+  {
+   "test": "rsi2_cross_asset",
+   "branch": "rsi2-cross-asset-20261106",
+   "variants_all": [],
+   "trials": [
+    "(jediná)"
+   ],
+   "n": 1
+  },
+  {
+   "test": "funding_carry",
+   "branch": "funding-carry-20261106",
+   "variants_all": [
+    "H10",
+    "H20",
+    "H30",
+    "H5"
+   ],
+   "trials": [
+    "H10",
+    "H20",
+    "H30",
+    "H5"
+   ],
+   "n": 4
+  },
+  {
+   "test": "ethbtc_meanrev",
+   "branch": "ethbtc-meanrev-20261106",
+   "variants_all": [
+    "z1.5",
+    "z2",
+    "z2.5"
+   ],
+   "trials": [
+    "z1.5",
+    "z2",
+    "z2.5"
+   ],
+   "n": 3
+  },
+  {
+   "test": "rebalance_band",
+   "branch": "rebalance-band-20261106",
+   "variants_all": [
+    "band10",
+    "band5",
+    "monthly"
+   ],
+   "trials": [
+    "band10",
+    "band5",
+    "monthly"
+   ],
+   "n": 3
+  },
+  {
+   "test": "xrpbtc_switch",
+   "branch": "xrpbtc-switch-20261106",
+   "variants_all": [
+    "SMA100",
+    "SMA20",
+    "SMA50"
+   ],
+   "trials": [
+    "SMA100",
+    "SMA20",
+    "SMA50"
+   ],
+   "n": 3
+  },
+  {
+   "test": "vol_target",
+   "branch": "vol-target-20261106",
+   "variants_all": [
+    "BTC_T30",
+    "BTC_T40",
+    "BTC_T50",
+    "BTC_T60",
+    "ETH_T40"
+   ],
+   "trials": [
+    "BTC_T30",
+    "BTC_T40",
+    "BTC_T50",
+    "BTC_T60",
+    "ETH_T40"
+   ],
+   "n": 5
+  },
+  {
+   "test": "near_high",
+   "branch": "near-high-20261106",
+   "variants_all": [
+    "BOTTOM3",
+    "EQW8_MONTHLY",
+    "TOP2",
+    "TOP3",
+    "TOP4"
+   ],
+   "trials": [
+    "TOP2",
+    "TOP3",
+    "TOP4"
+   ],
+   "n": 3
+  },
+  {
+   "test": "contrarian_ladder",
+   "branch": "contrarian-ladder-20261106",
+   "variants_all": [
+    "BTC_ONLY",
+    "L15_25_35",
+    "L20_30_40",
+    "L25_35_45",
+    "STATIC_50_50"
+   ],
+   "trials": [
+    "BTC_ONLY",
+    "L15_25_35",
+    "L20_30_40",
+    "L25_35_45"
+   ],
+   "n": 4
+  },
+  {
+   "test": "bab_beta",
+   "branch": "bab-beta-20261107",
+   "variants_all": [
+    "W120_H14",
+    "W120_H7",
+    "W60_H14",
+    "W60_H7"
+   ],
+   "trials": [
+    "W120_H14",
+    "W120_H7",
+    "W60_H14",
+    "W60_H7"
+   ],
+   "n": 4
+  }
+ ],
+ "vsr_values": [
+  {
+   "test": "donchian_trend",
+   "path": "/grid/N20_k2/validation/x1/sharpe",
+   "sharpe": 1.3457077126604216
+  },
+  {
+   "test": "donchian_trend",
+   "path": "/grid/N20_k3/validation/x1/sharpe",
+   "sharpe": 1.3986249124960983
+  },
+  {
+   "test": "donchian_trend",
+   "path": "/grid/N55_k2/validation/x1/sharpe",
+   "sharpe": 1.0106167663903403
+  },
+  {
+   "test": "donchian_trend",
+   "path": "/grid/N55_k3/validation/x1/sharpe",
+   "sharpe": 1.0816895790495606
+  },
+  {
+   "test": "turn_of_month",
+   "path": "/strategy/validation/x1/sharpe",
+   "sharpe": -1.0777755998173073
+  },
+  {
+   "test": "rsi2_pullback",
+   "path": "/strategy/validation/x1/sharpe",
+   "sharpe": 0.5904538327560249
+  },
+  {
+   "test": "rsi2_pullback",
+   "path": "/info_validation_x1/rsi_lt5/sharpe",
+   "sharpe": 0.6529781698477972
+  },
+  {
+   "test": "rsi2_pullback",
+   "path": "/info_validation_x1/rsi_lt15/sharpe",
+   "sharpe": 0.31851987315610625
+  },
+  {
+   "test": "rsi2_pullback",
+   "path": "/info_validation_x1/no_sma200/sharpe",
+   "sharpe": 0.7476893180476684
+  },
+  {
+   "test": "sma200_overlay",
+   "path": "/strategy/validation/x1/sharpe",
+   "sharpe": 1.4319010443798708
+  },
+  {
+   "test": "sma200_overlay",
+   "path": "/info_validation_x1/sma100/sharpe",
+   "sharpe": 1.2686541409877277
+  },
+  {
+   "test": "sma200_overlay",
+   "path": "/info_validation_x1/sma150/sharpe",
+   "sharpe": 1.5463437095324724
+  },
+  {
+   "test": "sma200_overlay",
+   "path": "/info_validation_x1/sma200_band2/sharpe",
+   "sharpe": 1.3020163428874272
+  },
+  {
+   "test": "vol_breakout",
+   "path": "/strategy/validation/x1/sharpe",
+   "sharpe": 1.023587864239028
+  },
+  {
+   "test": "vol_breakout",
+   "path": "/info_validation_x1/k03/sharpe",
+   "sharpe": 0.2459438769591013
+  },
+  {
+   "test": "vol_breakout",
+   "path": "/info_validation_x1/k07/sharpe",
+   "sharpe": 0.7116445978784287
+  },
+  {
+   "test": "vol_breakout",
+   "path": "/info_validation_x1/k05_sma200/sharpe",
+   "sharpe": 1.206769290425795
+  },
+  {
+   "test": "ts_momentum_vote",
+   "path": "/strategy/validation/x1/sharpe",
+   "sharpe": 1.144049412649054
+  },
+  {
+   "test": "ts_momentum_vote",
+   "path": "/info_validation_x1/h3_monthly/sharpe",
+   "sharpe": 1.0659189569958305
+  },
+  {
+   "test": "ts_momentum_vote",
+   "path": "/info_validation_x1/h4_weekly/sharpe",
+   "sharpe": 1.4365182628103188
+  },
+  {
+   "test": "ethbtc_switch",
+   "path": "/strategy/validation/x1/sharpe",
+   "sharpe": 1.3174871404656803
+  },
+  {
+   "test": "ethbtc_switch",
+   "path": "/info_validation_x1/SMA20/sharpe",
+   "sharpe": 1.3093425290250664
+  },
+  {
+   "test": "ethbtc_switch",
+   "path": "/info_validation_x1/SMA100/sharpe",
+   "sharpe": 1.4657147795898007
+  },
+  {
+   "test": "rsi2_cross_asset",
+   "path": "/basket/validation/x1/sharpe",
+   "sharpe": 0.15790346375228556
+  },
+  {
+   "test": "funding_carry",
+   "path": "/strategy/H10/validation/x1/sharpe",
+   "sharpe": 11.0259
+  },
+  {
+   "test": "ethbtc_meanrev",
+   "path": "/strategy/validation/x1/sharpe",
+   "sharpe": 1.651690811390462
+  },
+  {
+   "test": "ethbtc_meanrev",
+   "path": "/info_validation_x1/z1.5/sharpe",
+   "sharpe": 1.6455580531735627
+  },
+  {
+   "test": "ethbtc_meanrev",
+   "path": "/info_validation_x1/z2.5/sharpe",
+   "sharpe": 1.6483792702101026
+  },
+  {
+   "test": "rebalance_band",
+   "path": "/strategy/validation/x1/sharpe",
+   "sharpe": 1.6435484544723626
+  },
+  {
+   "test": "rebalance_band",
+   "path": "/info_validation_x1/band10/sharpe",
+   "sharpe": 1.6630846562082184
+  },
+  {
+   "test": "rebalance_band",
+   "path": "/info_validation_x1/monthly/sharpe",
+   "sharpe": 1.6420195676240028
+  },
+  {
+   "test": "xrpbtc_switch",
+   "path": "/strategy/validation/x1/sharpe",
+   "sharpe": 1.7986687247491662
+  },
+  {
+   "test": "xrpbtc_switch",
+   "path": "/info_validation_x1/SMA20/sharpe",
+   "sharpe": 1.8061407346657359
+  },
+  {
+   "test": "xrpbtc_switch",
+   "path": "/info_validation_x1/SMA100/sharpe",
+   "sharpe": 1.8599329964513995
+  },
+  {
+   "test": "vol_target",
+   "path": "/strategy/validation/x1/sharpe",
+   "sharpe": 2.135987272264908
+  },
+  {
+   "test": "vol_target",
+   "path": "/info_validation_x1/BTC_T30/sharpe",
+   "sharpe": 2.0931365282655983
+  },
+  {
+   "test": "vol_target",
+   "path": "/info_validation_x1/BTC_T60/sharpe",
+   "sharpe": 2.05982301184846
+  },
+  {
+   "test": "vol_target",
+   "path": "/info_validation_x1/ETH_T40/sharpe",
+   "sharpe": 1.381853710586566
+  },
+  {
+   "test": "near_high",
+   "path": "/strategy/validation/x1/sharpe",
+   "sharpe": 1.443016743409173
+  },
+  {
+   "test": "contrarian_ladder",
+   "path": "/strategy/validation/x1/sharpe",
+   "sharpe": 1.4874396677525736
+  },
+  {
+   "test": "contrarian_ladder",
+   "path": "/info_validation_x1/BTC_sleeve_only/sharpe",
+   "sharpe": 2.0044479233351535
+  },
+  {
+   "test": "bab_beta",
+   "path": "/strategy/validation/x1/sharpe",
+   "sharpe": 0.3152699878590691
+  }
+ ]
+}
