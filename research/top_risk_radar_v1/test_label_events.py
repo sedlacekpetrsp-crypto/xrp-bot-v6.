@@ -38,5 +38,6 @@ class TestEventLabel(unittest.TestCase):
     def test_as_of_before_decision_rejected(self):
         with self.assertRaises(ValueError):
             label_decision(T, [tr(1, 1)], T - timedelta(seconds=1))
-\nif __name__ == "__main__":
+
+if __name__ == "__main__":
     unittest.main()
