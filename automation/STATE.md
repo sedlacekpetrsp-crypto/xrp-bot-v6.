@@ -1,6 +1,6 @@
 # Autopilot STATE — přepisuje se každým během
 
-Poslední aktualizace: 2026-11-06 19:20 UTC (autopilot běh #26, run 42276367605; live `fd6065b` = HEAD v8-fly-layer-test; R7 připraven (PR #31), backtesty R5 a R7 až 2026-11-07 UTC; běh #25 v 17:04 UTC skončil bez reportu).
+Poslední aktualizace: 2026-11-07 00:10 UTC (autopilot běh #27, run 42309349066; live `fd6065b` = HEAD v8-fly-layer-test; R5 HOTOVO = ZAMÍTNUTO (PR #28); DALŠÍ: R7 (PR #31)).
 
 Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h). Vypnout/změnit: claude.ai → plánované úlohy.
 
@@ -24,6 +24,8 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h)
   žádné nové vstupy těchto botů, duplicitní SELECT beze změny.
 
 ## Produkce (poslední známé hodnoty, 13:06 UTC — beze změny od 09:59 kromě níže uvedeného)
+
+- **2026-11-06 23:04 UTC (běh #27):** beze změny — live `fd6065b` = HEAD, 0 událostí od 19:00, error logy 0 (19:00–23:04), 6× HTTP 200, P/L −3 144,10, LH/LIQ 0 obchodů, dup jen id 129 (BEST-OF 132), DB 226,6 MB = 21,1 % (+1,6 MB za 4 h).
 
 - **2026-11-06 19:04 UTC (běh #26):** beze změny — live `fd6065b` = HEAD, 0 událostí od 15:00, error logy 0 (15:00–19:04, log API opět funguje), 6× HTTP 200, P/L −3 144,10, LH/LIQ 0 obchodů, dup jen id 129 (BEST-OF 132), DB 225,0 MB = 21,0 % (+2,3 MB za 4 h, trend beze změny).
 
@@ -124,13 +126,11 @@ R3b. ~~Forward PAPER RSI(2)~~ — NASTAVENO 2026-11-06 ~13:00 UTC (ručně): run
         Hlavní vyhodnocení až po ≥ 30 forward obchodech NEBO 60 dnech (co nastane později) — ani pak ne „zisková“.
 R4. ~~Volatilitní cílení BTC 40 %~~ — HOTOVO 2026-11-06 13:25 UTC: **ZAMÍTNUTO** (A1–A4 ✔ poprvé: validace ×1 +392 %, Sharpe 2,14, DD 20,7 %, 35 úseků vs B&H BTC +464 %, 2,02, 26,2 %; A5 ✘ závěrečný ×2 −17,4 % vs B&H −17,5 %, Sharpe −0,09 vs −0,03; B2 ✘ DD 0,79× B&H; B3 ✘; DSR 0,64). PR #27, `research/vol_target/RESULTS.md`. Poučení: vol-cílení BTC zlepší Sharpe/DD jen v klidném býčím trhu; v 2022 a 2025–26 (σ ~ cíl ⇒ váha ~0,9) kopíruje B&H. Původně: (bod 12 níže; protokol už commitnut ve `research/vol-target-20261106`, `fc9b4a4`) —
     pokračovat `run.py` + testy + workflow podle vzoru `research/funding_carry`, vyhodnotit stopou A i B + DSR (nástroj z PR #22).
-R5. **DALŠÍ NA ŘADĚ — PŘIPRAVENO, SPUSTIT nejdřív 2026-11-07 00:00 UTC** → Blízkost 52týdennímu maximu průřezově, 8 aktiv (bod 14 níže).
-    Větev `research/near-high-20261106`, draft PR #28. Protokol `8012431` (před kódem), `run.py` + testy + workflow `7500520` (13 passed lokálně, syntetický end-to-end OK).
-    KDE POKRAČOVAT: ve větvi zapsat UTC čas do `research/near_high/RUN_REQUEST`, commit + push ⇒ workflow `near-high.yml` stáhne data, spustí backtest a commitne výsledky;
-    pak `git pull`, nezávisle přepočítat bloky z trades.csv vs results.json, řádek do registru, TEST_LOG, report. Nic neměnit v pravidlech.
+R5. ~~Blízkost 52týdennímu maximu, top 3 z 8~~ — HOTOVO 2026-11-07 00:05 UTC: **ZAMÍTNUTO** (A1, A5, B2, B3, DSR: validace ×1 +276,3 %, Sharpe 1,44, DD 32,1 %, 72 obch. vs B&H koše +279,7 %, 1,49, 40,4 %; ×2 PF 2,09; závěrečný ×2 −26,9 %, DD 59,9 % vs B&H −41,5 %, DD 64,9 %; DSR 0,26; placebo bottom 3 +270 % ≈ top 3 ⇒ pořadí podle blízkosti maxima nenese informaci). PR #28, `research/near_high/RESULTS.md`, výsledky `8a133ff`, přepočet z trades.csv 17 bloků = results.json.
+    Poučení: anchoring na roční maximum v kryptu (8 velkých aktiv) nemá průřezovou hranu; vítězí jen koš/rebalance (EQW8 měsíčně Sharpe 1,61) a samotné BTC (2,02). Varianty výběru podle max365 dál netestovat.
 R6. ~~Audit produkčních PAPER botů~~ — HOTOVO 2026-11-06 12:50 UTC ručně: `reports/production-bot-audit-20261106.md`; návrhy (pozastavit WHALE, BEST-OF, SWING; sběr research_market_samples) čekají na vlastníka. Původně: Audit produkčních PAPER botů (jen čtení, Render SQL): za 30 a 90 dní na bota obchody, čistý P/L, PF, náklady,
     max DD ⇒ `reports/production-bot-audit-<datum>.md` s návrhem, které pozastavit (jen návrh, čeká na vlastníka).
-R7. **PŘIPRAVENO 2026-11-06 19:20 UTC, SPUSTIT 2026-11-07 PO R5** → Kontrariánský žebřík 20/30/40 % od max365, koš 8 aktiv
+R7. **DALŠÍ NA ŘADĚ (příští běh 2026-11-07, 2. hypotéza dne)** → Kontrariánský žebřík 20/30/40 % od max365, koš 8 aktiv
     (před daty rozšířeno z BTC na 8 rukávů — samotné BTC by z konstrukce nesplnilo A2/B5). Větev `research/contrarian-ladder-20261106`,
     draft PR #31. Protokol `54902a4` (před kódem), `run.py` + 13 testů + workflow `965c859`.
     KDE POKRAČOVAT: ve větvi zapsat UTC čas do `research/contrarian_ladder/RUN_REQUEST`, commit + push ⇒ workflow `contrarian-ladder.yml`

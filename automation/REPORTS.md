@@ -3,6 +3,12 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## 2026-11-07 01:10 SEČ (běh #27)
+- Nasazeno: `fd6065b` – PR #5 ano. Produkce beze změny: 6× HTTP 200, testy OK, 0 chyb, 0 událostí, 0 nových duplicit, P/L součet −3 144,10.
+- Výzkum R5 **Blízkost ročnímu maximu (měsíčně držet 3 z 8 aktiv nejblíž 52týdennímu maximu)** — **ZAMÍTNUTO** ([PR #28](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/28)): validace 2023–24 ×1 +276 % (Sharpe 1,44, DD 32 %) vs B&H koše +280 % (1,49, DD 40 %); závěrečný test 2025–26 ×2 −26,9 % vs B&H −41,5 %; DSR 0,26.
+- Klíčové: 3 aktiva *nejdál* od maxima (placebo) vydělala skoro stejně (+270 %) ⇒ pořadí nenese informaci. Čísla nezávisle přepočtena z trades.csv (17 bloků, 0 neshod).
+- DB 21,1 %. Další běh: R7 kontrariánský žebřík (PR #31). Od vás: R8/R9 dál čekají na uvolnění; PR #8/#9/#10 na review.
+
 ## 2026-11-06 20:20 SEČ (běh #26)
 - Nasazeno: `fd6065b` – PR #5 ano. Produkce beze změny: 6× HTTP 200, testy OK, 0 chyb (log API už funguje), 0 událostí, 0 nových duplicit, P/L součet −3 144,10.
 - Výzkum R7 **Kontrariánský žebřík (dokupování při propadu 20/30/40 % pod ročním maximem), 8 aktiv** — připraveno ([PR #31](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/31)): protokol commitnut předem, kód + 13 testů OK. Zatím žádná čísla — denní limit 3 nových hypotéz je dnes vyčerpán; zítra poběží R5 a R7.
