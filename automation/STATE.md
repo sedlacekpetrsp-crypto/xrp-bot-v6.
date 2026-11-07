@@ -1,6 +1,6 @@
 # Autopilot STATE — přepisuje se každým během
 
-Poslední aktualizace: 2026-11-07 00:10 UTC (autopilot běh #27, run 42309349066; live `fd6065b` = HEAD v8-fly-layer-test; R5 HOTOVO = ZAMÍTNUTO (PR #28); DALŠÍ: R7 (PR #31)).
+Poslední aktualizace: 2026-11-07 01:20 UTC (autopilot běh #28, run 42321982611; live `fd6065b` = HEAD v8-fly-layer-test; R7 HOTOVO = ZAMÍTNUTO (PR #31); DALŠÍ: R8/R9 drží vlastník ⇒ příští běh R10 nebo doplnit 3 nové hypotézy (3. hypotéza dne povolena); flaky test TV viz Otevřené úkoly).
 
 Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h). Vypnout/změnit: claude.ai → plánované úlohy.
 
@@ -130,13 +130,8 @@ R5. ~~Blízkost 52týdennímu maximu, top 3 z 8~~ — HOTOVO 2026-11-07 00:05 UT
     Poučení: anchoring na roční maximum v kryptu (8 velkých aktiv) nemá průřezovou hranu; vítězí jen koš/rebalance (EQW8 měsíčně Sharpe 1,61) a samotné BTC (2,02). Varianty výběru podle max365 dál netestovat.
 R6. ~~Audit produkčních PAPER botů~~ — HOTOVO 2026-11-06 12:50 UTC ručně: `reports/production-bot-audit-20261106.md`; návrhy (pozastavit WHALE, BEST-OF, SWING; sběr research_market_samples) čekají na vlastníka. Původně: Audit produkčních PAPER botů (jen čtení, Render SQL): za 30 a 90 dní na bota obchody, čistý P/L, PF, náklady,
     max DD ⇒ `reports/production-bot-audit-<datum>.md` s návrhem, které pozastavit (jen návrh, čeká na vlastníka).
-R7. **DALŠÍ NA ŘADĚ (příští běh 2026-11-07, 2. hypotéza dne)** → Kontrariánský žebřík 20/30/40 % od max365, koš 8 aktiv
-    (před daty rozšířeno z BTC na 8 rukávů — samotné BTC by z konstrukce nesplnilo A2/B5). Větev `research/contrarian-ladder-20261106`,
-    draft PR #31. Protokol `54902a4` (před kódem), `run.py` + 13 testů + workflow `965c859`.
-    KDE POKRAČOVAT: ve větvi zapsat UTC čas do `research/contrarian_ladder/RUN_REQUEST`, commit + push ⇒ workflow `contrarian-ladder.yml`
-    stáhne data, spustí backtest a commitne výsledky; pak `git pull`, nezávisle přepočítat bloky (TRANCHE počet + součet net_pnl všech řádků)
-    z trades.csv vs results.json, řádek v registru (nahradit „ve validaci“), TEST_LOG, report. Nic neměnit v pravidlech.
-    Pořadí 2026-11-07: R5 → R7 (R8/R9 drží vlastník) = 2 ze 3 hypotéz dne.
+R7. ~~Kontrariánský žebřík 20/30/40 % od max365, koš 8 aktiv~~ — HOTOVO 2026-11-07 01:10 UTC: **ZAMÍTNUTO** (A5, B2, B3, DSR: validace ×1 +227,2 %, Sharpe 1,49, DD 34,9 %, 58 tranší, PF tranší 27 vs B&H koše +279,7 %, 1,49, 40,4 %; závěrečný ×2 −37,0 %, DD 61,7 %, PF tranší 0,34 vs B&H −41,5 %, 64,9 %; statický 50/50 závěrečný −20,7 % ⇒ žebřík v medvědím trhu škodí; DSR 0,28; WF 3/4). PR #31, `research/contrarian_ladder/RESULTS.md`, výsledky `07e169a` (run 42321985560), přepočet z trades.csv 18 bloků = results.json.
+    Poučení: dokupování propadů funguje jen tam, kde se trh vrátí (2021, 2023–24); v 2022 a 2025–26 tranše chytaly padající nůž. Varianty žebříku/averaging-down dál netestovat.
 **R8 + R9 VÝKONNOST POZASTAVENA VLASTNÍKEM (2026-11-06 17:48 SEČ): NESPOUŠTĚT.** Audit dat hotový (PR #29 runy 42256020278 +
 42257311341, PR #30 runy 42256137116 + 42257419030). Sémantika `funding_interval_hours` rozhodnuta: **B s tolerancí**
 (`FUNDING_SEMANTICS.json` v obou větvích, kód přepnut). Oba runnery bez `performance_hold=false` výpočet odmítnou (exit 3) —
@@ -212,14 +207,16 @@ Nové hypotézy (doplněno 2026-11-06 07:15; nízký obrat; žádný směrový s
     Proč nové: expozice jen podle realizované volatility (shlukování vol), ne podle směru; #101 mělo momentum signál, #104 vážilo více aktiv.
     PROTOKOL UŽ COMMITNUT (`research/vol-target-20261106`, `fc9b4a4`, `research/vol_target/PROTOCOL.md`). Pokračovat: `run.py` (úseky mezi úpravami,
     souvislý ledger), testy + workflow podle vzoru PR #20, spustit, ověřit, PR.
-13. (→ R7, PR #31, koš 8 aktiv) Kontrariánský žebřík BTC: základ 50 % BTC / 50 % hotovost; dokoupit po 1/3 hotovosti při poklesu ≥ 20/30/40 % pod 365d maximum close,
+13. ~~(→ R7, PR #31)~~ HOTOVO, ZAMÍTNUTO. Kontrariánský žebřík BTC: základ 50 % BTC / 50 % hotovost; dokoupit po 1/3 hotovosti při poklesu ≥ 20/30/40 % pod 365d maximum close,
     tranše prodat zpět na 50 % při novém 365d maximu. Měřítko B&H BTC i statický 50/50 BTC/hotovost. Proč nové: valuační (drawdown) signál,
     ne trend ani kalendář; žádná z 110 hypotéz nepoužila vzdálenost od ročního maxima.
-14. Blízkost 52týdennímu maximu průřezově (George–Hwang): z 8 velkých spot aktiv (BTC, ETH, BNB, XRP, ADA, DOGE, LTC, LINK) držet měsíčně
+14. ~~(→ R5, PR #28)~~ HOTOVO, ZAMÍTNUTO. Blízkost 52týdennímu maximu průřezově (George–Hwang): z 8 velkých spot aktiv (BTC, ETH, BNB, XRP, ADA, DOGE, LTC, LINK) držet měsíčně
     3 s nejvyšším close/max365, stejné váhy. Měřítko B&H rovnovážného koše týchž 8 (bez rebalance). Proč nové: `cross_sectional_rotation` (#56)
     a `relative_strength` (#85) řadily podle výnosu/momenta, ne podle vzdálenosti k ročnímu maximu (anchoring efekt).
 
 ## Otevřené úkoly (priorita shora)
+
+0. Flaky test (zjištěno 2026-11-07 01:04 UTC, run 42321982611): `test_tv_consensus.py::RiskTests::test_daily_pause_disabled_allows_entry_without_resetting_losses` selže, když běh padne mezi 00:00–02:00 UTC (obchody `now−2h` jsou včerejší ⇒ `daily_pnl()`=0 ≠ −120). Chyba testu, ne produkce. Návrh opravy: `closed_at = now − min(2h, čas od půlnoci)` nebo zmrazit `utcnow` — jen v test souboru, čeká na vlastníka (dotýká se produkční větve).
 
 1. PR #8 čeká na review/schválení vlastníka (merge = deploy). Po nasazení ověřit, že při dalším
    deployi nevznikne duplikát. Zvážit obecnější ochranu (leader lock pro celý obchodní loop, ostatní boty).
