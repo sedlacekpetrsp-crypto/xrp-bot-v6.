@@ -21,4 +21,4 @@ jobs:
       - name: Compile Python modules
         run: python -m compileall -q research/top_risk_radar_v1
       - name: Run deterministic unit tests (no network, no trading)
-        run: python -m unittest research.top_risk_radar_v1.test_label_events -v
+        run: python -m unittest discover -s research/top_risk_radar_v1 -p 'test_*.py' -v
