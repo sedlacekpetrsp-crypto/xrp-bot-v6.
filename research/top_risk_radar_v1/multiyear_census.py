@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from collections import defaultdict
 from datetime import timedelta
+from decimal import Decimal
 from research.top_risk_radar_v1.exploratory_kline_census import load_month
 from research.top_risk_radar_v1.episodes import group_positive_episodes
 
@@ -19,8 +20,8 @@ def evaluate(rows):
     for t in times:
         if t.hour!=1 or t+timedelta(days=30)>times[-1]: continue
         p=by_time[t]
-        up=any(by_time[t+timedelta(hours=h)]>=p*1.30 for h in range(1,721))
-        down=any(by_time[t+timedelta(hours=h)]<=p*0.80 for h in range(1,337))
+        up=any(by_time[t+timedelta(hours=h)]>=p*Decimal('1.30') for h in range(1,721))
+        down=any(by_time[t+timedelta(hours=h)]<=p*Decimal('0.80') for h in range(1,337))
         x=result[str(t.year)]
         x["matured"]+=1; x["growth"]+=int(up); x["risk"]+=int(down); x["both"]+=int(up and down)
         if up: growth_dates.append(t)
