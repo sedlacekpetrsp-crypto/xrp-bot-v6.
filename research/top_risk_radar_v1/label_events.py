@@ -38,13 +38,16 @@ def label_decision(decision_at: datetime, trades: Iterable[Trade], as_of: dateti
     """Only label a negative after the complete 336h window has matured.
 
     The input must contain all eligible trades for the venue through the window.
-    A caller MUST verify completeness independently before interpreting outcome=0.\n    Trades later than as_of are ignored to prevent future-data leakage.
+    A caller MUST verify completeness independently before interpreting outcome=0.
+    Trades later than as_of are ignored to prevent future-data leakage.
     """
     if decision_at.tzinfo is None or decision_at.utcoffset() != timedelta(0):
         raise ValueError("decision_at must be UTC")
     if as_of.tzinfo is None or as_of.utcoffset() != timedelta(0):
         raise ValueError("as_of must be UTC")
-    if as_of < decision_at:\n        raise ValueError("as_of precedes decision_at")\n    deadline = decision_at + HORIZON
+    if as_of < decision_at:
+        raise ValueError("as_of precedes decision_at")
+    deadline = decision_at + HORIZON
     rows = sorted((x for x in trades if x.timestamp <= as_of), key=lambda x: x.timestamp)
     ref = next((x for x in rows if decision_at <= x.timestamp <= decision_at + MAX_REFERENCE_DELAY), None)
     if ref is None:
