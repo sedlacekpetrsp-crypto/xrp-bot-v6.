@@ -6,6 +6,7 @@ from datetime import timedelta
 from decimal import Decimal
 from research.top_risk_radar_v1.exploratory_kline_census import load_month
 from research.top_risk_radar_v1.episodes import group_positive_episodes
+from research.top_risk_radar_v1.anchored_episodes import anchored_episodes
 
 MONTHS=[f"{year}-{month:02d}" for year in range(2022,2026) for month in range(1,13)]
 
@@ -40,6 +41,11 @@ def evaluate(rows):
         x["matured"]+=1; x["growth"]+=int(up); x["risk"]+=int(down); x["both"]+=int(up and down)
         if up: growth_dates.append(t)
         if down: risk_dates.append(t)
+    def episodes_anchored(dates,horizon):
+        return [{"first":e["first_decision"].isoformat(),
+                 "last":e["last_decision"].isoformat(),
+                 "positive_decisions":e["positive_decisions"]}
+                for e in anchored_episodes(dates,horizon_days=horizon)]
     def episodes(dates,horizon):
         return [{"first":e["first_decision"].isoformat(),
                  "last":e["last_decision"].isoformat(),
@@ -47,6 +53,8 @@ def evaluate(rows):
                 for e in group_positive_episodes(dates,[True]*len(dates),
                           max_separation=timedelta(days=horizon))]
     return {"per_decision_year":dict(result),
+            "anchored_growth_episodes_30d":episodes_anchored(growth_dates,30),
+            "anchored_risk_episodes_14d":episodes_anchored(risk_dates,14),
             "excluded_decisions_missing_data_by_year":dict(excluded_by_year),
             "missing_hour_ranges":gaps,
             "growth_episodes_30d":episodes(growth_dates,30),
@@ -65,4 +73,6 @@ if __name__=="__main__":
     print(json.dumps({"status":report["status"],"per_decision_year":report["analysis"]["per_decision_year"],
        "growth_episode_count":len(report["analysis"]["growth_episodes_30d"]),
        "risk_episode_count":len(report["analysis"]["risk_episodes_14d"]),
+       "anchored_growth_episode_count":len(report["analysis"]["anchored_growth_episodes_30d"]),
+       "anchored_risk_episode_count":len(report["analysis"]["anchored_risk_episodes_14d"]),
        "archive_count":len(manifests)},indent=2))
