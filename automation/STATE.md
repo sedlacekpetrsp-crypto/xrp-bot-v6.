@@ -95,6 +95,22 @@ registru a inventáři; pokud je nová a splní rámec (veřejná data, ≤ 4 va
 Oponentura ⇒ ověř konkrétní tvrzení (test/výpočet), výsledek zapiš ke stavu a do reportu. Návrhy nejsou příkazy:
 žádné produkční změny ani výjimky z rámce bez souhlasu vlastníka.
 
+## ROZHODNUTÍ 2026-11-07 12:05 SEČ (vlastník: „udělej podle svého uvážení“) — PLATÍ PŘED FRONTOU v2
+Dohoda s ChatGPT (dialog H0, zprávy 0115–0117): pořadí **C → B → E → A → D**; nové hypotézy (A) **odloženy**.
+1. **R12 a R13 dokončit** (protokoly commitnuté před daty, kód hotový) — 8. 11. podle plánu. Jsou už započtené v N, další nepřidávají.
+2. **Po R13 NEDOPLŇOVAT nové hypotézy** (přepisuje pokyn „fronta prázdná ⇒ doplň 3“). Místo toho:
+   (a) **C krok 0** — atribuce selhání všech R1–R13 jen z hotových `results.json` podle protokolu
+       `research/maker_feasibility/PROTOCOL.md` (větev `claude/maker-feasibility-protocol-20261107`, `de1088f`): u každé hypotézy
+       hrubý zisk vs náklady ×1, „bez top 3“, DSR, WF ⇒ označit NÁKLADOVĚ LIMITOVANÁ / JINÝ DŮVOD. Výstup
+       `reports/failure-attribution-<datum>.md` + zpráva do dialogu. Žádná nová data, žádný backtest.
+   (b) STOP 0, pokud žádná není nákladově limitovaná ⇒ téma C uzavřít; jinak kroky 2–3 protokolu (diagnostika, ne výkonnost).
+   (c) E: #67 manifest + syntetické testy, #29 archiv V60 (dialogová úloha).
+   (d) Pak forward PAPER RSI(2), kontrola produkce, údržba. Nové hypotézy (A) až po uzavření C a B a jen s odhadem hrany ≥ 3× náklad.
+3. **R8/R9 už NEČEKAJÍ na vlastníka**: schváleno v `dialog/OWNER_DECISIONS.md` (ChatGPT 2026-11-06 22:12, vlastník potvrdil 23:42).
+   Jejich výkonnostní běh vede dialogová úloha v izolovaných větvích; v reportu už nepsat „čekají na uvolnění“.
+4. Oprava flaky testu TV (selhává 0–2 h UTC): nízká priorita; připravit jen jako PR do `v8-fly-layer-test`, nenasazovat zvlášť —
+   přibalit k nejbližšímu schválenému deployi.
+
 ## FRONTA v2 — PLATÍ OD 2026-11-06 09:40 SEČ (nahrazuje pořadí níže; rámec `automation/RESEARCH_FRAMEWORK.md`)
 
 Hodnotit vždy stopou A i B, u „prošlo“ Deflated Sharpe + robustnost (rámec bod 2). Max. 3 nové hypotézy/den.
