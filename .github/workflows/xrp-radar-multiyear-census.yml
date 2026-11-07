@@ -1,0 +1,26 @@
+name: XRP 2022-2025 descriptive historical census
+on:
+  workflow_dispatch:
+  push:
+    branches: [research/xrp-top-risk-radar-v1-20261108]
+    paths:
+      - research/top_risk_radar_v1/multiyear_census.py
+      - .github/workflows/xrp-radar-multiyear-census.yml
+permissions:
+  contents: read
+jobs:
+  census:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify monthly archives and calculate descriptive outcomes
+        run: python -m research.top_risk_radar_v1.multiyear_census
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xrp-2022-2025-descriptive-census
+          path: xrp_multiyear_census.json
+          retention-days: 30
