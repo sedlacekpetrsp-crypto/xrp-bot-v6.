@@ -199,12 +199,37 @@ def load_state():
         print("LOAD STATE ERROR:", e)
 
 
+# Klíč advisory zámku pro zápis uzavřených PAPER obchodů BEST-OF.
+TRADE_WRITE_LOCK = (20261105, 2)
+
+
 def save_trade(trade):
+    """Uloží uzavřený PAPER obchod právě jednou.
+
+    Při zero-downtime deployi Renderu běží krátce dvě instance současně a obě mohou
+    uzavřít stejnou otevřenou pozici (2026-11-05 09:14: id 128 a 129, stejné
+    opened_at 08:20:29). Zápis je proto pod transakčním advisory zámkem a druhé
+    uzavření stejné pozice (symbol + setup + opened_at) se přeskočí.
+    Vrací True, pokud byl obchod zapsán, jinak False.
+    """
     if not DATABASE_URL:
-        return
+        return False
     try:
         with get_db() as conn:
             with conn.cursor() as cur:
+                cur.execute("SELECT pg_advisory_xact_lock(%s::int, %s::int)", TRADE_WRITE_LOCK)
+                if trade.get("opened_at"):
+                    cur.execute(f"""
+                        SELECT id FROM {TRADE_TABLE}
+                        WHERE symbol = %s AND setup IS NOT DISTINCT FROM %s
+                          AND opened_at = %s::timestamptz
+                        LIMIT 1
+                    """, (trade["symbol"], trade["setup"], trade["opened_at"]))
+                    if cur.fetchone():
+                        conn.commit()
+                        print("SAVE TRADE SKIPPED DUPLICATE CLOSE", trade["symbol"],
+                              trade["setup"], trade["opened_at"])
+                        return False
                 cur.execute(f"""
                     INSERT INTO {TRADE_TABLE} (
                         symbol, side, setup, entry_market, entry_price,
@@ -220,8 +245,10 @@ def save_trade(trade):
                     trade["closed_at"],
                 ))
             conn.commit()
+        return True
     except Exception as e:
         print("SAVE TRADE ERROR:", e)
+        return False
 
 
 async def binance_get(path, params=None):
