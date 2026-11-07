@@ -1,6 +1,6 @@
 # Autopilot STATE — přepisuje se každým během
 
-Poslední aktualizace: 2026-11-07 01:20 UTC (autopilot běh #28, run 42321982611; live `fd6065b` = HEAD v8-fly-layer-test; R7 HOTOVO = ZAMÍTNUTO (PR #31); DALŠÍ: R8/R9 drží vlastník ⇒ příští běh R10 nebo doplnit 3 nové hypotézy (3. hypotéza dne povolena); flaky test TV viz Otevřené úkoly).
+Poslední aktualizace: 2026-11-07 03:25 UTC (autopilot běh #29, run 42332237212; live `fd6065b` = HEAD v8-fly-layer-test; fronta doplněna o R11–R13; R11 BAB HOTOVO = ZAMÍTNUTO (PR #32); DALŠÍ: R12 (od 2026-11-08 UTC — limit 3 hypotéz/den 2026-11-07 vyčerpán: R5, R7, R11); R8/R9 drží vlastník).
 
 Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h). Vypnout/změnit: claude.ai → plánované úlohy.
 
@@ -24,6 +24,8 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h)
   žádné nové vstupy těchto botů, duplicitní SELECT beze změny.
 
 ## Produkce (poslední známé hodnoty, 13:06 UTC — beze změny od 09:59 kromě níže uvedeného)
+
+- **2026-11-07 03:04 UTC (běh #29):** beze změny — live `fd6065b` = HEAD, 0 událostí od 01:00, error logy 0 (01:00–03:04), 6× HTTP 200, testy OK (mimo okno 00–02 UTC), P/L −3 144,10, LH/LIQ 0 obchodů, dup jen id 129 (BEST-OF 132), DB 227,6 MB = 21,2 %. Forward RSI(2): zatím bez dat (start 2026-11-07, první denní svíčka po jejím uzavření).
 
 - **2026-11-06 23:04 UTC (běh #27):** beze změny — live `fd6065b` = HEAD, 0 událostí od 19:00, error logy 0 (19:00–23:04), 6× HTTP 200, P/L −3 144,10, LH/LIQ 0 obchodů, dup jen id 129 (BEST-OF 132), DB 226,6 MB = 21,1 % (+1,6 MB za 4 h).
 
@@ -155,6 +157,19 @@ R9. **2026-11-07 PO R8 (3. hypotéza dne)** → Spot-led price discovery 5m BTC/
     Při posunu R7 (kontrariánský žebřík) až na 2026-11-08.
     Po běhu R8/R9: zkontrolovat `interpretation_flags` / `data_gap_unrealizable_exits`, `ineligible_reasons` (sémantika
     `funding_interval_hours`) a verdikt „NEROZHODNUTO“ ⇒ nic neprohlašovat, ručně revidovat a zapsat do DIALOG.md.
+R11. ~~Betting-against-beta, 8 USDT-M perpů, tržně neutrální~~ — HOTOVO 2026-11-07 03:20 UTC: **ZAMÍTNUTO** (A1, A3–A5, B1, B3, B4, DSR 0,01, soused W60_H7 ×2 −22 %, WF 2/4; zvolená W60_H14: ladění ×1 +102 %, validace ×1 +7,5 % Sharpe 0,32 DD 16 %, ×2 −0,0 %; závěrečný ×2 −3,0 % DD 12 % vs B&H koše −42,6 % DD 65 %; splněno B2, B5, B6). PR #32, `research/bab_beta/RESULTS.md`, výsledky `14c2458` (run 42332689419), přepočet z trades.csv 21 bloků / 6552 noh = results.json.
+    Poučení: tržní neutralita funguje (realizovaná β 0,04–0,06, DD ~1/3 B&H), placebo obrácený BAB −16 % ⇒ znaménko BAB správné, ale hrana ~1–3 % p.a. je pod náklady 2 × 0,115 % na nohu při týdenním obratu. Long-short na 8 perpech potřebuje silnější signál nebo nižší obrat.
+    Proč nové (zapsáno před daty): jediná rodina s nulovou expozicí vůči trhu; žádná ze 110 + R1–R9 neřadila podle bety.
+R12. **2026-11-08 UTC (1. hypotéza dne)** → MAX efekt (poptávka po „loterijních“ aktivech, Bali–Cakici–Whitelaw 2011), 8 USDT-M perpů, tržně neutrální:
+    v pondělí seřadit podle max. denního výnosu za L dní (data do D−2); short 3 nejvyšší MAX, long 3 nejnižší, dolarově neutrální, gross 60 %,
+    držení H; mřížka L ∈ {14, 28} × H ∈ {14, 28} (nižší obrat než R11 kvůli nákladům); měřítko B&H koše; stejný protokol, data a kód jako R11
+    (`research/bab_beta/run.py` zkopírovat, změnit jen signál a váhy). Proč nové: řadí podle extrému rozdělení (skew/lotto), ne podle bety,
+    výnosu (`cross_sectional_rotation`, `relative_strength`), vzdálenosti od maxima (R5) ani fundingu (R8).
+R13. **2026-11-08 UTC (2. hypotéza dne)** → Průřezové momentum long-short, 8 USDT-M perpů: měsíčně (každé 4. pondělí) výnos za 28 dní
+    s vynecháním posledních 7 (data do D−2), long 2 nejsilnější / short 2 nejslabší, dolarově neutrální, gross 60 %; mřížka
+    lookback ∈ {28, 56} × skip ∈ {0, 7}. Proč nové: `cross_sectional_rotation` a `relative_strength` byly long-only spot (porovnání s B&H);
+    zde tržně neutrální long-short s fundingem — testuje samotnou průřezovou hranu bez beta expozice. Pozn.: R5 placebo naznačilo slabé
+    informační pořadí ⇒ očekávání nízké, ale levné (sdílí kód R11).
 R10. Rekonstrukce počtu variant (N) a Sharpe všech dřívějších pokusů z commitů/exportů bez nového ladění (oponentura ChatGPT
     kolo 2, bod 4): sjednotit období, frekvenci, náklady a definici Sharpe; oddělit doložený počet od odhadu. Do té doby
     N = 159 = pracovní odhad (ne horní mez), V[SR] = 0,5 jen předpoklad, DSR uvádět jako podmíněné. Nízká priorita, bez dat z Binance.

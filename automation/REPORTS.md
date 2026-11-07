@@ -3,6 +3,12 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## 2026-11-07 04:25 SEČ (běh #29)
+- Nasazeno: `fd6065b` – PR #5 ano. Produkce beze změny: 6× HTTP 200, testy OK, 0 chyb, 0 událostí, 0 nových duplicit, P/L součet −3 144,10.
+- Fronta byla prázdná ⇒ doplnil jsem 3 nové hypotézy (R11–R13, všechny **tržně neutrální long-short na perpech** — všech 7 long-only pokusů padlo na medvědím 2025–26).
+- Výzkum R11 **Betting-against-beta (long 3 aktiva s nejnižší betou, short 3 s nejvyšší), 8 perpů** — **ZAMÍTNUTO** ([PR #32](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/32)): validace 2023–24 ×2 −0,0 % (×1 +7,5 %, DD 16 %) vs B&H koše +472 %; závěrečný test 2025–26 ×2 −3,0 % (DD 12 %) vs B&H −42,6 % (DD 65 %); DSR 0,01. Neutralita funguje (beta 0,05), ale hrana ~1–3 % ročně nepokryje náklady. Přepočet z trades.csv: 21 bloků, 0 neshod.
+- DB 21,2 %. Další běh: R12 MAX efekt / R13 momentum long-short od 8. 11. (dnešní limit 3 hypotéz vyčerpán). Od vás: R8/R9 dál čekají na uvolnění; PR #8/#9/#10 na review; oprava flaky testu TV čeká na souhlas.
+
 ## 2026-11-07 02:20 SEČ (běh #28)
 - Nasazeno: `fd6065b` – PR #5 ano. Produkce beze změny: 6× HTTP 200, 0 chyb, 0 událostí, 0 nových duplicit, P/L součet −3 144,10.
 - Výzkum R7 **Kontrariánský žebřík (50 % držet, 50 % dokupovat po třetinách při propadu 20/30/40 % pod ročním maximem), 8 aktiv** — **ZAMÍTNUTO** ([PR #31](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/31)): validace 2023–24 ×1 +227 % (Sharpe 1,49, DD 35 %) vs B&H koše +280 % (1,49, DD 40 %); závěrečný test 2025–26 ×2 −37,0 % vs B&H −41,5 %, ale prosté 50/50 bez žebříku jen −20,7 % ⇒ dokupování v medvědím trhu škodí (PF tranší 0,34). DSR 0,28. Přepočet z trades.csv: 18 bloků, 0 neshod.
