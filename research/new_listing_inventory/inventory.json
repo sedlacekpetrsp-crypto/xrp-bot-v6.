@@ -1,0 +1,62 @@
+{
+ "protocol": "research/new_listing_inventory/PROTOCOL.md",
+ "generated_utc": "2026-11-08T15:39:48.666401+00:00",
+ "symbols_in_archive": 1080,
+ "usdt_perps": 923,
+ "daily_only_symbols": [],
+ "exchangeinfo": "unavailable: HTTPError 451",
+ "status_counts": {
+  "active": 892,
+  "delisted_or_halted": 31
+ },
+ "eligible_by_listing_year": {
+  "2025": 207,
+  "2024": 95,
+  "2023": 70,
+  "2022": 20,
+  "2021": 40,
+  "2020": 64,
+  "2026": 62
+ },
+ "ineligible_reasons": {
+  "funding_incomplete": 138,
+  "listing_outside_2020-01..2026-04": 223,
+  "missing_days_first180>2": 4
+ },
+ "gates": {
+  "G1_eligible_ge_100": {
+   "value": 558,
+   "pass": true
+  },
+  "G2_delisted_eligible_ge_10": {
+   "value": 28,
+   "pass": true
+  },
+  "G3_each_year_2021_2025_ge_10": {
+   "value": {
+    "2021": 40,
+    "2022": 20,
+    "2023": 70,
+    "2024": 95,
+    "2025": 207
+   },
+   "pass": true
+  },
+  "G4_onboard_match_ge_90pct": {
+   "value": "0/0",
+   "pass": null
+  },
+  "G5_checksums_ok": {
+   "value": {
+    "ok": 24067
+   },
+   "pass": true
+  },
+  "GO": true
+ },
+ "archives": 24067,
+ "checksums": {
+  "ok": 24067
+ },
+ "runtime_s": 867
+}
