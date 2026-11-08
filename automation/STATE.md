@@ -1,6 +1,6 @@
 # Autopilot STATE — přepisuje se každým během
 
-Poslední aktualizace: 2026-11-08 16:10 UTC (autopilot běh #36). Live `fd6065b` = HEAD v8-fly-layer-test (ruční redeploy vlastníka 11:21 UTC, týž commit) ⇒ ELITE V18/V56 opět healthy. Bod A uvolněn ⇒ **A1 krok 1 HOTOVO: PIT inventura GO** ([PR #38](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/38), `1bba792`/`bb7f4b5`): 923 USDT perpů, 167 delistovaných, 682 způsobilých listingů (166 delist.). Zjištění: archiv 1d klines pokračuje po delistingu nulovými svíčkami (156 symbolů) ⇒ v každém testu na širokém koši obchodní den = objem > 0. **KDE POKRAČOVAT: A1 krok 2 = protokol backtestu NEW-LISTING DRIFT** (ve větvi PR #38, commit před cenami): vstup short za open dne first_day+30 (nejdřív), výstup nejpozději +180 dní nebo poslední den s objemem (nucené uzavření), ≤ 4 varianty, náklady ×1/×2/×3 + funding, likvidační pravidlo short nohy, chronologické dělení podle data listingu, měřítko B&H koše/hotovost, DSR s N (198 + varianty), ChatGPT 0211: listingy nejsou nezávislé (překryv expozic) ⇒ portfoliová equity, ne průměr obchodů. Pak data + backtest (cache cen 1d už existuje jen v Actions, znovu stáhnout). Forward RSI(2) běží.
+Poslední aktualizace: 2026-11-08 19:45 UTC (autopilot běh #37). Live `fd6065b` = HEAD v8-fly-layer-test, produkce beze změny. **A1 HOTOVO: NEW-LISTING DRIFT ZAMÍTNUTO** ([PR #39](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/39), protokol `ea4a16d`, výsledky `b26d951`): zvolená K60_T90 — ladění ×1 −930 (hrubá hrana −7,7 %), validace ×2 +661 (PF 1,22, Sharpe 0,37 < B&H BTC 1,36), závěrečný ×2 −1 301 vs BTC-short placebo +259, DSR 0,012 (N = 202); selhání = likvidace squeezů (21/16/39). Registr N = 202. Dialog 0225 (HUNT-02) poslán ChatGPT: stop/zajištění = post-hoc ⇒ netestovat bez dohody. **KDE POKRAČOVAT: A2 ŠIROKÝ TREND — krok 1 protokol** (PIT univerzum ke každému datu z `listings.csv` PR #38: objem > 0, min. stáří, ≥ 40 aktiv; time-series průraz 50/100 d pevně + volatilitní cílení; benchmarky B&H koše stejné riziko, BTC beta-matched, hotovost; srovnání s R13; N +≤ 4). Kód A1 (`research/new_listing_drift/run.py`: loader s SHA-256, Series s objemem > 0, funding, likvidace, placebo) lze převzít. Dnes použity 1 ze 3 nových hypotéz (A1). Forward RSI(2) běží (data do 7. 11., 0 obchodů).
 
 Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h). Vypnout/změnit: claude.ai → plánované úlohy.
 
@@ -24,6 +24,8 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h)
   žádné nové vstupy těchto botů, duplicitní SELECT beze změny.
 
 ## Produkce (poslední známé hodnoty, 13:06 UTC — beze změny od 09:59 kromě níže uvedeného)
+
+- **2026-11-08 19:04 UTC (běh #37):** beze změny — live `fd6065b` = HEAD, 0 událostí od 15:00, error logy 0 (15:00–19:04), 6× HTTP 200, vše healthy (ELITE tick 19:03), testy OK, P/L −3 110,37, dup jen id 129 (BEST-OF 132), DB 244,7 MB = 22,8 %.
 
 - **2026-11-08 15:04 UTC (běh #36):** live `fd6065b` = HEAD (ruční redeploy vlastníka 11:21 UTC, proces od 11:21:57), ELITE V18/V56 healthy (last_tick 15:04), error logy 0 (11:00–15:04), 6× HTTP 200, 239 passed, P/L −3 110,37, LIQUIDITY 26 řádků v tabulce, dup jen id 129 (BEST-OF 132), DB 243,0 MB = 22,6 %.
 

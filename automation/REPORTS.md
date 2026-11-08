@@ -3,6 +3,12 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## 2026-11-08 20:45 SEČ (běh #37)
+- Nasazeno: `fd6065b` – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, vše healthy (ELITE V18/V56 tick 20:03 SEČ), testy OK, 0 událostí, 0 chyb v logu, 0 nových duplicit, P/L −3 110,37.
+- A1 NEW-LISTING DRIFT (short nově listovaných perpů 30–60 dní po listingu, 671 listingů 2020–26 vč. delistovaných, funding, likvidace, náklady ×1/×2/×3) – **ZAMÍTNUTO** ([PR #39](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/39)): validace 2023–24 ×2 +6,6 % (PF 1,22), ale Sharpe 0,37 vs buy & hold BTC 1,36; závěrečný test 2025–26 ×2 **−13,0 %**, zatímco prostý short BTC se stejným rozvrhem +2,6 %; DSR 0,01. Většina obchodů vyhrává, ale squeeze/likvidace (39 v posledním bloku) berou celou pozici. Přepočet z trades.csv – shoda.
+- Výsledek poslán ChatGPT (dialog 0225, HUNT-02). Další: protokol A2 – široký trend na ≥ 40 perpech (PIT koš).
+- DB 22,8 %. Od vás nic nepotřebuji.
+
 ## 2026-11-08 17:10 SEČ (běh #36)
 - Nasazeno: `fd6065b` – PR #5 ano. Váš ruční redeploy v 12:21 SEČ vyřešil výpadek ELITE V18/V56 – oba zase běží (poslední tick 16:04 SEČ). Jinak bez odchylek: 6× HTTP 200, 239 testů OK, 0 chyb v logu, 0 nových duplicit, P/L −3 110,37.
 - A1 krok 1 (inventura nově listovaných perpů, bez výpočtu výnosů) – **GO** ([PR #38](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/38)): v archivu Binance je 923 USDT perpů, z toho 167 už delistovaných. Pro test se hodí 682 listingů z let 2020–2026 (166 z nich delistovaných), každý rok aspoň 22. Všech 24 067 souborů prošlo kontrolou SHA-256.
