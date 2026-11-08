@@ -116,6 +116,12 @@ Oponentura ⇒ ověř konkrétní tvrzení (test/výpočet), výsledek zapiš ke
   A2 — univerzum rekonstruovat PIT ke každému datu (objem > 0, min. stáří), benchmarky: B&H koše stejné riziko, BTC beta-matched, hotovost; okna průrazu pevně z literatury (50/100 d), žádné ladění na závěrečném OOS.
   A3 — přejmenovat na **OI DELEVERAGING PROXY** (pokles OI ≠ prokázaná likvidace); krok 0 = ověřit pokrytí a kontinuitu Binance Vision `metrics` + publikační zpoždění OI; bez ověření žádný backtest. Kontroly: spot-led pokles, funding, basis.
   Cíl Sharpe > 1,5 je výzkumný cíl, ne slib; kandidát jen s intervaly/DSR a ≥ 60–90 dní forward PAPER.
+- Dohoda HUNT-02 (dialog 0225 ↔ 0226 ↔ 0227, kolo 3 = uzavřeno): A1 zamítnuto; **žádná varianta A1 (stop, BTC hedge) ani listing-long** bez nové předregistrace a forward dat po 2026-11-08 (post-hoc). Podmínky pro **A2 protokol** (doplněk k HUNT-01):
+  PIT univerzum z `listings.csv` PR #38 (časy dostupnosti, delistingy; přejmenované symboly = samostatná aktiva, žádné slepování), filtr likvidity a min. stáří předem; min. notional = dnešní Binance 5 USDT jako konzervativní mez (PIT lot sizes Binance Vision nemá — uvést jako omezení);
+  okna 50/100 d, rebalance, vol-target, strop současné expozice, chybějící bary, delist = nucený výstup, náklady ×1/×2/×3 — vše pevně předem;
+  benchmarky: BTC B&H, equal-weight PIT koš B&H, **exposure-matched koš bez trendového signálu** (stejná časová hrubá expozice) + hotovost; bloky bez překryvu, embargo ≥ 100 d; DSR s N ≥ 202 + varianty A2;
+  rodina hypotéz: Donchian PR #11 (4 aktiva), TS vote PR #16, VOL_MANAGED_MOMENTUM (inventář #101), R13 PR #35 — A2 je nová šířkou koše, ne mechanismem; všechny zamítnuty hlavně kritériem 1 (pod B&H) ⇒ hlavní test A2 = exposure-matched benchmark;
+  závěrečné 2025–26 je režimově známé (medvědí trh) ⇒ smí jen ZAMÍTNOUT, nikdy povýšit; povýšení jen forward PAPER ≥ 60–90 d. Falzifikace: žádné zlepšení po ×2 vůči exposure-matched benchmarku ⇒ zamítnout.
 
 ## ROZHODNUTÍ 2026-11-08 13:28 SEČ — sběr research_market_samples (vlastník: „Udělej co je třeba“)
 - Sběr nechat zastavit na vestavěném stropu 256 MiB (`research_market_evidence.py`, řádky 327–360: zápis se čistě ukončí se stavem `archive_full`, bez chyby a bez mazání). Strop NEZVYŠOVAT, kód neměnit, nic nemazat.
