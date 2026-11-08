@@ -1,0 +1,23 @@
+A4_SUMMARY 5m {"cell": "5m_n28_chop38.2", "dsr_val_x2": 0.0, "dsr_info": {"sharpe_per_period": -0.5643505959036218, "skew": -0.14297557141546724, "kurtosis": 6.79385264338664, "T": 713, "n_trials": 210, "var_trials": 0.0013698630136986301, "sr0": 0.10294550561427854, "psr_vs_0": 0.0, "dsr": 0.0}, "best_naive_val": 0.5171780008482963, "gates_P": {"P0_tuning_hit_ge_0.53": false, "P1_val_wilson_low_gt_0.52": false, "P2_val_hit_ge_best_naive_plus_1pp": false, "P3_val_dsr_x2_ge_0.95": false, "P4_final_hit_gt_0.52": false}, "gates_F": {"F_val_net_x2_gt_0": false, "F_val_pf_x2_gt_1.2": false, "F_val_sharpe_gt_bh": false, "F_final_net_x2_gt_0": false}, "verdict": "ZAMÍTNUTO", "failed": ["P0_tuning_hit_ge_0.53", "P1_val_wilson_low_gt_0.52", "P2_val_hit_ge_best_naive_plus_1pp", "P3_val_dsr_x2_ge_0.95", "P4_final_hit_gt_0.52"]}
+A4_PERIOD 5m tuning n=21764 hit=0.4866 wl=0.4800 naive {"continuation": 0.45772835875758133, "reversal": 0.5422716412424187, "always_up": 0.5000459474361331} P_x2 -1396.7 F_x2 -501769 F_edge_bps -0.06 BH {"return": 1.300265806885942, "daily_sharpe": 0.03964320917006026, "max_dd": 0.7666956183209539}
+A4_PERIOD 5m validation n=28292 hit=0.4767 wl=0.4709 naive {"continuation": 0.48282199915170365, "reversal": 0.5171780008482963, "always_up": 0.5034992223950233} P_x2 -2357.4 F_x2 -655980 F_edge_bps -0.19 BH {"return": 4.656773998488283, "daily_sharpe": 0.10544265532707177, "max_dd": 0.2625533998107419}
+A4_PERIOD 5m final_test n=28250 hit=0.4823 wl=0.4765 naive {"continuation": 0.4866194690265487, "reversal": 0.5133805309734514, "always_up": 0.4992920353982301} P_x2 -2046.2 F_x2 -652358 F_edge_bps -0.13 BH {"return": -0.17131379558048843, "daily_sharpe": -0.0012646294037068789, "max_dd": 0.5297592444745785}
+A4_SUMMARY 15m {"cell": "15m_n28_chop38.2", "dsr_val_x2": 4.000355602329364e-12, "dsr_info": {"sharpe_per_period": -0.23216525698908233, "skew": 0.6132130016171308, "kurtosis": 5.682475952999594, "T": 503, "n_trials": 210, "var_trials": 0.0013698630136986301, "sr0": 0.10294550561427854, "psr_vs_0": 1.0805304935801452e-06, "dsr": 4.000355602329364e-12}, "best_naive_val": 0.5268650401917924, "gates_P": {"P0_tuning_hit_ge_0.53": false, "P1_val_wilson_low_gt_0.52": false, "P2_val_hit_ge_best_naive_plus_1pp": false, "P3_val_dsr_x2_ge_0.95": false, "P4_final_hit_gt_0.52": false}, "gates_F": {"F_val_net_x2_gt_0": false, "F_val_pf_x2_gt_1.2": false, "F_val_sharpe_gt_bh": false, "F_final_net_x2_gt_0": false}, "verdict": "ZAMÍTNUTO", "failed": ["P0_tuning_hit_ge_0.53", "P1_val_wilson_low_gt_0.52", "P2_val_hit_ge_best_naive_plus_1pp", "P3_val_dsr_x2_ge_0.95", "P4_final_hit_gt_0.52"]}
+A4_PERIOD 15m tuning n=7754 hit=0.5028 wl=0.4917 naive {"continuation": 0.46298684549909724, "reversal": 0.5370131545009028, "always_up": 0.5020634511220016} P_x2 -255.9 F_x2 -167697 F_edge_bps 1.37 BH {"return": 1.300265806885942, "daily_sharpe": 0.03964320917006026, "max_dd": 0.7666956183209539}
+A4_PERIOD 15m validation n=7091 hit=0.4933 wl=0.4817 naive {"continuation": 0.4731349598082076, "reversal": 0.5268650401917924, "always_up": 0.5007756310816528} P_x2 -364.1 F_x2 -164982 F_edge_bps -0.27 BH {"return": 4.656773998488283, "daily_sharpe": 0.10544265532707177, "max_dd": 0.2625533998107419}
+A4_PERIOD 15m final_test n=6694 hit=0.4910 wl=0.4791 naive {"continuation": 0.4762473857185539, "reversal": 0.523752614281446, "always_up": 0.5017926501344487} P_x2 -372.8 F_x2 -153491 F_edge_bps -0.02 BH {"return": -0.17131379558048843, "daily_sharpe": -0.0012646294037068789, "max_dd": 0.5297592444745785}
+A4_CELL 5m_n14_chop38.2 tuning:30601/0.4682 validation:39372/0.4678 final_test:39317/0.4739
+A4_CELL 5m_n14_chop50 tuning:145873/0.4717 validation:129348/0.4763 final_test:121442/0.4848
+A4_CELL 5m_n28_chop38.2 tuning:21764/0.4866 validation:28292/0.4767 final_test:28250/0.4823
+A4_CELL 5m_n28_chop50 tuning:145857/0.4827 validation:133240/0.4839 final_test:124042/0.4857
+A4_CELL 15m_n14_chop38.2 tuning:9827/0.4792 validation:8957/0.4723 final_test:8844/0.4793
+A4_CELL 15m_n14_chop50 tuning:44701/0.4748 validation:37426/0.4770 final_test:34309/0.4846
+A4_CELL 15m_n28_chop38.2 tuning:7754/0.5028 validation:7091/0.4933 final_test:6694/0.4910
+A4_CELL 15m_n28_chop50 tuning:46569/0.4880 validation:38901/0.4870 final_test:35197/0.4901
+VERIFY 15m final_test 6694 3287 -76809.08 OK
+VERIFY 15m tuning 7754 3899 -78525.64 OK
+VERIFY 15m validation 7091 3498 -83435.38 OK
+VERIFY 5m final_test 28250 13626 -328069.24 OK
+VERIFY 5m tuning 21764 10591 -251483.42 OK
+VERIFY 5m validation 28292 13486 -330622.39 OK
+VERIFY_MISMATCHES 0
