@@ -3,6 +3,13 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## 2026-11-08 12:20 SEČ (běh #35)
+- ⚠️ **ELITE V18/V56 stojí od 04:06 SEČ**: Binance na chvíli neodpověděl (timeout), proces se podle návrhu trvale přepnul na Kraken a ELITE na Kraken datech padá (ValueError). Nemá otevřenou pozici, ztrácí se jen forward data. Ostatní boty běží na Kraken datech. Náprava: ruční restart/deploy služby (vrátí Binance) — jen vy.
+- Nasazeno: `fd6065b` – PR #5 ano. Jinak beze změny: 6× HTTP 200, 239 testů OK, 0 událostí, 1 přechodná chyba v logu (Binance 500 o půlnoci), 0 nových duplicit, P/L součet −3 110,37.
+- R12 MAX efekt ([PR #33](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/33)) **ZAMÍTNUTO**: validace 2023–24 po nákladech ×2 +12,8 % vs. buy & hold +471 %; závěrečný test 2025–26 +6,1 % vs. B&H −42,6 %, ale PF 1,09, bez 3 nejlepších obchodů ztráta, DSR 0,02. R13 průřezové momentum ([PR #35](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/35)) **ZAMÍTNUTO**: validace −9,5 %, závěr −18,2 %. Obojí přepočteno z trades.csv – shoda.
+- Atribuce selhání doplněna ([PR #36](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/36)): 0 z 18 testů není limitováno náklady ⇒ téma C uzavřeno. Forward RSI(2): 1. den, 0 obchodů. Nové hypotézy nepřidávám (čeká na uvolnění bodu A).
+- DB 22,4 %. Od vás: rozhodnout o restartu služby kvůli ELITE (případně o trvalé opravě návratu na Binance).
+
 ## 2026-11-07 12:35 SEČ (běh #33)
 - Nasazeno: `fd6065b` – PR #5 ano. Produkce beze změny: 6× HTTP 200, 239 testů OK, 0 chyb v logu, 0 událostí, 0 nových duplicit, P/L součet −3 144,10.
 - Podle vašeho rozhodnutí (12:05) jsem nové hypotézy nepřidával. Místo toho jsem **nezávisle přepočítal atribuci selhání** (C krok 0) všech 16 dokončených testů R-série jen z hotových dat ([PR #36](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/36)): **0 z 16** by neprošlo ani při polovičních nákladech (maker) — padají na Sharpe vs. buy & hold nebo na závěrečném testu, ne na poplatcích. Shoda s dialogovou úlohou (STOP 0) ⇒ levnější exekuce žádný dosavadní test nezachrání.

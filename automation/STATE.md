@@ -1,6 +1,6 @@
 # Autopilot STATE — přepisuje se každým během
 
-Poslední aktualizace: 2026-11-07 11:35 UTC (autopilot běh #33, run 42366592153; live `fd6065b` = HEAD v8-fly-layer-test; produkce beze změny, error logy 0; C krok 0 nezávisle přepočten (PR #36): 0/16 nákladově limitovaných ⇒ STOP 0 potvrzen (shoda s `b88214f`); DALŠÍ: 2026-11-08 UTC (1) spustit R12 (commit UTC času do `research/max_effect/RUN_REQUEST` ve větvi `research/max-effect-20261107`), ověřit, přepočítat z trades.csv; (2) totéž R13 (`research/xs_momentum/RUN_REQUEST` ve větvi `research/xs-momentum-20261107`); (3) R12/R13 doplnit do `tools/research/failure_attribution.py` (PR #36); (4) forward RSI(2) první data; NOVÉ HYPOTÉZY NEDOPLŇOVAT (rozhodnutí 12:05 SEČ); E vede dialogová úloha; R8/R9 schváleny v OWNER_DECISIONS, běh vede dialogová úloha).
+Poslední aktualizace: 2026-11-08 11:20 UTC (autopilot běh #35; běh #34 z 2026-11-07 13:04 nedoběhl — jen RUN_REQUEST, bez reportu). Live `fd6065b` = HEAD v8-fly-layer-test. **ANOMÁLIE: ELITE V18/V56 stojí od 2026-11-08 03:06 UTC** (Binance ReadTimeout ⇒ market_data trvale přepnut na Kraken do restartu procesu; elite_paper `capture()` od té doby končí ValueError, `last_tick` 03:06, bez otevřené pozice). Řešení jen vlastník (restart/ruční deploy vrátí Binance; trvalá oprava = PR do v8-fly-layer-test se souhlasem). R12 a R13 HOTOVO — obě ZAMÍTNUTO (PR #33, #35), C krok 0 doplněn: 0/18 nákladově limitovaných (PR #36, `ad9ffcb`) ⇒ téma C uzavřeno. Forward RSI(2) běží (1 den, 0 obchodů). DALŠÍ: forward RSI(2) + kontrola produkce + údržba; NOVÉ HYPOTÉZY NEDOPLŇOVAT, dokud STATE výslovně neuvolní bod A; B/E vede dialogová úloha.
 
 Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h). Vypnout/změnit: claude.ai → plánované úlohy.
 
@@ -24,6 +24,8 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h)
   žádné nové vstupy těchto botů, duplicitní SELECT beze změny.
 
 ## Produkce (poslední známé hodnoty, 13:06 UTC — beze změny od 09:59 kromě níže uvedeného)
+
+- **2026-11-08 11:04 UTC (běh #35):** live `fd6065b` = HEAD, 0 událostí od 7. 11. 11:00, error log 1× (00:00:05 LH-WHALE Binance 500, přechodné), 6× HTTP 200, 239 passed, P/L −3 110,37 (LIQUIDITY +33,73 / 4 obchody), dup jen id 129 (BEST-OF 132), DB 240,1 MB = 22,4 %. **ELITE V18/V56 healthy=false (ValueError) od 03:06 UTC — provider kraken trvale (by design do restartu); ostatní boty běží na Kraken datech.**
 
 - **2026-11-07 11:04 UTC (běh #33):** beze změny — live `fd6065b` = HEAD, 0 událostí od 09:00, error logy 0 (09:00–11:04), 6× HTTP 200, 239 passed, P/L −3 144,10, LH/LIQ 0 obchodů, dup jen id 129 (BEST-OF 132), DB 231,6 MB = 21,6 %.
 
@@ -107,6 +109,7 @@ Dohoda s ChatGPT (dialog H0, zprávy 0115–0117): pořadí **C → B → E → 
        `reports/failure-attribution-<datum>.md` + zpráva do dialogu. Žádná nová data, žádný backtest.
    **Krok 0 HOTOVO:** dialogová úloha `b88214f` (73 výsledků, STOP 0, ChatGPT 0120 souhlasí, H1 uzavřeno) + nezávislý přepočet autopilota
    2026-11-07 11:30 UTC (PR #36, `96397b5`, 16 R-výsledků, brány A1/A2/A5 při nákladech 0,5×): **0/16 nákladově limitovaných**. Po R12/R13 doplnit.
+   **R12/R13 DOPLNĚNO 2026-11-08 (běh #35, PR #36 `ad9ffcb`): 0/18 ⇒ STOP 0 platí, C uzavřeno.** R12 zamítnuto (val ×2 +12,8 % vs B&H +471 %, závěr. ×2 +6,1 % vs B&H −42,6 %, PF 1,09, bez top 3 záporné, DSR 0,023); R13 zamítnuto (val ×2 −9,5 %, závěr. −18,2 %).
    (b) STOP 0, pokud žádná není nákladově limitovaná ⇒ téma C uzavřít; jinak kroky 2–3 protokolu (diagnostika, ne výkonnost).
    (c) E: #67 manifest + syntetické testy, #29 archiv V60 (dialogová úloha).
    (d) Pak forward PAPER RSI(2), kontrola produkce, údržba. Nové hypotézy (A) až po uzavření C a B a jen s odhadem hrany ≥ 3× náklad.
