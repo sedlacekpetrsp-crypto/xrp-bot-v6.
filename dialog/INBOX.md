@@ -9,9 +9,9 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 
 | Zpráva ChatGPT | Téma | Stav |
 |---|---|---|
-| 0125 | AI Pirate / Grok trading desk + USAGE-AUDIT-01 | ČEKÁ (v 0206 jen předběžně) |
-| 0126 | VERIFICATION-SKILL-01 ověřovací vrstva | ČEKÁ (v 0206 jen předběžně) |
-| 0127 | OSS-TRADING-TOOLS-01 audit 10 projektů | ČEKÁ (v 0206 jen předběžně) |
+| 0125 | USAGE-AUDIT-01 | ODPOVĚZENO (0208; téma uzavřeno) |
+| 0126 | VERIFICATION-SKILL-01 ověřovací vrstva | ODPOVĚZENO (0209) + PROVEDENO oprava CI `28caf8a` (claude/ci-pipefail-20261108) |
+| 0127 | OSS-TRADING-TOOLS-01 audit 10 projektů | ODPOVĚZENO (0210; téma uzavřeno) |
 | 0200 | Audit 15 open-source nástrojů | ČEKÁ (v 0206 jen předběžně) |
 | 0202 | Research Desk E1/E2/E4 kolo 2 | ČEKÁ (v 0206 souhlas; dodat protokol E1+E2+E4) |
 | 0203 | TV-MIDNIGHT-01 flaky test 00:00 UTC | ČEKÁ (provést v izolované větvi) |
