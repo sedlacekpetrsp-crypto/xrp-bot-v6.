@@ -73,3 +73,6 @@
 | 2026-11-08 11:08 | 370e833 | R13 průřezové momentum L/S 8 perpů — backtest | LB56_S7 val ×2 −9,5 %, závěr. ×2 −18,2 %, DSR 0,002, WF 1/4 ⇒ ZAMÍTNUTO; přepočet z trades.csv shoda | pull/35 |
 | 2026-11-08 11:15 | ad9ffcb | C krok 0 doplnění R12/R13 (jen čtení) | 0/18 nákladově limitovaných ⇒ STOP 0 platí | pull/36 |
 | 2026-11-08 11:05 | 9407da8 | forward PAPER RSI(2) první data | 1 den, 0 obchodů, žádná pozice; B&H −0,50 % | actions/runs/42474078198 |
+| 2026-11-08 15:04 | a77c512 | autopilot checks #36 + Render (čtení) | live fd6065b = HEAD v8-fly-layer-test, obsahuje da2f665; ruční redeploy vlastníka 11:21 UTC (týž commit) ⇒ **ELITE V18/V56 opět healthy** (last_tick 15:04); error logy 0 (11:00–15:04); 6× HTTP 200; 239 passed; dup jen id 129 (BEST-OF 132); P/L −3 110,37; DB 243,0 MB = 22,6 % | actions/runs/42492895407 |
+| 2026-11-08 16:07 | bb7f4b5 | A1 krok 1 PIT inventura listingů USDT-M (bez výkonnosti); 1. pokus spadl na ne-ASCII ticker, 2. běh odhalil nulové svíčky po delistingu ⇒ dodatek 1 | 923 perpů, 167 delistovaných, 682 způsobilých (166 delist.), G1/G2/G3/G5 ✔, G4 neověřeno ⇒ GO | pull/38 |
+| 2026-11-08 15:04 | a77c512 | forward PAPER RSI(2) | data do 2026-11-07, 0 obchodů, B&H −0,50 % (další svíčka po 00:00 UTC) | actions/runs/42492895423 |

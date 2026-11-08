@@ -1,6 +1,6 @@
 # Autopilot STATE — přepisuje se každým během
 
-Poslední aktualizace: 2026-11-08 11:20 UTC (autopilot běh #35; běh #34 z 2026-11-07 13:04 nedoběhl — jen RUN_REQUEST, bez reportu). Live `fd6065b` = HEAD v8-fly-layer-test. **ANOMÁLIE: ELITE V18/V56 stojí od 2026-11-08 03:06 UTC** (Binance ReadTimeout ⇒ market_data trvale přepnut na Kraken do restartu procesu; elite_paper `capture()` od té doby končí ValueError, `last_tick` 03:06, bez otevřené pozice). Řešení jen vlastník (restart/ruční deploy vrátí Binance; trvalá oprava = PR do v8-fly-layer-test se souhlasem). R12 a R13 HOTOVO — obě ZAMÍTNUTO (PR #33, #35), C krok 0 doplněn: 0/18 nákladově limitovaných (PR #36, `ad9ffcb`) ⇒ téma C uzavřeno. Forward RSI(2) běží (1 den, 0 obchodů). DALŠÍ: forward RSI(2) + kontrola produkce + údržba; NOVÉ HYPOTÉZY NEDOPLŇOVAT, dokud STATE výslovně neuvolní bod A; B/E vede dialogová úloha.
+Poslední aktualizace: 2026-11-08 16:10 UTC (autopilot běh #36). Live `fd6065b` = HEAD v8-fly-layer-test (ruční redeploy vlastníka 11:21 UTC, týž commit) ⇒ ELITE V18/V56 opět healthy. Bod A uvolněn ⇒ **A1 krok 1 HOTOVO: PIT inventura GO** ([PR #38](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/38), `1bba792`/`bb7f4b5`): 923 USDT perpů, 167 delistovaných, 682 způsobilých listingů (166 delist.). Zjištění: archiv 1d klines pokračuje po delistingu nulovými svíčkami (156 symbolů) ⇒ v každém testu na širokém koši obchodní den = objem > 0. **KDE POKRAČOVAT: A1 krok 2 = protokol backtestu NEW-LISTING DRIFT** (ve větvi PR #38, commit před cenami): vstup short za open dne first_day+30 (nejdřív), výstup nejpozději +180 dní nebo poslední den s objemem (nucené uzavření), ≤ 4 varianty, náklady ×1/×2/×3 + funding, likvidační pravidlo short nohy, chronologické dělení podle data listingu, měřítko B&H koše/hotovost, DSR s N (198 + varianty), ChatGPT 0211: listingy nejsou nezávislé (překryv expozic) ⇒ portfoliová equity, ne průměr obchodů. Pak data + backtest (cache cen 1d už existuje jen v Actions, znovu stáhnout). Forward RSI(2) běží.
 
 Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h). Vypnout/změnit: claude.ai → plánované úlohy.
 
@@ -24,6 +24,8 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h)
   žádné nové vstupy těchto botů, duplicitní SELECT beze změny.
 
 ## Produkce (poslední známé hodnoty, 13:06 UTC — beze změny od 09:59 kromě níže uvedeného)
+
+- **2026-11-08 15:04 UTC (běh #36):** live `fd6065b` = HEAD (ruční redeploy vlastníka 11:21 UTC, proces od 11:21:57), ELITE V18/V56 healthy (last_tick 15:04), error logy 0 (11:00–15:04), 6× HTTP 200, 239 passed, P/L −3 110,37, LIQUIDITY 26 řádků v tabulce, dup jen id 129 (BEST-OF 132), DB 243,0 MB = 22,6 %.
 
 - **2026-11-08 11:04 UTC (běh #35):** live `fd6065b` = HEAD, 0 událostí od 7. 11. 11:00, error log 1× (00:00:05 LH-WHALE Binance 500, přechodné), 6× HTTP 200, 239 passed, P/L −3 110,37 (LIQUIDITY +33,73 / 4 obchody), dup jen id 129 (BEST-OF 132), DB 240,1 MB = 22,4 %. **ELITE V18/V56 healthy=false (ValueError) od 03:06 UTC — provider kraken trvale (by design do restartu); ostatní boty běží na Kraken datech.**
 

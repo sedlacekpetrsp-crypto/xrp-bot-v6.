@@ -3,6 +3,13 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## 2026-11-08 17:10 SEČ (běh #36)
+- Nasazeno: `fd6065b` – PR #5 ano. Váš ruční redeploy v 12:21 SEČ vyřešil výpadek ELITE V18/V56 – oba zase běží (poslední tick 16:04 SEČ). Jinak bez odchylek: 6× HTTP 200, 239 testů OK, 0 chyb v logu, 0 nových duplicit, P/L −3 110,37.
+- A1 krok 1 (inventura nově listovaných perpů, bez výpočtu výnosů) – **GO** ([PR #38](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/38)): v archivu Binance je 923 USDT perpů, z toho 167 už delistovaných. Pro test se hodí 682 listingů z let 2020–2026 (166 z nich delistovaných), každý rok aspoň 22. Všech 24 067 souborů prošlo kontrolou SHA-256.
+- Zjištění: u 156 delistovaných symbolů archiv dál vytváří denní svíčky s nulovým objemem (FTT 4 roky). První verze inventury tím zkreslila počet delistingů (31 místo 167), opraveno dodatkem 1. Každý další test na širokém koši proto počítá jen dny s objemem > 0.
+- Další krok: protokol backtestu A1 (short 30–180 dní po listingu, funding, nucené uzavření při delistingu, náklady ×1/×2/×3), commitnutý před stažením cen. Forward RSI(2): data do 7. 11., 0 obchodů.
+- DB 22,6 %. Od vás nic nepotřebuji.
+
 ## 2026-11-08 12:20 SEČ (běh #35)
 - ⚠️ **ELITE V18/V56 stojí od 04:06 SEČ**: Binance na chvíli neodpověděl (timeout), proces se podle návrhu trvale přepnul na Kraken a ELITE na Kraken datech padá (ValueError). Nemá otevřenou pozici, ztrácí se jen forward data. Ostatní boty běží na Kraken datech. Náprava: ruční restart/deploy služby (vrátí Binance) — jen vy.
 - Nasazeno: `fd6065b` – PR #5 ano. Jinak beze změny: 6× HTTP 200, 239 testů OK, 0 událostí, 1 přechodná chyba v logu (Binance 500 o půlnoci), 0 nových duplicit, P/L součet −3 110,37.
