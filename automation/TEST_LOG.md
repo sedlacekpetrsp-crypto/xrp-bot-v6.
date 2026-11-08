@@ -79,3 +79,6 @@
 | 2026-11-08 19:04 | bb345fd | autopilot checks #37 + Render (čtení) | live fd6065b = HEAD v8-fly-layer-test, obsahuje da2f665; 0 událostí od 15:00; error logy 0 (15:00–19:04); 6× HTTP 200, vše healthy (ELITE tick 19:03); testy OK; dup jen id 129 (BEST-OF 132); P/L −3 110,37; DB 244,7 MB = 22,8 % | actions/runs/42513083665 |
 | 2026-11-08 19:35 | b26d951 | A1 krok 2 backtest NEW-LISTING DRIFT (1. pokus spadl na ne-ASCII ticker ⇒ dodatek 1) | K60_T90: validace ×2 +661 (PF 1,22) vs placebo −1 331; závěr. ×2 −1 301 vs placebo +259; DSR 0,012 ⇒ **zamítnuto**; přepočet 0 neshod | pull/39 |
 | 2026-11-08 19:04 | bb345fd | forward PAPER RSI(2) | bez nové svíčky (data do 2026-11-07), 0 obchodů | actions/runs/42513084181 |
+| 2026-11-08 23:04 | a53fc63 | autopilot checks #38 + Render (čtení) | live fd6065b = HEAD v8-fly-layer-test, obsahuje da2f665; 0 událostí od 19:00; error logy 0 (19:00–23:04); 6× HTTP 200, vše healthy; 239 passed; dup jen id 129 (BEST-OF 132); P/L −3 110,37; DB 246,3 MB = 22,9 % | actions/runs/42533326803 |
+| 2026-11-08 23:04 | a53fc63 | forward PAPER RSI(2) | bez nové svíčky (data do 2026-11-07), 0 obchodů | actions/runs/42533326879 |
+| 2026-11-08 23:13 | a16795d | A4 VORTEX+CHOP 5/15m BTC diagnostika | 8 buněk hit rate 46,8–50,3 %; validace 5m 47,7 % / 15m 49,3 % < 52 %; DSR 0,00 ⇒ **zamítnuto**; přepočet 0 neshod | pull/40 |
