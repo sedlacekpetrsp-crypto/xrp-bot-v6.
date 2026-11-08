@@ -89,3 +89,7 @@ Squeeze mladých tokenů (likvidace), dostupnost výpůjčky/limity pozic (archi
 `trades.csv`, `results.json`, `RESULTS.md`, `data_source.json`; nezávislý přepočet souhrnů z trades.csv; řádek
 v `automation/STRATEGY_REGISTRY.md`; draft PR do `research/autopilot`. Spuštění: commit UTC času do
 `research/new_listing_drift/RUN_REQUEST`.
+
+## Dodatek 1 (2026-11-08 19:15 UTC, před jakoukoli metrikou)
+1. běh (run 42513523349) spadl při stahování na ne-ASCII tickeru (URL nebyla kódována). Oprava jen v načítání dat
+(`urllib.parse.quote` jako v inventuře PR #38). Pravidla, dělení ani kritéria beze změny; žádná metrika nebyla zobrazena.
