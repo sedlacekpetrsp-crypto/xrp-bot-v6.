@@ -60,3 +60,16 @@ Zpoždění +1 svíčka a ×2 náklady se reportují u kandidátů, kteří proj
 
 ## Pořadí implementace
 E1 (G/M/R) → E2 kanárek → E2 FPR + power (GitHub Actions, ne sezení) → E4 výpočet q_k před 15. obchodem.
+
+## DODATEK 2026-11-08 (dialog 0217, zapsáno PŘED jakýmkoli výpočtem E1/E2/E4)
+Žádný výpočet E1/E2/E4 dosud neproběhl; dodatek jen zpřesňuje, nemění prahy.
+- **E2 rozsah tvrzení:** odhad FPR (Clopper–Pearson horní mez) platí jen pro deklarovaný simulační nulový proces
+  (zadané univerzum, náklady, permutace/GBM). Není to garance FPR strategie při změně režimu ani náhrada za DSR
+  se všemi historickými pokusy N (registr `automation/STRATEGY_REGISTRY.md`).
+- **E4 zdroj bloků:** referenční obchody = OOS obchody RSI(2) z uloženého backtestu; přesný soubor a jeho sha256
+  se commitnou spolu s q_k (před 15. forward obchodem). Obchody se řadí podle času výstupu.
+- **E4 překryv obchodů:** obchody na 4 aktivech se časově překrývají a korelují. Primární bootstrap proto
+  převzorkuje **kalendářní bloky 20 dní podle času výstupu** (všechny obchody bloku spolu, jako v E1);
+  bloky po 5 obchodech jen jako citlivost. Pokud se q_k obou metod liší o > 25 %, platí přísnější (nižší FPR).
+- **E4 násobnost:** Bonferroni kryje jen tři předem dané pohledy 15/30/60. Jakýkoli další pohled k rozhodnutí
+  je neohlášený a verdikt z něj je neplatný.
