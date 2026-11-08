@@ -20,5 +20,7 @@ jobs:
           python-version: '3.11'
       - name: Compile Python modules
         run: python -m compileall -q research/top_risk_radar_v1
+      - name: Install pinned test runner
+        run: python -m pip install pytest==8.3.3
       - name: Run deterministic unit tests (no network, no trading)
-        run: python -m unittest discover -s research/top_risk_radar_v1 -p 'test_*.py' -v
+        run: python -m pytest -q research/top_risk_radar_v1 research/early_growth_radar_v1
