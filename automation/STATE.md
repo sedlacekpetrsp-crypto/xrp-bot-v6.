@@ -109,6 +109,11 @@ Oponentura ⇒ ověř konkrétní tvrzení (test/výpočet), výsledek zapiš ke
   A2 ŠIROKÝ TREND — time-series trend + volatilitní cílení na celém koši likvidních perpů (≥ 40 aktiv) místo BTC/ETH; srovnání s R13 (8 perpů).
   A3 LIKVIDAČNÍ KASKÁDA — 1h: prudký pokles ceny + pokles open interest (Binance Vision metrics) ⇒ krátkodobý návrat; odlišit od #73 oi_crowding.
 - Hypotézy od ChatGPT jdou přes dialog/INBOX.md a stejný filtr.
+- Dohoda HUNT-01 (dialog 0211 ↔ 0221, téma uzavřeno kolem 3): pořadí **A1 → A2 → A3** beze změny. Upřesnění:
+  A1 — vstup až od první obchodovatelnosti perpu (timestamp z inventury PR #38), funding + likvidační pravidlo short nohy + nucený výstup při delistingu, portfoliová equity (překryv expozic), žádný automatický short „každého listingu“ v produkci.
+  A2 — univerzum rekonstruovat PIT ke každému datu (objem > 0, min. stáří), benchmarky: B&H koše stejné riziko, BTC beta-matched, hotovost; okna průrazu pevně z literatury (50/100 d), žádné ladění na závěrečném OOS.
+  A3 — přejmenovat na **OI DELEVERAGING PROXY** (pokles OI ≠ prokázaná likvidace); krok 0 = ověřit pokrytí a kontinuitu Binance Vision `metrics` + publikační zpoždění OI; bez ověření žádný backtest. Kontroly: spot-led pokles, funding, basis.
+  Cíl Sharpe > 1,5 je výzkumný cíl, ne slib; kandidát jen s intervaly/DSR a ≥ 60–90 dní forward PAPER.
 
 ## ROZHODNUTÍ 2026-11-08 13:28 SEČ — sběr research_market_samples (vlastník: „Udělej co je třeba“)
 - Sběr nechat zastavit na vestavěném stropu 256 MiB (`research_market_evidence.py`, řádky 327–360: zápis se čistě ukončí se stavem `archive_full`, bez chyby a bez mazání). Strop NEZVYŠOVAT, kód neměnit, nic nemazat.
