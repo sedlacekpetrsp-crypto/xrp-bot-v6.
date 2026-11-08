@@ -84,7 +84,8 @@ def csv_rows(payload):
 
 
 def kline_days(payload):
-    return sorted({ms_to_dt(int(r[0])).date() for r in csv_rows(payload)})
+    """→ {den: objem} (dodatek 1: objem rozhoduje o obchodním dni)."""
+    return {ms_to_dt(int(r[0])).date(): float(r[5]) for r in csv_rows(payload)}
 
 
 def month_tag(key):
@@ -130,16 +131,16 @@ def analyse_symbol(sym, kline_keys, funding_keys, cache, fetcher=fetch):
     """Čistá funkce nad seznamy klíčů + stažením; vrací (řádek, manifest)."""
     months = sorted(month_tag(k) for k in kline_keys if k.endswith(".zip") and in_range(month_tag(k)))
     fmonths = sorted({month_tag(k) for k in funding_keys if k.endswith(".zip") and in_range(month_tag(k))})
-    manifest, days = [], set()
+    manifest, bars = [], {}
     for ym in months:
         url = f"{VISION}/data/futures/um/monthly/klines/{sym}/1d/{sym}-1d-{ym[0]}-{ym[1]:02d}.zip"
         payload, sha, st = get_verified(url, cache, fetcher)
         manifest.append({"url": url, "sha256": sha, "checksum": st})
-        days.update(d for d in kline_days(payload) if d <= END_DAY)
-    days = sorted(days)
+        bars.update({d: v for d, v in kline_days(payload).items() if d <= END_DAY})
+    days = sorted(d for d, v in bars.items() if v > 0)  # obchodní dny (objem > 0)
     row = {"symbol": sym, "kline_months": len(months), "funding_months": len(fmonths)}
     if not days:
-        row.update(first_day="", last_day="", n_days=0, status="no_data")
+        row.update(first_day="", last_day="", n_days=0, status="no_data", bars_total=len(bars))
         return row, manifest
     first, last = days[0], days[-1]
     first_trade, source = dt.datetime.combine(first, dt.time(), dt.timezone.utc), "1d_open_fallback"
@@ -147,7 +148,7 @@ def analyse_symbol(sym, kline_keys, funding_keys, cache, fetcher=fetch):
     try:
         payload, sha, st = get_verified(url, cache, fetcher)
         manifest.append({"url": url, "sha256": sha, "checksum": st})
-        rows = csv_rows(payload)
+        rows = [r for r in csv_rows(payload) if float(r[5]) > 0]
         if rows:
             first_trade, source = min(ms_to_dt(int(r[0])) for r in rows), "1m_first_bar"
     except urllib.error.HTTPError:
@@ -156,12 +157,15 @@ def analyse_symbol(sym, kline_keys, funding_keys, cache, fetcher=fetch):
     dayset = set(days)
     missing = [d for d in span if d not in dayset]
     first180_end = first + dt.timedelta(WINDOW)
+    zero_tail = sum(1 for d, v in bars.items() if d > last)
+    zero_inside = sum(1 for d, v in bars.items() if first <= d <= last and v <= 0)
     kmonths = {(d.year, d.month) for d in days}
     row.update(
         first_trade_utc=first_trade.isoformat(), first_trade_source=source,
         first_day=first.isoformat(), last_day=last.isoformat(),
         status="active" if last == END_DAY else "delisted_or_halted",
-        n_days=len(days), missing_days=len(missing),
+        n_days=len(days), missing_days=len(missing), bars_total=len(bars),
+        last_bar_day=max(bars).isoformat(), zero_volume_tail_days=zero_tail, zero_volume_inside_days=zero_inside,
         missing_days_first180=sum(1 for d in missing if d < first180_end),
         gap_segments=segments(days), reused_ticker=segments(days) > 1,
         funding_ok=bool(fmonths) and kmonths <= set(fmonths),
@@ -217,7 +221,8 @@ def gates(rows, checksum_counts):
     return g, by_year
 
 
-COLS = ["symbol", "first_trade_utc", "first_trade_source", "first_day", "last_day", "status", "n_days", "missing_days",
+COLS = ["symbol", "first_trade_utc", "first_trade_source", "first_day", "last_day", "last_bar_day", "zero_volume_tail_days",
+        "zero_volume_inside_days", "bars_total", "status", "n_days", "missing_days",
         "missing_days_first180", "gap_segments", "reused_ticker", "kline_months", "funding_months", "funding_ok",
         "onboard_date_utc", "exchangeinfo_status", "eligible_a1", "ineligible_reason"]
 

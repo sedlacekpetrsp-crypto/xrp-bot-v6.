@@ -35,18 +35,22 @@ class FakeVision:
         return self.files[url]
 
 
-def _symbol(sym, days, first_minute=(9, 0)):
+def _bar(ms, vol=10.0):
+    return [ms, 1.0, 1.0, 1.0, 1.0, vol, ms + 1, vol, 5]
+
+
+def _symbol(sym, days, first_minute=(9, 5), dead_after=None):
     files, keys = {}, []
     by_month = {}
     for d in days:
         by_month.setdefault((d.year, d.month), []).append(d)
     for (y, m), ds in by_month.items():
         url = f"{inv.VISION}/data/futures/um/monthly/klines/{sym}/1d/{sym}-1d-{y}-{m:02d}.zip"
-        files[url] = _zip([[_ms(d), 1.0] for d in ds])
+        files[url] = _zip([_bar(_ms(d), 0.0 if dead_after and d > dead_after else 10.0) for d in ds])
         keys.append(f"data/futures/um/monthly/klines/{sym}/1d/{sym}-1d-{y}-{m:02d}.zip")
     f = days[0]
     files[f"{inv.VISION}/data/futures/um/daily/klines/{sym}/1m/{sym}-1m-{f.isoformat()}.zip"] = _zip(
-        [[_ms(f, *first_minute), 1.0], [_ms(f, first_minute[0], first_minute[1] + 1), 1.0]])
+        [_bar(_ms(f, first_minute[0], first_minute[1] - 1), 0.0), _bar(_ms(f, *first_minute)), _bar(_ms(f, first_minute[0], first_minute[1] + 1))])
     fkeys = [f"data/futures/um/monthly/fundingRate/{sym}/{sym}-fundingRate-{y}-{m:02d}.zip" for (y, m) in by_month]
     return files, keys, fkeys
 
@@ -141,3 +145,14 @@ def test_non_ascii_symbol_url_is_quoted(monkeypatch):
     monkeypatch.setattr(inv.urllib.request, "urlopen", fake_urlopen)
     assert inv.fetch(f"{inv.VISION}/data/futures/um/monthly/klines/币安USDT/1d/币安USDT-1d-2025-10.zip") == b"x"
     assert "%E5%B8%81" in seen["url"]
+
+
+def test_zero_volume_tail_after_delisting_is_not_active(tmp_path):
+    """Dodatek 1: archiv pokračuje nulovými svíčkami po delistingu ⇒ last_day = poslední den s objemem."""
+    days = _span(dt.date(2021, 8, 20), inv.END_DAY)
+    files, kk, fk = _symbol("RAYXUSDT", days, dead_after=dt.date(2022, 11, 15))
+    fk = [k for k in fk if k.rsplit("-", 2)[-2:] <= ["2022", "11.zip"]]
+    row, _ = inv.analyse_symbol("RAYXUSDT", kk, fk, tmp_path, FakeVision(files))
+    assert row["last_day"] == "2022-11-15" and row["last_bar_day"] == inv.END_DAY.isoformat()
+    assert row["zero_volume_tail_days"] == (inv.END_DAY - dt.date(2022, 11, 15)).days
+    assert row["status"] == "delisted_or_halted" and row["funding_ok"]

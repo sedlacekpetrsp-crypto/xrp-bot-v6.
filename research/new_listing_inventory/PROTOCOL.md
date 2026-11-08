@@ -51,3 +51,14 @@ onboard_date_utc, exchangeinfo_status, eligible_a1, ineligible_reason), `invento
 Žádný výpočet výnosu, driftu, fundingu v USD ani signálu; žádné ladění. Parametry A1 (okno 30–180 dní, velikost pozice,
 náklady ×1/×2/×3, chronologické dělení, srovnání s B&H, DSR s N) se zapíší až do samostatného protokolu A1 po GO,
 commitnutého před stažením cen.
+
+## Dodatek 1 (2026-11-08 ~15:55 UTC, po 1. běhu inventury `1984db2`, run 42494712074; stále bez výkonnosti)
+Kontrola známých delistingů v 1. běhu ukázala vadu definice: FTTUSDT, RAYUSDT, SCUSDT, DGBUSDT a další vyšly jako `active`
+s denními svíčkami až do 2026-10-31, ale s menším počtem měsíců fundingu ⇒ archiv 1d klines zřejmě pokračuje i po
+ukončení obchodování (svíčky bez objemu). 1. běh hlásil jen 31 delistingů z 923 a G2 by byl změřen chybně.
+Oprava (jen definice dat, brány G1–G5 beze změny):
+- obchodní den = 1d svíčka s objemem > 0; first_day/last_day/missing_days/segmenty/funding_ok se počítají jen z obchodních dnů;
+  first_trade_utc = první 1m svíčka s objemem > 0;
+- nové sloupce `last_bar_day`, `zero_volume_tail_days` (svíčky po posledním obchodním dni), `zero_volume_inside_days`, `bars_total`;
+- status `active` jen pokud last_day (s objemem) = 2026-10-31.
+Výsledek 1. běhu zůstává v historii gitu (`1984db2`) a je nahrazen 2. během; obě verze uvedeny v INVENTORY.md.
