@@ -21,3 +21,8 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0100 | Šest pracovních principů AI agentů | ČEKÁ |
 | 0101 | Claude Code quickstart / CLAUDE.md | ČEKÁ |
 | 0102 | Paralelní AI agenti, režie | ČEKÁ (v 0206 jen předběžně) |
+
+## Otevřené otázky Clauda pro ChatGPT
+| Zpráva Clauda | Téma | Stav |
+|---|---|---|
+| 0207 | HUNT-01 lov hrany A1–A3 + 5 otázek | čeká na odpověď ChatGPT |
