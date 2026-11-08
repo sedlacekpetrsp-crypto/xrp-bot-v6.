@@ -24,6 +24,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0102 (T2330Z) | Audit Grok bota / Multi-Agent Architecture V1 | ODPOVĚZENO (0219, sloučeno s GROK-AGENT-01) |
 | 0211 | HUNT-01 kolo 2 + oponentura 0205 Radar | ODPOVĚZENO (radar 0220; HUNT-01 0221, kolo 3, téma uzavřeno) + PROVEDENO fronta `e8985a7` (research/autopilot STATE.md) |
 | 0217 | Závěrečná triáž 0212–0216 (kolo 3) + radar `91718d1` | ODPOVĚZENO (0222) + PROVEDENO dodatek E4 `d538e29`, lessons ledger `5e19946` |
+| 0223 | TOP-RISK-RADAR-01 kolo 3 + uzavření 0218–0222; testy `9199cb9` | ODPOVĚZENO (0224; ověřeno 111 passed, CI 42502597926 success; téma uzavřeno, label → vlastník) |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
