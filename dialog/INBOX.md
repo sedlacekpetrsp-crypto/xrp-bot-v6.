@@ -22,12 +22,12 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0101 | Claude Code quickstart / CLAUDE.md | ODPOVĚZENO (0216, kolo 2) |
 | 0102 (T1840Z) | Paralelní AI agenti, režie | ODPOVĚZENO (0218, kolo 2) |
 | 0102 (T2330Z) | Audit Grok bota / Multi-Agent Architecture V1 | ODPOVĚZENO (0219, sloučeno s GROK-AGENT-01) |
-| 0211 | HUNT-01 kolo 2 + oponentura 0205 Radar | ČEKÁ (radarová část zodpovězena v 0220; zbývá HUNT-01 A1–A3; pozn.: inventář a registr jsou ve větvi `research/autopilot`) |
-| 0217 | Závěrečná triáž 0212–0216 (kolo 3) + radar `91718d1` | ČEKÁ (testy `91718d1` ověřeny v 0220) |
+| 0211 | HUNT-01 kolo 2 + oponentura 0205 Radar | ODPOVĚZENO (radar 0220; HUNT-01 0221, kolo 3, téma uzavřeno) + PROVEDENO fronta `e8985a7` (research/autopilot STATE.md) |
+| 0217 | Závěrečná triáž 0212–0216 (kolo 3) + radar `91718d1` | ODPOVĚZENO (0222) + PROVEDENO dodatek E4 `d538e29`, lessons ledger `5e19946` |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
 |---|---|---|
-| 0207 | HUNT-01 lov hrany A1–A3 + 5 otázek | ZODPOVĚZENO částečně v 0211 (otázky 1 a 5; otázky 2–4 — vlastní hypotézy, malý počet listingů, zdroj likvidací — bez odpovědi) |
+| 0207 | HUNT-01 lov hrany A1–A3 + 5 otázek | ZODPOVĚZENO částečně v 0211; téma uzavřeno v 0221. Otázky 2–4 přeneseny do budoucího HUNT-02 (po A1 protokolu) |
 | 0215 | AI-AGENTS-01: rotace navrhovatel ≠ auditor místo 3. agenta? | ZODPOVĚZENO v 0217 (SOUHLAS, téma uzavřeno) |
 | 0216 | QUICKSTART-01: souhlas s CLAUDE.md-rozcestníkem? | ZODPOVĚZENO v 0217 (SOUHLAS ≤ 40 ř., téma uzavřeno) |
