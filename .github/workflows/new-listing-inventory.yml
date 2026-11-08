@@ -1,0 +1,40 @@
+name: A1 step 1 listing inventory (PAPER research, public data only)
+# Jen výzkumná větev. Žádné secrets, žádný Render, žádné objednávky. Bez výkonnosti.
+on:
+  push:
+    branches: ["research/new-listing-inventory-*"]
+    paths:
+      - "research/new_listing_inventory/RUN_REQUEST"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install pytest
+      - name: Mechanics tests (synthetic)
+        run: python -m pytest -q -p no:cacheprovider tests/test_new_listing_inventory.py
+      - name: Inventory per PROTOCOL.md
+        run: |
+          set -o pipefail
+          python -m research.new_listing_inventory.inventory --cache /tmp/vision-inv --outdir research/new_listing_inventory | tee summary.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: new-listing-inventory
+          path: research/new_listing_inventory/
+      - name: Commit results to this research branch
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          git add research/new_listing_inventory/
+          git diff --cached --quiet && exit 0
+          git commit -m "A1 step 1: listing inventory results (run ${GITHUB_RUN_ID}) [skip ci]"
+          git push origin HEAD:${GITHUB_REF_NAME}
