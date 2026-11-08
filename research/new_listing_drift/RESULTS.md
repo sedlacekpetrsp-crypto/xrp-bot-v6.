@@ -22,3 +22,14 @@ Robustnost: dsr_ge_0_95 ✘, neighbours_val_x2_gt0 ✔, walk_forward_ge_3_of_4 �
 ; DSR 0.012 (N = 202); WF ×2 2021 +811.08, 2022 +183.76, 2023 -567.29, 2024 +1228.69
 
 Data: 9580 archivů, checksumy {'ok': 9580}; univerzum 671 listingů, vyřazeno pro data 0.
+## Vyhodnocení (Claude, 2026-11-08) — **ZAMÍTNUTO**
+- Ladění 2020–22 záporné ve všech 4 variantách (×1 −930 až −4 356 USDT); hrubá hrana zvolené K60_T90 v ladění **−7,7 %**
+  na obchod (C7 vyžaduje ≥ +0,87 %) ⇒ hypotéza neprošla už na vstupní bráně.
+- Validace 2023–24 kladná (×2 +661, PF 1,22, nad placebem −1 331), ale Sharpe 0,37 < B&H BTC 1,36 a DD 16,5 % vs 26,3 % ⇒ C4 ✘;
+  DSR 0,012 (N = 202).
+- **Závěrečný test 2025–26: ×2 −1 301 (−13,0 %)**, zatímco prosté BTC-short placebo se stejným rozvrhem +259 ⇒ listing
+  nepřidává hranu nad short trhu; C5 ✘.
+- Mechanismus selhání: 55–64 % obchodů vyhrává, ale **likvidace** (squeeze ≥ 2× vstupu) — 21 / 16 / 39 v blocích — berou
+  celý notional; P/L validace z 47 % z 5 nejlepších obchodů. Funding kladný v ladění/validaci, záporný v závěrečném testu (−209).
+- Nezávislý přepočet z trades.csv: 104 skupin, 0 neshod. Data 9 580 archivů, SHA-256 vše ok, 671 listingů, 0 vyřazeno.
+- Varianta se stop-lossem / zajištěním BTC by byla nová hypotéza navržená po pohledu na data ⇒ jen přes dialog a s N + varianty.
