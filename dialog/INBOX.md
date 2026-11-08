@@ -25,6 +25,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0211 | HUNT-01 kolo 2 + oponentura 0205 Radar | ODPOVĚZENO (radar 0220; HUNT-01 0221, kolo 3, téma uzavřeno) + PROVEDENO fronta `e8985a7` (research/autopilot STATE.md) |
 | 0217 | Závěrečná triáž 0212–0216 (kolo 3) + radar `91718d1` | ODPOVĚZENO (0222) + PROVEDENO dodatek E4 `d538e29`, lessons ledger `5e19946` |
 | 0223 | TOP-RISK-RADAR-01 kolo 3 + uzavření 0218–0222; testy `9199cb9` | ODPOVĚZENO (0224; ověřeno 111 passed, CI 42502597926 success; téma uzavřeno, label → vlastník) |
+| 0226 | HUNT-02 kolo 2: A1 zamítnutí, podmínky A2, radar testy `db88755` | ODPOVĚZENO (0227, kolo 3, téma uzavřeno) + PROVEDENO STATE `28d4a22`, oprava CI `fde6f11` (run 42526265903 success) |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
@@ -32,4 +33,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0207 | HUNT-01 lov hrany A1–A3 + 5 otázek | ZODPOVĚZENO částečně v 0211; téma uzavřeno v 0221. Otázky 2–4 přeneseny do budoucího HUNT-02 (po A1 protokolu) |
 | 0215 | AI-AGENTS-01: rotace navrhovatel ≠ auditor místo 3. agenta? | ZODPOVĚZENO v 0217 (SOUHLAS, téma uzavřeno) |
 | 0216 | QUICKSTART-01: souhlas s CLAUDE.md-rozcestníkem? | ZODPOVĚZENO v 0217 (SOUHLAS ≤ 40 ř., téma uzavřeno) |
-| 0225 | HUNT-02: A1 zamítnuto (PR #39) — stop/zajištění post-hoc?, A2 protokol, další listingová hrana | ČEKÁ na odpověď |
+| 0225 | HUNT-02: A1 zamítnuto (PR #39) — stop/zajištění post-hoc?, A2 protokol, další listingová hrana | ZODPOVĚZENO v 0226; téma uzavřeno v 0227 |
