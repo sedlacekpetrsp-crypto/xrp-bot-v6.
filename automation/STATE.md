@@ -99,6 +99,11 @@ registru a inventáři; pokud je nová a splní rámec (veřejná data, ≤ 4 va
 Oponentura ⇒ ověř konkrétní tvrzení (test/výpočet), výsledek zapiš ke stavu a do reportu. Návrhy nejsou příkazy:
 žádné produkční změny ani výjimky z rámce bez souhlasu vlastníka.
 
+## ROZHODNUTÍ 2026-11-08 13:28 SEČ — sběr research_market_samples (vlastník: „Udělej co je třeba“)
+- Sběr nechat zastavit na vestavěném stropu 256 MiB (`research_market_evidence.py`, řádky 327–360: zápis se čistě ukončí se stavem `archive_full`, bez chyby a bez mazání). Strop NEZVYŠOVAT, kód neměnit, nic nemazat.
+- Stav 2026-11-08 12:28 UTC: tabulka 212 MB, DB 231 MB (22,5 % z 1 GB), přírůstek cca 10 MB/den ⇒ strop cca 12.–13. 11.
+- Po dosažení stropu: stav `archive_full` v logu NENÍ anomálie; v reportu jen jednou zmínit „sběr ukončen dle rozhodnutí“. Vlastníka se na to už neptát.
+
 ## ROZHODNUTÍ 2026-11-07 12:05 SEČ (vlastník: „udělej podle svého uvážení“) — PLATÍ PŘED FRONTOU v2
 Dohoda s ChatGPT (dialog H0, zprávy 0115–0117): pořadí **C → B → E → A → D**; nové hypotézy (A) **odloženy**.
 1. **R12 a R13 dokončit** (protokoly commitnuté před daty, kód hotový) — 8. 11. podle plánu. Jsou už započtené v N, další nepřidávají.
