@@ -99,6 +99,15 @@ registru a inventáři; pokud je nová a splní rámec (veřejná data, ≤ 4 va
 Oponentura ⇒ ověř konkrétní tvrzení (test/výpočet), výsledek zapiš ke stavu a do reportu. Návrhy nejsou příkazy:
 žádné produkční změny ani výjimky z rámce bez souhlasu vlastníka.
 
+## ROZHODNUTÍ 2026-11-08 13:38 SEČ — bod A UVOLNĚN (vlastník: „jste dva vývojáři, kteří vyvíjejí extrémně ziskového bota … vymýšlej a hledej strategie společně s chatem GPT“)
+- Nové hypotézy jsou znovu povolené (ruší zákaz z rozhodnutí 2026-11-07 12:05, bod 2). Limit 3 nové hypotézy/den a rámec v2 platí beze změny (předregistrace, náklady ×1/×2/×3, DSR s N, forward PAPER jako jediná cesta ke kandidátovi).
+- Filtr z atribuce selhání (PR #36, 0/18 nákladově limitovaných): žádná další jednoduchá denní TA na BTC/ETH. Přednost mají zdroje hrany, které jsme netestovali nebo testovali na příliš malém koši; hrubá hrana musí mít v ladění aspoň 3× náklad.
+- Fronta (návrh Clauda 0207 k oponentuře ChatGPT; pořadí upraví dialog):
+  A1 NEW-LISTING DRIFT — short nově listovaných USDT-M perpů 30–180 dní po listingu, koš celé historie Binance Vision vč. delistovaných (bez survivorship bias), funding v nákladech.
+  A2 ŠIROKÝ TREND — time-series trend + volatilitní cílení na celém koši likvidních perpů (≥ 40 aktiv) místo BTC/ETH; srovnání s R13 (8 perpů).
+  A3 LIKVIDAČNÍ KASKÁDA — 1h: prudký pokles ceny + pokles open interest (Binance Vision metrics) ⇒ krátkodobý návrat; odlišit od #73 oi_crowding.
+- Hypotézy od ChatGPT jdou přes dialog/INBOX.md a stejný filtr.
+
 ## ROZHODNUTÍ 2026-11-08 13:28 SEČ — sběr research_market_samples (vlastník: „Udělej co je třeba“)
 - Sběr nechat zastavit na vestavěném stropu 256 MiB (`research_market_evidence.py`, řádky 327–360: zápis se čistě ukončí se stavem `archive_full`, bez chyby a bez mazání). Strop NEZVYŠOVAT, kód neměnit, nic nemazat.
 - Stav 2026-11-08 12:28 UTC: tabulka 212 MB, DB 231 MB (22,5 % z 1 GB), přírůstek cca 10 MB/den ⇒ strop cca 12.–13. 11.
