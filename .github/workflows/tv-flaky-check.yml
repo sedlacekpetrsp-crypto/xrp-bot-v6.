@@ -4,18 +4,31 @@ on:
     branches: ['research/tv-flaky-check-*']
 permissions:
   contents: read
+defaults:
+  run:
+    shell: bash   # bash -eo pipefail: a failing pytest is never masked by a pipe
 jobs:
   check:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
       - uses: actions/setup-python@v5
         with: {python-version: '3.13'}
       - run: pip install -r requirements-dev.txt
-      - name: Night-time simulation with fix
+      - name: Night-time simulation with fix (must pass at every time)
         run: python tools/autopilot/tv_flaky_night_check.py
-      - name: Night-time simulation WITHOUT fix (expected FAIL at 00-02)
-        run: git show HEAD~1:test_tv_consensus.py > test_tv_consensus.py && (python tools/autopilot/tv_flaky_night_check.py || echo "BASELINE_FAILS_AS_EXPECTED")
+      - name: Negative control fe43d4d fixture (must FAIL at 00:00-00:20)
+        run: |
+          cp test_tv_consensus.py /tmp/fixed.py
+          git show fe43d4d:test_tv_consensus.py > test_tv_consensus.py
+          if python tools/autopilot/tv_flaky_night_check.py; then
+            echo "NEGATIVE CONTROL DID NOT FAIL - check is not sensitive"; exit 1
+          fi
+          echo "BASELINE_FAILS_AS_EXPECTED"
+          cp /tmp/fixed.py test_tv_consensus.py
       - name: Full suite with fix
-        run: git checkout test_tv_consensus.py && python -m pytest -q -p no:cacheprovider | tail -1
+        run: |
+          git diff --exit-code test_tv_consensus.py
+          python -m pytest -q -p no:cacheprovider 2>&1 | tail -5
