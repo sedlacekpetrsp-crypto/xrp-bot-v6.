@@ -26,6 +26,8 @@ CFG = {
     'near_high':        (28, 'TOP3', 'strategy/{p}/{x}', 'buy_hold/{p}/{x}'),
     'contrarian_ladder':(31, 'L20_30_40', 'strategy/{p}/{x}', 'buy_hold/{p}/{x}'),
     'bab_beta':         (32, 'W60_H14', 'strategy/{p}/{x}', 'buy_hold/{p}/{x}'),
+    'max_effect':       (33, 'L14_H28', 'strategy/{p}/{x}', 'buy_hold/{p}/{x}'),
+    'xs_momentum':      (35, 'LB56_S7', 'strategy/{p}/{x}', 'buy_hold/{p}/{x}'),
 }
 
 
@@ -48,7 +50,7 @@ def ledger(d, variant):
     ck = 'cost_multiplier' if 'cost_multiplier' in rows[0] else 'cost_mult'
     sel = [r for r in rows if r['period'] == 'validation' and r[ck] == '1'
            and (variant is None or r.get('variant') == variant)
-           and r.get('mode', 'strategy') in ('strategy', '', 'BAB')]
+           and r.get('mode', 'strategy') in ('strategy', '', 'BAB', 'MAX', 'MOM')]
     f = lambda r, k: float(r[k]) if r.get(k) not in (None, '') else 0.0
     cost_k = 'fees' if 'fees' in rows[0] else 'costs'
     net = sum(f(r, 'net_pnl') for r in sel)
@@ -64,6 +66,8 @@ def main(root):
     out = []
     for h, (pr, var, st, bh) in CFG.items():
         d = os.path.join(root, h)
+        if not os.path.isdir(d):  # chybějící hypotézy přeskočit (dílčí přepočet)
+            continue
         j = flat(json.load(open(os.path.join(d, 'results.json'))))
         s1, s2 = getp(j, st, 'validation', 'x1'), getp(j, st, 'validation', 'x2')
         b1 = getp(j, bh, 'validation', 'x1')
