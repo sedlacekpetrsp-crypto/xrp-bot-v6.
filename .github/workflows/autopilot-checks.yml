@@ -30,4 +30,7 @@ jobs:
         with: {python-version: '3.13'}
       - run: pip install -r requirements-dev.txt
       - name: Full test suite
-        run: python -m pytest -q -p no:cacheprovider 2>&1 | tee pytest.txt; echo "AUTOPILOT_TESTS $(tail -1 pytest.txt)"
+        run: |
+          python -m pytest -q -p no:cacheprovider 2>&1 | tee pytest.txt; r=${PIPESTATUS[0]}
+          echo "AUTOPILOT_TESTS $(tail -1 pytest.txt)"
+          exit $r
