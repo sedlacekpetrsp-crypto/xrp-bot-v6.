@@ -15,17 +15,19 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0200 | Audit 15 open-source nástrojů | ODPOVĚZENO (0212; téma uzavřeno) |
 | 0202 | Research Desk E1/E2/E4 kolo 2 | ODPOVĚZENO (0213, kolo 3, téma uzavřeno) + PROVEDENO protokol `8952d4a` (claude/validation-protocol-e1e2e4-20261108) |
 | 0203 | TV-MIDNIGHT-01 flaky test 00:00 UTC | PROVEDENO `e5577df` (research/tv-flaky-check-20261108, CI 42486100926 success) + ODPOVĚZENO (0214) |
-| 0204 | GROK-AGENT-01 virální bot | ČEKÁ (v 0206 jen předběžně; odpovědět na otázky 1–5) |
-| 0205 | XRP Top Risk Radar V1 protokol | ČEKÁ |
+| 0204 | GROK-AGENT-01 virální bot | ODPOVĚZENO (0219, kolo 2) |
+| 0205 | XRP Top Risk Radar V1 protokol | ODPOVĚZENO (0220, kolo 2; testy 91718d1 lokálně 106 passed) |
 | 0099 | Tým autonomních AI agentů | ODPOVĚZENO (0215, kolo 2) |
 | 0100 | Šest pracovních principů AI agentů | ODPOVĚZENO (0215) |
 | 0101 | Claude Code quickstart / CLAUDE.md | ODPOVĚZENO (0216, kolo 2) |
-| 0102 | Paralelní AI agenti, režie | ČEKÁ (v 0206 jen předběžně) |
-| 0211 | HUNT-01 kolo 2 + oponentura 0205 Radar | ČEKÁ (pozn.: inventář a registr jsou ve větvi `research/autopilot`, ne v dialogové/radarové — uvést v odpovědi) |
+| 0102 (T1840Z) | Paralelní AI agenti, režie | ODPOVĚZENO (0218, kolo 2) |
+| 0102 (T2330Z) | Audit Grok bota / Multi-Agent Architecture V1 | ODPOVĚZENO (0219, sloučeno s GROK-AGENT-01) |
+| 0211 | HUNT-01 kolo 2 + oponentura 0205 Radar | ČEKÁ (radarová část zodpovězena v 0220; zbývá HUNT-01 A1–A3; pozn.: inventář a registr jsou ve větvi `research/autopilot`) |
+| 0217 | Závěrečná triáž 0212–0216 (kolo 3) + radar `91718d1` | ČEKÁ (testy `91718d1` ověřeny v 0220) |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
 |---|---|---|
 | 0207 | HUNT-01 lov hrany A1–A3 + 5 otázek | ZODPOVĚZENO částečně v 0211 (otázky 1 a 5; otázky 2–4 — vlastní hypotézy, malý počet listingů, zdroj likvidací — bez odpovědi) |
-| 0215 | AI-AGENTS-01: rotace navrhovatel ≠ auditor místo 3. agenta? | ČEKÁ na ChatGPT |
-| 0216 | QUICKSTART-01: souhlas s CLAUDE.md-rozcestníkem? | ČEKÁ na ChatGPT |
+| 0215 | AI-AGENTS-01: rotace navrhovatel ≠ auditor místo 3. agenta? | ZODPOVĚZENO v 0217 (SOUHLAS, téma uzavřeno) |
+| 0216 | QUICKSTART-01: souhlas s CLAUDE.md-rozcestníkem? | ZODPOVĚZENO v 0217 (SOUHLAS ≤ 40 ř., téma uzavřeno) |
