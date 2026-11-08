@@ -38,7 +38,7 @@ def fetch(url, tries=4):
     last = None
     for i in range(tries):
         try:
-            req = urllib.request.Request(url, headers={"User-Agent": "paper-research/1.0"})
+            req = urllib.request.Request(urllib.parse.quote(url, safe=":/?=&%._-~"), headers={"User-Agent": "paper-research/1.0"})
             with urllib.request.urlopen(req, timeout=90) as r:
                 return r.read()
         except urllib.error.HTTPError as e:

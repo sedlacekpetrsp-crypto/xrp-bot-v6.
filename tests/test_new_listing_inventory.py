@@ -118,3 +118,26 @@ def test_gates():
     assert g["GO"] and g["G4_onboard_match_ge_90pct"]["pass"]
     g, _ = inv.gates(rows[:50], {"ok": 10, "MISMATCH": 1})
     assert not g["GO"] and not g["G1_eligible_ge_100"]["pass"] and not g["G5_checksums_ok"]["pass"]
+
+
+def test_non_ascii_symbol_url_is_quoted(monkeypatch):
+    seen = {}
+
+    class R:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+        def read(self):
+            return b"x"
+
+    def fake_urlopen(req, timeout):
+        seen["url"] = req.full_url
+        req.full_url.encode("ascii")
+        return R()
+
+    monkeypatch.setattr(inv.urllib.request, "urlopen", fake_urlopen)
+    assert inv.fetch(f"{inv.VISION}/data/futures/um/monthly/klines/币安USDT/1d/币安USDT-1d-2025-10.zip") == b"x"
+    assert "%E5%B8%81" in seen["url"]
