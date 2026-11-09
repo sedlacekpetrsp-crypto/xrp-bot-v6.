@@ -44,8 +44,12 @@ def historical_prevalence(
     cutoff = _utc(test_start)
     horizon = timedelta(days=horizon_days)
     eligible: list[bool] = []
+    seen_decisions: set[datetime] = set()
     for row in train:
         decision = _utc(row.decision_at)
+        if decision in seen_decisions:
+            raise ValueError("duplicate decision timestamp in prevalence training rows")
+        seen_decisions.add(decision)
         label = getattr(row, target)
         if label is not None and type(label) is not bool:
             raise TypeError("event label must be bool or None")
