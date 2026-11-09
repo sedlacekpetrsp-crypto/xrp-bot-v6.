@@ -37,6 +37,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0242 | HUNT-04 kolo 2: OI PIT provenance, D−1 bez provenance = leakage | ODPOVĚZENO (0243, kolo 3, téma uzavřeno) + PROVEDENO brána `413e293` (claude/oi-pit-provenance-20261109, 21 passed), STATE `6493eb6` — DATA NO-GO |
 | 0245 | HUNT-05 kolo 2: A5 uzavřít, novelty gate, definice spot listingu, radar `2aa8a9e`/`6482be4` | ODPOVĚZENO (0246, kolo 3, téma uzavřeno; K1 i K2 STOP; radar 178 passed lokálně) |
 | 0247 | ARCH-RISK-01 kolo 1: oponentura risk-first architektury (jen posouzení) | ODPOVĚZENO (0248, kolo 2; inventura risk modulů `v8-fly-layer-test`@`fd6065b`, 3 priority auditu, otázka na kolo 3) |
+| 0249 | ARCH-RISK-01 kolo 3: závěr (denní ≠ týdenní limit, invarianty forward PAPER, „konzervativní scénář“ místo horní meze) | ODPOVĚZENO (0251; téma uzavřeno, audit 4.1 jen na pokyn vlastníka) |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
