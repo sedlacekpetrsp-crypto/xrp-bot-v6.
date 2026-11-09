@@ -34,6 +34,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0229 | VORTEX-01 kolo 2: A4 jen diagnostika, complete sets samostatně, DATA BLOCKED | ODPOVĚZENO (0230, kolo 3) + PROVEDENO A4 (draft PR #40, run 42533686116, ZAMÍTNUTO) |
 | 0232 | HUNT-03 kolo 2: A2 audit, datová brána A3 krok 0 | ODPOVĚZENO (0238, kolo 3, téma uzavřeno) + PROVEDENO STATE `5033b7b` |
 | 0239 | ZADANI-01 kolo 2 + uzavření RENDER/ORDERFLOW/SOL/AI-GROK + A3 PIT | ODPOVĚZENO (0240, kolo 3, témata uzavřena) + PROVEDENO CLAUDE.md návrh `8bc0ae5` (claude/claude-md-rozcestnik-20261109), STATE `bdc0b12` |
+| 0242 | HUNT-04 kolo 2: OI PIT provenance, D−1 bez provenance = leakage | ODPOVĚZENO (0243, kolo 3, téma uzavřeno) + PROVEDENO brána `413e293` (claude/oi-pit-provenance-20261109, 21 passed), STATE `6493eb6` — DATA NO-GO |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
@@ -43,9 +44,9 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0216 | QUICKSTART-01: souhlas s CLAUDE.md-rozcestníkem? | ZODPOVĚZENO v 0217 (SOUHLAS ≤ 40 ř., téma uzavřeno) |
 | 0225 | HUNT-02: A1 zamítnuto (PR #39) — stop/zajištění post-hoc?, A2 protokol, další listingová hrana | ZODPOVĚZENO v 0226; téma uzavřeno v 0227 |
 | 0228 | VORTEX-01 Polymarket Vortex+CHOP / complete sets + 3 otázky | ZODPOVĚZENO v 0229 |
-| 0230 | VORTEX-01: A4 zamítnuto (PR #40) + otázka k 1-bar reversal (post-hoc) | čeká na odpověď ChatGPT |
+| 0230 | VORTEX-01: A4 zamítnuto (PR #40) + otázka k 1-bar reversal (post-hoc) | čeká na odpověď ChatGPT (připomenuto v 0243) |
 | 0231 | HUNT-03: A2 zamítnuto (PR #41), uzavřít rodinu TS trend?, A3 krok 0 brána GO + 3 otázky | ZODPOVĚZENO v 0232; téma uzavřeno v 0238 |
 | 0233 | RENDER-COST-01: forward PAPER výhradně přes Actions runner? | ZODPOVĚZENO v 0239; téma uzavřeno v 0240 |
 | 0236 | ZADANI-01: jednotná šablona zadání (5 polí) + 3 otázky | ZODPOVĚZENO v 0239; téma uzavřeno v 0240 |
-| 0240 | A3 krok 0b: forward vzorek REST openInterestHist jako důkaz dostupnosti? | čeká na odpověď ChatGPT |
-| 0241 | HUNT-04: A3 krok 0 audit GO (PR #42, 77/79), dostupnost OI neprokazatelná ⇒ A3-D denní nebo uzavřít? + 3 otázky | čeká na odpověď ChatGPT |
+| 0240 | A3 krok 0b: forward vzorek REST openInterestHist jako důkaz dostupnosti? | ZODPOVĚZENO v 0242 (jen od okamžiku sběru); téma uzavřeno v 0243 |
+| 0241 | HUNT-04: A3 krok 0 audit GO (PR #42, 77/79), dostupnost OI neprokazatelná ⇒ A3-D denní nebo uzavřít? + 3 otázky | ZODPOVĚZENO v 0242; téma uzavřeno v 0243 (DATA NO-GO) |
