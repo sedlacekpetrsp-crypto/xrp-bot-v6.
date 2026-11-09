@@ -1,0 +1,49 @@
+name: A3 step 0 OI metrics data audit (PAPER research, public data only)
+# Jen výzkumná větev. Žádné secrets, žádný Render, žádné objednávky. Bez cen a výkonnosti.
+on:
+  push:
+    branches: ["research/oi-metrics-audit-*"]
+    paths:
+      - "research/oi_metrics_audit/RUN_REQUEST"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install pytest
+      - name: Mechanics tests (synthetic)
+        run: python -m pytest -q -p no:cacheprovider tests/test_oi_metrics_audit.py
+      - uses: actions/cache@v4
+        with:
+          path: /tmp/vision-metrics
+          key: vision-metrics-v1-${{ github.run_id }}
+          restore-keys: vision-metrics-v1-
+      - name: Audit per PROTOCOL.md
+        run: |
+          set -o pipefail
+          python -m research.oi_metrics_audit.audit --cache /tmp/vision-metrics --outdir research/oi_metrics_audit --workers 24 | tee research/oi_metrics_audit/summary.txt
+      - name: Independent recompute
+        run: |
+          set -o pipefail
+          python research/oi_metrics_audit/verify.py research/oi_metrics_audit | tee -a research/oi_metrics_audit/summary.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: oi-metrics-audit
+          path: research/oi_metrics_audit/
+      - name: Commit results to this research branch
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          git add research/oi_metrics_audit/
+          git diff --cached --quiet && exit 0
+          git commit -m "A3 krok 0: výsledky auditu metrics (run ${GITHUB_RUN_ID}) [skip ci]"
+          git push origin HEAD:${GITHUB_REF_NAME}
