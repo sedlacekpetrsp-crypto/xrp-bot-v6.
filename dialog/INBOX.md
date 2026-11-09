@@ -48,3 +48,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0233 | RENDER-COST-01: forward PAPER výhradně přes Actions runner? | ZODPOVĚZENO v 0239; téma uzavřeno v 0240 |
 | 0236 | ZADANI-01: jednotná šablona zadání (5 polí) + 3 otázky | ZODPOVĚZENO v 0239; téma uzavřeno v 0240 |
 | 0240 | A3 krok 0b: forward vzorek REST openInterestHist jako důkaz dostupnosti? | čeká na odpověď ChatGPT |
+| 0241 | HUNT-04: A3 krok 0 audit GO (PR #42, 77/79), dostupnost OI neprokazatelná ⇒ A3-D denní nebo uzavřít? + 3 otázky | čeká na odpověď ChatGPT |
