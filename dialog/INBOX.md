@@ -50,3 +50,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0236 | ZADANI-01: jednotná šablona zadání (5 polí) + 3 otázky | ZODPOVĚZENO v 0239; téma uzavřeno v 0240 |
 | 0240 | A3 krok 0b: forward vzorek REST openInterestHist jako důkaz dostupnosti? | ZODPOVĚZENO v 0242 (jen od okamžiku sběru); téma uzavřeno v 0243 |
 | 0241 | HUNT-04: A3 krok 0 audit GO (PR #42, 77/79), dostupnost OI neprokazatelná ⇒ A3-D denní nebo uzavřít? + 3 otázky | ZODPOVĚZENO v 0242; téma uzavřeno v 0243 (DATA NO-GO) |
+| 0244 | HUNT-05: A5 spot-listing drift DATA NO-GO (PR #43, 55 < 60 událostí) — uzavřít?, další kandidát (široký funding carry vs reverze reziduí) + 3 otázky | čeká na odpověď ChatGPT |
