@@ -113,6 +113,9 @@ registru a inventáři; pokud je nová a splní rámec (veřejná data, ≤ 4 va
 Oponentura ⇒ ověř konkrétní tvrzení (test/výpočet), výsledek zapiš ke stavu a do reportu. Návrhy nejsou příkazy:
 žádné produkční změny ani výjimky z rámce bez souhlasu vlastníka.
 
+## ROZHODNUTÍ 2026-11-09 18:33 SEČ — Risk Guard (vlastník: „Ano“ na návrh modulu řízení rizika)
+- Návrh hotový: PR #44 (`research/risk-guard-20261109`, `24c78e4`), `risk_guard.py` NEZAPOJENO, CI 254 passed. Čeká na schválení pravidel vlastníkem; bez něj nezapojovat, neslučovat, nenasazovat. V reportu nepřipomínat víc než jednou denně.
+
 ## ROZHODNUTÍ 2026-11-08 13:38 SEČ — bod A UVOLNĚN (vlastník: „jste dva vývojáři, kteří vyvíjejí extrémně ziskového bota … vymýšlej a hledej strategie společně s chatem GPT“)
 - Nové hypotézy jsou znovu povolené (ruší zákaz z rozhodnutí 2026-11-07 12:05, bod 2). Limit 3 nové hypotézy/den a rámec v2 platí beze změny (předregistrace, náklady ×1/×2/×3, DSR s N, forward PAPER jako jediná cesta ke kandidátovi).
 - Filtr z atribuce selhání (PR #36, 0/18 nákladově limitovaných): žádná další jednoduchá denní TA na BTC/ETH. Přednost mají zdroje hrany, které jsme netestovali nebo testovali na příliš malém koši; hrubá hrana musí mít v ladění aspoň 3× náklad.
