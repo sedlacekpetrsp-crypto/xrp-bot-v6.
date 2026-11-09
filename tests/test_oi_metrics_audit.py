@@ -46,3 +46,8 @@ def test_gate_rules():
 def test_universe_frozen_81():
     u = A.universe(A.HERE / "listings_frozen.csv")
     assert len(u) == 81 and sum(x["delisted"] for x in u) == 23
+
+
+def test_file_day_nonstandard():
+    assert A.file_day("data/futures/um/daily/metrics/X/X-metrics-2023-01-02.zip") == dt.date(2023, 1, 2)
+    assert A.file_day("data/futures/um/daily/metrics/X/X-metrics-1993.zip") is None

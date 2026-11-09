@@ -28,7 +28,7 @@ jobs:
       - name: Audit per PROTOCOL.md
         run: |
           set -o pipefail
-          python -m research.oi_metrics_audit.audit --cache /tmp/vision-metrics --outdir research/oi_metrics_audit --workers 24 | tee research/oi_metrics_audit/summary.txt
+          python -m research.oi_metrics_audit.audit --cache /tmp/vision-metrics --outdir research/oi_metrics_audit --workers 48 | tee research/oi_metrics_audit/summary.txt
       - name: Independent recompute
         run: |
           set -o pipefail

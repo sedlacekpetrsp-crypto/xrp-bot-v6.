@@ -14,6 +14,7 @@ import gzip
 import hashlib
 import io
 import json
+import re
 import time
 import urllib.error
 import urllib.parse
@@ -81,8 +82,13 @@ def universe(path):
     return out
 
 
+DAY_RE = re.compile(r"-metrics-(\d{4}-\d{2}-\d{2})\.zip$")
+
+
 def file_day(key):
-    return dt.date.fromisoformat(key.rsplit("/", 1)[1].split(".")[0][-10:])
+    """→ den souboru, nebo None pro nestandardní název (dodatek 1: počítá se, nezahrnuje)."""
+    m = DAY_RE.search(key)
+    return dt.date.fromisoformat(m.group(1)) if m else None
 
 
 def parse_points(payload, day):
@@ -158,7 +164,9 @@ def gaps(slots_by_day, start, end):
 
 def audit_symbol(u, listing, cache, fetcher=fetch):
     sym, start, end = u["symbol"], u["start"], u["end"]
-    files = {file_day(k): (k, lm) for k, lm in listing if k.endswith(".zip")}
+    zips = [(k, lm) for k, lm in listing if k.endswith(".zip")]
+    files = {file_day(k): (k, lm) for k, lm in zips if file_day(k)}
+    odd_keys = [k for k, _ in zips if not file_day(k)]
     manifest, slots, bad_rows, delays = [], {}, 0, []
     for day in sorted(files):
         if not (start <= day <= end):
@@ -196,7 +204,7 @@ def audit_symbol(u, listing, cache, fetcher=fetch):
             "files_ok": len(slots), "checksum_bad": sum(m["checksum"] != "ok" for m in manifest),
             "expected": exp, "valid": got, "coverage": round(got / exp, 6) if exp else 0.0,
             "invalid_rows": bad_rows, "gaps_ge1h": ng, "longest_gap_h": longest, "gap_hours_total": total_h,
-            "first_metrics_day": str(min(files)) if files else "",
+            "first_metrics_day": str(min(files)) if files else "", "nonstandard_keys": len(odd_keys),
             "worst_quarter_cov": min((r["coverage"] for r in qrows if r["evaluated"]), default=None)}
     return arow, qrows, manifest, delays
 
@@ -255,8 +263,13 @@ def main():
         if not u["in_window"]:
             return {"symbol": u["symbol"], "delisted": u["delisted"], "start": str(u["start"]), "end": str(u["end"]),
                     "live_days": 0, "coverage": 0.0, "worst_quarter_cov": None, "note": "mimo okno"}, [], [], []
-        listing = s3_list(f"data/futures/um/daily/metrics/{u['symbol']}/")
-        return audit_symbol(u, listing, a.cache)
+        try:
+            listing = s3_list(f"data/futures/um/daily/metrics/{u['symbol']}/")
+            return audit_symbol(u, listing, a.cache)
+        except Exception as e:  # dodatek 1: chyba aktiva = pokrytí 0 (konzervativně), běh pokračuje
+            return {"symbol": u["symbol"], "delisted": u["delisted"], "start": str(u["start"]), "end": str(u["end"]),
+                    "live_days": (u["end"] - u["start"]).days + 1, "expected": 288 * ((u["end"] - u["start"]).days + 1),
+                    "valid": 0, "coverage": 0.0, "worst_quarter_cov": 0.0, "note": f"chyba: {type(e).__name__}: {e}"[:200]}, [], [], []
 
     with cf.ThreadPoolExecutor(a.workers) as ex:
         for i, (ar, qr, mf, dl) in enumerate(ex.map(one, uni), 1):
@@ -266,7 +279,7 @@ def main():
     ds = delay_stats(delays)
     afields = ["symbol", "delisted", "start", "end", "live_days", "files_listed", "files_ok", "checksum_bad", "expected",
                "valid", "coverage", "worst_quarter_cov", "invalid_rows", "gaps_ge1h", "longest_gap_h", "gap_hours_total",
-               "first_metrics_day", "note"]
+               "first_metrics_day", "nonstandard_keys", "note"]
     with open(out / "coverage_assets.csv", "w", newline="") as f:
         w = csv.DictWriter(f, afields, extrasaction="ignore")
         w.writeheader()

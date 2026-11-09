@@ -52,3 +52,10 @@ kódem i před stažením jakýchkoli `metrics` dat. Po prvním spuštění se p
 - `LastModified` nemusí být první publikace (jen horní mez). Binance Vision nemá historii revizí hodnot.
 - Shoda Vision vs. real-time API `openInterestHist` nejde ověřit z GitHub runnerů (Binance fapi z US IP blokováno).
 - Pokles OI ≠ likvidace (zavírání pozic, přecenění notional) — týká se až návrhu A3, ne auditu.
+
+## Dodatek 1 (2026-11-09 08:00 UTC, po pádu běhu 42577455591 — oprava parseru, pravidla beze změny)
+- Běh spadl na souboru s nestandardním názvem (`…-metrics-…1993`), ne na pravidle. Den souboru se nově bere jen z
+  názvu `-metrics-YYYY-MM-DD.zip`; jiné klíče se nepočítají jako data, jen se reportují (`nonstandard_keys`).
+- Chyba stahování/zpracování jednoho aktiva = pokrytí 0 % a poznámka (konzervativně, aktivum se nevyřazuje).
+- Brána, univerzum, okno ani prahy se nemění. Z prvního běhu je vidět jen pokrytí prvních 45 aktiv (vše ≥ 99,7 %),
+  žádné ceny ani výkonnost.
