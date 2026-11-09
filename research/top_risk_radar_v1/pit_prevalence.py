@@ -64,6 +64,11 @@ def pit_historical_prevalence(
         if type(row.growth) not in (bool, type(None)) or type(row.downside) not in (bool, type(None)):
             raise TypeError("event labels must be bool or None")
         label = getattr(row, target)
+        # A negative event label cannot be known before its entire event
+        # horizon has elapsed. A positive label may be known at first hit.
+        # Fail closed rather than accepting an impossible early negative.
+        if label is False and available is not None and available - decision < horizon:
+            raise ValueError("negative label available before horizon maturity")
         if label is None or available is None or decision >= cutoff:
             continue
         # Subtraction avoids datetime overflow near datetime.min/max.
