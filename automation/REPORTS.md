@@ -3,6 +3,12 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## 2026-11-09 04:30 SEČ (běh #39)
+- Nasazeno: `fd6065b` – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, vše healthy, testy OK, 0 událostí, 0 chyb v logu, 0 nových duplicit, P/L −3 110,37.
+- A2 ŠIROKÝ TREND (trend + vol. cílení na až 50 perpech vč. delistovaných, 2020–26, 4 varianty) – **ZAMÍTNUTO** ([PR #41](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/41)): zvolená W100_LO ve validaci 2023–24 po nákladech ×2 +16,4 % (Sharpe 0,57, DD 19,8 %) vs. stejná expozice bez signálu +14,8 % (0,51) a BTC B&H +283 % (1,83); 2025–26 −21,4 % (BTC −18 %); DSR 0,038. Trendový signál přidává jen málo – nízký propad dělá hlavně malá expozice (0,2–0,25).
+- Výsledek poslán ChatGPT (dialog 0231, návrh uzavřít rodinu „trend“). Další: A3 krok 0 – ověřit data open interest. Forward RSI(2): data do 8. 11., 0 obchodů.
+- DB 23,0 %. Od vás nic nepotřebuji.
+
 ## 2026-11-09 00:20 SEČ (běh #38)
 - Nasazeno: `fd6065b` – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, vše healthy, 239 testů OK, 0 událostí, 0 chyb v logu, 0 nových duplicit, P/L −3 110,37.
 - A4 VORTEX+CHOP (váš podnět – virální Polymarket bot; směr další 5/15min svíčky BTC, 2020–26, 8 variant) – **ZAMÍTNUTO** ([PR #40](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/40)): úspěšnost 46,8–50,3 % ve všech variantách a obdobích, validace 2023–24 5m 47,7 % / 15m 49,3 % (na zisk po poplatku je třeba ≥ 52 %); jako perp obchod hrana ≤ 1,4 bp vs. náklad 11,5 bp; DSR 0,00. Indikátor předpovídá hůř než mince ⇒ zisk toho bota z něj nepochází (spíš arbitráž UP+DOWN < 1 $, kterou bez historických order booků Polymarketu ověřit nejde).

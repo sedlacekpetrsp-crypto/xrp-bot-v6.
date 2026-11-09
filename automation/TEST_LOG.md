@@ -82,3 +82,6 @@
 | 2026-11-08 23:04 | a53fc63 | autopilot checks #38 + Render (čtení) | live fd6065b = HEAD v8-fly-layer-test, obsahuje da2f665; 0 událostí od 19:00; error logy 0 (19:00–23:04); 6× HTTP 200, vše healthy; 239 passed; dup jen id 129 (BEST-OF 132); P/L −3 110,37; DB 246,3 MB = 22,9 % | actions/runs/42533326803 |
 | 2026-11-08 23:04 | a53fc63 | forward PAPER RSI(2) | bez nové svíčky (data do 2026-11-07), 0 obchodů | actions/runs/42533326879 |
 | 2026-11-08 23:13 | a16795d | A4 VORTEX+CHOP 5/15m BTC diagnostika | 8 buněk hit rate 46,8–50,3 %; validace 5m 47,7 % / 15m 49,3 % < 52 %; DSR 0,00 ⇒ **zamítnuto**; přepočet 0 neshod | pull/40 |
+| 2026-11-09 03:04 | c098312 | autopilot checks #39 + Render (čtení) | live fd6065b = HEAD v8-fly-layer-test, obsahuje da2f665; 0 událostí od 23:00; error logy 0 (23:00–03:04); 6× HTTP 200, vše healthy; testy OK; dup jen id 129 (BEST-OF 132); P/L −3 110,37; DB 247,5 MB = 23,0 % | actions/runs/42554308611 |
+| 2026-11-09 03:04 | c098312 | forward PAPER RSI(2) | data do 2026-11-08, 0 obchodů | actions/runs/42554308667 |
+| 2026-11-09 03:20 | 7e36634 | A2 BROAD TREND PIT top-50 perpů | zvolena W100_LO: validace ×2 +16,4 % (Sh 0,57) vs exposure-matched +14,8 % (0,51), BTC +283 %; závěr ×2 −21,4 %; DSR 0,038 ⇒ **zamítnuto**; přepočet 0 neshod | pull/41 |
