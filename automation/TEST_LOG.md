@@ -93,3 +93,6 @@
 | 2026-11-09 11:15 | 2b55187 | A5 SPOT-LISTING DRIFT (protokol 1b16021, 23 testů) | 55 platných událostí < 60 ⇒ **DATA NO-GO**, bez metrik výkonu | pull/43 |
 | 2026-11-09 15:05 | 58d4aa9 | autopilot checks #42 + Render (čtení) | live fd6065b = HEAD v8-fly-layer-test, obsahuje da2f665; 0 událostí od 11:00; error logy 0 (11:07–15:05); 6× HTTP 200, vše healthy; 239 passed; dup jen id 129 (BEST-OF 132); P/L −3 110,37; DB 240,3 MB = 22,4 % (pokles o 11 MB) | actions/runs/42640985017 |
 | 2026-11-09 15:05 | 58d4aa9 | forward PAPER RSI(2) | data do 2026-11-08, 0 obchodů, bez změny (žádný commit) | actions/runs/42640985014 |
+| 2026-11-09 19:05 | 4ef592c | autopilot checks #43 + Render (čtení) | live 6a23c58 (ruční deploy vlastníka 17:44 UTC, PR #44 Risk Guard) = HEAD v8-fly-layer-test, obsahuje da2f665; jediné události = tento deploy; error logy 0 (15:05–19:04); 6× HTTP 200, vše healthy; testy OK; Risk Guard state u LIQUIDITY/LH/NEWS bez KILL; dup jen id 129 (BEST-OF 132); P/L −3 110,37; DB 255,0 MB = 23,7 % | actions/runs/42679749062 |
+| 2026-11-09 19:05 | 4ef592c | forward PAPER RSI(2) | data do 2026-11-08, 0 obchodů, bez změny | actions/runs/42679748770 |
+| 2026-11-09 19:30 | ecd3965 | A6 krok 0 datový audit zpráv (protokol 625aa88, 4 testy) | **DATA NO-GO** pro historický backtest; NEWS bot 0 obchodů = očekávané | pull/45 |

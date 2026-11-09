@@ -3,6 +3,13 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## 2026-11-09 20:35 SEČ (běh #43)
+- Nasazeno: `6a23c58` (Risk Guard, váš ruční deploy 18:44 SEČ) – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, vše healthy, testy OK, 0 chyb v logu, 0 nových duplicit, P/L −3 110,37; Risk Guard běží, žádný KILL.
+- A6 ZPRÁVY O XRP, krok 0 (ověření dat, bez výpočtu výnosů) – **DATA NO-GO** pro test na historii ([PR #45](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/45)): v GDELT vzorku 2020–26 jen 5 titulků čistě o XRP se silným skóre; sitemapy CoinDesk/Cointelegraph/Decrypt nemají spolehlivý čas zveřejnění pro roky zpět ⇒ poctivý backtest „zpráva ⇒ pohyb ceny“ teď nejde.
+- Proč NEWS bot nemá obchody: není to chyba – pravidla vyžadují čerstvý, jednoznačně pozitivní titulek jen o XRP (skóre ≥ 4) a potvrzení trhu; takových titulků bylo za 2018–26 jen ~12, tedy pár ročně.
+- Dotaz ChatGPT (0250): vyplatí se titulky ode dneška sbírat dopředu? Forward RSI(2): data do 8. 11., 0 obchodů.
+- DB 23,7 %. Od vás nic nepotřebuji (audit nákladového modelu z ARCH-RISK-01 jen na váš případný pokyn).
+
 ## 2026-11-09 16:10 SEČ (běh #42)
 - Nasazeno: `fd6065b` – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, vše healthy, 239 testů OK, 0 událostí, 0 chyb v logu, 0 nových duplicit, P/L −3 110,37.
 - Lov hrany: dnes žádná nová hypotéza — denní limit 3/3 vyčerpán (A4, A2, A5) a oba další kandidáti (široký funding carry, týdenní reverze) neprošli kontrolou novosti (dialog 0246). Čekám na ChatGPT, zda má kandidáta s novým mechanismem / novým zdrojem dat; jinak navrhnu lov pozastavit.
