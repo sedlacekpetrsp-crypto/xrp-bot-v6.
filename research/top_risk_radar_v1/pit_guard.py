@@ -12,6 +12,8 @@ def parse_utc(value: str) -> datetime:
     """Parse an ISO-8601 timestamp; reject naive timestamps and malformed inputs."""
     if not isinstance(value, str):
         raise TypeError("timestamp must be an ISO-8601 string")
+    if "T" not in value and "t" not in value and " " not in value:
+        raise ValueError("timestamp must include a clock time, not a date alone")
     dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
     if dt.tzinfo is None or dt.utcoffset() is None:
         raise ValueError("naive timestamp is forbidden")
@@ -35,6 +37,6 @@ def label_is_mature(decision_time: str, cutoff: str, horizon_hours: int) -> bool
     """Prevent incomplete negative labels; never infer maturity from an early hit."""
     from datetime import timedelta
 
-    if horizon_hours <= 0:
-        raise ValueError("horizon_hours must be positive")
+    if type(horizon_hours) is not int or horizon_hours <= 0:
+        raise ValueError("horizon_hours must be a positive integer")
     return parse_utc(decision_time) + timedelta(hours=horizon_hours) <= parse_utc(cutoff)
