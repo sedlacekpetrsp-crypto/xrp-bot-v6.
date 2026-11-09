@@ -1,4 +1,5 @@
 import paper_stop_policy
+import risk_guard
 """Independent XRP NEWS_LONG PAPER account; no exchange order API.
 Shares read-only FLY market confirmation, never its paused cycle or accounting.
 """
@@ -84,6 +85,8 @@ def advance(state, quote, analysis, news, now, config):
         reason = 'Pauza po uzavřeném obchodu'
     elif s['day_pnl'] <= -s['day_start']*.0075 or s['balance'] <= 0:
         reason = 'Denní limit ztráty'
+    elif not risk_guard.gate(s, s['balance'], now, data_ok=valid)[0]:
+        reason = 'Risk Guard: ' + str(s['risk_guard'].get('last_decision'))
     elif not reason:
         if not set(keys) - set(s['used_headlines']):
             reason = 'Tuto zprávu už jsem obchodoval'
@@ -110,7 +113,7 @@ def advance(state, quote, analysis, news, now, config):
                 entry = price*(1+slip); stop = entry-distance
                 stop_fill = stop*(1-slip)
                 loss = entry-stop_fill+fee*(entry+stop_fill)
-                qty = min(s['balance']*RISK/loss, s['balance']*MAX_NOTIONAL/entry)
+                qty = min(s['balance']*RISK*s['risk_guard'].get('mult', 1.0)/loss, s['balance']*MAX_NOTIONAL/entry)
                 target = (RR*loss+entry*(1+fee))/((1-fee)*(1-slip))
                 s['position'] = dict(id=f'news:{analysis["candle_time"]}', symbol=SYMBOL,
                     setup='NEWS_LONG', side='LONG', entry_price=entry, qty=qty,

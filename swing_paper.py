@@ -1,4 +1,5 @@
 import paper_stop_policy
+import risk_guard
 """Independent forward PAPER portfolios. Public quotes only; no order API.
 Atomic PostgreSQL state/trade commits, row locking, persisted signal deduplication.
 """
@@ -159,7 +160,9 @@ def advance(state, family, quotes, frames, now):
         stopfill = stop*(1-side*SLIP)
         loss = -side*(stopfill-entry)+FEE*(entry+stopfill)
         balance = s['balance']; ps = s['positions'].values()
-        risk = min(balance*RISK,max(0,balance*POOL-sum(p['risk_usdt'] for p in ps)))
+        rg_ok, rg_mult = risk_guard.gate(s, s.get('equity', balance), now, open_positions=len(s['positions']), max_positions=2, peak=s.get('peak'))
+        if not rg_ok: continue
+        risk = min(balance*RISK*rg_mult,max(0,balance*POOL-sum(p['risk_usdt'] for p in ps)))
         exposure = sum(p['entry_price']*p['qty'] for p in ps)
         qty = min(risk/loss,balance*.35/entry,max(0,balance*.70-exposure)/entry)
         if qty <= 0: continue
@@ -177,6 +180,7 @@ def advance(state, family, quotes, frames, now):
     if complete:
         s['equity'] = equity; s['peak'] = max(s['peak'],equity)
         s['max_drawdown_pct'] = max(s['max_drawdown_pct'],100*(s['peak']-equity)/s['peak'])
+        s['risk_guard'] = risk_guard.update(s.get('risk_guard'), equity, s['peak'], now)
     s['equity_stale'] = not complete
     s['last_cycle_at'] = iso(now)
     return s,closed

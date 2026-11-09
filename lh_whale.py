@@ -13,6 +13,7 @@ import httpx
 from swing_paper import connect
 from lh_sweep import signal_from_closed_candles
 import paper_epoch
+import risk_guard
 
 BUILD = 'LH-WHALE-OKX-2026-10-23-4'
 _futures_retry_at = 0.0
@@ -62,10 +63,11 @@ def advance(state, quote, analysis, now):
                 side = 1 if analysis['signal']=='LONG' else -1
                 entry = quote['price']*(1+side*SLIP); stop = analysis['stop']
                 distance = side*(entry-stop)
-                if .001<=distance/entry<=.05 and s['balance']>0:
+                rg_ok, rg_mult = risk_guard.gate(s, s['balance'], now, data_ok=bool(valid), peak=s.get('peak'))
+                if rg_ok and .001<=distance/entry<=.05 and s['balance']>0:
                     stopfill = stop*(1-side*SLIP)
                     loss = -side*(stopfill-entry)+FEE*(entry+stopfill)
-                    qty = min(s['balance']*RISK/loss, s['balance']*.35/entry)
+                    qty = min(s['balance']*RISK*rg_mult/loss, s['balance']*.35/entry)
                     # Solve target for net profit = 2.5 * expected net stop loss.
                     exitfill = (RR*loss+side*entry+FEE*entry)/(side-FEE)
                     target = exitfill/(1-side*SLIP)
@@ -81,6 +83,7 @@ def advance(state, quote, analysis, now):
         s['equity'] = s['balance']+(net(s['position'],quote['price'])[0] if s['position'] else 0)
         s['peak'] = max(s['peak'],s['equity'])
         s['max_drawdown_pct'] = max(s['max_drawdown_pct'],100*(s['peak']-s['equity'])/s['peak'])
+        s['risk_guard'] = risk_guard.update(s.get('risk_guard'), s['equity'], s['peak'], now)
     s['last_cycle_at'] = iso(now)
     return s
 

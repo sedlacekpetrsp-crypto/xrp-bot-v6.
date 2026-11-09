@@ -38,7 +38,9 @@ def _num(x):
 def update(rg, equity, peak, now_ms):
     """Aktualizuje stav guardu (dict uložený ve stavu bota) podle aktuální equity."""
     rg = dict(rg or {})
-    equity, peak = _num(equity), max(_num(peak), _num(equity))
+    equity = _num(equity)
+    peak = max(_num(peak), equity, float(rg.get("peak") or 0.0))
+    rg["peak"] = peak
     day, week = _keys(now_ms)
     if rg.get("day") != day:
         rg["day"], rg["day_start"] = day, equity
@@ -71,6 +73,15 @@ def check_entry(rg, equity, open_positions=0, max_positions=1, data_ok=True):
         if dd < limit:
             return True, mult, "OK" if mult == 1.0 else f"DRAWDOWN_THROTTLE x{mult}"
     return False, 0.0, "DRAWDOWN_KILL"
+
+
+def gate(state, equity, now_ms, data_ok=True, open_positions=0, max_positions=1, peak=None):
+    """Pomocník pro boty: aktualizuje state['risk_guard'] a vrátí (povoleno, násobek)."""
+    rg = update(state.get("risk_guard"), equity, equity if peak is None else peak, now_ms)
+    ok, mult, why = check_entry(rg, equity, open_positions, max_positions, data_ok)
+    rg["last_decision"], rg["mult"] = why, mult
+    state["risk_guard"] = rg
+    return ok, mult
 
 
 def reset_kill(rg, approved_by, now_ms):

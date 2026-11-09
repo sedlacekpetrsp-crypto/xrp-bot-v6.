@@ -55,3 +55,17 @@ def test_data_and_position_guards():
 def test_rejects_non_finite():
     with pytest.raises(ValueError):
         g.update(None, float("nan"), 10000., DAY)
+
+
+def test_gate_tracks_own_peak_and_stores_decision():
+    s = {}
+    assert g.gate(s, 10000., DAY + H) == (True, 1.0)
+    ok, mult = g.gate(s, 9400., DAY + 26 * H)           # bez předaného vrcholu: pamatuje si 10 000
+    assert ok and mult == 0.5 and s["risk_guard"]["mult"] == 0.5
+    assert s["risk_guard"]["last_decision"].startswith("DRAWDOWN_THROTTLE")
+
+
+def test_end_of_cycle_update_sets_day_start_before_signal():
+    rg = g.update(None, 10000., 10000., DAY + H)        # začátek dne zachycen při běžném ticku
+    rg = g.update(rg, 9840., 10000., DAY + 5 * H)       # ztráta během dne, ještě bez signálu
+    assert g.check_entry(rg, 9840.)[2] == "DAILY_LOSS_LIMIT"

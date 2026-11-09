@@ -16,6 +16,7 @@ from statistics import mean
 import httpx
 from market_data import market
 from swing_paper import connect
+import risk_guard
 
 BUILD = 'elite-forward-paper-20261104-1'
 SERVICE = 'srv-dang770ae00c73em1sm0'
@@ -119,11 +120,12 @@ def advance(state, family, data, now):
                                price=fill,qty=p['qty'],pnl=pnl,reason=reason,entry=p))
             s['position']=None; exited=True
     # Entry only just after a NEW closed signal, using a contemporaneous quote.
-    if not s['position'] and not exited and new_signal and 0<=now-close_time<=90000 and decision[0]>0:
+    rg_ok, rg_mult = risk_guard.gate(s, s['cash'], now, peak=s.get('peak')) if not s['position'] else (False, 0.0)
+    if rg_ok and not s['position'] and not exited and new_signal and 0<=now-close_time<=90000 and decision[0]>0:
         entry=price*(1+ADVERSE); stop=entry-decision[0]
         if stop>0:
             loss=entry*(1+FEE)-stop*(1-ADVERSE)*(1-FEE)
-            qty=min(s['cash']*RISK/loss,s['cash']*ALLOCATION/(entry*(1+FEE)))
+            qty=min(s['cash']*RISK*rg_mult/loss,s['cash']*ALLOCATION/(entry*(1+FEE)))
             debit=qty*entry*(1+FEE); s['cash']-=debit
             s['costs']+=qty*(entry-price+entry*FEE)
             s['position']=dict(entered_at=now,qty=qty,entry=entry,stop=stop,debit=debit,
@@ -133,6 +135,7 @@ def advance(state, family, data, now):
     s['equity']=s['cash']+(s['position']['qty']*price*(1-ADVERSE)*(1-FEE) if s['position'] else 0)
     s['peak']=max(s['peak'],s['equity'])
     s['drawdown_pct']=max(s['drawdown_pct'],100*(s['peak']-s['equity'])/s['peak'])
+    s['risk_guard']=risk_guard.update(s.get('risk_guard'),s['equity'],s['peak'],now)
     return s,events
 
 
