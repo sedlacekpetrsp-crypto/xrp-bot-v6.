@@ -40,6 +40,11 @@ def pit_historical_prevalence(
         raise ValueError("unknown target")
     if type(horizon_days) is not int or horizon_days <= 0:
         raise ValueError("horizon_days must be a positive integer")
+    # Prevent silently applying the 14-day downside window to 30-day growth,
+    # or vice versa. Both labels have fixed pre-registered horizons.
+    required_horizon = {"growth": 30, "downside": 14}[target]
+    if horizon_days != required_horizon:
+        raise ValueError(f"{target} requires horizon_days={required_horizon}")
     cutoff = _utc(test_start)
     try:
         horizon = timedelta(days=horizon_days)
