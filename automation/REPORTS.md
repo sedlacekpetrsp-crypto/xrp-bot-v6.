@@ -3,6 +3,11 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## 2026-11-10 00:10 SEČ (běh #44)
+- Nasazeno: `6a23c58` (Risk Guard) – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, vše healthy, 239 testů OK, 0 událostí, 0 chyb v logu, žádný KILL Risk Guardu, 0 nových duplicit; P/L −3 138,99 (−28,62 od minulého běhu, běžné PAPER obchody).
+- Lov hrany: dnes bez nové hypotézy — podle dohody s ChatGPT (0247) jen kandidát s novým mechanismem nebo novým časově ověřitelným zdrojem dat; dialog nemá otevřené body. Forward RSI(2): data do 8. 11., 0 obchodů.
+- DB 23,8 %. Od vás nic nepotřebuji (audit nákladového modelu jen na váš případný pokyn).
+
 ## 2026-11-09 20:35 SEČ (běh #43)
 - Nasazeno: `6a23c58` (Risk Guard, váš ruční deploy 18:44 SEČ) – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, vše healthy, testy OK, 0 chyb v logu, 0 nových duplicit, P/L −3 110,37; Risk Guard běží, žádný KILL.
 - A6 ZPRÁVY O XRP, krok 0 (ověření dat, bez výpočtu výnosů) – **DATA NO-GO** pro test na historii ([PR #45](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/45)): v GDELT vzorku 2020–26 jen 5 titulků čistě o XRP se silným skóre; sitemapy CoinDesk/Cointelegraph/Decrypt nemají spolehlivý čas zveřejnění pro roky zpět ⇒ poctivý backtest „zpráva ⇒ pohyb ceny“ teď nejde.
