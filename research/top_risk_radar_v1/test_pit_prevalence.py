@@ -54,3 +54,19 @@ def test_missing_availability_is_not_imputed():
     assert pit_historical_prevalence([row], CUT, horizon_days=30, target="growth") == {
         "status": "insufficient_train", "n": 0, "rate": None
     }
+
+
+@pytest.mark.parametrize("target,wrong_horizon", [("growth", 14), ("downside", 30), ("growth", 1), ("downside", 365)])
+def test_cross_target_horizon_mismatch_is_rejected(target, wrong_horizon):
+    """Do not permit a valid-looking baseline with the wrong event window."""
+    row = PITObservation(CUT-H, CUT-timedelta(days=1), True, False)
+    with pytest.raises(ValueError, match="requires horizon_days"):
+        pit_historical_prevalence([row], CUT, horizon_days=wrong_horizon, target=target)
+
+
+@pytest.mark.parametrize("target,horizon", [("growth", 30), ("downside", 14)])
+def test_registered_horizon_still_accepts_mature_label(target, horizon):
+    row = PITObservation(CUT-H, CUT-timedelta(seconds=1), True, False)
+    result = pit_historical_prevalence([row], CUT, horizon_days=horizon, target=target)
+    assert result["status"] == "descriptive_pit_baseline"
+    assert result["n"] == 1
