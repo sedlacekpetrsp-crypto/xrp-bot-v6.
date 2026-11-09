@@ -1,0 +1,65 @@
+klines 0/913 7s
+klines 100/913 63s
+klines 200/913 96s
+klines 300/913 136s
+klines 400/913 163s
+klines 500/913 196s
+klines 600/913 230s
+klines 700/913 266s
+klines 800/913 308s
+klines 900/913 339s
+symbols ever in universe: 401
+W50_LO tuning done
+W50_LO validation done
+W50_LO final_test done
+W50_LO wf2021 done
+W50_LO wf2022 done
+W50_LO wf2023 done
+W50_LO wf2024 done
+W50_LS tuning done
+W50_LS validation done
+W50_LS final_test done
+W50_LS wf2021 done
+W50_LS wf2022 done
+W50_LS wf2023 done
+W50_LS wf2024 done
+W100_LO tuning done
+W100_LO validation done
+W100_LO final_test done
+W100_LO wf2021 done
+W100_LO wf2022 done
+W100_LO wf2023 done
+W100_LO wf2024 done
+W100_LS tuning done
+W100_LS validation done
+W100_LS final_test done
+W100_LS wf2021 done
+W100_LS wf2022 done
+W100_LS wf2023 done
+W100_LS wf2024 done
+A2_CHOSEN W100_LO
+A2 W50_LO tuning_x1 strat=57.5% sh=0.9916 dd=22.3 n=535 | EM=44.9% sh=0.8203 | EW=66.7% sh=0.7372
+A2 W50_LO validation_x1 strat=24.9% sh=0.7779 dd=22.4 n=545 | EM=22.0% sh=0.6729 | EW=59.8% sh=0.7391
+A2 W50_LO validation_x2 strat=22.5% sh=0.7195 dd=22.9 n=545 | EM=20.3% sh=0.6318 | EW=55.2% sh=0.7145
+A2 W50_LO final_test_x2 strat=-13.0% sh=-0.4546 dd=21.2 n=582 | EM=-22.7% sh=-0.7216 | EW=-75.0% sh=-0.6593
+A2 W50_LS tuning_x1 strat=27.0% sh=0.5603 dd=18.1 n=1062 | EM=69.5% sh=0.8405 | EW=66.7% sh=0.7372
+A2 W50_LS validation_x1 strat=0.1% sh=0.1056 dd=19.0 n=1045 | EM=52.2% sh=0.9064 | EW=59.8% sh=0.7391
+A2 W50_LS validation_x2 strat=-3.6% sh=0.0008 dd=20.1 n=1045 | EM=49.6% sh=0.8757 | EW=55.2% sh=0.7145
+A2 W50_LS final_test_x2 strat=-0.8% sh=0.0743 dd=29.2 n=1099 | EM=-38.8% sh=-0.6647 | EW=-75.0% sh=-0.6593
+A2 W100_LO tuning_x1 strat=63.5% sh=1.1055 dd=21.3 n=380 | EM=57.3% sh=1.0067 | EW=66.7% sh=0.7372
+A2 W100_LO validation_x1 strat=18.1% sh=0.6171 dd=19.5 n=407 | EM=16.1% sh=0.538 | EW=59.7% sh=0.7388
+A2 W100_LO validation_x2 strat=16.4% sh=0.5697 dd=19.8 n=407 | EM=14.8% sh=0.505 | EW=55.1% sh=0.7142
+A2 W100_LO final_test_x2 strat=-21.4% sh=-0.7296 dd=25.4 n=438 | EM=-32.3% sh=-1.0365 | EW=-75.4% sh=-0.6725
+A2 W100_LS tuning_x1 strat=35.6% sh=0.6721 dd=29.3 n=837 | EM=69.5% sh=0.8405 | EW=66.7% sh=0.7372
+A2 W100_LS validation_x1 strat=-12.2% sh=-0.2863 dd=24.9 n=786 | EM=52.2% sh=0.9062 | EW=59.7% sh=0.7388
+A2 W100_LS validation_x2 strat=-14.8% sh=-0.3759 dd=25.6 n=786 | EM=49.6% sh=0.8755 | EW=55.1% sh=0.7142
+A2 W100_LS final_test_x2 strat=-19.3% sh=-0.5002 dd=24.2 n=868 | EM=-39.5% sh=-0.6817 | EW=-75.4% sh=-0.6725
+A2_BTC tuning {'net_pnl': 8951.9061, 'return_pct': 89.5191, 'sharpe': 0.7441, 'max_dd_pct': 72.7136}
+A2_BTC validation {'net_pnl': 28264.4504, 'return_pct': 282.6445, 'sharpe': 1.8293, 'max_dd_pct': 26.2553}
+A2_BTC final_test {'net_pnl': -1803.5671, 'return_pct': -18.0357, 'sharpe': -0.0382, 'max_dd_pct': 52.9759}
+A2_BTC wf2021 {'net_pnl': 5751.5451, 'return_pct': 57.5155, 'sharpe': 0.9636, 'max_dd_pct': 53.2191}
+A2_BTC wf2022 {'net_pnl': -6533.314, 'return_pct': -65.3331, 'sharpe': -1.337, 'max_dd_pct': 66.9359}
+A2_BTC wf2023 {'net_pnl': 15474.5549, 'return_pct': 154.7455, 'sharpe': 2.3367, 'max_dd_pct': 20.0094}
+A2_BTC wf2024 {'net_pnl': 11150.4583, 'return_pct': 111.5046, 'sharpe': 1.6729, 'max_dd_pct': 26.2553}
+A2_CRITERIA {"K1": true, "K2": true, "K3": true, "K4": false, "K4_detail": {"track_a": false, "track_b": false}, "K5": false, "K6": true, "K7": true, "K7_detail": {"gross_price_pnl_x0": 8996.4927, "cost_x1": 214.6845}, "DSR": 0.038, "neighbours_val_x2": {"W100_LS": -1484.7234, "W50_LO": 2253.2655}, "walk_forward_x2": {"2021": 4242.7336, "2022": -1704.9229, "2023": 1345.1186, "2024": 524.196}, "verdict": "ZAMITNUTO"}
+A2_VERIFY groups=72 mismatches=0 []
