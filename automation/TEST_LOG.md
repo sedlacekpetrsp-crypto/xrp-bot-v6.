@@ -88,3 +88,6 @@
 | 2026-11-09 07:06 | f8a52a5 | autopilot checks #40 + Render (čtení) | live fd6065b = HEAD v8-fly-layer-test, obsahuje da2f665; 0 událostí od 03:00; error logy 0 (03:00–07:06); 6× HTTP 200, vše healthy; 239 passed; dup jen id 129 (BEST-OF 132); P/L −3 110,37; DB 249,7 MB = 23,3 % | actions/runs/42577142919 |
 | 2026-11-09 07:06 | f8a52a5 | forward PAPER RSI(2) | 0 obchodů | actions/runs/42577142915 |
 | 2026-11-09 08:27 | 1928ac2 | A3 krok 0 audit metrics (OI) | 1. běh 42577455591 pád parseru (nestandardní klíč) ⇒ dodatek 1; 2. běh: 77/79 aktiv GO, G2 min 60 (2026Q2), G3 27,3 vs 26,6 %; zpoždění neprokazatelné ⇒ **GO jen denní** ; verify MATCH | pull/42 |
+| 2026-11-09 11:07 | 0e746fe | autopilot checks #41 + Render (čtení) | live fd6065b = HEAD v8-fly-layer-test, obsahuje da2f665; 0 událostí od 07:00; error logy 0 (07:00–11:07); 6× HTTP 200, vše healthy; testy OK; dup jen id 129 (BEST-OF 132); P/L −3 110,37; DB 251,4 MB = 23,4 % | actions/runs/42606379931 |
+| 2026-11-09 11:07 | 0e746fe | forward PAPER RSI(2) | data do 2026-11-08, 0 obchodů | actions/runs/42606379879 |
+| 2026-11-09 11:15 | 2b55187 | A5 SPOT-LISTING DRIFT (protokol 1b16021, 23 testů) | 55 platných událostí < 60 ⇒ **DATA NO-GO**, bez metrik výkonu | pull/43 |

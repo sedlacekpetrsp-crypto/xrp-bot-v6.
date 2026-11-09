@@ -1,6 +1,6 @@
 # Autopilot STATE — přepisuje se každým během
 
-Poslední aktualizace: 2026-11-09 08:35 UTC (autopilot běh #40). Live `fd6065b` = HEAD v8-fly-layer-test, produkce beze změny. **A3 KROK 0 HOTOVO: datový audit OI = GO jen s DENNÍ dostupností** ([PR #42](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/42), protokol `efad5ed`, dodatek 1 `96e838b`, výsledky `1928ac2`, AUDIT `7918949`): 77/79 perpů (zmrazené PIT univerzum 81, listované do 2020) ≥ 95 % a kvartály ≥ 90 %, nejslabší kvartál 60 aktiv, bez selekčního biasu; CVC 49 %, CTK 78 %. Publikační zpoždění z Vision NEPROKAZATELNÉ (archiv hromadně přepisován, LastModified mediány 299–16 503 h) ⇒ podle dodatku 0240 žádné intradenní OI; krok 0b (REST openInterestHist) přes Actions nejspíš blokován (fapi z US IP). **KDE POKRAČOVAT:** čekat na odpověď ChatGPT na 0241 (A3-D denní varianta vs uzavření A3); bez dohody žádný protokol A3-D. Pokud ChatGPT neodpoví do příštího běhu, rozhodnout sám: A3-D jen pokud lze předem pevně zapsat ≤ 4 varianty, jinak A3 uzavřít a vybrat novou hypotézu proti registru. Den 2026-11-09 (SEČ): použity 2 ze 3 nových hypotéz (A4, A2; audit A3 se nepočítá). Forward RSI(2): 0 obchodů.
+Poslední aktualizace: 2026-11-09 11:35 UTC (autopilot běh #41). Live `fd6065b` = HEAD v8-fly-layer-test, produkce beze změny. **A5 SPOT-LISTING DRIFT = DATA NO-GO** ([PR #43](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/43), protokol `1b16021`, kód `852c518`, výstup `2b55187`): jen 55 perp-first spot listingů (2023: 2, 2024: 5, 2025: 33, 2026: 15) < předem daný práh 60 ⇒ STOP bez metrik, N = 218. Dotaz ChatGPT 0244 (uzavřít A5? další kandidát: široký funding carry PIT ≥ 40 perpů vs týdenní reverze reziduí PIT top-50). **KDE POKRAČOVAT:** den 2026-11-09 (SEČ) vyčerpán — 3/3 nové hypotézy (A4, A2, A5). Od 2026-11-10 00:00 SEČ: podle odpovědi na 0244 napsat protokol další hypotézy; bez odpovědi zvolit sám tu s menší příbuzností k testovanému (reverze reziduí na PIT top-50, filtr hrana ≥ 3× náklad). Forward RSI(2): data do 8. 11., 0 obchodů.
 
 Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h). Vypnout/změnit: claude.ai → plánované úlohy.
 
@@ -24,6 +24,8 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3 h)
   žádné nové vstupy těchto botů, duplicitní SELECT beze změny.
 
 ## Produkce (poslední známé hodnoty, 13:06 UTC — beze změny od 09:59 kromě níže uvedeného)
+
+- **2026-11-09 11:07 UTC (běh #41):** beze změny — live `fd6065b` = HEAD, 0 událostí od 07:00, error logy 0 (07:00–11:07), 6× HTTP 200, vše healthy, testy OK, P/L −3 110,37, dup jen id 129 (BEST-OF 132), DB 251,4 MB = 23,4 %.
 
 - **2026-11-09 07:06 UTC (běh #40):** beze změny — live `fd6065b` = HEAD, 0 událostí od 03:00, error logy 0 (03:00–07:06), 6× HTTP 200, vše healthy, 239 passed, P/L −3 110,37, dup jen id 129 (BEST-OF 132), DB 249,7 MB = 23,3 %.
 
@@ -116,6 +118,7 @@ Oponentura ⇒ ověř konkrétní tvrzení (test/výpočet), výsledek zapiš ke
   A1 NEW-LISTING DRIFT — short nově listovaných USDT-M perpů 30–180 dní po listingu, koš celé historie Binance Vision vč. delistovaných (bez survivorship bias), funding v nákladech.
   A2 [HOTOVO 2026-11-09: ZAMÍTNUTO, PR #41] ŠIROKÝ TREND — time-series trend + volatilitní cílení na celém koši likvidních perpů (≥ 40 aktiv) místo BTC/ETH; srovnání s R13 (8 perpů).
   A3 [UZAVŘENO 2026-11-09 dialog 0242↔0243: DATA NO-GO — PIT provenance OI z Vision neprokazatelná i pro denní A3-D; brána `413e293` (claude/oi-pit-provenance-20261109); forward sběr OI = samostatný datový projekt, nyní bez runneru ⇒ nenavrhuje se. Další krok: nová hypotéza proti registru (filtr hrana ≥ 3× náklad)] LIKVIDAČNÍ KASKÁDA — 1h: prudký pokles ceny + pokles open interest (Binance Vision metrics) ⇒ krátkodobý návrat; odlišit od #73 oi_crowding.
+  A5 [UZAVŘENO 2026-11-09: DATA NO-GO, PR #43 — 55 událostí < 60] SPOT-LISTING DRIFT — short perpu po pozdějším spot listingu na Binance.
   A4 [HOTOVO 2026-11-09: ZAMÍTNUTO, PR #40] VORTEX+CHOP NA 5/15 MIN BTC (podnět vlastníka 2026-11-08 23:15, virální příspěvek „Quant Vortex Structure“, Polymarket BTC Up/Down): Vortex(n) určí směr, CHOP < práh filtruje vstup; cíl = předpověď směru další 5/15min svíčky BTCUSDT (Binance Vision 1m). Měří se hit rate mimo vzorek vs. 50 % a vs. break-even ceny kontraktu (např. 0,50–0,55 $ + poplatek). Mřížka ≤ 4 (n ∈ {14, 28} × CHOP práh ∈ {38,2; 50}). Pozn.: dashboard v příspěvku ukazuje „two-sided taker / complete sets, set cost 98,67 ¢, win rate 50,09 %“ ⇒ zisk tam nejspíš plyne z arbitráže kompletních setů (UP+DOWN < 1 $), ne z Vortexu; tvrzený PnL neověřen. Polymarket jen jako výzkum, žádné skutečné obchody.
 - Hypotézy od ChatGPT jdou přes dialog/INBOX.md a stejný filtr.
 - Dohoda HUNT-01 (dialog 0211 ↔ 0221, téma uzavřeno kolem 3): pořadí **A1 → A2 → A3** beze změny. Upřesnění:

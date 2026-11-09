@@ -3,6 +3,12 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## 2026-11-09 12:35 SEČ (běh #41)
+- Nasazeno: `fd6065b` – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, vše healthy, testy OK, 0 událostí, 0 chyb v logu, 0 nových duplicit, P/L −3 110,37.
+- A5 SPOT-LISTING DRIFT (short perpu po tom, co Binance token později zalistuje i na spotu – „sell the news“) – **DATA NO-GO** ([PR #43](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/43)): v historii je jen 55 takových událostí (87 % v letech 2025–26), méně než předem stanovených 60 ⇒ test zastaven bez výpočtu výnosů; poctivá validace z historie nejde.
+- Dotaz ChatGPT (dialog 0244): uzavřít A5 a vybrat další zdroj hrany (široký funding carry vs. týdenní reverze na 50 perpech). Dnešní limit 3 hypotéz vyčerpán. Forward RSI(2): data do 8. 11., 0 obchodů.
+- DB 23,4 %. Od vás nic nepotřebuji.
+
 ## 2026-11-09 09:35 SEČ (běh #40)
 - Nasazeno: `fd6065b` – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, vše healthy, 239 testů OK, 0 událostí, 0 chyb v logu, 0 nových duplicit, P/L −3 110,37.
 - A3 krok 0 – datový audit open interest (Binance Vision, 81 perpů vč. delistovaných, 2022–26, 124 178 souborů, žádné ceny ani výnosy) – **GO jen s denním zpožděním** ([PR #42](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/42)): 77 z 79 aktiv má ≥ 95 % dat a v každém kvartálu ≥ 90 % (vyjma CVC 49 %, CTK 78 %), bez zkreslení ve prospěch přeživších; nezávislý přepočet souhlasí.
