@@ -49,7 +49,7 @@ def historical_prevalence(
         label = getattr(row, target)
         if label is not None and type(label) is not bool:
             raise TypeError("event label must be bool or None")
-        if decision < cutoff and decision + horizon <= cutoff and label is not None:
+        if decision < cutoff and cutoff - decision >= horizon and label is not None:
             eligible.append(label)
     if not eligible:
         return {"status": "insufficient_train", "n": 0, "rate": None}
