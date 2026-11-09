@@ -1,0 +1,105 @@
+[
+ {
+  "domain": "cointelegraph.com",
+  "robots_status": 200,
+  "roots": [
+   "https://cointelegraph.com/sitemap.xml",
+   "https://cointelegraph.com/events/sitemap_index.xml"
+  ],
+  "sitemaps_read": 178,
+  "queue_left": 0,
+  "errors": [],
+  "n_errors": 0,
+  "n_urls": 80888,
+  "n_xrp": 2679,
+  "precision": {
+   "lastmod_minute": 2679
+  },
+  "with_pub": 18,
+  "with_lastmod": 80857
+ },
+ {
+  "domain": "coindesk.com",
+  "robots_status": 200,
+  "roots": [
+   "https://www.coindesk.com/sitemap-index.xml",
+   "https://www.coindesk.com/es/sitemap-index.xml",
+   "https://www.coindesk.com/uk/sitemap-index.xml",
+   "https://www.coindesk.com/ru/sitemap-index.xml",
+   "https://www.coindesk.com/fil/sitemap-index.xml",
+   "https://www.coindesk.com/it/sitemap-index.xml",
+   "https://www.coindesk.com/fr/sitemap-index.xml",
+   "https://www.coindesk.com/pt-br/sitemap-index.xml",
+   "https://www.coindesk.com/de/sitemap-index.xml",
+   "https://www.coindesk.com/nl/sitemap-index.xml",
+   "https://www.coindesk.com/ko/sitemap-index.xml",
+   "https://www.coindesk.com/zh/sitemap-index.xml",
+   "https://www.coindesk.com/tr/sitemap-index.xml",
+   "https://www.coindesk.com/id/sitemap-index.xml",
+   "https://www.coindesk.com/ja/sitemap-index.xml",
+   "https://www.coindesk.com/arc/outboundfeeds/video-sitemap",
+   "https://www.coindesk.com/arc/outboundfeeds/news-sitemap-index",
+   "https://www.coindesk.com/arc/outboundfeeds/news-sitemap-index-es",
+   "https://www.coindesk.com/arc/outboundfeeds/news-sitemap-index-uk",
+   "https://www.coindesk.com/arc/outboundfeeds/news-sitemap-index-ru",
+   "https://www.coindesk.com/arc/outboundfeeds/news-sitemap-index-fil",
+   "https://www.coindesk.com/arc/outboundfeeds/news-sitemap-index-it",
+   "https://www.coindesk.com/arc/outboundfeeds/news-sitemap-index-fr",
+   "https://www.coindesk.com/arc/outboundfeeds/news-sitemap-index-pt-br",
+   "https://www.coindesk.com/arc/outboundfeeds/news-sitemap-index-de",
+   "https://www.coindesk.com/arc/outboundfeeds/news-sitemap-index-nl",
+   "https://www.coindesk.com/arc/outboundfeeds/news-sitemap-index-ko",
+   "https://www.coindesk.com/arc/outboundfeeds/news-sitemap-index-zh",
+   "https://www.coindesk.com/arc/outboundfeeds/news-sitemap-index-tr",
+   "https://www.coindesk.com/arc/outboundfeeds/news-sitemap-index-id",
+   "https://www.coindesk.com/arc/outboundfeeds/news-sitemap-index-ja"
+  ],
+  "sitemaps_read": 31,
+  "queue_left": 0,
+  "errors": [
+   "-1 https://www.coindesk.com/sitemap-index.xml",
+   "-1 https://www.coindesk.com/es/sitemap-index.xml",
+   "-1 https://www.coindesk.com/uk/sitemap-index.xml",
+   "-1 https://www.coindesk.com/ru/sitemap-index.xml",
+   "-1 https://www.coindesk.com/fil/sitemap-index.xml",
+   "-1 https://www.coindesk.com/it/sitemap-index.xml",
+   "-1 https://www.coindesk.com/fr/sitemap-index.xml",
+   "-1 https://www.coindesk.com/pt-br/sitemap-index.xml",
+   "-1 https://www.coindesk.com/de/sitemap-index.xml",
+   "-1 https://www.coindesk.com/nl/sitemap-index.xml",
+   "-1 https://www.coindesk.com/ko/sitemap-index.xml",
+   "-1 https://www.coindesk.com/zh/sitemap-index.xml",
+   "-1 https://www.coindesk.com/tr/sitemap-index.xml",
+   "-1 https://www.coindesk.com/id/sitemap-index.xml",
+   "-1 https://www.coindesk.com/ja/sitemap-index.xml"
+  ],
+  "n_errors": 15,
+  "n_urls": 13485,
+  "n_xrp": 152,
+  "precision": {
+   "minute": 152
+  },
+  "with_pub": 13485,
+  "with_lastmod": 375
+ },
+ {
+  "domain": "decrypt.co",
+  "robots_status": 200,
+  "roots": [
+   "https://decrypt.co/sitemap_index.xml",
+   "https://decrypt.co/es/sitemap_index.xml",
+   "https://decrypt.co/fr/sitemap_index.xml"
+  ],
+  "sitemaps_read": 209,
+  "queue_left": 0,
+  "errors": [],
+  "n_errors": 0,
+  "n_urls": 116374,
+  "n_xrp": 2408,
+  "precision": {
+   "lastmod_minute": 2408
+  },
+  "with_pub": 0,
+  "with_lastmod": 116359
+ }
+]
