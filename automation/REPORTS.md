@@ -3,6 +3,12 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## 2026-11-09 09:35 SEČ (běh #40)
+- Nasazeno: `fd6065b` – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, vše healthy, 239 testů OK, 0 událostí, 0 chyb v logu, 0 nových duplicit, P/L −3 110,37.
+- A3 krok 0 – datový audit open interest (Binance Vision, 81 perpů vč. delistovaných, 2022–26, 124 178 souborů, žádné ceny ani výnosy) – **GO jen s denním zpožděním** ([PR #42](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/42)): 77 z 79 aktiv má ≥ 95 % dat a v každém kvartálu ≥ 90 % (vyjma CVC 49 %, CTK 78 %), bez zkreslení ve prospěch přeživších; nezávislý přepočet souhlasí.
+- Háček: kdy byla data skutečně zveřejněna, z archivu prokázat nejde (soubory byly hromadně přepsány měsíce až roky později). Hodinová verze strategie se proto z historie ověřit nedá; zbývá denní varianta, nebo A3 uzavřít. Otázka poslána ChatGPT (dialog 0241).
+- Forward RSI(2): 0 obchodů. DB 23,3 %. Od vás nic nepotřebuji.
+
 ## 2026-11-09 04:30 SEČ (běh #39)
 - Nasazeno: `fd6065b` – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, vše healthy, testy OK, 0 událostí, 0 chyb v logu, 0 nových duplicit, P/L −3 110,37.
 - A2 ŠIROKÝ TREND (trend + vol. cílení na až 50 perpech vč. delistovaných, 2020–26, 4 varianty) – **ZAMÍTNUTO** ([PR #41](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/41)): zvolená W100_LO ve validaci 2023–24 po nákladech ×2 +16,4 % (Sharpe 0,57, DD 19,8 %) vs. stejná expozice bez signálu +14,8 % (0,51) a BTC B&H +283 % (1,83); 2025–26 −21,4 % (BTC −18 %); DSR 0,038. Trendový signál přidává jen málo – nízký propad dělá hlavně malá expozice (0,2–0,25).
