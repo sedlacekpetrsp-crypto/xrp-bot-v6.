@@ -9,6 +9,11 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 
 | Zpráva ChatGPT | Téma | Stav |
 |---|---|---|
+| 0002–0120 | historické zprávy před zavedením evidence | zpracovány v odpovědích 0006–0119 (kontrola 2026-11-09: témata uzavřena) |
+| 0121 | RENDER-COST-01 náklad 24/7 PAPER | ODPOVĚZENO (0233; doplněno do evidence 2026-11-09) |
+| 0122 | ORDERFLOW-01 Bookmap/CVD/absorpce | ODPOVĚZENO (0234; 0 nových hypotéz, duplicity #32/#68/#74/#110) |
+| 0123 | SOL-LAUNCH-01 AI boti Solana | ODPOVĚZENO (0235; STOP, NO-GO) |
+| 0124 | AI-GROK-DESK-01 bezpečnostní audit | ČEKÁ (doplněno 2026-11-09) |
 | 0125 | USAGE-AUDIT-01 | ODPOVĚZENO (0208; téma uzavřeno) |
 | 0126 | VERIFICATION-SKILL-01 ověřovací vrstva | ODPOVĚZENO (0209) + PROVEDENO oprava CI `28caf8a` (claude/ci-pipefail-20261108) |
 | 0127 | OSS-TRADING-TOOLS-01 audit 10 projektů | ODPOVĚZENO (0210; téma uzavřeno) |
@@ -27,6 +32,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0223 | TOP-RISK-RADAR-01 kolo 3 + uzavření 0218–0222; testy `9199cb9` | ODPOVĚZENO (0224; ověřeno 111 passed, CI 42502597926 success; téma uzavřeno, label → vlastník) |
 | 0226 | HUNT-02 kolo 2: A1 zamítnutí, podmínky A2, radar testy `db88755` | ODPOVĚZENO (0227, kolo 3, téma uzavřeno) + PROVEDENO STATE `28d4a22`, oprava CI `fde6f11` (run 42526265903 success) |
 | 0229 | VORTEX-01 kolo 2: A4 jen diagnostika, complete sets samostatně, DATA BLOCKED | ODPOVĚZENO (0230, kolo 3) + PROVEDENO A4 (draft PR #40, run 42533686116, ZAMÍTNUTO) |
+| 0232 | HUNT-03 kolo 2: A2 audit, datová brána A3 krok 0 | ČEKÁ |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
@@ -37,4 +43,5 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0225 | HUNT-02: A1 zamítnuto (PR #39) — stop/zajištění post-hoc?, A2 protokol, další listingová hrana | ZODPOVĚZENO v 0226; téma uzavřeno v 0227 |
 | 0228 | VORTEX-01 Polymarket Vortex+CHOP / complete sets + 3 otázky | ZODPOVĚZENO v 0229 |
 | 0230 | VORTEX-01: A4 zamítnuto (PR #40) + otázka k 1-bar reversal (post-hoc) | čeká na odpověď ChatGPT |
-| 0231 | HUNT-03: A2 zamítnuto (PR #41), uzavřít rodinu TS trend?, A3 krok 0 brána GO + 3 otázky | čeká na odpověď ChatGPT |
+| 0231 | HUNT-03: A2 zamítnuto (PR #41), uzavřít rodinu TS trend?, A3 krok 0 brána GO + 3 otázky | ZODPOVĚZENO v 0232 (vyhodnocení čeká) |
+| 0233 | RENDER-COST-01: forward PAPER výhradně přes Actions runner? | čeká na odpověď ChatGPT |
