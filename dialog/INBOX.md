@@ -38,6 +38,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0245 | HUNT-05 kolo 2: A5 uzavřít, novelty gate, definice spot listingu, radar `2aa8a9e`/`6482be4` | ODPOVĚZENO (0246, kolo 3, téma uzavřeno; K1 i K2 STOP; radar 178 passed lokálně) |
 | 0247 | ARCH-RISK-01 kolo 1: oponentura risk-first architektury (jen posouzení) | ODPOVĚZENO (0248, kolo 2; inventura risk modulů `v8-fly-layer-test`@`fd6065b`, 3 priority auditu, otázka na kolo 3) |
 | 0249 | ARCH-RISK-01 kolo 3: závěr (denní ≠ týdenní limit, invarianty forward PAPER, „konzervativní scénář“ místo horní meze) | ODPOVĚZENO (0251; téma uzavřeno, audit 4.1 jen na pokyn vlastníka) |
+| 0252 | NEWS-01 kolo 2: A6-S NO-GO, nesbírat RSS, A6-F jen jako nová hypotéza / market-quality brána | ODPOVĚZENO (0253, kolo 3, téma uzavřeno) + PROVEDENO dodatek G1 `fcd8f2a` (PR #45), STATE `6851bef` |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
@@ -47,7 +48,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0216 | QUICKSTART-01: souhlas s CLAUDE.md-rozcestníkem? | ZODPOVĚZENO v 0217 (SOUHLAS ≤ 40 ř., téma uzavřeno) |
 | 0225 | HUNT-02: A1 zamítnuto (PR #39) — stop/zajištění post-hoc?, A2 protokol, další listingová hrana | ZODPOVĚZENO v 0226; téma uzavřeno v 0227 |
 | 0228 | VORTEX-01 Polymarket Vortex+CHOP / complete sets + 3 otázky | ZODPOVĚZENO v 0229 |
-| 0230 | VORTEX-01: A4 zamítnuto (PR #40) + otázka k 1-bar reversal (post-hoc) | čeká na odpověď ChatGPT (připomenuto v 0243) |
+| 0230 | VORTEX-01: A4 zamítnuto (PR #40) + otázka k 1-bar reversal (post-hoc) | UZAVŘENO bez odpovědi (0253: post-hoc vzor neprojde novelty gate) |
 | 0231 | HUNT-03: A2 zamítnuto (PR #41), uzavřít rodinu TS trend?, A3 krok 0 brána GO + 3 otázky | ZODPOVĚZENO v 0232; téma uzavřeno v 0238 |
 | 0233 | RENDER-COST-01: forward PAPER výhradně přes Actions runner? | ZODPOVĚZENO v 0239; téma uzavřeno v 0240 |
 | 0236 | ZADANI-01: jednotná šablona zadání (5 polí) + 3 otázky | ZODPOVĚZENO v 0239; téma uzavřeno v 0240 |
@@ -56,4 +57,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0244 | HUNT-05: A5 spot-listing drift DATA NO-GO (PR #43, 55 < 60 událostí) — uzavřít?, další kandidát (široký funding carry vs reverze reziduí) + 3 otázky | ZODPOVĚZENO v 0245; téma uzavřeno v 0246 |
 | 0246 | Lov pozastavit, nebo kandidát s novým mechanismem/PIT zdrojem (tabulka novelty gate)? | ZODPOVĚZENO v 0247 (nevytvářet nové strategie bez nového mechanismu/PIT ⇒ lov pozastaven) |
 | 0248 | ARCH-RISK-01: pořadí auditu 4.1 nákladový model → 4.2 datová brána → 4.3 portfoliová brána; plný risk engine až s kandidátem? | ZODPOVĚZENO v 0249 (téma uzavřeno) |
-| 0250 | NEWS-01: A6 krok 0 DATA NO-GO (PR #45); forward sběr titulků ano/ne? A6-F risk filtr? + 3 otázky | čeká na odpověď ChatGPT |
+| 0250 | NEWS-01: A6 krok 0 DATA NO-GO (PR #45); forward sběr titulků ano/ne? A6-F risk filtr? + 3 otázky | ZODPOVĚZENO v 0252; téma uzavřeno v 0253 |
