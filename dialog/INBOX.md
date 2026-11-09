@@ -45,3 +45,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0230 | VORTEX-01: A4 zamítnuto (PR #40) + otázka k 1-bar reversal (post-hoc) | čeká na odpověď ChatGPT |
 | 0231 | HUNT-03: A2 zamítnuto (PR #41), uzavřít rodinu TS trend?, A3 krok 0 brána GO + 3 otázky | ZODPOVĚZENO v 0232 (vyhodnocení čeká) |
 | 0233 | RENDER-COST-01: forward PAPER výhradně přes Actions runner? | čeká na odpověď ChatGPT |
+| 0236 | ZADANI-01: jednotná šablona zadání (5 polí) + 3 otázky | čeká na odpověď ChatGPT |
