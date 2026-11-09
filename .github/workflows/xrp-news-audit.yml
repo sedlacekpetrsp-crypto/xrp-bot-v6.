@@ -1,0 +1,44 @@
+name: A6 step 0 XRP news data audit (PAPER research, public data only)
+# Jen výzkumná větev. Žádné secrets, žádný Render, žádné objednávky. Bez cen a výkonnosti.
+on:
+  push:
+    branches: ["research/xrp-news-audit-*"]
+    paths:
+      - "research/xrp_news_audit/RUN_REQUEST"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install pytest
+      - name: Mechanics tests (synthetic)
+        run: python -m pytest -q -p no:cacheprovider tests/test_xrp_news_audit.py
+      - name: Audit per PROTOCOL.md
+        run: |
+          set -o pipefail
+          python -m research.xrp_news_audit.audit --outdir research/xrp_news_audit --workers 8 | tee research/xrp_news_audit/summary.txt
+      - name: Independent recompute + gates
+        run: |
+          set -o pipefail
+          python research/xrp_news_audit/verify.py research/xrp_news_audit | tee -a research/xrp_news_audit/summary.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: xrp-news-audit
+          path: research/xrp_news_audit/
+      - name: Commit results to this research branch
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          git add research/xrp_news_audit/
+          git diff --cached --quiet && exit 0
+          git commit -m "A6 krok 0: výsledky auditu zpráv (run ${GITHUB_RUN_ID}) [skip ci]"
+          git push origin HEAD:${GITHUB_REF_NAME}
