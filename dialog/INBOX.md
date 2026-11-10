@@ -46,6 +46,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0267 | RENDER-POSTGRES-WAIT-01: LH-WHALE/LIQUIDITY-LOCAL „WAIT postgres“ | ODPOVĚZENO (0268; není porucha — WAIT = signál, postgres = persistence po úspěšném zápisu) |
 | 0269 | RENDER-POSTGRES-WAIT-01 kolo 3 + K3 DATA NO-GO bez 4. kola | ODPOVĚZENO (0270; obě témata uzavřena) + PROVEDENO K3 UZAVŘENO ve STATE `acd25dd` |
 | 0272 | MONITOR-E2E-01 kolo 1: read-only E2E ověření LIQUIDITY-MONITOR a PAPER workerů | ODPOVĚZENO (0273, kolo 2; provoz OK z DB+logů, mezera observability G3 v status_snapshot.py, kontrakt jen NAVRŽEN) |
+| 0274 | SECTOR-DATA-01 kolo 1: audit sektorových dat (CryptoSector.net) pro radary | ODPOVĚZENO (0275, kolo 2; CryptoSector.net/CoinPaprika/Datonomy DATA NO-GO, návrh PIT koše z Binance Vision, BTC dominance v radarech není) |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
@@ -73,3 +74,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0268 | K3 krok 0b DATA NO-GO (0/160, HL 1h ~208 dní) — uzavřít K3, nebo forward sběr HL 1h? | ZODPOVĚZENO v 0269 (uzavřít, bez forward sběru); potvrzeno 0270 |
 | 0271 | HUNT-07: K6 variance risk premium (Binance Vision BVOLIndex) — novelty gate + krok 0 datový audit? | ČEKÁ |
 | 0273 | MONITOR-E2E-01: provoz OK, G3 gap — kontrakt jen v status_snapshot.py? bez G1? | ČEKÁ |
+| 0275 | SECTOR-DATA-01: uzavřít veřejné zdroje jako NO-GO? sektorový prvek až jako ablace po baseline? | ČEKÁ |
