@@ -3,6 +3,13 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## 2026-11-10 16:50 SEČ (běh #47)
+- Nasazeno: `6a23c58` (Risk Guard) – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, všech 14 účtů healthy, testy OK, 0 událostí, 0 nových duplicit; v logu jen 1 externí chyba (Binance data API 500, 15:00 SEČ, jednorázová); P/L −3 166,01 (beze změny).
+- K3 mezi-burzovní funding, krok 0b (hodinová data, jen časová razítka): **DATA NO-GO** ([PR #46](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/46)) — Hyperliquid zdarma vydá jen posledních ~208 dní hodinových cen (potřeba ≥ 548) ⇒ 0/160 symbolů; Binance strana 100 %. Poctivý výkonnostní test K3 tedy nejde, bez interpolace se nespouští. Nezávislý přepočet souhlasí.
+- ChatGPT hlásil „WAIT postgres“ u LH-WHALE/LIQUIDITY-LOCAL jako problém — ověřeno v kódu a logu: není to porucha (WAIT = bot nemá signál, „postgres“ = úspěšně uložený stav). Odpověď 0268. Forward RSI(2): data do 9. 11., 0 obchodů.
+- DB 24,5 %.
+- **Od vás nic nepotřebuji** — dotaz na schválení výkonnostního běhu K3 z běhu #46 ruším (data nestačí).
+
 ## 2026-11-10 12:25 SEČ (běh #46)
 - Nasazeno: `6a23c58` (Risk Guard) – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, vše healthy, testy OK, 0 událostí, 0 chyb v logu, 0 nových duplicit; P/L −3 166,01 (−27,02, běžné PAPER obchody LIQUIDITY).
 - K3 mezi-burzovní funding, krok 0 (jen ověření dat, bez výnosů): **GO** ([PR #46](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/46)) — 160 perpů má ≥ 18 měsíců souvislé historie fundingu na Binance i Hyperliquid (medián 2,8 roku); Bybit z GitHubu blokován, OKX má jen 3 měsíce. Nezávislý přepočet souhlasí.

@@ -104,3 +104,5 @@
 | 2026-11-10 11:05 | 40baf80 | autopilot checks #46 + Render (čtení) | live 6a23c58 = HEAD v8-fly-layer-test, obsahuje da2f665; 0 událostí od 03:00; error logy 0 (03:00–11:05); 6× HTTP 200, vše healthy; testy OK; dup jen id 129 (BEST-OF 132); P/L −3 166,01 (−27,02, LIQUIDITY 6 obchodů v epoše, běžné PAPER); DB 249,5 MB = 24,4 % | actions/runs/42804505522 |
 | 2026-11-10 11:05 | 40baf80 | forward PAPER RSI(2) | data do 2026-11-09, 0 obchodů, beze změny | actions/runs/42804505559 |
 | 2026-11-10 11:15 | 5b56c9d | K3 krok 0 nezávislá kontrola (z CSV) | brána přepočtena 816/816 shoda, 160 symbolů Binance×HL ⇒ GO pro návrh; Bybit BLOCKED, OKX ~92 d; návrh výkonnostního protokolu (neschválen) | PR #46 |
+| 2026-11-10 15:05 | c1232b0 | autopilot checks + forward PAPER RSI(2) | produkce OK (live 6a23c58), testy OK; forward data do 2026-11-09, 0 obchodů | actions/runs/42840740018, 42840739977 |
+| 2026-11-10 15:40 | e27a02f | K3 krok 0b hodinová brána (jen razítka) | 0/160 ⇒ DATA NO-GO; HL 1h max 208,5 d; přepočet 160/160 shoda | actions/runs/42841025758, PR #46 |
