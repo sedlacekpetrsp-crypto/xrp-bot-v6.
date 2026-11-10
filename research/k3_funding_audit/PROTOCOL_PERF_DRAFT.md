@@ -55,3 +55,28 @@ SHA-256 všech archivů, běh přes GitHub Actions.
 
 ## Rizika mimo model (reportovat, nemodelovat)
 Default/zmrazení burzy (FTX 2022), depeg USDT/USDC, změna pravidel fundingu (strop HL), geo/regulatorní dostupnost.
+
+## DODATEK 1 (2026-11-10 13:30 UTC, po oponentuře ChatGPT 0262; stále PŘED daty o hodnotách fundingu/cen)
+Mění návrh výše; při rozporu platí tento dodatek. Stále NESCHVÁLENO k výkonu.
+1. **Krok 0b = hodinová brána (nahrazuje denní).** Pro primární simulaci se vyžaduje PIT hodinová cesta mark/index
+   (nebo last) na OBOU burzách + hodinová vypořádání fundingu HL a skutečná vypořádání Binance, synchronizace časových
+   razítek ±1 min. Měří se jen časová razítka a pokrytí, ne hodnoty. GO: ≥ 20 symbolů s ≥ 548 dny hodinového pokrytí
+   ≥ 95 % na obou burzách. Jinak **DATA NO-GO pro výkon** (žádná interpolace z denních close); denní konzervativní
+   odhad smí být jen diagnostika bez kandidátního verdiktu. Známé riziko: HL `candleSnapshot` vrací jen posledních
+   ~5 000 svíček (1h ≈ 208 dní) a placené archivy (requester-pays S3) jsou zakázané ⇒ očekávaný výsledek NO-GO, ověří se.
+2. **Ledger po nohách v měně kolaterálu** (Binance USDT, HL USDC), převod přes USDC/USDT kurz (Binance Vision spot
+   `USDCUSDT` 1h), oddělené margin účty, haircut kolaterálu, poplatky a limity výběru, scénář „převod zmrazen“
+   (žádný rebalancing po celou dobu stresu).
+3. **Univerzum zmrazené as-of** začátku každého období; delisting/survivorship: audit kroku 0 bral HL `meta` k dnešku ⇒
+   před výkonem doplnit historicky delistované symboly obou burz, jinak ve verdiktu uvést survivorship bias.
+   Stratifikace: celý vzorek vs symboly s ≥ 730 dny.
+4. **Stres USDC depeg 2023-03** (10.–13. 3. 2023) jako explicitní scénář; jeden incident nekvantifikuje budoucí tail.
+5. **Basis/MTM obou noh hodinově, margin/ADL/likvidační cesta každé nohy**, přesné intervaly vypořádání při změnách.
+6. **Benchmark úročení:** kromě 0/4 % i dosažitelné úročení skutečně vázaného kolaterálu (ne risk-free).
+7. **Exekuce:** 4 plnění se spreadem a depth/slippage; citlivost ×1/×2/×3; filtr hrana ≥ 3× náklad (STATE 13:38).
+8. **Purge/embargo** u překrývajících se pozic, blokový bootstrap intervalů spolehlivosti, DSR N ≥ 222 (vyšší, pokud
+   evidence carry rodiny vyžaduje).
+9. **Interpretace:** i při splnění K1–K9 je výsledek nanejvýš „kandidát s nepojištěným rizikem protistrany/depegu“,
+   nikdy prokázaná risk-adjusted hrana.
+10. Zmrazení celého protokolu commitem PŘED jakýmkoli pohledem na výkonnostní výsledky; výkon jen po řádku vlastníka
+    „SCHVÁLENO: výkonnostní běh K3“ v `dialog/OWNER_DECISIONS.md`.
