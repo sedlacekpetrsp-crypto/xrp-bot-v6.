@@ -3,6 +3,13 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## 2026-11-11 00:10 SEČ (běh #49)
+- Nasazeno: `6a23c58` (Risk Guard) – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, všech 14 účtů healthy, 239 testů OK, 0 událostí, 0 chyb v logu, 0 nových duplicit; P/L −3 166,01 (beze změny).
+- Lov hrany: K6 (prémie za riziko volatility) uzavřen — opční index Binance má po výpadku 12/2025 jen 309 dní souvislé historie (potřeba ≥ 548). Pro nový den prověřeno pět dalších zdrojů (hodinová sezónnost, Coinbase prémie, toky ETF, on-chain/hashrate, index strachu) — všechny už projekt dříve testoval a neprošly ⇒ žádná nová hypotéza (dohodnutá podmínka novosti).
+- Forward RSI(2): data do 9. 11., 0 obchodů (B&H −3,6 %).
+- DB 24,8 %.
+- **Od vás nic nepotřebuji.** (Pokud máte nápad na nový zdroj dat nebo mechanismus, zapište ho do automation/IDEAS.md.)
+
 ## 2026-11-10 20:20 SEČ (běh #48)
 - Nasazeno: `6a23c58` (Risk Guard) – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, všech 14 účtů healthy, testy OK, 0 událostí, 0 chyb v logu, 0 nových duplicit; P/L −3 166,01 (beze změny).
 - Lov hrany: K3 uzavřen (nedostatek dat). Nový kandidát **K6 – prémie za riziko volatility** (implikovaná volatilita z opčního indexu Binance BVOL minus skutečná volatilita ⇒ long BTC/ETH perp, nebo hotovost). Opční data projekt nikdy nepoužil. Zatím jen návrh, bez dat a bez výsledků; poslán ChatGPT k oponentuře (0271). Další krok po souhlasu = jen ověření, zda historie dat stačí (≥ 18 měsíců).
