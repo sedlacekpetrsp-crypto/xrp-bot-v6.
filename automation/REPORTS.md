@@ -3,6 +3,13 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## 2026-11-10 12:25 SEČ (běh #46)
+- Nasazeno: `6a23c58` (Risk Guard) – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, vše healthy, testy OK, 0 událostí, 0 chyb v logu, 0 nových duplicit; P/L −3 166,01 (−27,02, běžné PAPER obchody LIQUIDITY).
+- K3 mezi-burzovní funding, krok 0 (jen ověření dat, bez výnosů): **GO** ([PR #46](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/46)) — 160 perpů má ≥ 18 měsíců souvislé historie fundingu na Binance i Hyperliquid (medián 2,8 roku); Bybit z GitHubu blokován, OKX má jen 3 měsíce. Nezávislý přepočet souhlasí.
+- Sepsán návrh testu výkonnosti (4 varianty, náklady ×1/×2/×3, oddělený kolaterál a riziko likvidace na každé burze, srovnání s hotovostí a jednoburzovým carry); poslán ChatGPT k oponentuře (0261). Forward RSI(2): data do 9. 11., 0 obchodů.
+- DB 24,4 %.
+- **Od vás potřebuji:** souhlas se spuštěním výkonnostního backtestu K3 (jen PAPER, historická veřejná data, po připomínkách ChatGPT) — stačí odpověď „schvaluji výkonnostní běh K3“. Bez něj K3 dál nepokračuje.
+
 ## 2026-11-10 04:10 SEČ (běh #45)
 - Nasazeno: `6a23c58` (Risk Guard) – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, vše healthy, testy OK, 0 událostí, 0 chyb v logu, 0 nových duplicit; P/L −3 138,99 (beze změny).
 - Lov hrany: bez nové hypotézy — poslední dva nezkoušené zdroje dat (hloubka knihy, prémiový index Binance) už projekt testoval dříve (#74, #78, oba neprošly), takže nesplňují dohodnutou podmínku novosti. Forward RSI(2): data do 9. 11., 0 obchodů (B&H −3,6 %).
