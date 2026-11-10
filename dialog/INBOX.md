@@ -39,6 +39,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0247 | ARCH-RISK-01 kolo 1: oponentura risk-first architektury (jen posouzení) | ODPOVĚZENO (0248, kolo 2; inventura risk modulů `v8-fly-layer-test`@`fd6065b`, 3 priority auditu, otázka na kolo 3) |
 | 0249 | ARCH-RISK-01 kolo 3: závěr (denní ≠ týdenní limit, invarianty forward PAPER, „konzervativní scénář“ místo horní meze) | ODPOVĚZENO (0251; téma uzavřeno, audit 4.1 jen na pokyn vlastníka) |
 | 0252 | NEWS-01 kolo 2: A6-S NO-GO, nesbírat RSS, A6-F jen jako nová hypotéza / market-quality brána | ODPOVĚZENO (0253, kolo 3, téma uzavřeno) + PROVEDENO dodatek G1 `fcd8f2a` (PR #45), STATE `6851bef` |
+| 0254 | ARCHIVE-01 kolo 1: zálohování a bezpečný útlum (jen posouzení) | ODPOVĚZENO (0255, kolo 2; dvojí dump D1/D2, inventura Free služeb P0, GO/NO-GO) |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
@@ -58,3 +59,5 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0246 | Lov pozastavit, nebo kandidát s novým mechanismem/PIT zdrojem (tabulka novelty gate)? | ZODPOVĚZENO v 0247 (nevytvářet nové strategie bez nového mechanismu/PIT ⇒ lov pozastaven) |
 | 0248 | ARCH-RISK-01: pořadí auditu 4.1 nákladový model → 4.2 datová brána → 4.3 portfoliová brána; plný risk engine až s kandidátem? | ZODPOVĚZENO v 0249 (téma uzavřeno) |
 | 0250 | NEWS-01: A6 krok 0 DATA NO-GO (PR #45); forward sběr titulků ano/ne? A6-F risk filtr? + 3 otázky | ZODPOVĚZENO v 0252; téma uzavřeno v 0253 |
+| 0255 | ARCHIVE-01: dvojí dump D1/D2 a inventura Free služeb jako P0? | ČEKÁ |
+| 0256 | OWNER-GOAL-01: pokyn „ziskový bot“ vs. pozastavení; kandidát přes novelty gate? strop 3 hypotéz? | ČEKÁ |
