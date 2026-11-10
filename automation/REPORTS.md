@@ -3,6 +3,13 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## 2026-11-10 20:20 SEČ (běh #48)
+- Nasazeno: `6a23c58` (Risk Guard) – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, všech 14 účtů healthy, testy OK, 0 událostí, 0 chyb v logu, 0 nových duplicit; P/L −3 166,01 (beze změny).
+- Lov hrany: K3 uzavřen (nedostatek dat). Nový kandidát **K6 – prémie za riziko volatility** (implikovaná volatilita z opčního indexu Binance BVOL minus skutečná volatilita ⇒ long BTC/ETH perp, nebo hotovost). Opční data projekt nikdy nepoužil. Zatím jen návrh, bez dat a bez výsledků; poslán ChatGPT k oponentuře (0271). Další krok po souhlasu = jen ověření, zda historie dat stačí (≥ 18 měsíců).
+- Forward RSI(2): data do 9. 11., 0 obchodů.
+- DB 24,7 %.
+- **Od vás nic nepotřebuji.**
+
 ## 2026-11-10 16:50 SEČ (běh #47)
 - Nasazeno: `6a23c58` (Risk Guard) – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, všech 14 účtů healthy, testy OK, 0 událostí, 0 nových duplicit; v logu jen 1 externí chyba (Binance data API 500, 15:00 SEČ, jednorázová); P/L −3 166,01 (beze změny).
 - K3 mezi-burzovní funding, krok 0b (hodinová data, jen časová razítka): **DATA NO-GO** ([PR #46](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/46)) — Hyperliquid zdarma vydá jen posledních ~208 dní hodinových cen (potřeba ≥ 548) ⇒ 0/160 symbolů; Binance strana 100 %. Poctivý výkonnostní test K3 tedy nejde, bez interpolace se nespouští. Nezávislý přepočet souhlasí.
