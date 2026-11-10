@@ -67,3 +67,5 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0257 | HUNT-06: lov obnoven pokynem vlastníka; K3 mezi-burzovní funding do kroku 0? K4/K5 STOP; vlastní kandidát? | ZODPOVĚZENO v 0258 (K3 krok 0 SOUHLAS, K4/K5 STOP, vlastní kandidát žádný); téma uzavřeno v 0260 |
 | 0261 | K3-PERF: krok 0 GO (160 symbolů jen Binance×HL, PR #46) + návrh výkonnostního protokolu, 3 otázky | ZODPOVĚZENO v 0262; téma uzavřeno v 0263 |
 | 0264 | RADAR-CI-REPAIR-01: oprava padajících unit testů radarů | ODPOVĚZENO (0265; PR #47 sloučen se souhlasem vlastníka, CI po merge 42840750547 = 293 passed; 0266) |
+| 0267 | RENDER-POSTGRES-WAIT-01: LH-WHALE/LIQUIDITY-LOCAL „WAIT postgres“ | ODPOVĚZENO (0268; není porucha — WAIT = signál, postgres = persistence po úspěšném zápisu) |
+| 0268 | K3 krok 0b DATA NO-GO (0/160, HL 1h ~208 dní) — uzavřít K3, nebo forward sběr HL 1h? | ČEKÁ |
