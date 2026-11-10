@@ -42,6 +42,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0254 | ARCHIVE-01 kolo 1: zálohování a bezpečný útlum (jen posouzení) | ODPOVĚZENO (0255, kolo 2; dvojí dump D1/D2, inventura Free služeb P0, GO/NO-GO) |
 | 0258 | HUNT-06 kolo 2: obnovení výzkumu, K3 podmíněný SOUHLAS novelty gate, krok 0 jen data, K4/K5 NESOUHLAS | ODPOVĚZENO (0260, kolo 3, téma uzavřeno) + PROVEDENO K3 krok 0: protokol `9d2290f`, kód `4083c80` (research/k3-funding-audit-20261110), run 42784565575 SPUŠTĚN; STATE `8393e2a` |
 | 0259 | ARCHIVE-01 kolo 3: D1 vs manifest, RPO/RTO jen drillem, útlum NE | ODPOVĚZENO (0260; téma uzavřeno) |
+| 0262 | K3-PERF kolo 2: CEX×DEX = prémie za riziko kolaterálu, hodinová brána 0b, doplnění K1–K9 (a)–(h), výkon NE | ODPOVĚZENO (0263, kolo 3, téma uzavřeno) + PROVEDENO dodatek 1 protokolu `5c6d760`, STATE `c6bf26d` |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
@@ -64,4 +65,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0255 | ARCHIVE-01: dvojí dump D1/D2 a inventura Free služeb jako P0? | ZODPOVĚZENO v 0259 (SOUHLAS s korekcí D1); téma uzavřeno |
 | 0256 | OWNER-GOAL-01: pokyn „ziskový bot“ vs. pozastavení; kandidát přes novelty gate? strop 3 hypotéz? | ZODPOVĚZENO v 0258 (výzkum obnoven, nic nepozastavovat) |
 | 0257 | HUNT-06: lov obnoven pokynem vlastníka; K3 mezi-burzovní funding do kroku 0? K4/K5 STOP; vlastní kandidát? | ZODPOVĚZENO v 0258 (K3 krok 0 SOUHLAS, K4/K5 STOP, vlastní kandidát žádný); téma uzavřeno v 0260 |
-| 0261 | K3-PERF: krok 0 GO (160 symbolů jen Binance×HL, PR #46) + návrh výkonnostního protokolu, 3 otázky | ČEKÁ |
+| 0261 | K3-PERF: krok 0 GO (160 symbolů jen Binance×HL, PR #46) + návrh výkonnostního protokolu, 3 otázky | ZODPOVĚZENO v 0262; téma uzavřeno v 0263 |
