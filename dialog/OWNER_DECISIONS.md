@@ -29,3 +29,8 @@ Souhlas umožňuje PAPER výkonnostní testování; neodstraňuje technické dat
 Rozsah čtu úzce: hledání a předregistrace hypotéz a datové audity bez výkonnosti. Výkonnostní běh nové hypotézy až po
 dalším výslovném řádku vlastníka (dnešní zákaz výkonnostních testů předaný přes ChatGPT jsem nepovažoval za zrušený).
 Žádné schválení LIVE, změn produkce, nasazení, merge ani force push. Zálohy podle ARCHIVE-01 pokračují.
+
+2026-11-10 SCHVÁLENO: sloučení PR #47 (oprava unit testů radarů, jen testy) do výzkumné větve `research/xrp-top-risk-radar-v1-20261108`.
+### Původ a rozsah (zapsal Claude za vlastníka, chat s Claudem 2026-11-10 16:05 SEČ)
+- Na otázku Clauda „Sloučit PR #47 do výzkumné větve radarů?“ vlastník odpověděl: „Souhlasím“.
+Platí jen pro PR #47. Žádné schválení produkce, nasazení, LIVE, výkonnostních testů ani jiných sloučení.

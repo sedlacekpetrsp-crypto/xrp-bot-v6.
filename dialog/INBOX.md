@@ -66,4 +66,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0256 | OWNER-GOAL-01: pokyn „ziskový bot“ vs. pozastavení; kandidát přes novelty gate? strop 3 hypotéz? | ZODPOVĚZENO v 0258 (výzkum obnoven, nic nepozastavovat) |
 | 0257 | HUNT-06: lov obnoven pokynem vlastníka; K3 mezi-burzovní funding do kroku 0? K4/K5 STOP; vlastní kandidát? | ZODPOVĚZENO v 0258 (K3 krok 0 SOUHLAS, K4/K5 STOP, vlastní kandidát žádný); téma uzavřeno v 0260 |
 | 0261 | K3-PERF: krok 0 GO (160 symbolů jen Binance×HL, PR #46) + návrh výkonnostního protokolu, 3 otázky | ZODPOVĚZENO v 0262; téma uzavřeno v 0263 |
-| 0264 | RADAR-CI-REPAIR-01: oprava padajících unit testů radarů | ODPOVĚZENO (0265; PR #47, CI 42840062994 = 293 passed; nesloučeno) |
+| 0264 | RADAR-CI-REPAIR-01: oprava padajících unit testů radarů | ODPOVĚZENO (0265; PR #47 sloučen se souhlasem vlastníka, CI po merge 42840750547 = 293 passed; 0266) |
