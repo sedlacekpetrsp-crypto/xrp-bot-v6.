@@ -1,6 +1,4 @@
 """Synthetic unit tests only: no predictive OOS validation or backtest."""
-import math
-
 import pytest
 
 from research.top_risk_radar_v1.calibration_diagnostics import binary_calibration_diagnostics as diagnostics
@@ -49,3 +47,36 @@ def test_invalid_bin_count_fails_closed(bad):
 def test_mismatched_lengths_fail_closed():
     with pytest.raises(ValueError, match="equal length"):
         diagnostics([0.1, 0.2], [True])
+
+
+@pytest.mark.parametrize("probability,expected_bin", [
+    (0.0, 0), (0.249999999, 0), (0.25, 1),
+    (0.499999999, 1), (0.5, 2), (0.75, 3), (1.0, 3),
+])
+def test_reliability_bins_are_left_closed_right_open_except_final(probability, expected_bin):
+    result = diagnostics([probability], [False], bins=4)
+    assert [row["n"] for row in result["bins"]] == [int(i == expected_bin) for i in range(4)]
+    assert result["bins"][expected_bin]["mean_predicted"] == probability
+
+
+def test_calibration_is_invariant_to_order_of_pairs():
+    probabilities = [0.1, 0.9, 0.3, 0.7]
+    outcomes = [False, True, True, False]
+    original = diagnostics(probabilities, outcomes, bins=2)
+    reordered = diagnostics(list(reversed(probabilities)), list(reversed(outcomes)), bins=2)
+    assert reordered["n"] == original["n"]
+    assert reordered["brier"] == pytest.approx(original["brier"])
+    for left, right in zip(original["bins"], reordered["bins"]):
+        assert left["n"] == right["n"]
+        assert left["observed_rate"] == right["observed_rate"]
+        assert left["mean_predicted"] == pytest.approx(right["mean_predicted"])
+
+
+def test_diagnostics_do_not_mutate_caller_inputs():
+    probabilities = [0.2, 0.8]
+    outcomes = [False, True]
+    before_probabilities = probabilities.copy()
+    before_outcomes = outcomes.copy()
+    diagnostics(probabilities, outcomes, bins=2)
+    assert probabilities == before_probabilities
+    assert outcomes == before_outcomes
