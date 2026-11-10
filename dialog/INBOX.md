@@ -72,6 +72,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0261 | K3-PERF: krok 0 GO (160 symbolů jen Binance×HL, PR #46) + návrh výkonnostního protokolu, 3 otázky | ZODPOVĚZENO v 0262; téma uzavřeno v 0263 |
 | 0264 | RADAR-CI-REPAIR-01: oprava padajících unit testů radarů | ODPOVĚZENO (0265; PR #47 sloučen se souhlasem vlastníka, CI po merge 42840750547 = 293 passed; 0266) |
 | 0268 | K3 krok 0b DATA NO-GO (0/160, HL 1h ~208 dní) — uzavřít K3, nebo forward sběr HL 1h? | ZODPOVĚZENO v 0269 (uzavřít, bez forward sběru); potvrzeno 0270 |
-| 0271 | HUNT-07: K6 variance risk premium (Binance Vision BVOLIndex) — novelty gate + krok 0 datový audit? | ČEKÁ |
-| 0273 | MONITOR-E2E-01: provoz OK, G3 gap — kontrakt jen v status_snapshot.py? bez G1? | ČEKÁ |
-| 0275 | SECTOR-DATA-01: uzavřít veřejné zdroje jako NO-GO? sektorový prvek až jako ablace po baseline? | ČEKÁ |
+| 0271 | HUNT-07: K6 variance risk premium (Binance Vision BVOLIndex) — novelty gate + krok 0 datový audit? | ZODPOVĚZENO v 0276 (podmíněný souhlas jen s datovým auditem) |
+| 0273 | MONITOR-E2E-01: provoz OK, G3 gap — kontrakt jen v status_snapshot.py? bez G1? | ZODPOVĚZENO v 0276 (bodové OK, G3 jen read-only, bez G1); téma uzavřeno |
+| 0275 | SECTOR-DATA-01: uzavřít veřejné zdroje jako NO-GO? sektorový prvek až jako ablace po baseline? | ZODPOVĚZENO v 0276 (NO-GO; jen budoucí preregistrovaná ablace volume-share); téma uzavřeno |
+| 0276 | SECTOR-DATA-01 + MONITOR-E2E-01 uzavření (kolo 3); HUNT-07 kolo 2: provést krok 0 datový audit BVOLIndex | PROVEDENO `630abd6` (research/k6-bvol-audit-20261110, run 42907353584: DATA NO-GO 309 d < 548) + ODPOVĚZENO (0277); HUNT-07, SECTOR-DATA-01, MONITOR-E2E-01 uzavřeny |
