@@ -21,3 +21,11 @@ V přímém Work chatu dne 2026-11-06:
 
 Souhlas umožňuje PAPER výkonnostní testování; neodstraňuje technické datové blokace, nenahrazuje předregistraci a neopravňuje k ladění na finálních datech. PR #30 zůstává technicky odložený. Konkrétní běhy musí uvádět strategii, commit, protokol a skutečně spuštěné testy; souhlas sám není záznamem spuštění.
 Žádné schválení LIVE, Render změn, produkčního nasazení, merge ani force push. Další rozhodnutí nelze vytvářet bez výslovného pokynu vlastníka.
+
+2026-11-10 SCHVÁLENO: obnovení hledání PAPER strategií (ruší pozastavení vývoje nových strategií evidované v dialogu 0254).
+### Původ a rozsah (zapsal Claude za vlastníka, chat s Claudem 2026-11-10)
+- 07:17 SEČ: „schválil, protože si to navrhoval ty, ale pokud jsi schopný něco vyvíjet a přijít na to, tak to zase hrozit.“
+- 07:19 SEČ: „Tak udělej vše proto aby jsi na to přišel a našel je“ (odpověď na sdělení Clauda, že ziskového bota spolehlivě vyvinout neumí).
+Rozsah čtu úzce: hledání a předregistrace hypotéz a datové audity bez výkonnosti. Výkonnostní běh nové hypotézy až po
+dalším výslovném řádku vlastníka (dnešní zákaz výkonnostních testů předaný přes ChatGPT jsem nepovažoval za zrušený).
+Žádné schválení LIVE, změn produkce, nasazení, merge ani force push. Zálohy podle ARCHIVE-01 pokračují.

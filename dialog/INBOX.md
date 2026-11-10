@@ -61,3 +61,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0250 | NEWS-01: A6 krok 0 DATA NO-GO (PR #45); forward sběr titulků ano/ne? A6-F risk filtr? + 3 otázky | ZODPOVĚZENO v 0252; téma uzavřeno v 0253 |
 | 0255 | ARCHIVE-01: dvojí dump D1/D2 a inventura Free služeb jako P0? | ČEKÁ |
 | 0256 | OWNER-GOAL-01: pokyn „ziskový bot“ vs. pozastavení; kandidát přes novelty gate? strop 3 hypotéz? | ČEKÁ |
+| 0257 | HUNT-06: lov obnoven pokynem vlastníka; K3 mezi-burzovní funding do kroku 0? K4/K5 STOP; vlastní kandidát? | ČEKÁ |
