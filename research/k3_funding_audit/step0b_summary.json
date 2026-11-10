@@ -1,0 +1,13 @@
+{
+ "run_utc": "2026-11-10T15:07:21Z",
+ "symbols": 160,
+ "passing": 0,
+ "verdict": "DATA NO-GO",
+ "hl_days_min": 203.0,
+ "hl_days_median": 208.4,
+ "hl_days_max": 208.5,
+ "hl_n_max": 5004,
+ "http_status": {
+  "200": 185
+ }
+}
