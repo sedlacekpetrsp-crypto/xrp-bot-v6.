@@ -20,9 +20,12 @@ def test_future_and_unpublished_rows_cannot_change_known_prevalence(target, hori
         True if target == "growth" else None,
         True if target == "downside" else None,
     )
+    # A negative label can only be final once the whole event horizon has
+    # elapsed, so the fixture must respect label maturity. The row is still
+    # excluded purely because its decision lies after the cutoff.
     future_decision = PITObservation(
         CUTOFF + timedelta(days=1),
-        CUTOFF + timedelta(days=2),
+        CUTOFF + timedelta(days=1 + horizon),
         False if target == "growth" else None,
         False if target == "downside" else None,
     )
@@ -42,6 +45,43 @@ def test_future_and_unpublished_rows_cannot_change_known_prevalence(target, hori
     for rows in ([known], [known, future_decision], [known, unpublished, no_provenance, future_decision],
                  [future_decision, no_provenance, known, unpublished]):
         assert pit_historical_prevalence(rows, CUTOFF, horizon_days=horizon, target=target) == expected
+
+
+@pytest.mark.parametrize("target,horizon", [("growth", 30), ("downside", 14)])
+def test_early_negative_label_fails_closed_even_after_cutoff(target, horizon):
+    """Invalid rows are rejected, not silently ignored, even when unusable.
+
+    Regression for CI run 42803745418: a negative label published before
+    decision + horizon is impossible and must raise although the decision is
+    after the cutoff and the row could never enter the prevalence.
+    """
+    known = PITObservation(
+        CUTOFF - timedelta(days=horizon + 10),
+        CUTOFF - timedelta(days=3),
+        True if target == "growth" else None,
+        True if target == "downside" else None,
+    )
+    decision = CUTOFF + timedelta(days=1)
+    for early in (timedelta(days=1), timedelta(days=horizon) - timedelta(microseconds=1)):
+        impossible = PITObservation(
+            decision,
+            decision + early,
+            False if target == "growth" else None,
+            False if target == "downside" else None,
+        )
+        for rows in ([known, impossible], [impossible, known]):
+            with pytest.raises(ValueError, match="negative label available before horizon maturity"):
+                pit_historical_prevalence(rows, CUTOFF, horizon_days=horizon, target=target)
+    # Exactly at maturity the same row is valid and merely excluded by cutoff.
+    mature = PITObservation(
+        decision,
+        decision + timedelta(days=horizon),
+        False if target == "growth" else None,
+        False if target == "downside" else None,
+    )
+    assert pit_historical_prevalence([known, mature], CUTOFF, horizon_days=horizon, target=target) == {
+        "status": "descriptive_pit_baseline", "n": 1, "rate": 1.0
+    }
 
 
 @pytest.mark.parametrize("target,horizon", [("growth", 30), ("downside", 14)])
