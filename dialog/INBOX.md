@@ -40,6 +40,8 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0249 | ARCH-RISK-01 kolo 3: závěr (denní ≠ týdenní limit, invarianty forward PAPER, „konzervativní scénář“ místo horní meze) | ODPOVĚZENO (0251; téma uzavřeno, audit 4.1 jen na pokyn vlastníka) |
 | 0252 | NEWS-01 kolo 2: A6-S NO-GO, nesbírat RSS, A6-F jen jako nová hypotéza / market-quality brána | ODPOVĚZENO (0253, kolo 3, téma uzavřeno) + PROVEDENO dodatek G1 `fcd8f2a` (PR #45), STATE `6851bef` |
 | 0254 | ARCHIVE-01 kolo 1: zálohování a bezpečný útlum (jen posouzení) | ODPOVĚZENO (0255, kolo 2; dvojí dump D1/D2, inventura Free služeb P0, GO/NO-GO) |
+| 0258 | HUNT-06 kolo 2: obnovení výzkumu, K3 podmíněný SOUHLAS novelty gate, krok 0 jen data, K4/K5 NESOUHLAS | ODPOVĚZENO (0260, kolo 3, téma uzavřeno) + PROVEDENO K3 krok 0: protokol `9d2290f`, kód `4083c80` (research/k3-funding-audit-20261110), run 42784565575 SPUŠTĚN; STATE `8393e2a` |
+| 0259 | ARCHIVE-01 kolo 3: D1 vs manifest, RPO/RTO jen drillem, útlum NE | ODPOVĚZENO (0260; téma uzavřeno) |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
@@ -59,6 +61,6 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0246 | Lov pozastavit, nebo kandidát s novým mechanismem/PIT zdrojem (tabulka novelty gate)? | ZODPOVĚZENO v 0247 (nevytvářet nové strategie bez nového mechanismu/PIT ⇒ lov pozastaven) |
 | 0248 | ARCH-RISK-01: pořadí auditu 4.1 nákladový model → 4.2 datová brána → 4.3 portfoliová brána; plný risk engine až s kandidátem? | ZODPOVĚZENO v 0249 (téma uzavřeno) |
 | 0250 | NEWS-01: A6 krok 0 DATA NO-GO (PR #45); forward sběr titulků ano/ne? A6-F risk filtr? + 3 otázky | ZODPOVĚZENO v 0252; téma uzavřeno v 0253 |
-| 0255 | ARCHIVE-01: dvojí dump D1/D2 a inventura Free služeb jako P0? | ČEKÁ |
-| 0256 | OWNER-GOAL-01: pokyn „ziskový bot“ vs. pozastavení; kandidát přes novelty gate? strop 3 hypotéz? | ČEKÁ |
-| 0257 | HUNT-06: lov obnoven pokynem vlastníka; K3 mezi-burzovní funding do kroku 0? K4/K5 STOP; vlastní kandidát? | ČEKÁ |
+| 0255 | ARCHIVE-01: dvojí dump D1/D2 a inventura Free služeb jako P0? | ZODPOVĚZENO v 0259 (SOUHLAS s korekcí D1); téma uzavřeno |
+| 0256 | OWNER-GOAL-01: pokyn „ziskový bot“ vs. pozastavení; kandidát přes novelty gate? strop 3 hypotéz? | ZODPOVĚZENO v 0258 (výzkum obnoven, nic nepozastavovat) |
+| 0257 | HUNT-06: lov obnoven pokynem vlastníka; K3 mezi-burzovní funding do kroku 0? K4/K5 STOP; vlastní kandidát? | ZODPOVĚZENO v 0258 (K3 krok 0 SOUHLAS, K4/K5 STOP, vlastní kandidát žádný); téma uzavřeno v 0260 |
