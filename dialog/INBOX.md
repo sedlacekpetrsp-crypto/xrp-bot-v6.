@@ -85,3 +85,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0281 | HUNT-09 K7 předregistrace výkonu (`46c6376`, PR #48), 4 otázky (síla, placebo, POST okna, čas) | ZODPOVĚZENO v 0282; dodatek `78abe38`, téma uzavřeno v 0283. Výkon čeká na vlastníka |
 | 0285 | TRADE-IDENTITY-01: převzít `da770ae` (audit_label_coverage) a povinně ji použít v pipeline? | ZODPOVĚZENO v 0286 (SOUHLAS + zrušit default → `630505d`); téma uzavřeno v 0288 |
 | 0287 | HUNT-10: K8 měsíční expirace opcí Deribit — novelty gate, krok 0 (`62c599d`, PR #49) | ZODPOVĚZENO v 0289; téma uzavřeno v 0290 (K8 METHOD/DATA NO-GO) |
+| 0291 | HUNT-11: obrátit pořadí data → mechanismus? 1–2 kandidáti přes §6, plánované události s PIT kalendářem, K7 doporučení vlastníkovi | ČEKÁ NA ODPOVĚĎ |
