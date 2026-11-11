@@ -1,21 +1,23 @@
-[snap] 2018: captures=22 ts=20171205223224 method=structured scheduled=8
-[snap] 2019: captures=40 ts=20181220172943 method=structured scheduled=8
-[snap] 2020: captures=57 ts=20191224181536 method=structured scheduled=8
-[snap] 2021: captures=108 ts=20201227032039 method=structured scheduled=8
-[snap] 2022: captures=0 ts=None method= scheduled=0
-[snap] 2023: captures=253 ts=20221231175513 method=structured scheduled=8
-[snap] 2024: captures=491 ts=20231231134110 method=structured scheduled=8
-[snap] 2025: captures=446 ts=20241230212600 method=structured scheduled=8
-[snap] 2026: captures=98 ts=20251226115329 method=structured scheduled=8
+[snap] 2018: captures=9 ts=20171205223224 method=structured scheduled=8
+[snap] 2019: captures=19 ts=20181220172943 method=structured scheduled=8
+[snap] 2020: captures=29 ts=20191224181536 method=structured scheduled=8
+[snap] 2021: captures=40 ts=20201227032039 method=structured scheduled=8
+[snap] 2022: captures=40 ts=20211228042053 method=structured scheduled=8
+[snap] 2023: captures=117 ts=20221231063331 method=structured scheduled=8
+[snap] 2024: captures=156 ts=20231231123800 method=structured scheduled=8
+[snap] 2025: captures=149 ts=20241230113909 method=structured scheduled=8
+[snap] 2026: captures=67 ts=20251226115329 method=structured scheduled=8
 {
  "gate": {
-  "eligible": 62,
-  "final_segment": 16,
+  "eligible": 69,
+  "final_segment": 18,
   "GO_counts": true
  },
  "verdict": "GO (jen data; výkon NESPOUŠTĚT)",
- "events_total": 64,
- "not_realized": [],
+ "events_total": 72,
+ "not_realized": [
+  "FOMC-2020-03-18"
+ ],
  "future": [
   "FOMC-2026-12-09"
  ],
@@ -25,8 +27,8 @@
   "FOMC-2026-12-09"
  ],
  "binance_files": {
-  "BTCUSDT": 78,
-  "ETHUSDT": 78
+  "BTCUSDT": 87,
+  "ETHUSDT": 87
  },
  "errors": []
 }
