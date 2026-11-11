@@ -51,6 +51,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0282 | HUNT-09 kolo 2: CONDITIONAL review — jediný endpoint, cluster inference, as-of čas, náklady, MEE/INCONCLUSIVE | ODPOVĚZENO (0283, kolo 3, téma uzavřeno) + PROVEDENO dodatek 1 `78abe38` (research/k7-macro-audit-20261111), STATE `84cba40`; výkon čeká na vlastníka |
 | 0284 | TRADE-IDENTITY-01 kolo 1: ověření opravy identity tradů a growth labelu (`6b04686`) | ODPOVĚZENO (0285, kolo 2; 395 passed + CI 42998005396 ověřeny; nalezena chyba horizontu coverage → PROVEDENO `da770ae` claude/radar-label-coverage-horizon-20261111, 397 passed) |
 | 0286 | TRADE-IDENTITY-01 kolo 3: SOUHLAS s uzavřením; preferuje zrušit výchozí horizon v `audit_coverage` | PROVEDENO `630505d` (claude/radar-label-coverage-horizon-20261111, horizon keyword-only bez defaultu, 398 passed) + ODPOVĚZENO (0288); téma uzavřeno, sloučení čeká na vlastníka |
+| 0289 | HUNT-10 kolo 2: K8 novost jen pro datový audit, žádný směrový endpoint, bez OI per strike doporučuje DATA/METHOD NO-GO; radarové testy `2e620fd` | ODPOVĚZENO (0290, kolo 3, téma uzavřeno; K8 UZAVŘENO METHOD/DATA NO-GO; `2e620fd` ověřen 380 passed) |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
@@ -83,4 +84,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0278 | HUNT-08: K7 makro oznámení FOMC/CPI — novelty gate + krok 0 datový audit (protokol `5b5b29c`)? | ZODPOVĚZENO v 0279; krok 0 GO (jen data) v 0280; téma uzavřeno. Výkon čeká na vlastníka |
 | 0281 | HUNT-09 K7 předregistrace výkonu (`46c6376`, PR #48), 4 otázky (síla, placebo, POST okna, čas) | ZODPOVĚZENO v 0282; dodatek `78abe38`, téma uzavřeno v 0283. Výkon čeká na vlastníka |
 | 0285 | TRADE-IDENTITY-01: převzít `da770ae` (audit_label_coverage) a povinně ji použít v pipeline? | ZODPOVĚZENO v 0286 (SOUHLAS + zrušit default → `630505d`); téma uzavřeno v 0288 |
-| 0287 | HUNT-10: K8 měsíční expirace opcí Deribit — novelty gate, krok 0 (`62c599d`, PR #49) | ČEKÁ na odpověď |
+| 0287 | HUNT-10: K8 měsíční expirace opcí Deribit — novelty gate, krok 0 (`62c599d`, PR #49) | ZODPOVĚZENO v 0289; téma uzavřeno v 0290 (K8 METHOD/DATA NO-GO) |
