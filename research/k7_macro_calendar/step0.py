@@ -22,7 +22,7 @@ ET = ZoneInfo("America/New_York")
 UTC = dt.timezone.utc
 CAL = "www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
 STMT = "https://www.federalreserve.gov/newsevents/pressreleases/monetary{d}a.htm"
-CDX = "https://web.archive.org/cdx/search/cdx?url={u}&from={a}&to={b}&filter=statuscode:200&output=json"
+CDX = "https://web.archive.org/cdx/search/cdx?url={u}&from={a}&to={b}&filter=statuscode:200&collapse=timestamp:8&output=json"
 SNAP = "https://web.archive.org/web/{ts}id_/https://{u}"
 BV = "https://data.binance.vision/data/spot/monthly/klines/{s}/1h/{s}-1h-{ym}.zip"
 YEARS = range(2018, 2027)
@@ -119,6 +119,12 @@ def scheduled(meetings: list[dict]) -> list[dict]:
     return sorted(out, key=lambda m: m["end_date"])
 
 
+def is_fomc_statement(raw: bytes) -> bool:
+    """Tisková zpráva monetary<YYYYMMDD>a.htm musí být FOMC statement (ne jiná zpráva Fedu téhož dne)."""
+    t = _text(raw.decode("utf-8", "replace"))
+    return bool(re.search(r"FOMC\s+statement", t, re.I)) and "Federal Open Market Committee" in t
+
+
 def announce_utc(d: dt.date) -> dt.datetime:
     return dt.datetime.combine(d, dt.time(14, 0), ET).astimezone(UTC)
 
@@ -157,7 +163,7 @@ def run(outdir: str) -> dict:
     snaps, rows, errors, notes = {}, [], [], []
     # 1) PIT snímky předem
     for y in YEARS:
-        code, body = http(CDX.format(u=CAL, a=f"{y - 1}0701", b=f"{y - 1}1231235959"))
+        code, body = http(CDX.format(u=CAL, a=f"{y - 1}0701", b=f"{y - 1}1231235959"), tries=7)
         caps = json.loads(body)[1:] if code == 200 and body.strip() else []
         info = {"year": y, "cdx_http": code, "captures": len(caps)}
         meets, method, ts = [], "", None
@@ -209,9 +215,12 @@ def run(outdir: str) -> dict:
     for y, d, t, fa in events:
         future = t + dt.timedelta(hours=WIN_H) > now
         c, raw = (0, b"") if future else http(STMT.format(d=d.strftime("%Y%m%d")))
+        if c == 200 and not is_fomc_statement(raw):
+            c = -1  # stránka existuje, ale není FOMC statement
         lead = (t - fa).total_seconds() / 86400 if fa else None
         pit = "PROVEN" if lead is not None and lead >= MIN_LEAD_D else "UNKNOWN"
-        note = "future" if future else ("" if c == 200 else f"no_statement_http_{c} (zrušeno/přesunuto?)")
+        note = "future" if future else ("" if c == 200 else ("page_not_fomc_statement (zrušeno/přesunuto?)" if c == -1
+                                                             else f"no_statement_http_{c} (zrušeno/přesunuto?)"))
         rows.append({"event_id": f"FOMC-{d}", "source_url": snaps[y].get("url", ""),
                      "first_announced_at": fa.isoformat() if fa else "", "scheduled_at": t.isoformat(),
                      "actual_at": t.isoformat() if c == 200 else "", "evidence_hash": snaps[y].get("snap_sha256", ""),

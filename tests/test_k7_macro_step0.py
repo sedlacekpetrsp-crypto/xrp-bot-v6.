@@ -47,3 +47,10 @@ def test_gate():
     assert not gate(_rows(59))["GO_counts"]
     assert not gate(_rows(70, pit="UNKNOWN"))["GO_counts"]
     assert not gate(_rows(70, cov=0.99))["GO_counts"]
+
+
+def test_statement_content_check():
+    from research.k7_macro_calendar.step0 import is_fomc_statement
+    ok = b"<title>Federal Reserve issues FOMC statement</title><p>the Federal Open Market Committee decided</p>"
+    other = b"<title>Federal Reserve Board broadens program ... Money Market Mutual Fund Liquidity Facility</title>"
+    assert is_fomc_statement(ok) and not is_fomc_statement(other)
