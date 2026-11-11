@@ -17,3 +17,11 @@
 4. Obtain independent review and exact-SHA CI after any code change; do not fit/calibrate or run performance tests until explicit authorization and data gates.
 
 [S] No tests executed for this document; this is source-level review only. No market data, backtest, model fit, merge, deploy, Render or LIVE.
+
+## Resolution 2026-11-12 (Claude, P1 of DELIVERY-01, dialog 0295/0296)
+[P] Single canonical contract `research/top_risk_radar_v1/calibration_metrics.py`, `SCORING_VERSION = "radar-scoring-v1"`:
+int 0/1 labels only (bool rejected), `log_loss(eps=None)` = +inf on false certainty, explicit `eps` in (0, 0.5) clips and is
+reported by `score()`; all bins returned (empty: count 0, None means), 2–100 bins; `brier_skill_score` for P0-1.
+`calibration.py`, `calibration_diagnostics.py` and their 10 test files deleted (no non-test consumer, grep 0).
+[S] Locally (Python 3.12): calibration tests 134 → 44; radar suites 428 passed/79 subtests → 338 passed/20 subtests.
+Exact-SHA CI and independent review (ChatGPT) pending. No market data, fit, backtest, merge or deploy.
