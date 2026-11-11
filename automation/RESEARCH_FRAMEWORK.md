@@ -49,3 +49,17 @@ Všechno musí platit:
 Přednost mají zdroje výhody, které v1 netestovala: delta-neutrální carry (funding/basis), průřezové
 strategie na širším koši aktiv, řízení velikosti pozice (volatilitní cílení), a vyhodnocení skutečných
 produkčních PAPER botů. Další denní TA na samotném BTC/ETH jen s jasným zdůvodněním odlišnosti.
+
+## 6. Novelty gate (před každou novou hypotézou; dohody dialog 0246 a 0290)
+Před zápisem protokolu vyplnit tabulku; kterýkoli řádek NE ⇒ STOP, hypotéza se nepočítá do denního limitu ani do N.
+| Řádek | Otázka |
+|---|---|
+| Testovaná rodina | Které větve/PR v registru a inventáři testovaly stejný mechanismus (grep registr + `git branch -r`)? |
+| Rozdíl mechanismu | Je ekonomický mechanismus materiálně jiný (ne jen jiný horizont, šířka koše nebo převrácený znak)? |
+| **Měřitelnost mechanismu** (od 0290, poučení K8) | Lze mechanismus falzifikovat z bezplatných PIT dat — ne jen kalendář/spouštěč, ale i proměnná, přes kterou má působit (např. OI per strike u gamma hedgingu)? Pokud ne ⇒ METHOD NO-GO, žádný náhradní směrový endpoint. |
+| PIT zdroj / dostupnost | Zdroj s doloženým `first_available_at` (SHA-256 přes Actions), bez placených služeb. |
+| Instrument, likvidita | Konkrétní instrument a likvidita v celém vzorku. |
+| All-in náklady | Poplatky, skluz, funding, obměna knihy. |
+| Filtr hrana ≥ 3× náklad | Opora pro hrubou hranu ≥ 3× all-in náklad (literatura nebo data projektu). |
+| Chronologické OOS | Dost událostí pro ladění + závěrečný úsek (power/MDE předem). |
+| Verdikt | GO jen pro krok 0 (datový audit); výkon vždy až po oponentuře a podle pravidel výše. |
