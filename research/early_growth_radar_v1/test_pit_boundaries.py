@@ -41,7 +41,6 @@ class EarlyGrowthPitBoundaryTests(unittest.TestCase):
         with self.assertRaises(KeyError):
             feature_is_available(record, self.DECISION)
 
-
     def test_subsecond_publication_after_decision_rejected(self):
         record = dict(self.RECORD, source_published_at="2026-11-08T00:05:00.000001Z")
         self.assertFalse(feature_is_available(record, self.DECISION))
@@ -59,6 +58,28 @@ class EarlyGrowthPitBoundaryTests(unittest.TestCase):
     def test_boolean_horizon_rejected(self):
         with self.assertRaises(ValueError):
             label_is_mature(self.DECISION, self.DECISION, True)
+
+    def test_event_one_microsecond_before_decision_allowed(self):
+        record = dict(self.RECORD, event_time="2026-11-08T00:04:59.999999Z")
+        self.assertTrue(feature_is_available(record, self.DECISION))
+
+    def test_event_timezone_offset_equal_to_decision_rejected(self):
+        record = dict(self.RECORD, event_time="2026-11-08T01:05:00+01:00")
+        self.assertFalse(feature_is_available(record, self.DECISION))
+
+    def test_missing_publication_fails_closed(self):
+        record = dict(self.RECORD)
+        del record["source_published_at"]
+        with self.assertRaises(KeyError):
+            feature_is_available(record, self.DECISION)
+
+    def test_zero_horizon_rejected(self):
+        with self.assertRaises(ValueError):
+            label_is_mature(self.DECISION, self.DECISION, 0)
+
+    def test_negative_horizon_rejected(self):
+        with self.assertRaises(ValueError):
+            label_is_mature(self.DECISION, self.DECISION, -720)
 
     def test_naive_cutoff_rejected(self):
         with self.assertRaises(ValueError):
