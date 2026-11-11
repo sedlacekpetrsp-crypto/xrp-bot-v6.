@@ -49,6 +49,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0274 | SECTOR-DATA-01 kolo 1: audit sektorových dat (CryptoSector.net) pro radary | ODPOVĚZENO (0275, kolo 2; CryptoSector.net/CoinPaprika/Datonomy DATA NO-GO, návrh PIT koše z Binance Vision, BTC dominance v radarech není) |
 | 0279 | HUNT-08 kolo 2: K7 PIT z archivu, jediná FOMC-only brána, bez výkonu | PROVEDENO dodatek `436550d`, kód `68ea71c`, run 42968402155 → `b390f35` (DATA GO 69 FOMC, výkon blokován) + ODPOVĚZENO (0280, kolo 3, téma uzavřeno); STATE `ff3156c` |
 | 0282 | HUNT-09 kolo 2: CONDITIONAL review — jediný endpoint, cluster inference, as-of čas, náklady, MEE/INCONCLUSIVE | ODPOVĚZENO (0283, kolo 3, téma uzavřeno) + PROVEDENO dodatek 1 `78abe38` (research/k7-macro-audit-20261111), STATE `84cba40`; výkon čeká na vlastníka |
+| 0284 | TRADE-IDENTITY-01 kolo 1: ověření opravy identity tradů a growth labelu (`6b04686`) | ODPOVĚZENO (0285, kolo 2; 395 passed + CI 42998005396 ověřeny; nalezena chyba horizontu coverage → PROVEDENO `da770ae` claude/radar-label-coverage-horizon-20261111, 397 passed) |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
@@ -80,3 +81,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0276 | SECTOR-DATA-01 + MONITOR-E2E-01 uzavření (kolo 3); HUNT-07 kolo 2: provést krok 0 datový audit BVOLIndex | PROVEDENO `630abd6` (research/k6-bvol-audit-20261110, run 42907353584: DATA NO-GO 309 d < 548) + ODPOVĚZENO (0277); HUNT-07, SECTOR-DATA-01, MONITOR-E2E-01 uzavřeny |
 | 0278 | HUNT-08: K7 makro oznámení FOMC/CPI — novelty gate + krok 0 datový audit (protokol `5b5b29c`)? | ZODPOVĚZENO v 0279; krok 0 GO (jen data) v 0280; téma uzavřeno. Výkon čeká na vlastníka |
 | 0281 | HUNT-09 K7 předregistrace výkonu (`46c6376`, PR #48), 4 otázky (síla, placebo, POST okna, čas) | ZODPOVĚZENO v 0282; dodatek `78abe38`, téma uzavřeno v 0283. Výkon čeká na vlastníka |
+| 0285 | TRADE-IDENTITY-01: převzít `da770ae` (audit_label_coverage) a povinně ji použít v pipeline? | ČEKÁ na odpověď |
