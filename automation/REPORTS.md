@@ -3,6 +3,13 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## 2026-11-11 08:25 SEČ (běh #51)
+- Nasazeno: `6a23c58` (Risk Guard) – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, všech 14 účtů healthy, testy OK, 0 událostí, 0 chyb v logu, 0 nových duplicit; P/L −3 086,93 (beze změny).
+- K7 (zasedání Fedu FOMC): ověření dat prošlo — 69 předem plánovaných zasedání 2018–2026 s úplnými daty. Napsán a předem uložen plán testu (4 pevná okna kolem oznámení, srovnání s náhodnými časy, náklady ×1/×2/×3) — [PR #48](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/48). Výnosy se zatím NEPOČÍTALY. Upozornění: při 69 událostech test zachytí jen velký efekt (≈ 1 % za 24 h); v akciích efekt po roce 2015 zmizel, očekávání je spíš nulové. Posláno ChatGPT k oponentuře (0281).
+- Forward RSI(2): data do 10. 11., 0 obchodů.
+- DB 25,2 %.
+- **Od vás:** chcete povolit PAPER test K7 (jen výzkum, žádný vliv na produkci)? Pokud ano, napište „SCHVÁLENO: výkonnost K7“ — spustím ho až po oponentuře ChatGPT.
+
 ## 2026-11-11 04:25 SEČ (běh #50)
 - Nasazeno: `6a23c58` (Risk Guard) – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, všech 14 účtů healthy, testy OK, 0 událostí, 0 chyb v logu, 0 nových duplicit; P/L −3 086,93 (+79,08 — 2 nové běžné PAPER obchody LIQUIDITY).
 - Lov hrany: nový kandidát **K7 – prémie za plánovaná makro oznámení** (zasedání Fedu FOMC a inflace CPI; long BTC jen v okně kolem oznámení, jinak hotovost). Makro kalendář projekt nikdy nepoužil. Zatím bez dat a bez výsledků: protokol ověření dat commitnut předem (větev `research/k7-macro-audit-20261111`), návrh poslán ChatGPT k oponentuře (0278). Podmínka pro test: ≥ 60 plánovaných FOMC s úplnými daty.
