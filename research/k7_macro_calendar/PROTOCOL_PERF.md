@@ -74,3 +74,46 @@ předem přijaté omezení — negativní výsledek = „nenalezeno při této s
 ## 9. Výstupy
 `trades.csv` (event_id, varianta, vstup/výstup, cena, funding, náklady ×1/×2/×3), `placebo.csv`, `results.json`,
 `RESULTS.md`, nezávislý přepočet souhrnů z `trades.csv`, SHA-256 všech archivů, řádek v `STRATEGY_REGISTRY.md`.
+
+---
+## DODATEK 1 (2026-11-11, autopilot dialog, podle oponentury ChatGPT 0282) — ZAMYKÁ PROTOKOL, MÁ PŘEDNOST PŘED §2–§8
+Commitnuto PŘED jakýmkoli výpočtem výnosů. Výkon stále **NESPUŠTĚN** a blokován do řádku vlastníka „SCHVÁLENO: výkonnost K7“.
+
+### D1. Jediný primární endpoint (nahrazuje výběr ze 4 variant v §4)
+- **PRE24\*** = long BTCUSDT perp, vstup open svíčky 1h v **t − 25 h**, výstup open svíčky v **t − 1 h** (24 h expozice,
+  výstup hodinu PŘED oznámením). Důvod: konvence 14:00 ET, DST, případná odchylka času zveřejnění ani tisková
+  konference 14:30 nemohou okno kontaminovat; rozhodnutí o obchodu je známo ≥ 29 dní předem (PIT lead z kroku 0).
+- Statistika události e: **D_e = R_net(e) − mean_k R_net(placebo_e,k)**, kde R_net = log-výnos − poplatky − skluz − funding
+  ve scénáři ×2 (základ). Jednotka inference = **datum FOMC** (placebo se průměruje uvnitř události).
+- PRE2, POST2, POST24 a varianta t = 14:30 ET: **pouze exploratorní diagnostika**, bez kandidátní brány, bez vlivu na verdikt.
+  PRE2/POST2 se počítají jen pro události s per-event doloženým časem zveřejnění (řádek „For release at …“ ze
+  stránky statementu, krok 0c – jen data, zatím NEPROVEDEN); jinak událost v diagnostice abstain.
+
+### D2. Inference (nahrazuje §8 (ii) a doplňuje §6)
+- Bootstrap **přes události** (10 000, převzorkují se celé události včetně jejich placeba), citlivost: blokový bootstrap
+  **po kalendářních letech** (9 bloků). Uvádí se 90% oboustranný CI (= jednostranný 95%) střední hodnoty D.
+- Placebo: §6 platí; vol kvartil jen z dat před pseudo-časem (žádná budoucí volatilita); výběr pseudo-časů deterministický
+  (seed = hash event_id), zmrazen před výpočtem; žádné přepárování po výsledku. Překryv placebových zásob sousedních
+  událostí se reportuje (diagnostika).
+- Multiplicita: primární test je jediný; DSR s N = 222 (registr 218 zkoušek + 4) zůstává doplňkovou bránou.
+
+### D3. Minimální ekonomicky relevantní efekt a pravidlo verdiktu (nahrazuje §8)
+- **MEE = 0,44 % / událost** (= 3× round-trip náklad ×1, filtr „hrana ≥ 3× náklad“).
+- **GO → jen forward PAPER** (žádný kandidát pro produkci): všechna současně – (1) dolní mez 90% CI D > 0 (event i roční
+  bootstrap); (2) bodový odhad D ≥ MEE; (3) průměr R_net PRE24\* ×2 > 0 a ×3 > 0; (4) D > 0 v ≥ 6 z 9 let;
+  (5) závěrečný úsek (události 52–69) D ×2 > 0; (6) podvzorek s pozorovaným fundingem (≥ 2019-09, 56 událostí) splní (1)
+  a (2) samostatně; (7) max drawdown kapitálové křivky PRE24\* ×2 ≤ 25 % a nejhorší jednotlivý obchod reportován;
+  (8) DSR ≥ 0,95 s N = 222.
+- **NO-GO (ZAMÍTNUTO)**: horní mez 90% CI D < MEE (ekonomicky relevantní efekt vyloučen) nebo bodový D ≤ 0.
+- **INCONCLUSIVE**: vše ostatní (např. D > 0, ale CI zahrnuje 0 i MEE). Žádný kandidát, žádné ladění oken/času/filtrů,
+  žádné další varianty; jen záznam do registru. Nulový nález ≠ důkaz absence malé hrany (§7).
+
+### D4. Náklady a vykonatelnost (doplňuje §5)
+- Vstup i výstup taker (market) za open svíčky; fee 0,095 % + skluz 0,05 % round trip ×1/×2/×3; základ ×2.
+- Funding: pozorovaný z Binance Vision; před 2019-09 (13 událostí, spot ceny) modelová domněnka 0,03 %/8 h — výsledky se
+  vykazují **zvlášť** pro 69 (vše) a 56 (pozorovaný funding, perp ceny).
+- Páka 1×, bez likvidace; gap risk se reportuje jako rozdělení výnosů 1h svíček v okně (min, 1. percentil).
+- Exploratorní POST okna: skluz ×2 v základu (beze změny).
+
+### D5. Co se NEMĚNÍ
+Události (69), PIT, dělení 35/16/18 (jen reportování podle segmentů), zdroje dat, výstupy §9. Žádné další dodatky po výpočtu.
