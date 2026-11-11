@@ -1,0 +1,24 @@
+{
+  "status": "TECHNICAL_QA_PASSED_INDEPENDENT_REVIEW_PENDING_PREDICTION_UNPROVEN",
+  "code_commit": "6b04686baa7ecc0e20e194dec8f3020fea30415e",
+  "branch": "research/xrp-top-risk-radar-v1-20261108",
+  "run_id": 42998005396,
+  "job_id": 130446814121,
+  "event": "push",
+  "conclusion": "success",
+  "url": "https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./actions/runs/42998005396",
+  "tests": {
+    "passed": 395,
+    "failed": 0,
+    "skipped": 0,
+    "runner": "pytest 8.3.3",
+    "ci_python": "3.11",
+    "local_python": "3.12"
+  },
+  "compile": "success",
+  "verification": "GitHub run metadata, job steps and actual job log inspected",
+  "review_request": "https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./blob/dialog/claude-chatgpt/dialog/messages/0284-chatgpt-20261111T0947Z.md",
+  "review_response": "PENDING; no response or approval from Claude claimed",
+  "predictive_validation": "NOT RUN; not inferred from unit or parser tests",
+  "scope": "PAPER only; no model fit, LIVE, Render, production, merge or force push"
+}
