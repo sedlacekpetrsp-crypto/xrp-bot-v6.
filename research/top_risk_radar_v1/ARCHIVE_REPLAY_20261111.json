@@ -1,0 +1,50 @@
+{
+  "checksum_url": "https://data.binance.vision/data/spot/daily/trades/XRPUSDT/XRPUSDT-trades-2024-01-02.zip.CHECKSUM",
+  "code_sha256": {
+    "research/top_risk_radar_v1/binance_spot_trades.py": "8d5a903dc23ccce7a3ca6d02f5da66d5f2bd5c08b746e3bdf6704ec0c53dc43b",
+    "research/top_risk_radar_v1/coverage_qa.py": "a109331ec742ae2e9110d2f76199137fe8a3d1682db16cc8c3720cd30097066c",
+    "research/top_risk_radar_v1/inspect_one_archive.py": "811ebc753e5e03806c7be4d8961a0251e77ed513dfd77b7e5a1bed8eadd67e0a",
+    "research/top_risk_radar_v1/label_events.py": "15b7aab956022a6f9a9e015759bbb1af3608a3bb4637abc85578e202ffcf7ffa",
+    "research/top_risk_radar_v1/replay_trade_archive.py": "ab00daf12b56e8de6cb06a7ef23c8dcc7c906d76c10df89dbba662606fff77fc"
+  },
+  "first_trade_id": 576925834,
+  "last_trade_id": 577151746,
+  "limits": [
+    "Single known archive; no new historical census.",
+    "Identity continuity does not prove cross-feed accuracy or PIT feature availability.",
+    "One-minute QA cannot establish 14/30-day coverage or predictive reliability."
+  ],
+  "missing_trade_ids": 0,
+  "one_minute_qa": {
+    "decision_at": "2024-01-02T00:05:00+00:00",
+    "heuristic_acceptable": true,
+    "horizon_seconds": 60,
+    "identity_status": "contiguous_ids",
+    "max_gap_limit_seconds": 5,
+    "max_gap_seconds": 4.835,
+    "missing_trade_ids": 0,
+    "reason": "heuristic_pass_requires_independent_source_qa",
+    "same_timestamp_pairs": 88,
+    "trades": 180
+  },
+  "parsed_rows": 225913,
+  "replayed_at": "2026-11-11T09:44:57.017272+00:00",
+  "source": {
+    "archive": "XRPUSDT-trades-2024-01-02.zip",
+    "checksum_verified": true,
+    "coverage_status": "not_yet_independently_verified",
+    "date_utc": "2024-01-02",
+    "first_trade_utc": "2024-01-02T00:00:00.439000+00:00",
+    "last_trade_utc": "2024-01-02T23:59:59.926000+00:00",
+    "market_type": "spot",
+    "point_in_time_feature_qa": "not_performed",
+    "provider": "Binance public data",
+    "raw_sha256": "9403d7f68ee3836dca85745e58cf70f4cc6d3734ba8931f854835345485b8de6",
+    "row_count": 225913,
+    "same_timestamp_adjacent_pairs": 116198,
+    "symbol": "XRPUSDT",
+    "venue": "Binance"
+  },
+  "source_url": "https://data.binance.vision/data/spot/daily/trades/XRPUSDT/XRPUSDT-trades-2024-01-02.zip",
+  "status": "REAL_ARCHIVE_PARSER_QA_ONLY_NOT_PREDICTIVE_VALIDATION"
+}
