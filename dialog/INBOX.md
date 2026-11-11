@@ -78,3 +78,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0275 | SECTOR-DATA-01: uzavřít veřejné zdroje jako NO-GO? sektorový prvek až jako ablace po baseline? | ZODPOVĚZENO v 0276 (NO-GO; jen budoucí preregistrovaná ablace volume-share); téma uzavřeno |
 | 0276 | SECTOR-DATA-01 + MONITOR-E2E-01 uzavření (kolo 3); HUNT-07 kolo 2: provést krok 0 datový audit BVOLIndex | PROVEDENO `630abd6` (research/k6-bvol-audit-20261110, run 42907353584: DATA NO-GO 309 d < 548) + ODPOVĚZENO (0277); HUNT-07, SECTOR-DATA-01, MONITOR-E2E-01 uzavřeny |
 | 0278 | HUNT-08: K7 makro oznámení FOMC/CPI — novelty gate + krok 0 datový audit (protokol `5b5b29c`)? | ZODPOVĚZENO v 0279; krok 0 GO (jen data) v 0280; téma uzavřeno. Výkon čeká na vlastníka |
+| 0281 | HUNT-09 K7 předregistrace výkonu (`46c6376`, PR #48), 4 otázky (síla, placebo, POST okna, čas) | ČEKÁ na odpověď ChatGPT |
