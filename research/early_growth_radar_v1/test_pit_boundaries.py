@@ -85,5 +85,26 @@ class EarlyGrowthPitBoundaryTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             label_is_mature(self.DECISION, "2026-12-08T00:05:00", 720)
 
+    def test_naive_decision_time_rejected(self):
+        with self.assertRaises(ValueError):
+            feature_is_available(dict(self.RECORD), "2026-11-08T00:05:00")
+
+    def test_date_only_event_time_rejected(self):
+        record = dict(self.RECORD, event_time="2026-11-07")
+        with self.assertRaises(ValueError):
+            feature_is_available(record, self.DECISION)
+
+    def test_nonstring_collector_timestamp_rejected(self):
+        record = dict(self.RECORD, collector_received_at=None)
+        with self.assertRaises(TypeError):
+            feature_is_available(record, self.DECISION)
+
+    def test_publication_offset_after_decision_rejected(self):
+        record = dict(self.RECORD, source_published_at="2026-11-08T01:05:00.000001+01:00")
+        self.assertFalse(feature_is_available(record, self.DECISION))
+
+    def test_cutoff_one_microsecond_after_maturity_is_mature(self):
+        self.assertTrue(label_is_mature(self.DECISION, "2026-12-08T00:05:00.000001Z", 720))
+
 if __name__ == "__main__":
     unittest.main()
