@@ -12,7 +12,7 @@ announce v registru, inventáři 20261105 a všech větvích = 0; nejbližší: 
 `session_transfer`, `weekend_carry` — časové/makro rodiny, jiný mechanismus).
 
 ## Krok 0 — co se audituje
-1. Kalendář událostí z oficiálních zdrojů staženchý přes GitHub Actions se SHA-256 každé stažené stránky:
+1. Kalendář událostí z oficiálních zdrojů stažený přes GitHub Actions se SHA-256 každé stažené stránky:
    - FOMC: federalreserve.gov (fomccalendars.htm + fomchistorical<rok>.htm), 2018–2026;
    - CPI: bls.gov plán vydání CPI (schedule/<rok>/home.htm nebo cpi.htm archiv), 2018–2026.
 2. Pro každou událost: datum, čas oznámení (FOMC 14:00 ET, CPI 08:30 ET → UTC s DST), příznak
