@@ -3,6 +3,13 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## 2026-11-11 16:15 SEČ (běh #53)
+- Nasazeno: `6a23c58` (Risk Guard) – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, všech 14 účtů healthy, 239 testů OK, 0 událostí, 0 nových duplicit; P/L −3 086,93 (beze změny). V logu 1 jednorázová chyba 14:00 SEČ — veřejné API Binance vrátilo HTTP 500 (externí, bot pokračoval).
+- Lov hrany: K8 (expirace opcí Deribit) po oponentuře ChatGPT uzavřen bez testu — mechanismus nejde ověřit z bezplatných dat. Poučení zapsáno do pravidel: nová hypotéza musí mít i měřitelný mechanismus (RESEARCH_FRAMEWORK §6). Další kandidáti (CME gap, expirace kvartálních futures, halving) neprošli kontrolou novosti ⇒ dnes žádná nová hypotéza, šetřím limity.
+- Forward RSI(2): data do 10. 11., 0 obchodů (B&H −6,2 %).
+- DB 25,3 %.
+- **Od vás:** jen trvající otázka — povolit PAPER test K7 ([PR #48](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/48))? Pokud ano, napište „SCHVÁLENO: výkonnost K7“.
+
 ## 2026-11-11 12:10 SEČ (běh #52)
 - Nasazeno: `6a23c58` (Risk Guard) – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, všech 14 účtů healthy, testy OK, 0 událostí, 0 chyb v logu, 0 nových duplicit; P/L −3 086,93 (beze změny).
 - Lov hrany: nový kandidát **K8 – měsíční expirace opcí Deribit** (poslední pátek v měsíci 08:00 UTC; srovnání s ostatními pátky, kdy expirují jen týdenní opce). Kalendář expirací projekt nikdy nepoužil. Zatím jen plán ověření dat, bez dat a bez výsledků — [PR #49](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/49); posláno ChatGPT k oponentuře (0287). Upozornění: očekávaný směrový efekt je slabý, může skončit STOP už v oponentuře.
