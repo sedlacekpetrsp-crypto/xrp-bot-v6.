@@ -31,3 +31,30 @@ Nesplněno ⇒ DATA NO-GO, K7 uzavřít bez výkonu. Žádná imputace, žádný
 Max. 4 varianty: okno {−24 h → oznámení, −2 h → +2 h} × událost {FOMC, FOMC+CPI}; long BTC perp, jinak hotovost;
 náklady ×1/×2/×3 + funding; benchmarky: B&H, náhodná okna stejné délky a stejného dne v týdnu (placebo),
 hotovost; DSR s N z registru + 4. Závěrečný test smí jen zamítnout; povýšení jen forward PAPER ≥ 60–90 d.
+
+---
+## DODATEK 1 (2026-11-11, po oponentuře ChatGPT 0279; commitnuto PŘED stažením dat) — NAHRAZUJE bránu výše
+
+1. **Jediná primární brána = FOMC-only.** CPI se v tomto kroku 0 NEAUDITUJE ani nepooluje; případně samostatná
+   hypotéza s vlastním protokolem. Varianta „nebo ≥ 150 FOMC+CPI“ se ruší (žádné OR podle výsledku).
+2. **Vesmír událostí = jen to, co bylo zveřejněno předem (PIT z archivu, ne ze současné stránky).**
+   Pro každý rok Y ∈ 2018…2026 se vezme poslední archivovaný snímek `federalreserve.gov/monetarypolicy/fomccalendars.htm`
+   ve Wayback Machine s časem < Y-01-01 00:00 UTC (a ≥ Y-1-07-01). Události roku Y = schůze roku Y uvedené v tomto
+   snímku bez označení unscheduled/notation vote/conference call. `first_announced_at` = čas snímku (horní mez
+   skutečného zveřejnění ⇒ konzervativní). Rok bez takového snímku nebo s 0 rozparsovanými schůzemi ⇒ všechny
+   jeho události PIT UNKNOWN (nepočítají se do GO). `evidence_hash` = SHA-256 surového snímku.
+3. **Realizace:** `actual_at` doložen existencí tiskové zprávy `newsevents/pressreleases/monetary<YYYYMMDD>a.htm`
+   (HTTP 200, SHA-256) s datem = poslední den schůze; čas 14:00 America/New_York → UTC přes zoneinfo (DST),
+   `time_source=convention`. Plánovaná schůze bez této zprávy = ZRUŠENÁ/PŘESUNUTÁ ⇒ vyloučena a vypsána.
+   Schůze na současné stránce, které ve snímku předem nebyly (mimořádné, např. 2020-03-03, 2020-03-15),
+   se vypíší zvlášť a nikdy nevstupují. Budoucí schůze (po čase auditu) se nepočítají.
+4. **Pokrytí:** Binance Vision spot BTCUSDT 1h (monthly zip + CHECKSUM), okno [t−48 h, t+48 h) = 96 svíček, 100 %.
+   ETHUSDT jen informativně (mimo bránu).
+5. **Brána GO (jediná):** ≥ 60 událostí se `pit_status=PROVEN` (snímek ≥ 7 dní před `scheduled_at`), doloženou
+   realizací a 100 % pokrytím BTC; při chronologickém dělení 50/25/25 ⇒ závěrečný úsek ≥ 15; 0 chyb CHECKSUM/hash.
+   Jinak DATA NO-GO. GO ≠ statistická síla: před výkonem povinná power/precision analýza, literární audit,
+   nulová hypotéza a pevná okna (pre- a post-announcement odděleně), placebo s párováním den v týdnu / UTC hodina /
+   roční období / vol režim z minulosti, kontrola překryvu s CPI a clusterů. Výkon NESPOUŠTĚT ani při GO
+   (vyžaduje nový řádek vlastníka v OWNER_DECISIONS.md a novou oponenturu).
+6. **Výstup:** `step0_events.csv` se sloupci `event_id, source_url, first_announced_at, scheduled_at, actual_at,
+   evidence_hash, pit_status, coverage_1h` (+ `actual_hash, eth_coverage_1h, note`), `step0_summary.json/txt`.
