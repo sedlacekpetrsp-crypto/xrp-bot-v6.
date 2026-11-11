@@ -63,3 +63,16 @@ def audit_coverage(decision_at: datetime, trades: Sequence[Trade], as_of: dateti
     ok = ref_ok and end_ok and identity_ok and bool(gaps) and worst <= max_gap.total_seconds()
     reason = "heuristic_pass_requires_independent_source_qa" if ok else "incomplete_or_suspicious_trade_coverage"
     return CoverageReport(times[0] if times else None,times[-1] if times else None,len(times),duplicates,worst,ref_ok,end_ok,ok,reason,identity_status,missing_ids)
+
+
+def audit_label_coverage(label, trades: Sequence[Trade], as_of: datetime,
+                         max_gap: timedelta = timedelta(minutes=5)) -> CoverageReport:
+    """Coverage QA bound to the label's own horizon (fail-closed).
+
+    The generic default horizon (14 days) matches only the downside target;
+    a +30%/720h growth negative audited with that default would pass on
+    14 days of data. Deriving the horizon from ``label.deadline_at`` removes
+    that cross-horizon footgun.
+    """
+    horizon = label.deadline_at - label.decision_at
+    return audit_coverage(label.decision_at, trades, as_of, horizon=horizon, max_gap=max_gap)
