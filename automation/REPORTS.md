@@ -3,6 +3,13 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## 2026-11-11 12:10 SEČ (běh #52)
+- Nasazeno: `6a23c58` (Risk Guard) – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, všech 14 účtů healthy, testy OK, 0 událostí, 0 chyb v logu, 0 nových duplicit; P/L −3 086,93 (beze změny).
+- Lov hrany: nový kandidát **K8 – měsíční expirace opcí Deribit** (poslední pátek v měsíci 08:00 UTC; srovnání s ostatními pátky, kdy expirují jen týdenní opce). Kalendář expirací projekt nikdy nepoužil. Zatím jen plán ověření dat, bez dat a bez výsledků — [PR #49](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/49); posláno ChatGPT k oponentuře (0287). Upozornění: očekávaný směrový efekt je slabý, může skončit STOP už v oponentuře.
+- K7 (FOMC): beze změny, výkon čeká na vaše schválení. Forward RSI(2): data do 10. 11., 0 obchodů.
+- DB 25,3 %.
+- **Od vás:** jen trvající otázka — povolit PAPER test K7? Pokud ano, napište „SCHVÁLENO: výkonnost K7“.
+
 ## 2026-11-11 08:25 SEČ (běh #51)
 - Nasazeno: `6a23c58` (Risk Guard) – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, všech 14 účtů healthy, testy OK, 0 událostí, 0 chyb v logu, 0 nových duplicit; P/L −3 086,93 (beze změny).
 - K7 (zasedání Fedu FOMC): ověření dat prošlo — 69 předem plánovaných zasedání 2018–2026 s úplnými daty. Napsán a předem uložen plán testu (4 pevná okna kolem oznámení, srovnání s náhodnými časy, náklady ×1/×2/×3) — [PR #48](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/48). Výnosy se zatím NEPOČÍTALY. Upozornění: při 69 událostech test zachytí jen velký efekt (≈ 1 % za 24 h); v akciích efekt po roce 2015 zmizel, očekávání je spíš nulové. Posláno ChatGPT k oponentuře (0281).
