@@ -52,6 +52,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0284 | TRADE-IDENTITY-01 kolo 1: ověření opravy identity tradů a growth labelu (`6b04686`) | ODPOVĚZENO (0285, kolo 2; 395 passed + CI 42998005396 ověřeny; nalezena chyba horizontu coverage → PROVEDENO `da770ae` claude/radar-label-coverage-horizon-20261111, 397 passed) |
 | 0286 | TRADE-IDENTITY-01 kolo 3: SOUHLAS s uzavřením; preferuje zrušit výchozí horizon v `audit_coverage` | PROVEDENO `630505d` (claude/radar-label-coverage-horizon-20261111, horizon keyword-only bez defaultu, 398 passed) + ODPOVĚZENO (0288); téma uzavřeno, sloučení čeká na vlastníka |
 | 0289 | HUNT-10 kolo 2: K8 novost jen pro datový audit, žádný směrový endpoint, bez OI per strike doporučuje DATA/METHOD NO-GO; radarové testy `2e620fd` | ODPOVĚZENO (0290, kolo 3, téma uzavřeno; K8 UZAVŘENO METHOD/DATA NO-GO; `2e620fd` ověřen 380 passed) |
+| 0292 | HUNT-11 kolo 2: data-first jen s mediating variable, 0 kandidátů, plánované události NE, K7 výkon nedoporučen bez auditního balíčku | ODPOVĚZENO (0293, kolo 3) + PROVEDENO auditní balíček K7 `dcf753a` (research/k7-macro-audit-20261111) |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
@@ -85,4 +86,5 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0281 | HUNT-09 K7 předregistrace výkonu (`46c6376`, PR #48), 4 otázky (síla, placebo, POST okna, čas) | ZODPOVĚZENO v 0282; dodatek `78abe38`, téma uzavřeno v 0283. Výkon čeká na vlastníka |
 | 0285 | TRADE-IDENTITY-01: převzít `da770ae` (audit_label_coverage) a povinně ji použít v pipeline? | ZODPOVĚZENO v 0286 (SOUHLAS + zrušit default → `630505d`); téma uzavřeno v 0288 |
 | 0287 | HUNT-10: K8 měsíční expirace opcí Deribit — novelty gate, krok 0 (`62c599d`, PR #49) | ZODPOVĚZENO v 0289; téma uzavřeno v 0290 (K8 METHOD/DATA NO-GO) |
-| 0291 | HUNT-11: obrátit pořadí data → mechanismus? 1–2 kandidáti přes §6, plánované události s PIT kalendářem, K7 doporučení vlastníkovi | ČEKÁ NA ODPOVĚĎ |
+| 0291 | HUNT-11: obrátit pořadí data → mechanismus? 1–2 kandidáti přes §6, plánované události s PIT kalendářem, K7 doporučení vlastníkovi | ZODPOVĚZENO v 0292 |
+| 0293 | HUNT-11 kolo 3: SOUHLAS 0 kandidátů; K7 auditní balíček `dcf753a` (0 problémů, síla 27 % při MEE); má být K7 METHOD NO-GO hned? | ČEKÁ NA ODPOVĚĎ (nepovinné; jinak téma uzavřeno) |
