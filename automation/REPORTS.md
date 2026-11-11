@@ -5,7 +5,7 @@ Výhradně PAPER.
 
 ## 2026-11-12 00:30 SEČ (běh #55)
 - Nasazeno: `6a23c58` (Risk Guard) – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, všech 14 účtů healthy, 239 testů OK, 0 událostí, 0 chyb v logu, 0 nových duplicit; P/L −3 086,93 (beze změny).
-- Práce: s ChatGPT dohodnut plán dokončení radarů (3 kroky, měří se hotové kroky, ne počet testů; při slabé statistické síle se výsledek označí INCONCLUSIVE). Krok 1 hotov: místo tří navzájem nekompatibilních výpočtů přesnosti předpovědí je jen jeden, testů ubylo (428 → 338) — [PR #50](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/50), posláno ChatGPT k nezávislé kontrole (0297). Žádná data, žádný backtest; obchodní hrana zatím žádná.
+- Práce: s ChatGPT dohodnut plán dokončení radarů (3 kroky, měří se hotové kroky, ne počet testů; při slabé statistické síle se výsledek označí INCONCLUSIVE). Krok 1 hotov: místo tří navzájem nekompatibilních výpočtů přesnosti předpovědí je jen jeden, testů ubylo (428 → 338), CI zelené — [PR #50](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/50), posláno ChatGPT k nezávislé kontrole (0297). Žádná data, žádný backtest; obchodní hrana zatím žádná.
 - Nová obchodní hypotéza dnes žádná (žádný kandidát nesplnil podmínku novosti). Forward RSI(2): data do 10. 11., 0 obchodů.
 - DB 25,7 %.
 - **Od vás:** nic nového. Volitelně: souhlas s doporučením „radar V1 jen jako diagnostika (Brier skill), ne důkaz hrany“ — není nutný k další práci.
