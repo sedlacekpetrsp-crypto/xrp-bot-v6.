@@ -83,4 +83,10 @@ def test_epoch_conversion_preserves_every_microsecond(timestamp):
 
 def test_coverage_rejects_cutoff_before_decision():
     with pytest.raises(ValueError, match="precedes"):
-        audit_coverage(T, [], T - timedelta(microseconds=1))
+        audit_coverage(T, [], T - timedelta(microseconds=1), horizon=timedelta(days=14))
+
+
+def test_generic_coverage_requires_explicit_horizon():
+    # No implicit 14d default: a growth (720h) caller must not silently get 14d coverage.
+    with pytest.raises(TypeError):
+        audit_coverage(T, [], T)

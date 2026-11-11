@@ -14,8 +14,8 @@ AS_OF = D + timedelta(days=31)
 def test_growth_negative_with_only_14_days_fails_label_bound_coverage():
     label = growth_label(D, FOURTEEN_DAYS, AS_OF)
     assert label.status == "negative_requires_coverage_qa"
-    # Generic default horizon would wrongly accept it:
-    assert audit_coverage(D, FOURTEEN_DAYS, AS_OF).acceptable
+    # A 14d horizon (the old implicit default) would wrongly accept it:
+    assert audit_coverage(D, FOURTEEN_DAYS, AS_OF, horizon=timedelta(days=14)).acceptable
     assert not audit_label_coverage(label, FOURTEEN_DAYS, AS_OF).acceptable
 
 

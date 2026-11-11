@@ -21,7 +21,7 @@ class CoverageReport:
     missing_trade_ids: int | None = None
 
 def audit_coverage(decision_at: datetime, trades: Sequence[Trade], as_of: datetime,
-                   horizon: timedelta = timedelta(days=14),
+                   *, horizon: timedelta,
                    max_gap: timedelta = timedelta(minutes=5)) -> CoverageReport:
     """Conservative heuristic, NOT proof of complete feed or exchange uptime.
 
@@ -69,8 +69,8 @@ def audit_label_coverage(label, trades: Sequence[Trade], as_of: datetime,
                          max_gap: timedelta = timedelta(minutes=5)) -> CoverageReport:
     """Coverage QA bound to the label's own horizon (fail-closed).
 
-    The generic default horizon (14 days) matches only the downside target;
-    a +30%/720h growth negative audited with that default would pass on
+    The generic function has no default horizon (keyword-only, required);
+    a +30%/720h growth negative audited with a 14d horizon would pass on
     14 days of data. Deriving the horizon from ``label.deadline_at`` removes
     that cross-horizon footgun.
     """
