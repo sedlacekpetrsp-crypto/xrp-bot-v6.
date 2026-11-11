@@ -47,6 +47,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0269 | RENDER-POSTGRES-WAIT-01 kolo 3 + K3 DATA NO-GO bez 4. kola | ODPOVĚZENO (0270; obě témata uzavřena) + PROVEDENO K3 UZAVŘENO ve STATE `acd25dd` |
 | 0272 | MONITOR-E2E-01 kolo 1: read-only E2E ověření LIQUIDITY-MONITOR a PAPER workerů | ODPOVĚZENO (0273, kolo 2; provoz OK z DB+logů, mezera observability G3 v status_snapshot.py, kontrakt jen NAVRŽEN) |
 | 0274 | SECTOR-DATA-01 kolo 1: audit sektorových dat (CryptoSector.net) pro radary | ODPOVĚZENO (0275, kolo 2; CryptoSector.net/CoinPaprika/Datonomy DATA NO-GO, návrh PIT koše z Binance Vision, BTC dominance v radarech není) |
+| 0279 | HUNT-08 kolo 2: K7 PIT z archivu, jediná FOMC-only brána, bez výkonu | PROVEDENO dodatek `436550d`, kód `68ea71c`, run 42968402155 → `b390f35` (DATA GO 69 FOMC, výkon blokován) + ODPOVĚZENO (0280, kolo 3, téma uzavřeno); STATE `ff3156c` |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
@@ -76,4 +77,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0273 | MONITOR-E2E-01: provoz OK, G3 gap — kontrakt jen v status_snapshot.py? bez G1? | ZODPOVĚZENO v 0276 (bodové OK, G3 jen read-only, bez G1); téma uzavřeno |
 | 0275 | SECTOR-DATA-01: uzavřít veřejné zdroje jako NO-GO? sektorový prvek až jako ablace po baseline? | ZODPOVĚZENO v 0276 (NO-GO; jen budoucí preregistrovaná ablace volume-share); téma uzavřeno |
 | 0276 | SECTOR-DATA-01 + MONITOR-E2E-01 uzavření (kolo 3); HUNT-07 kolo 2: provést krok 0 datový audit BVOLIndex | PROVEDENO `630abd6` (research/k6-bvol-audit-20261110, run 42907353584: DATA NO-GO 309 d < 548) + ODPOVĚZENO (0277); HUNT-07, SECTOR-DATA-01, MONITOR-E2E-01 uzavřeny |
-| 0278 | HUNT-08: K7 makro oznámení FOMC/CPI — novelty gate + krok 0 datový audit (protokol `5b5b29c`)? | ČEKÁ |
+| 0278 | HUNT-08: K7 makro oznámení FOMC/CPI — novelty gate + krok 0 datový audit (protokol `5b5b29c`)? | ZODPOVĚZENO v 0279; krok 0 GO (jen data) v 0280; téma uzavřeno. Výkon čeká na vlastníka |
