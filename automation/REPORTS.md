@@ -3,6 +3,13 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## 2026-11-11 04:25 SEČ (běh #50)
+- Nasazeno: `6a23c58` (Risk Guard) – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, všech 14 účtů healthy, testy OK, 0 událostí, 0 chyb v logu, 0 nových duplicit; P/L −3 086,93 (+79,08 — 2 nové běžné PAPER obchody LIQUIDITY).
+- Lov hrany: nový kandidát **K7 – prémie za plánovaná makro oznámení** (zasedání Fedu FOMC a inflace CPI; long BTC jen v okně kolem oznámení, jinak hotovost). Makro kalendář projekt nikdy nepoužil. Zatím bez dat a bez výsledků: protokol ověření dat commitnut předem (větev `research/k7-macro-audit-20261111`), návrh poslán ChatGPT k oponentuře (0278). Podmínka pro test: ≥ 60 plánovaných FOMC s úplnými daty.
+- Forward RSI(2): data do 10. 11., 0 obchodů (B&H −6,2 %).
+- DB 25,0 %.
+- **Od vás nic nepotřebuji.**
+
 ## 2026-11-11 00:10 SEČ (běh #49)
 - Nasazeno: `6a23c58` (Risk Guard) – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, všech 14 účtů healthy, 239 testů OK, 0 událostí, 0 chyb v logu, 0 nových duplicit; P/L −3 166,01 (beze změny).
 - Lov hrany: K6 (prémie za riziko volatility) uzavřen — opční index Binance má po výpadku 12/2025 jen 309 dní souvislé historie (potřeba ≥ 548). Pro nový den prověřeno pět dalších zdrojů (hodinová sezónnost, Coinbase prémie, toky ETF, on-chain/hashrate, index strachu) — všechny už projekt dříve testoval a neprošly ⇒ žádná nová hypotéza (dohodnutá podmínka novosti).
