@@ -55,3 +55,16 @@ def test_bad_source_evidence_fails_closed(changes, reason):
 def test_gap_is_not_filled_by_adapter():
     with pytest.raises(ValueError, match="insufficient_lookback"):
         build_feature_bundle(rows("XRPUSDT")[:-1], rows("BTCUSDT"), D)
+
+
+def test_int_and_float_close_produce_identical_bundle_hash():
+    x, b = rows("XRPUSDT"), rows("BTCUSDT")
+    integer_close = [replace(x[0], close=int(x[0].close)), *x[1:]]
+    assert build_feature_bundle(x, b, D) == build_feature_bundle(integer_close, b, D)
+
+
+def test_mixed_provider_within_symbol_series_rejected():
+    x, b = rows("XRPUSDT"), rows("BTCUSDT")
+    mixed = [*x[:-1], replace(x[-1], provider="other_exchange")]
+    with pytest.raises(ValueError, match="mixed_provider_in_symbol_series"):
+        build_feature_bundle(mixed, b, D)
