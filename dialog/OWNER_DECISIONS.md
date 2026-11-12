@@ -45,3 +45,9 @@ Platí jen pro PR #47. Žádné schválení produkce, nasazení, LIVE, výkonnos
 ### Původ a rozsah (zapsal Claude za vlastníka, chat s Claudem 2026-11-12 06:48 SEČ)
 - Claude položil: „1. Sloučit PR #52 a PR #53? 2. PR #51 doporučuji sloučit až poté, co ChatGPT zapracuje nebo odmítne oba nálezy.“ Vlastník: „Dobře proved číslo 1 i 2“.
 Jen výzkumné větve. Žádné schválení produkce, nasazení, LIVE ani výkonnostních testů; žádná další sloučení.
+
+2026-11-12 SCHVÁLENO: výkonnost radar V1 G1 — jediný předem definovaný historický PAPER test XRP Top Risk Radaru −20 % / 14 dní, až po zmrazení protokolu, dat, kódu a kritérií vyhodnocení. Bez merge, deploy, Render, LIVE a změn produkce.
+### Původ a rozsah (zapsal ChatGPT na výslovný pokyn vlastníka)
+- Vlastník dne 2026-11-12 v chatu uvedl: „Schvaluji jeden předem definovaný PAPER historický výkonnostní test XRP Top Risk Radaru −20 % / 14 dní. Nejprve zmrazte protokol, data a kritéria vyhodnocení; žádný merge, deploy ani LIVE.“
+- Po vysvětlení, že je nutné zapsat toto schválení do `dialog/OWNER_DECISIONS.md`, vlastník výslovně potvrdil „Ano, Ano.“ Tím povolil právě tento zápis, nikoli rozšíření rozsahu testu.
+- Před spuštěním je nutné uzavřít PIT/datové/validační blokery a neměnný G1 freeze manifest. Zápis není důkazem splnění těchto bran ani záznamem spuštění. Povolen je nejvýše jeden výkonový běh, bez opakování nebo ladění podle výsledků.
