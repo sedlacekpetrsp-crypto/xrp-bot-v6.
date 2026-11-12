@@ -47,10 +47,19 @@ def fit_m0(train: Sequence[LabelRow], *, target: str, test_start: datetime) -> d
         seen.add(decision)
         if row.label is not None and (type(row.label) is not int or row.label not in (0, 1)):
             raise ValueError("invalid_label")
-        if available < decision + horizon:
+        # PROTOCOL.md: a label matures after the full horizon "unless already
+        # hit". A positive (1) may become available early, but never at or
+        # before its own decision. Negative (0) and missing labels cannot be
+        # known before the horizon has fully elapsed.
+        if row.label == 1:
+            if available <= decision:
+                raise ValueError("premature_label_availability")
+        elif available < decision + horizon:
             raise ValueError("premature_label_availability")
         if decision >= cutoff:
             continue
+        # Train inclusion stays conditioned on the FULL horizon for every label,
+        # so early positives cannot enter before negatives (no selection bias).
         if row.label is not None and decision + horizon < cutoff and available < cutoff:
             values.append(row.label)
     if not values:

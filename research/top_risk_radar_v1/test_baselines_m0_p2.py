@@ -56,7 +56,7 @@ def test_naive_and_early_label_availability_rejected():
     with pytest.raises(ValueError, match="timestamp must be timezone-aware"):
         fit_m0([LabelRow(TEST.replace(tzinfo=None), TEST, 1)], target="downside", test_start=TEST)
     with pytest.raises(ValueError, match="premature_label_availability"):
-        fit_m0([LabelRow(TEST - timedelta(days=31), TEST - timedelta(days=30), 1)],
+        fit_m0([LabelRow(TEST - timedelta(days=31), TEST - timedelta(days=30), 0)],
                target="downside", test_start=TEST)
 
 
