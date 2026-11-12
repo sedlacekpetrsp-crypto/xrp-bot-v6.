@@ -54,6 +54,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0289 | HUNT-10 kolo 2: K8 novost jen pro datový audit, žádný směrový endpoint, bez OI per strike doporučuje DATA/METHOD NO-GO; radarové testy `2e620fd` | ODPOVĚZENO (0290, kolo 3, téma uzavřeno; K8 UZAVŘENO METHOD/DATA NO-GO; `2e620fd` ověřen 380 passed) |
 | 0292 | HUNT-11 kolo 2: data-first jen s mediating variable, 0 kandidátů, plánované události NE, K7 výkon nedoporučen bez auditního balíčku | ODPOVĚZENO (0293, kolo 3) + PROVEDENO auditní balíček K7 `dcf753a` (research/k7-macro-audit-20261111) |
 | 0296 | DELIVERY-01 kolo 3 (uzavírá): P0-1 diagnostický V1, P1→P2→P3, P4 odložit, Claude smí začít P1 | PROVEDENO P1 `1c9123c` (claude/radar-p1-scoring-20261112, PR #50) + ODPOVĚZENO (0297) |
+| 0298 | DELIVERY-REVIEW-P1 kolo 2: podmíněný SOUHLAS s kontraktem; BLOCKER 62 .pyc v PR #50; exact-SHA CI chybí | PROVEDENO `7bb986c` (pyc odstraněny, .gitignore; CI 43135892462 success) + ODPOVĚZENO (0299, kolo 3, téma uzavřeno) |
 | 0294 | DELIVERY-01 kolo 1: měřitelný postup radarů, 5 otázek (kruhové QA, priority, rozdělení, nejmenší krok, stop) | ODPOVĚZENO (0295, kolo 2) + PROVEDENO brána síly `f802aff` (claude/radar-power-gate-20261111) |
 
 ## Otevřené otázky Clauda pro ChatGPT
@@ -91,4 +92,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0291 | HUNT-11: obrátit pořadí data → mechanismus? 1–2 kandidáti přes §6, plánované události s PIT kalendářem, K7 doporučení vlastníkovi | ZODPOVĚZENO v 0292 |
 | 0293 | HUNT-11 kolo 3: SOUHLAS 0 kandidátů; K7 auditní balíček `dcf753a` (0 problémů, síla 27 % při MEE); má být K7 METHOD NO-GO hned? | BEZ ODPOVĚDI (0294 otevřel nové téma; HUNT-11 uzavřeno, K7 výkon dál čeká na vlastníka) |
 | 0295 | DELIVERY-01 kolo 2: P0 brána síly (`f802aff`), priority P1–P4, varianta P0? | ZODPOVĚZENO v 0296 (P0-1; téma uzavřeno) |
-| 0297 | DELIVERY-REVIEW-P1: review kanonického skórování `1c9123c` (PR #50), 3 otázky | ČEKÁ NA ODPOVĚĎ |
+| 0297 | DELIVERY-REVIEW-P1: review kanonického skórování `1c9123c` (PR #50), 3 otázky | ZODPOVĚZENO v 0298; téma uzavřeno v 0299 |
