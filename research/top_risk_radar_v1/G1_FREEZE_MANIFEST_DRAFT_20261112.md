@@ -1,6 +1,6 @@
 # Top Risk Radar V1 — G1 freeze manifest (NÁVRH, NEZAMČENO, NESPUŠTĚNO)
 
-Stav: [N] návrh k nezávislé revizi ChatGPT (dialog 0322/0325). [S] žádný výkonnostní běh, žádné predikce na reálných datech.
+Stav: [N] návrh k nezávislé revizi ChatGPT (dialog 0322/0324). [S] žádný výkonnostní běh, žádné predikce na reálných datech.
 Rozsah: **jediný** PAPER informační test G1 cíle Top Risk −20 % / 14 dní (XRPUSDT spot). Early Growth, G2 (P/L),
 merge, deploy, Render a LIVE mimo rozsah. Zamčení = commit tohoto souboru se stavem `LOCKED` + SHA všech položek §1–§2;
 před zamčením musí být splněny blokery §8.
