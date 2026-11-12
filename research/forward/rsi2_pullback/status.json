@@ -1,8 +1,8 @@
 {
  "strategy": "RSI(2) pullback (post-hoc v\u00fdjimka, B6 nespln\u011bno)",
  "start": "2026-11-07",
- "updated_for": "2026-11-10",
- "days": 4,
+ "updated_for": "2026-11-11",
+ "days": 5,
  "symbols": [
   "BTCUSDT",
   "ETHUSDT",
@@ -19,18 +19,18 @@
    "wins": 0,
    "net_pnl_closed": 0,
    "return_pct": 0.0,
-   "bh_return_pct": -6.238849996157003,
+   "bh_return_pct": -6.455970327954841,
    "max_dd_pct": 0.0,
-   "bh_max_dd_pct": 5.768566441005274
+   "bh_max_dd_pct": 5.986775796578192
   },
   "x2": {
    "closed_trades": 0,
    "wins": 0,
    "net_pnl_closed": 0,
    "return_pct": 0.0,
-   "bh_return_pct": -6.238849996157003,
+   "bh_return_pct": -6.455970327954841,
    "max_dd_pct": 0.0,
-   "bh_max_dd_pct": 5.768566441005274
+   "bh_max_dd_pct": 5.986775796578192
   }
  },
  "alerts": []
