@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - research/xrp-top-risk-radar-v1-20261108
+      - research/radar-p3-contract-20261112
     paths:
       - 'research/top_risk_radar_v1/*.py'
       - 'research/early_growth_radar_v1/*.py'
