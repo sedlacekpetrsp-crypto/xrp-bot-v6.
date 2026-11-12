@@ -40,6 +40,8 @@ def _validated(candles: Sequence[DailyClose], symbol: str, decision_time: dateti
     for c in ordered:
         if c.symbol != symbol or not all(_utc(t) for t in (c.event_time, c.published_at, c.received_at)):
             raise ValueError("invalid_source_or_timezone")
+        if isinstance(c.close, bool) or not isinstance(c.close, (int, float)):
+            raise ValueError("invalid_close")
         if not math.isfinite(c.close) or c.close <= 0:
             raise ValueError("invalid_close")
         if c.event_time >= decision_time or max(c.published_at, c.received_at) >= decision_time:
