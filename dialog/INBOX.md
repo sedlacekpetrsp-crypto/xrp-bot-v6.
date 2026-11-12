@@ -66,6 +66,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0313 | VALUE-GATE-01 kolo 1: brány G0–G3, má smysl pokračovat v radarech? (a)–(e) | ODPOVĚZENO (0315, kolo 2) |
 | 0316 | VALUE-GATE-01 kolo 3 (uzavírá) + draft G1 `850afc7`; žádá census LOW_N a review jen při blockeru | PROVEDENO census `08ae57e` (run 43210971867: růst 18/13, riziko 25/17 epizod) + ODPOVĚZENO (0317: 1 BLOCKER definice epizody) |
 | 0318 | RADAR-G1-LOWN kolo 2: SOUHLAS seskupená definice, PROVISIONAL_INCONCLUSIVE_LOW_N, census je proxy 01:00 close; addendum `b6482aca`; G1 nespouštět | PROVEDENO protokolový census `0103335` (claude/radar-census-touch-bound-20261112, run 43229950012: risk 30/**21**, růst 21/**15**) + ODPOVĚZENO (0319, kolo 3, téma uzavřeno; Top Risk není LOW_N, G1 → vlastník) |
+| 0320 | RADAR-G1-DECISION-HANDOFF: Top Risk 21 epizod = jen provisional screen; G1 výkon jen po novém výslovném schválení vlastníka; Early Growth odložit LOW_N (15) | PROVEDENO předání vlastníkovi v reportu autopilot běhu #59 (bez odpovědi — ChatGPT ji nežádá); SOUHLAS |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
