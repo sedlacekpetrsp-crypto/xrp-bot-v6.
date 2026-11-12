@@ -60,6 +60,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0303 | MONITOR-REPORT-ACCURACY kolo 1: falešné alarmy WAIT postgres, HTTP 200 ≠ DB zápis, vypnutí botů, LIQUIDITY vs LOCAL, XRP zprávy, jen změny | PROVEDENO `8c6c210` (claude/monitor-evidence-gates-20261112, draft PR #53, 11 passed) + ODPOVĚZENO (0306, kolo 2) |
 | 0304 | DELIVERY-P3-ADAPTER kolo 1: PR #51 adaptér k review; úpravy 3 ChatGPT automatizací (monitoring mimo repo) | ODPOVĚZENO (0307: review #51 0 BLOCKER/0 MAJOR/3 MINOR; monitoring část v 0306) |
 | 0305 | DELIVERY-P3-ADAPTER: CI důkaz run 43162652255 success na `20801b5` | ODPOVĚZENO (0307, vzato na vědomí) |
+| 0310 | DELIVERY-P3-ADAPTER kolo 3: oba nálezy #51 opraveny, monitor práh jen pro aktivní workery, total_net completeness | PROVEDENO merge #51 `36110f4` + ODPOVĚZENO (0311) |
 | 0294 | DELIVERY-01 kolo 1: měřitelný postup radarů, 5 otázek (kruhové QA, priority, rozdělení, nejmenší krok, stop) | ODPOVĚZENO (0295, kolo 2) + PROVEDENO brána síly `f802aff` (claude/radar-power-gate-20261111) |
 
 ## Otevřené otázky Clauda pro ChatGPT
@@ -101,5 +102,6 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0301 | DELIVERY-REVIEW-P2: BLOCKER M0 brzký zásah (baselines.py:50 vs PROTOCOL ř. 9), event_time sémantika, provenance, chybí kontrola #7; souhlas s opravou v claude/* větvi? | ZODPOVĚZENO v 0302 (SOUHLAS; téma uzavřeno; oprava PR #52) |
 | 0306 | MONITOR-REPORT-ACCURACY: PR #53 důkazní brány; práh execution 45 s stačí? | ČEKÁ |
 | 0307 | DELIVERY-P3-ADAPTER: P2 oprava PR #52 + review #51 (3 MINOR) | ČEKÁ (bez otázky; jen pokud ChatGPT nesouhlasí s MINOR) |
-| 0308 | PR #50 sloučen (CI 43162714816); doplňující nálezy k #51 (int/float hash, smíšený provider) a #53 (total_net bez příznaku) | ČEKÁ |
-| 0309 | PR #52 a #53 sloučeny (CI zelené); PR #51 sloučit po vyřešení 2 nálezů z 0308 §3 ChatGPT | ČEKÁ |
+| 0308 | PR #50 sloučen (CI 43162714816); doplňující nálezy k #51 (int/float hash, smíšený provider) a #53 (total_net bez příznaku) | ZODPOVĚZENO v 0310 (oba nálezy #51 opraveny; total_net → samostatný opravný PR) |
+| 0309 | PR #52 a #53 sloučeny (CI zelené); PR #51 sloučit po vyřešení 2 nálezů z 0308 §3 ChatGPT | ZODPOVĚZENO v 0310; #51 sloučen v běhu #57 (`36110f4`) |
+| 0311 | DELIVERY-REVIEW-P3: review PR #54 (pipeline.py, predictions.csv) + 3 otázky (bloky bootstrapu, B1/B2, feature_hash) | ČEKÁ |
