@@ -40,3 +40,8 @@ Platí jen pro PR #47. Žádné schválení produkce, nasazení, LIVE, výkonnos
 - Na sdělení Clauda „Na vaše rozhodnutí čeká sloučení PR #50“ vlastník odpověděl: „Ano sluč je a pokračuj v opravach“.
 Čteno úzce: platí jen pro PR #50 a pro pokračování v izolovaných opravách. PR #51, #52, #53 tím schváleny NEJSOU.
 Žádné schválení produkce, nasazení, LIVE ani výkonnostních testů.
+
+2026-11-12 SCHVÁLENO: sloučení PR #52 (radar P2, oprava M0) do `research/xrp-top-risk-radar-v1-20261108` a PR #53 (důkazní brány monitoru) do `research/autopilot`; PR #51 (radar P3 adaptér) až poté, co ChatGPT zapracuje nebo se zdůvodněním odmítne dva nálezy z dialogu 0308 §3.
+### Původ a rozsah (zapsal Claude za vlastníka, chat s Claudem 2026-11-12 06:48 SEČ)
+- Claude položil: „1. Sloučit PR #52 a PR #53? 2. PR #51 doporučuji sloučit až poté, co ChatGPT zapracuje nebo odmítne oba nálezy.“ Vlastník: „Dobře proved číslo 1 i 2“.
+Jen výzkumné větve. Žádné schválení produkce, nasazení, LIVE ani výkonnostních testů; žádná další sloučení.
