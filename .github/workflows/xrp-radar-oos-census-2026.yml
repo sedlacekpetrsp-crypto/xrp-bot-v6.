@@ -1,0 +1,28 @@
+name: XRP OOS outcome census 2022-01..2026-10 (LOW_N gate, no predictions)
+on:
+  push:
+    branches: [claude/radar-oos-census-2026-20261112]
+    paths:
+      - research/top_risk_radar_v1/multiyear_census.py
+      - .github/workflows/xrp-radar-oos-census-2026.yml
+permissions:
+  contents: read
+jobs:
+  census:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Outcome-only census (no model, no predictions)
+        env:
+          CENSUS_START: '2022-01'
+          CENSUS_END: '2026-10'
+        run: python -m research.top_risk_radar_v1.multiyear_census
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xrp-oos-census-2022-2026
+          path: xrp_multiyear_census.json
+          retention-days: 30

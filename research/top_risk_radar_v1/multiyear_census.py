@@ -1,6 +1,7 @@
 """Multi-year descriptive XRP census; NOT a predictor, trade-level backtest, or OOS test."""
 from __future__ import annotations
 import json
+import os
 from collections import defaultdict
 from datetime import timedelta
 from decimal import Decimal
@@ -8,7 +9,17 @@ from research.top_risk_radar_v1.exploratory_kline_census import load_month
 from research.top_risk_radar_v1.episodes import group_positive_episodes
 from research.top_risk_radar_v1.anchored_episodes import anchored_episodes
 
-MONTHS=[f"{year}-{month:02d}" for year in range(2022,2026) for month in range(1,13)]
+def month_range(start="2022-01", end="2025-12"):
+    """Inclusive YYYY-MM range; default unchanged (2022-2025)."""
+    y,m=map(int,start.split("-")); ey,em=map(int,end.split("-"))
+    if (y,m)>(ey,em): raise ValueError("start after end")
+    out=[]
+    while (y,m)<=(ey,em):
+        out.append(f"{y}-{m:02d}"); m+=1
+        if m==13: y,m=y+1,1
+    return out
+
+MONTHS=month_range(os.environ.get("CENSUS_START","2022-01"),os.environ.get("CENSUS_END","2025-12"))
 
 def evaluate(rows):
     by_time=dict(rows)
@@ -68,7 +79,7 @@ if __name__=="__main__":
     report={"status":"DESCRIPTIVE_ONLY_NOT_PREDICTION_NOT_OOS",
       "market":"Binance XRPUSDT 1h spot CLOSE",
       "reference":"01:00 UTC close, not protocol 00:05 first trade",
-      "years":"2022-2025","sources":manifests,"analysis":evaluate(rows)}
+      "years":f"{MONTHS[0]}..{MONTHS[-1]}","sources":manifests,"analysis":evaluate(rows)}
     with open("xrp_multiyear_census.json","w") as f: json.dump(report,f,indent=2)
     print(json.dumps({"status":report["status"],"per_decision_year":report["analysis"]["per_decision_year"],
        "growth_episode_count":len(report["analysis"]["growth_episodes_30d"]),
