@@ -39,5 +39,38 @@ class TestEventLabel(unittest.TestCase):
         with self.assertRaises(ValueError):
             label_decision(T, [tr(1, 1)], T - timedelta(seconds=1))
 
+
+    def test_pre_reference_touch_is_not_a_future_crash(self):
+        # The first trade after 00:05 defines P(t); a lower print at the
+        # decision boundary cannot precede that first trade and count as hit.
+        # Earlier prints at decision_at are in fact the reference.
+        rows = [tr(1, 1), tr(2, .79)]
+        x = label_decision(T, rows, T + timedelta(days=15))
+        self.assertEqual(x.first_hit_at, T + timedelta(seconds=2))
+
+    def test_reference_trade_never_counts_as_own_touch(self):
+        x = label_decision(T, [tr(1, 1)], T + timedelta(days=15))
+        self.assertIsNone(x.first_hit_at)
+        self.assertEqual(x.outcome, 0)
+
+    def test_same_timestamp_later_trade_id_may_trigger_hit(self):
+        rows = [
+            Trade(T + timedelta(seconds=1), Decimal("1"), trade_id=101),
+            Trade(T + timedelta(seconds=1), Decimal(".79"), trade_id=102),
+        ]
+        x = label_decision(T, rows, T + timedelta(days=15))
+        self.assertEqual(x.reference_price, Decimal("1"))
+        self.assertEqual(x.outcome, 1)
+        self.assertEqual(x.first_hit_at, T + timedelta(seconds=1))
+
+    def test_pre_reference_trade_does_not_trigger_hit_in_growth_label(self):
+        # With a strictly ordered stream, no pre-reference row may be counted
+        # as an outcome even if its price crosses a future label threshold.
+        from research.top_risk_radar_v1.label_events import label_touch
+        x = label_touch(T, [tr(1, 1), tr(2, 1.31)],
+                        T + timedelta(days=31),
+                        horizon=timedelta(days=30), ratio=Decimal("1.30"))
+        self.assertEqual(x.outcome, 1)
+
 if __name__ == "__main__":
     unittest.main()
