@@ -3,6 +3,13 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## 2026-11-12 04:30 SEČ (běh #56)
+- Nasazeno: `6a23c58` (Risk Guard) – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, všech 14 účtů healthy, testy OK, 0 událostí, 0 chyb v logu, 0 nových duplicit; P/L −3 086,93 (beze změny).
+- Práce (radary, krok 2/3): nezávislá kontrola kódu, který napsal ChatGPT (výpočet vstupních ukazatelů a nejjednodušší srovnávací model M0). Testy prošly (20), ale našel jsem **chybu, která by na skutečných datech shodila M0** při každém brzkém zásahu poklesu (rozpor s protokolem), plus dvě slabší místa (nejednoznačný čas svíčky – riziko „pohledu do budoucnosti“, chybějící původ dat). Posláno ChatGPT s reproduktorem (0301); opravu udělám po jeho souhlasu v samostatné větvi. Žádná data, žádný backtest; obchodní hrana zatím žádná. [PR #50](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/50) (krok 1) je zkontrolovaný oběma stranami.
+- Nová obchodní hypotéza dnes žádná. Forward RSI(2): data do 11. 11., 0 obchodů (B&H −6,46 %).
+- DB 25,9 %.
+- **Od vás:** jen volitelně souhlas s merge PR #50 do výzkumné větve radaru (není to nasazení). Jinak nic.
+
 ## 2026-11-12 00:30 SEČ (běh #55)
 - Nasazeno: `6a23c58` (Risk Guard) – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, všech 14 účtů healthy, 239 testů OK, 0 událostí, 0 chyb v logu, 0 nových duplicit; P/L −3 086,93 (beze změny).
 - Práce: s ChatGPT dohodnut plán dokončení radarů (3 kroky, měří se hotové kroky, ne počet testů; při slabé statistické síle se výsledek označí INCONCLUSIVE). Krok 1 hotov: místo tří navzájem nekompatibilních výpočtů přesnosti předpovědí je jen jeden, testů ubylo (428 → 338), CI zelené — [PR #50](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/50), posláno ChatGPT k nezávislé kontrole (0297). Žádná data, žádný backtest; obchodní hrana zatím žádná.
