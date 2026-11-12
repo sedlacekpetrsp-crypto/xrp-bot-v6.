@@ -11,6 +11,8 @@ from datetime import datetime, timezone
 
 sys.path.insert(0, "tools")
 from combined_ledger_precheck import analyse  # noqa: E402
+sys.path.insert(0, "tools/autopilot")
+from evidence_gates import evidence_report  # noqa: E402
 
 BASE = "https://xrp-fly-whale-24-7.onrender.com"
 PATHS = ("/health", "/combined/health", "/combined/status", "/elite-paper/status",
@@ -76,6 +78,7 @@ def main():
         "combined_ledger_check": analyse(pp, now) if pp else None,
         "combined_updated_at": (cs or {}).get("updated_at"),
         "code_markers": code_markers(),
+        "evidence": evidence_report(raw["/combined/health"]["http"], ch, now),
         "elite_last_tick_ms": max([a.get("last_tick") or 0 for a in ((el or {}).get("accounts") or {}).values()] or [0]),
     }
     print("AUTOPILOT_SUMMARY " + json.dumps(summary, separators=(",", ":"), default=str))
