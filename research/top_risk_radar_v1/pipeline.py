@@ -13,7 +13,13 @@ Contract (PREDICTIONS_SCHEMA "radar-predictions-v1"):
 - p_ref comes from M0 fitted on train rows strictly before the fold's test_start;
 - scoring uses identical rows for model and reference; JSON uses allow_nan=False,
   non-finite metrics become null + `nonfinite_reason`; `eps` is always reported;
-- Brier skill CI: deterministic bootstrap over episodes (episode_id), not rows;
+- Brier skill CI: deterministic IID bootstrap over episodes (episode_id). Overlapping
+  14/30-day horizons and shared regimes violate IID, so the CI is labelled
+  `IID_DIAGNOSTIC_ONLY` and `grants_go` is always false (0312 §2/§3a); an empirical
+  claim needs a separately pre-registered block/cluster bootstrap;
+- `feature_hash` and `p_model` are caller-supplied stubs, NOT bound to the PIT
+  `build_feature_bundle` (binding is P4 scope, 0312 §3c); the JSON states this;
+- `label_available_at` is None iff `label` is None (no fake availability, 0312 §2);
 - outputs are byte-deterministic; SHA-256 of both artefacts is returned (acceptance #7).
 """
 from __future__ import annotations
@@ -45,7 +51,7 @@ UTC = timezone.utc
 class PredictionInput:
     episode_id: str
     decision_at: datetime
-    label_available_at: datetime
+    label_available_at: datetime | None  # None iff label is None
     label: int | None
     p_model: float
     feature_hash: str
@@ -72,9 +78,42 @@ def _fmt(value: float | None) -> str:
     return "" if value is None else repr(float(value))
 
 
+FEATURE_BINDING = "caller_supplied_stub_not_pit_verified"
+BOOTSTRAP_ASSUMPTION = "IID_DIAGNOSTIC_ONLY"
+
+
+def _validate_folds(folds: Sequence[Fold]) -> list[Fold]:
+    names = []
+    for f in folds:
+        if not isinstance(f.name, str) or not f.name.strip():
+            raise ValueError("invalid_fold_name")
+        if _utc(f.test_end) <= _utc(f.test_start):
+            raise ValueError("empty_fold_window")
+        names.append(f.name)
+    if len(set(names)) != len(names):
+        raise ValueError("duplicate_fold_name")
+    ordered = sorted(folds, key=lambda f: _utc(f.test_start))
+    for a, b in zip(ordered, ordered[1:]):
+        if _utc(b.test_start) < _utc(a.test_end):
+            raise ValueError("overlapping_folds")
+    return ordered
+
+
+def _validate_identity(row: PredictionInput) -> None:
+    if not isinstance(row.episode_id, str) or not row.episode_id.strip():
+        raise ValueError("invalid_episode_id")
+    if not isinstance(row.feature_hash, str) or not row.feature_hash.strip():
+        raise ValueError("invalid_feature_hash")
+
+
 def _maturity(row: PredictionInput, horizon: timedelta, evaluated_at: datetime) -> str:
     if row.label is None:
+        if row.label_available_at is not None:
+            raise ValueError("label_available_at_without_label")
+        _utc(row.decision_at)
         return "missing"
+    if row.label_available_at is None:
+        raise ValueError("missing_label_available_at")
     if type(row.label) is not int or row.label not in (0, 1):
         raise ValueError("invalid_label")
     decision, available = _utc(row.decision_at), _utc(row.label_available_at)
@@ -92,13 +131,12 @@ def build_predictions(
         raise ValueError("unknown_target")
     horizon = timedelta(hours=HORIZON_HOURS[target])
     evaluated = _utc(evaluated_at)
+    for r in rows:
+        _validate_identity(r)
     ids = [r.episode_id for r in rows]
     if len(set(ids)) != len(ids):
         raise ValueError("duplicate_episode_id")
-    ordered = sorted(folds, key=lambda f: _utc(f.test_start))
-    for a, b in zip(ordered, ordered[1:]):
-        if _utc(b.test_start) < _utc(a.test_end):
-            raise ValueError("overlapping_folds")
+    ordered = _validate_folds(folds)
     out: list[dict] = []
     for row in sorted(rows, key=lambda r: (_utc(r.decision_at), r.episode_id)):
         p = row.p_model
@@ -112,7 +150,11 @@ def build_predictions(
         if fold is None:
             reason = "outside_test_folds"
         else:
-            train = [LabelRow(r.decision_at, r.label_available_at, r.label) for r in rows
+            # Missing labels never enter M0; the placeholder only keeps fit_m0's
+            # duplicate/consistency checks identical (never exported).
+            train = [LabelRow(r.decision_at,
+                              r.label_available_at if r.label_available_at is not None
+                              else _utc(r.decision_at) + horizon, r.label) for r in rows
                      if _utc(r.decision_at) < _utc(fold.test_start)]
             m0 = fit_m0(train, target=target, test_start=fold.test_start)
             p_ref = m0["probability"]
@@ -125,7 +167,8 @@ def build_predictions(
         out.append({
             "schema_version": PREDICTIONS_SCHEMA, "episode_id": row.episode_id, "target": target,
             "horizon_h": HORIZON_HOURS[target], "fold": fold.name if fold else "",
-            "decision_at_utc": _iso(row.decision_at), "label_available_at_utc": _iso(row.label_available_at),
+            "decision_at_utc": _iso(row.decision_at), "label_available_at_utc": (
+                "" if row.label_available_at is None else _iso(row.label_available_at)),
             "label_source_type": "none" if row.label is None else "explicit_int",
             "maturity": maturity, "y": y, "p_model": float(p), "p_ref": p_ref,
             "ref_version": BASELINE_VERSION, "feature_hash": row.feature_hash, "exclusion_reason": reason,
@@ -166,7 +209,9 @@ def score_predictions(
                     "scoring_version": SCORING_VERSION, "status": "diagnostic_only",
                     "n_rows": len(records), "n_scored": len(used),
                     "excluded": dict(sorted(excluded.items())), "eps": eps,
-                    "n_episodes": len({r["episode_id"] for r in used})}
+                    "n_episodes": len({r["episode_id"] for r in used}),
+                    "feature_binding": FEATURE_BINDING, "grants_go": False,
+                    "interpretation": "implementation_check_not_edge_evidence"}
     if not used:
         result.update(model=None, reference=None, brier_skill=None, brier_skill_ci95=None,
                       verdict="INCONCLUSIVE_NO_MATURE_ROWS")
@@ -194,7 +239,8 @@ def score_predictions(
     if len(stats) >= max(20, bootstrap // 2):
         ci = [stats[int(0.025 * (len(stats) - 1))], stats[int(0.975 * (len(stats) - 1))]]
     result.update(model=model, reference=ref, brier_skill_ci95=ci, bootstrap=bootstrap, seed=seed,
-                  bootstrap_unit="episode_id", bootstrap_valid=len(stats))
+                  bootstrap_unit="episode_id", bootstrap_assumption=BOOTSTRAP_ASSUMPTION,
+                  bootstrap_valid=len(stats))
     if ci is None or ci[0] <= 0.0 <= ci[1]:
         result["verdict"] = "INCONCLUSIVE"
     else:
