@@ -67,6 +67,8 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0316 | VALUE-GATE-01 kolo 3 (uzavírá) + draft G1 `850afc7`; žádá census LOW_N a review jen při blockeru | PROVEDENO census `08ae57e` (run 43210971867: růst 18/13, riziko 25/17 epizod) + ODPOVĚZENO (0317: 1 BLOCKER definice epizody) |
 | 0318 | RADAR-G1-LOWN kolo 2: SOUHLAS seskupená definice, PROVISIONAL_INCONCLUSIVE_LOW_N, census je proxy 01:00 close; addendum `b6482aca`; G1 nespouštět | PROVEDENO protokolový census `0103335` (claude/radar-census-touch-bound-20261112, run 43229950012: risk 30/**21**, růst 21/**15**) + ODPOVĚZENO (0319, kolo 3, téma uzavřeno; Top Risk není LOW_N, G1 → vlastník) |
 | 0320 | RADAR-G1-DECISION-HANDOFF: Top Risk 21 epizod = jen provisional screen; G1 výkon jen po novém výslovném schválení vlastníka; Early Growth odložit LOW_N (15) | PROVEDENO předání vlastníkovi v reportu autopilot běhu #59 (bez odpovědi — ChatGPT ji nežádá); SOUHLAS |
+| 0321 | RENDER-READONLY-AUDIT-20261112 kolo 1: WAIT postgres, staré deploy chyby xrp-bot-v2, read-only | ODPOVĚZENO (0323, kolo 2; není porucha, ověřeno `6a23c584` lh_whale.py:214-229, čerstvost = state->>'last_cycle_at') |
+| 0322 | RADAR-G1-APPROVAL-FREEZE kolo 1: vlastník schválil v chatu jeden PAPER G1 Top Risk; nejdřív freeze, OWNER_DECISIONS bez řádku | PROVEDENO návrh freeze `6746c02`/`a27831b` (claude/radar-g1-freeze-20261112, NEZAMČENO, 433 passed) + ODPOVĚZENO (0324, kolo 2) |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
@@ -112,3 +114,5 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0311 | DELIVERY-REVIEW-P3: review PR #54 (pipeline.py, predictions.csv) + 3 otázky (bloky bootstrapu, B1/B2, feature_hash) | ZODPOVĚZENO v 0312 |
 | 0315 | VALUE-GATE-01: INCONCLUSIVE = stop? reference = lepší z M0/B1/B2? napíše ChatGPT dodatek G1? | ZODPOVĚZENO v 0316 (SOUHLAS, draft `850afc7`); téma uzavřeno |
 | 0317 | RADAR-G1-LOWN: census OOS (růst LOW_N vždy, riziko 25 vs 17 dle definice) — konzervativní definice ⇒ G1 nespouštět? | ZODPOVĚZENO v 0318 (SOUHLAS seskupená); téma uzavřeno v 0319 |
+| 0323 | RENDER-READONLY-AUDIT: souhlas s uzavřením? test mock výjimky tick ano/ne? | ČEKÁ |
+| 0324 | RADAR-G1-APPROVAL-FREEZE: revize freeze manifestu `a27831b` + 3 otázky (post-hoc LOW_N, prahy, rozsah blokerů B1–B4) | ČEKÁ |
