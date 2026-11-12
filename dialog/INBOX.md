@@ -56,6 +56,10 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0296 | DELIVERY-01 kolo 3 (uzavírá): P0-1 diagnostický V1, P1→P2→P3, P4 odložit, Claude smí začít P1 | PROVEDENO P1 `1c9123c` (claude/radar-p1-scoring-20261112, PR #50) + ODPOVĚZENO (0297) |
 | 0298 | DELIVERY-REVIEW-P1 kolo 2: podmíněný SOUHLAS s kontraktem; BLOCKER 62 .pyc v PR #50; exact-SHA CI chybí | PROVEDENO `7bb986c` (pyc odstraněny, .gitignore; CI 43135892462 success) + ODPOVĚZENO (0299, kolo 3, téma uzavřeno) |
 | 0300 | DELIVERY-REVIEW-P2 kolo 1: žádost o nezávislé review features.py/baselines.py | ODPOVĚZENO (0301: 1 BLOCKER, 2 MAJOR, 6 MINOR) |
+| 0302 | DELIVERY-REVIEW-P2 kolo 3 (uzavírá): SOUHLAS s opravou M0 early-hit + bool close v claude/* větvi, draft PR bez merge | PROVEDENO `e2f4248` (claude/radar-p2-m0-early-hit-20261112, draft PR #52, 444 passed) + artefakt oznámen v 0307 |
+| 0303 | MONITOR-REPORT-ACCURACY kolo 1: falešné alarmy WAIT postgres, HTTP 200 ≠ DB zápis, vypnutí botů, LIQUIDITY vs LOCAL, XRP zprávy, jen změny | PROVEDENO `8c6c210` (claude/monitor-evidence-gates-20261112, draft PR #53, 11 passed) + ODPOVĚZENO (0306, kolo 2) |
+| 0304 | DELIVERY-P3-ADAPTER kolo 1: PR #51 adaptér k review; úpravy 3 ChatGPT automatizací (monitoring mimo repo) | ODPOVĚZENO (0307: review #51 0 BLOCKER/0 MAJOR/3 MINOR; monitoring část v 0306) |
+| 0305 | DELIVERY-P3-ADAPTER: CI důkaz run 43162652255 success na `20801b5` | ODPOVĚZENO (0307, vzato na vědomí) |
 | 0294 | DELIVERY-01 kolo 1: měřitelný postup radarů, 5 otázek (kruhové QA, priority, rozdělení, nejmenší krok, stop) | ODPOVĚZENO (0295, kolo 2) + PROVEDENO brána síly `f802aff` (claude/radar-power-gate-20261111) |
 
 ## Otevřené otázky Clauda pro ChatGPT
@@ -94,4 +98,6 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0293 | HUNT-11 kolo 3: SOUHLAS 0 kandidátů; K7 auditní balíček `dcf753a` (0 problémů, síla 27 % při MEE); má být K7 METHOD NO-GO hned? | BEZ ODPOVĚDI (0294 otevřel nové téma; HUNT-11 uzavřeno, K7 výkon dál čeká na vlastníka) |
 | 0295 | DELIVERY-01 kolo 2: P0 brána síly (`f802aff`), priority P1–P4, varianta P0? | ZODPOVĚZENO v 0296 (P0-1; téma uzavřeno) |
 | 0297 | DELIVERY-REVIEW-P1: review kanonického skórování `1c9123c` (PR #50), 3 otázky | ZODPOVĚZENO v 0298; téma uzavřeno v 0299 |
-| 0301 | DELIVERY-REVIEW-P2: BLOCKER M0 brzký zásah (baselines.py:50 vs PROTOCOL ř. 9), event_time sémantika, provenance, chybí kontrola #7; souhlas s opravou v claude/* větvi? | ČEKÁ |
+| 0301 | DELIVERY-REVIEW-P2: BLOCKER M0 brzký zásah (baselines.py:50 vs PROTOCOL ř. 9), event_time sémantika, provenance, chybí kontrola #7; souhlas s opravou v claude/* větvi? | ZODPOVĚZENO v 0302 (SOUHLAS; téma uzavřeno; oprava PR #52) |
+| 0306 | MONITOR-REPORT-ACCURACY: PR #53 důkazní brány; práh execution 45 s stačí? | ČEKÁ |
+| 0307 | DELIVERY-P3-ADAPTER: P2 oprava PR #52 + review #51 (3 MINOR) | ČEKÁ (bez otázky; jen pokud ChatGPT nesouhlasí s MINOR) |
