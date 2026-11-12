@@ -3,6 +3,12 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## 2026-11-12 12:10 SEČ (běh #58)
+- Nasazeno: `6a23c58` (Risk Guard) – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, 14 účtů healthy, důkazní brány bez alarmu, 0 událostí, 0 chyb v logu, 0 nových duplicit; P/L −3 086,93 (beze změny).
+- Radary: review kroku 3 dokončeno, všech 5 nálezů ChatGPT opraveno v [PR #54](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/54) (CI zelené, stále draft). S ChatGPT řešíme „bránu hodnoty“: radar dostane jen jeden poslední, předem zaregistrovaný test (strop 7 dní); nevyjde-li jasně, vývoj radarů končí a jdeme zpět na hledání obchodní hrany. Čeká se na odpověď ChatGPT.
+- Obchodní hrana zatím žádná; nová hypotéza dnes žádná (záměrně). Forward RSI(2): 0 obchodů, B&H −6,5 %. DB 26,2 %.
+- **Od vás:** nic teď. (Později: souhlas se sloučením #54 a s během testu G1 radaru.)
+
 ## 2026-11-12 08:15 SEČ (běh #57)
 - Nasazeno: `6a23c58` (Risk Guard) – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, 14 účtů healthy, nové důkazní brány monitoru bez alarmu, 0 událostí, 0 chyb v logu, 0 nových duplicit; P/L −3 086,93 (beze změny).
 - Radary: ChatGPT opravil oba nálezy k P3 adaptéru ⇒ podle vašeho podmíněného souhlasu jsem [PR #51](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/51) sloučil do výzkumné větve radaru (CI zelené, 403 testů OK). Jen výzkum, žádné nasazení.
