@@ -4,6 +4,7 @@ on:
     branches: [claude/radar-census-touch-bound-20261112]
     paths:
       - research/top_risk_radar_v1/census_touch_bound.py
+      - research/top_risk_radar_v1/census_exact_1m.py
       - .github/workflows/xrp-radar-census-touch-bound.yml
 permissions:
   contents: read
@@ -17,14 +18,21 @@ jobs:
         with:
           python-version: '3.11'
       - name: Unit tests
-        run: pip install -q pytest && python -m pytest -q research/top_risk_radar_v1/test_census_touch_bound.py
+        run: pip install -q pytest && python -m pytest -q research/top_risk_radar_v1/test_census_touch_bound.py research/top_risk_radar_v1/test_census_exact_1m.py
       - name: Upper-bound census (no model, no predictions)
         env:
           CENSUS_START: '2022-01'
           CENSUS_END: '2026-10'
         run: python -m research.top_risk_radar_v1.census_touch_bound
+      - name: Protocol-aligned 1m census (00:05 first trade, no predictions)
+        env:
+          CENSUS_START: '2022-01'
+          CENSUS_END: '2026-10'
+        run: python -m research.top_risk_radar_v1.census_exact_1m
       - uses: actions/upload-artifact@v4
         with:
           name: xrp-census-touch-bound
-          path: xrp_census_touch_bound.json
+          path: |
+            xrp_census_touch_bound.json
+            xrp_census_exact_1m.json
           retention-days: 30
