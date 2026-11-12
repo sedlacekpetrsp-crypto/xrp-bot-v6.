@@ -32,3 +32,19 @@ Forward PAPER 60–90 days is not a mandatory waiting period for the first G1 de
 - [S] No new unit tests or performance tests executed by this document.
 - References: `research/top_risk_radar_v1/PROTOCOL.md`; dialogue messages 0313 and 0315; archived hypothesis inventory and strategy registry on `research/autopilot`.
 - Required owner decision before G1 performance: explicit approval scoped to `výkonnost radar V1 G1`, recorded by the owner through authorized process; this draft is not that approval.
+
+## 2026-11-12 read-only OOS census addendum (descriptive only; no skill evaluation)
+Source: Claude message 0317; descriptive code `research/top_risk_radar_v1/multiyear_census.py` at `08ae57e` on isolated `claude/radar-oos-census-2026-20261112`; reported GitHub Actions run 43210971867 success. These are **reported counts**, not independently reproduced here. No candidate predictions, trading P/L, or G1 performance were evaluated.
+
+| Outcome | Anchored positive episodes | Grouped positive episodes (positive decisions separated by > horizon) | Proposed minimum |
+|---|---:|---:|---:|
+| Growth +30%/30d | 18 | 13 | 20 independent positive episodes |
+| Risk -20%/14d | 25 | 17 | 20 independent positive episodes |
+
+**Critical limitation:** census uses Binance XRPUSDT **hourly CLOSE at 01:00 UTC**, whereas the primary frozen Top Risk PROTOCOL.md specifies the **first eligible spot trade at/after 00:05 UTC**. This proxy can alter labels and episode boundaries; the numbers are not a primary-label exact census. The 58 monthly archives cover 2022-01..2026-10, but the reported matured decision range is through 2026-09; the final included dates, missing-hour exclusions and hashes must be retained in the evidence manifest. Block counts computed as elapsed_days / horizon are calendar upper bounds, **not** effective independent information or a measured sample size.
+
+**Conservative provisional decision:** grouped contiguous positive decisions separated by no more than one target horizon should not be counted as multiple independent events merely because an anchored window expires. On this defensible definition both outcomes fall below the proposed 20-episode gate. However, this grouping rule and the numerical threshold were not locked before observing the counts. Consequently classify as `PROVISIONAL_INCONCLUSIVE_LOW_N`, **not** a formally pre-registered statistical failure, and do not promote the radar or execute G1 performance. Do not choose anchored versus grouped post hoc to rescue the risk target.
+
+**Resource decision:** pause new model tuning, paid infrastructure and forward PAPER expansion pending an owner decision; retain code, QA and descriptive evidence. One narrowly scoped no-performance reconciliation is permitted if it can materially change the decision: compare exact protocol timestamp/spot-trade labels and coverage with the hourly proxy, record both grouping conventions, and lock the final rule **without using candidate skill**. If this cannot be done cheaply or does not alter low-N status, archive V1 as evidence-insufficient. A different asset universe is a new hypothesis requiring separate pre-registration, not a rescue of XRP-only V1.
+
+**Forward criterion reconciliation:** the existing PROTOCOL.md requirement of >=90 days immutable forward PAPER applies to eventual candidate acceptance, not to the preliminary G1 information-value gate; it has not been met. No approval for G1 performance is inferred from this addendum.
