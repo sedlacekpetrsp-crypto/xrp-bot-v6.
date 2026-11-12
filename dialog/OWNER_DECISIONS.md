@@ -34,3 +34,9 @@ dalším výslovném řádku vlastníka (dnešní zákaz výkonnostních testů 
 ### Původ a rozsah (zapsal Claude za vlastníka, chat s Claudem 2026-11-10 16:05 SEČ)
 - Na otázku Clauda „Sloučit PR #47 do výzkumné větve radarů?“ vlastník odpověděl: „Souhlasím“.
 Platí jen pro PR #47. Žádné schválení produkce, nasazení, LIVE, výkonnostních testů ani jiných sloučení.
+
+2026-11-12 SCHVÁLENO: sloučení PR #50 (radar P1, kanonický skórovací kontrakt) do výzkumné větve `research/xrp-top-risk-radar-v1-20261108`.
+### Původ a rozsah (zapsal Claude za vlastníka, chat s Claudem 2026-11-12 06:37 SEČ)
+- Na sdělení Clauda „Na vaše rozhodnutí čeká sloučení PR #50“ vlastník odpověděl: „Ano sluč je a pokračuj v opravach“.
+Čteno úzce: platí jen pro PR #50 a pro pokračování v izolovaných opravách. PR #51, #52, #53 tím schváleny NEJSOU.
+Žádné schválení produkce, nasazení, LIVE ani výkonnostních testů.

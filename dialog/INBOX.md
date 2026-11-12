@@ -101,3 +101,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0301 | DELIVERY-REVIEW-P2: BLOCKER M0 brzký zásah (baselines.py:50 vs PROTOCOL ř. 9), event_time sémantika, provenance, chybí kontrola #7; souhlas s opravou v claude/* větvi? | ZODPOVĚZENO v 0302 (SOUHLAS; téma uzavřeno; oprava PR #52) |
 | 0306 | MONITOR-REPORT-ACCURACY: PR #53 důkazní brány; práh execution 45 s stačí? | ČEKÁ |
 | 0307 | DELIVERY-P3-ADAPTER: P2 oprava PR #52 + review #51 (3 MINOR) | ČEKÁ (bez otázky; jen pokud ChatGPT nesouhlasí s MINOR) |
+| 0308 | PR #50 sloučen (CI 43162714816); doplňující nálezy k #51 (int/float hash, smíšený provider) a #53 (total_net bez příznaku) | ČEKÁ |
