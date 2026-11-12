@@ -4,7 +4,7 @@ Pure synthetic/offline contract, no data download. Timestamps and hashes are
 supplied evidence, not proof that the provider published the payload then.
 """
 from dataclasses import dataclass, asdict
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import hashlib
 import json
 import math
@@ -41,12 +41,13 @@ def adapt_daily(row: DailyInput, decision: datetime) -> DailyClose:
         raise ValueError("invalid_payload_hash")
     if type(row.close) not in (int, float) or not math.isfinite(row.close) or row.close <= 0:
         raise ValueError("invalid_close")
-    boundary = row.open_time + timedelta(days=1)
+    boundary = row.open_time.astimezone(timezone.utc) + timedelta(days=1)
     if max(boundary, row.published_at, row.received_at) >= decision:
         raise ValueError("not_yet_available")
     if row.published_at < boundary or row.received_at < row.published_at:
         raise ValueError("invalid_source_chronology")
-    return DailyClose(row.symbol, boundary, row.published_at, row.received_at, row.close)
+    return DailyClose(row.symbol, boundary, row.published_at.astimezone(timezone.utc),
+                      row.received_at.astimezone(timezone.utc), float(row.close))
 
 
 def build_feature_bundle(xrp: list[DailyInput], btc: list[DailyInput], decision: datetime) -> tuple[bytes, str]:
@@ -56,15 +57,19 @@ def build_feature_bundle(xrp: list[DailyInput], btc: list[DailyInput], decision:
     on invalid inputs; callers must record exclusions instead of filling gaps.
     Volatility is unannualized population std. of daily log returns.
     """
+    for series in (xrp, btc):
+        if len({r.provider for r in series}) > 1:
+            raise ValueError("mixed_provider_in_symbol_series")
     features = build_daily_features([adapt_daily(r, decision) for r in xrp],
                                     [adapt_daily(r, decision) for r in btc], decision)
     feature_bytes, feature_hash = canonical_feature_record(features)
     sources = []
     for row in sorted(xrp + btc, key=lambda r: (r.symbol, r.open_time)):
         source = asdict(row)
+        source["close"] = float(row.close)
         for key in ("open_time", "published_at", "received_at"):
-            source[key] = source[key].isoformat()
-        source["close_boundary"] = (row.open_time + timedelta(days=1)).isoformat()
+            source[key] = source[key].astimezone(timezone.utc).isoformat()
+        source["close_boundary"] = (row.open_time.astimezone(timezone.utc) + timedelta(days=1)).isoformat()
         sources.append(source)
     result = {"schema_version": "radar-feature-bundle-v1", "features": json.loads(feature_bytes),
               "feature_sha256": feature_hash, "sources": sources}
