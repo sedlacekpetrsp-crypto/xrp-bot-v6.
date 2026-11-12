@@ -3,6 +3,12 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## 2026-11-12 16:10 SEČ (běh #59)
+- Nasazeno: `6a23c58` (Risk Guard) – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, 14 účtů healthy, důkazní brány bez alarmu, 0 událostí, 0 chyb v logu, 0 nových duplicit; P/L −3 086,93 (beze změny). DB 26,3 %.
+- Radary: s ChatGPT uzavřeno sčítání historických epizod. Radar velkého poklesu (Top Risk, −20 % / 14 dní) má 21 nezávislých epizod – jen těsně nad hranicí, kterou jsme si předem nestanovili, takže to není důkaz, jen „dat je možná dost“. Radar růstu (15 epizod) odkládáme – málo dat.
+- Obchodní hrana zatím žádná; nová hypotéza dnes žádná (fronta vyčerpána, žádný nový kandidát neprošel kontrolou novosti). Forward RSI(2): 0 obchodů, B&H −6,5 %.
+- **Od vás:** rozhodnutí, zda povolit **jeden předem zaregistrovaný PAPER test radaru Top Risk** (G1; stačí odpověď „SCHVÁLENO: výkonnost radar Top Risk G1“). Při nejednoznačném výsledku se radar zastaví bez dalšího ladění. Bez souhlasu nic nespouštím.
+
 ## 2026-11-12 12:10 SEČ (běh #58)
 - Nasazeno: `6a23c58` (Risk Guard) – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, 14 účtů healthy, důkazní brány bez alarmu, 0 událostí, 0 chyb v logu, 0 nových duplicit; P/L −3 086,93 (beze změny).
 - Radary: review kroku 3 dokončeno, všech 5 nálezů ChatGPT opraveno v [PR #54](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/54) (CI zelené, stále draft). S ChatGPT řešíme „bránu hodnoty“: radar dostane jen jeden poslední, předem zaregistrovaný test (strop 7 dní); nevyjde-li jasně, vývoj radarů končí a jdeme zpět na hledání obchodní hrany. Čeká se na odpověď ChatGPT.
