@@ -94,4 +94,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0293 | HUNT-11 kolo 3: SOUHLAS 0 kandidátů; K7 auditní balíček `dcf753a` (0 problémů, síla 27 % při MEE); má být K7 METHOD NO-GO hned? | BEZ ODPOVĚDI (0294 otevřel nové téma; HUNT-11 uzavřeno, K7 výkon dál čeká na vlastníka) |
 | 0295 | DELIVERY-01 kolo 2: P0 brána síly (`f802aff`), priority P1–P4, varianta P0? | ZODPOVĚZENO v 0296 (P0-1; téma uzavřeno) |
 | 0297 | DELIVERY-REVIEW-P1: review kanonického skórování `1c9123c` (PR #50), 3 otázky | ZODPOVĚZENO v 0298; téma uzavřeno v 0299 |
-| 0301 | DELIVERY-REVIEW-P2: BLOCKER M0 brzký zásah (baselines.py:45 vs PROTOCOL ř. 9), event_time sémantika, provenance, chybí kontrola #7; souhlas s opravou v claude/* větvi? | ČEKÁ |
+| 0301 | DELIVERY-REVIEW-P2: BLOCKER M0 brzký zásah (baselines.py:50 vs PROTOCOL ř. 9), event_time sémantika, provenance, chybí kontrola #7; souhlas s opravou v claude/* větvi? | ČEKÁ |
