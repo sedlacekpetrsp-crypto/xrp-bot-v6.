@@ -1,0 +1,434 @@
+{
+ "protocol": "research/funding_carry/PROTOCOL.md",
+ "chosen_H": 0.1,
+ "tuning_selection_x1": {
+  "H10": {
+   "return_pct": 23.6577,
+   "sharpe": 8.4919,
+   "max_drawdown_pct": 0.2745,
+   "trades": 10,
+   "net_pnl": 2365.769,
+   "profit_factor": 105.1251,
+   "net_without_top3": 190.3644,
+   "funding": 2538.5516,
+   "costs": 164.9523,
+   "liquidations": 0,
+   "final_value": 12365.769
+  },
+  "H20": {
+   "return_pct": 22.6306,
+   "sharpe": 8.4151,
+   "max_drawdown_pct": 0.1353,
+   "trades": 4,
+   "net_pnl": 2263.0639,
+   "profit_factor": 999.0,
+   "net_without_top3": 206.4137,
+   "funding": 2356.9911,
+   "costs": 87.4319,
+   "liquidations": 0,
+   "final_value": 12263.0639
+  },
+  "H5": {
+   "return_pct": 23.6195,
+   "sharpe": 8.3118,
+   "max_drawdown_pct": 0.6221,
+   "trades": 22,
+   "net_pnl": 2361.9548,
+   "profit_factor": 27.1387,
+   "net_without_top3": 185.4002,
+   "funding": 2695.0266,
+   "costs": 329.6455,
+   "liquidations": 0,
+   "final_value": 12361.9548
+  },
+  "H30": {
+   "return_pct": 21.8445,
+   "sharpe": 8.2631,
+   "max_drawdown_pct": 0.1299,
+   "trades": 4,
+   "net_pnl": 2184.4533,
+   "profit_factor": 999.0,
+   "net_without_top3": 176.0137,
+   "funding": 2267.3635,
+   "costs": 78.3483,
+   "liquidations": 0,
+   "final_value": 12184.4533
+  }
+ },
+ "strategy": {
+  "H10": {
+   "tuning": {
+    "x1": {
+     "return_pct": 23.6577,
+     "sharpe": 8.4919,
+     "max_drawdown_pct": 0.2745,
+     "trades": 10,
+     "net_pnl": 2365.769,
+     "profit_factor": 105.1251,
+     "net_without_top3": 190.3644,
+     "funding": 2538.5516,
+     "costs": 164.9523,
+     "liquidations": 0,
+     "final_value": 12365.769
+    },
+    "x2": {
+     "return_pct": 21.8953,
+     "sharpe": 7.6002,
+     "max_drawdown_pct": 0.6922,
+     "trades": 10,
+     "net_pnl": 2189.5285,
+     "profit_factor": 25.0756,
+     "net_without_top3": 94.4674,
+     "funding": 2524.7907,
+     "costs": 327.4635,
+     "liquidations": 0,
+     "final_value": 12189.5285
+    },
+    "x3": {
+     "return_pct": 20.1579,
+     "sharpe": 6.631,
+     "max_drawdown_pct": 1.1256,
+     "trades": 10,
+     "net_pnl": 2015.7882,
+     "profit_factor": 13.3068,
+     "net_without_top3": 0.3023,
+     "funding": 2511.1248,
+     "costs": 487.5694,
+     "liquidations": 0,
+     "final_value": 12015.7882
+    }
+   },
+   "validation": {
+    "x1": {
+     "return_pct": 9.6963,
+     "sharpe": 11.0259,
+     "max_drawdown_pct": 0.253,
+     "trades": 6,
+     "net_pnl": 969.6289,
+     "profit_factor": 999.0,
+     "net_without_top3": 242.3947,
+     "funding": 1059.0125,
+     "costs": 90.3329,
+     "liquidations": 0,
+     "final_value": 10969.6289
+    },
+    "x2": {
+     "return_pct": 8.758,
+     "sharpe": 8.1366,
+     "max_drawdown_pct": 0.4999,
+     "trades": 6,
+     "net_pnl": 875.7997,
+     "profit_factor": 999.0,
+     "net_without_top3": 199.2895,
+     "funding": 1054.7702,
+     "costs": 179.9185,
+     "liquidations": 0,
+     "final_value": 10875.7997
+    },
+    "x3": {
+     "return_pct": 7.8273,
+     "sharpe": 5.8486,
+     "max_drawdown_pct": 0.7462,
+     "trades": 6,
+     "net_pnl": 782.7325,
+     "profit_factor": 999.0,
+     "net_without_top3": 156.6259,
+     "funding": 1050.5487,
+     "costs": 268.7628,
+     "liquidations": 0,
+     "final_value": 10782.7325
+    }
+   },
+   "final_test": {
+    "x1": {
+     "return_pct": 0.7764,
+     "sharpe": 2.6986,
+     "max_drawdown_pct": 0.1437,
+     "trades": 5,
+     "net_pnl": 77.6397,
+     "profit_factor": 999.0,
+     "net_without_top3": 9.959,
+     "funding": 131.928,
+     "costs": 55.2874,
+     "liquidations": 0,
+     "final_value": 10077.6397
+    },
+    "x2": {
+     "return_pct": 0.2231,
+     "sharpe": 0.4519,
+     "max_drawdown_pct": 0.3113,
+     "trades": 5,
+     "net_pnl": 22.3114,
+     "profit_factor": 2.9414,
+     "net_without_top3": -11.4923,
+     "funding": 131.5691,
+     "costs": 110.2533,
+     "liquidations": 0,
+     "final_value": 10022.3114
+    },
+    "x3": {
+     "return_pct": -0.327,
+     "sharpe": -0.4538,
+     "max_drawdown_pct": 0.4787,
+     "trades": 5,
+     "net_pnl": -32.6962,
+     "profit_factor": 0.2077,
+     "net_without_top3": -32.7961,
+     "funding": 131.2117,
+     "costs": 164.9,
+     "liquidations": 0,
+     "final_value": 9967.3038
+    }
+   }
+  },
+  "H20": {
+   "tuning": {
+    "x1": {
+     "return_pct": 22.6306,
+     "sharpe": 8.4151,
+     "max_drawdown_pct": 0.1353,
+     "trades": 4,
+     "net_pnl": 2263.0639,
+     "profit_factor": 999.0,
+     "net_without_top3": 206.4137,
+     "funding": 2356.9911,
+     "costs": 87.4319,
+     "liquidations": 0,
+     "final_value": 12263.0639
+    }
+   },
+   "validation": {
+    "x2": {
+     "return_pct": 5.7224,
+     "sharpe": 6.7229,
+     "max_drawdown_pct": 0.3313,
+     "trades": 4,
+     "net_pnl": 572.2407,
+     "profit_factor": 999.0,
+     "net_without_top3": 0.241,
+     "funding": 665.9212,
+     "costs": 102.3024,
+     "liquidations": 0,
+     "final_value": 10572.2407
+    }
+   },
+   "final_test": {}
+  },
+  "H5": {
+   "tuning": {
+    "x1": {
+     "return_pct": 23.6195,
+     "sharpe": 8.3118,
+     "max_drawdown_pct": 0.6221,
+     "trades": 22,
+     "net_pnl": 2361.9548,
+     "profit_factor": 27.1387,
+     "net_without_top3": 185.4002,
+     "funding": 2695.0266,
+     "costs": 329.6455,
+     "liquidations": 0,
+     "final_value": 12361.9548
+    }
+   },
+   "validation": {
+    "x2": {
+     "return_pct": 9.637,
+     "sharpe": 9.3365,
+     "max_drawdown_pct": 0.4185,
+     "trades": 6,
+     "net_pnl": 963.6986,
+     "profit_factor": 999.0,
+     "net_without_top3": 251.9612,
+     "funding": 1149.7687,
+     "costs": 180.4058,
+     "liquidations": 0,
+     "final_value": 10963.6986
+    }
+   },
+   "final_test": {}
+  },
+  "H30": {
+   "tuning": {
+    "x1": {
+     "return_pct": 21.8445,
+     "sharpe": 8.2631,
+     "max_drawdown_pct": 0.1299,
+     "trades": 4,
+     "net_pnl": 2184.4533,
+     "profit_factor": 999.0,
+     "net_without_top3": 176.0137,
+     "funding": 2267.3635,
+     "costs": 78.3483,
+     "liquidations": 0,
+     "final_value": 12184.4533
+    }
+   },
+   "validation": {
+    "x2": {
+     "return_pct": 4.5431,
+     "sharpe": 6.5905,
+     "max_drawdown_pct": 0.2098,
+     "trades": 2,
+     "net_pnl": 454.3138,
+     "profit_factor": 999.0,
+     "net_without_top3": 0.0,
+     "funding": 504.8272,
+     "costs": 53.5441,
+     "liquidations": 0,
+     "final_value": 10454.3138
+    }
+   },
+   "final_test": {}
+  }
+ },
+ "buy_hold_50_50": {
+  "tuning": {
+   "x1": {
+    "return_pct": 108.3868,
+    "sharpe": 0.7977,
+    "max_drawdown_pct": 76.8521,
+    "net_pnl": 10838.6822
+   },
+   "x2": {
+    "return_pct": 107.9073,
+    "sharpe": 0.7965,
+    "max_drawdown_pct": 76.8521,
+    "net_pnl": 10790.7257
+   },
+   "x3": {
+    "return_pct": 107.4282,
+    "sharpe": 0.7953,
+    "max_drawdown_pct": 76.8521,
+    "net_pnl": 10742.8244
+   }
+  },
+  "validation": {
+   "x1": {
+    "return_pct": 321.4008,
+    "sharpe": 1.7055,
+    "max_drawdown_pct": 34.0347,
+    "net_pnl": 32140.0839
+   },
+   "x2": {
+    "return_pct": 320.4311,
+    "sharpe": 1.7031,
+    "max_drawdown_pct": 34.0347,
+    "net_pnl": 32043.106
+   },
+   "x3": {
+    "return_pct": 319.4624,
+    "sharpe": 1.7008,
+    "max_drawdown_pct": 34.0347,
+    "net_pnl": 31946.2398
+   }
+  },
+  "final_test": {
+   "x1": {
+    "return_pct": -21.7398,
+    "sharpe": 0.0037,
+    "max_drawdown_pct": 59.9553,
+    "net_pnl": -2173.9761
+   },
+   "x2": {
+    "return_pct": -21.9199,
+    "sharpe": 0.0013,
+    "max_drawdown_pct": 59.9553,
+    "net_pnl": -2191.9863
+   },
+   "x3": {
+    "return_pct": -22.0998,
+    "sharpe": -0.0011,
+    "max_drawdown_pct": 59.9553,
+    "net_pnl": -2209.9758
+   }
+  }
+ },
+ "walk_forward_x2": {
+  "2021": {
+   "return_pct": 18.9361,
+   "sharpe": 11.9194,
+   "max_drawdown_pct": 0.4698,
+   "trades": 5,
+   "net_pnl": 1893.6119,
+   "profit_factor": 279.7469,
+   "net_without_top3": 176.0439,
+   "funding": 2069.0898,
+   "costs": 166.207,
+   "liquidations": 0,
+   "final_value": 11893.6119
+  },
+  "2022": {
+   "return_pct": -0.5736,
+   "sharpe": -1.8518,
+   "max_drawdown_pct": 0.5736,
+   "trades": 4,
+   "net_pnl": -57.3645,
+   "profit_factor": 0.0,
+   "net_without_top3": -17.3561,
+   "funding": 27.3166,
+   "costs": 84.8112,
+   "liquidations": 0,
+   "final_value": 9942.6355
+  },
+  "2023": {
+   "return_pct": 2.9771,
+   "sharpe": 5.7856,
+   "max_drawdown_pct": 0.4694,
+   "trades": 4,
+   "net_pnl": 297.7082,
+   "profit_factor": 999.0,
+   "net_without_top3": 53.6328,
+   "funding": 401.4865,
+   "costs": 102.3403,
+   "liquidations": 0,
+   "final_value": 10297.7082
+  },
+  "2024": {
+   "return_pct": 5.2998,
+   "sharpe": 9.214,
+   "max_drawdown_pct": 0.4225,
+   "trades": 4,
+   "net_pnl": 529.9774,
+   "profit_factor": 999.0,
+   "net_without_top3": 49.4752,
+   "funding": 633.6126,
+   "costs": 108.1487,
+   "liquidations": 0,
+   "final_value": 10529.9774
+  }
+ },
+ "track_a": {
+  "A1_sharpe_dd": true,
+  "A2_trades_ge_30": false,
+  "A3_x2_pf_profit": true,
+  "A4_wo_top3": true,
+  "A5_final_x2": true
+ },
+ "track_b": {
+  "B1_val_x2_profit_pf": true,
+  "B2_dd_le_0_6_bh": true,
+  "B3_final_x2_profit": true,
+  "B4_val_wo_top3": true,
+  "B5_trades_ge_20": false,
+  "B6_tuning_x1_profit": true
+ },
+ "passed_a": false,
+ "passed_b": false,
+ "dsr_validation_x1": {
+  "sharpe_per_period": 0.5771194921777776,
+  "skew": 1.1427513432596232,
+  "kurtosis": 13.866675474610258,
+  "T": 731,
+  "n_trials": 140,
+  "var_trials": 0.0013698630136986301,
+  "sr0": 0.09796240760709506,
+  "psr_vs_0": 1.0,
+  "dsr": 1.0
+ },
+ "robustness": {
+  "dsr_ge_0_95": true,
+  "neighbor_val_x2_profit": true,
+  "walk_forward_ge_3_of_4": true
+ },
+ "verdict": "ZAM\u00cdTNUTO"
+}
