@@ -1,0 +1,218 @@
+{
+ "audit_utc": "2026-11-11T05:51:02.585669+00:00",
+ "gate": {
+  "eligible": 69,
+  "final_segment": 18,
+  "GO_counts": true
+ },
+ "errors": [],
+ "verdict": "GO (jen data; výkon NESPOUŠTĚT)",
+ "snapshots": {
+  "2018": {
+   "year": 2018,
+   "cdx_http": 200,
+   "captures": 9,
+   "ts": "20171205223224",
+   "snap_sha256": "aae8f7e549634e1c8754eab5c53ee1ada9570703db5a85148e0b44b089263337",
+   "method": "structured",
+   "parsed": 8,
+   "url": "https://web.archive.org/web/20171205223224id_/https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+   "scheduled": [
+    "2018-01-31",
+    "2018-03-21",
+    "2018-05-02",
+    "2018-06-13",
+    "2018-08-01",
+    "2018-09-26",
+    "2018-11-08",
+    "2018-12-19"
+   ],
+   "excluded_tags": []
+  },
+  "2019": {
+   "year": 2019,
+   "cdx_http": 200,
+   "captures": 19,
+   "ts": "20181220172943",
+   "snap_sha256": "839c558a2a59955369a329b541e853a145bf49ba972c6bf1219bd318a784e385",
+   "method": "structured",
+   "parsed": 8,
+   "url": "https://web.archive.org/web/20181220172943id_/https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+   "scheduled": [
+    "2019-01-30",
+    "2019-03-20",
+    "2019-05-01",
+    "2019-06-19",
+    "2019-07-31",
+    "2019-09-18",
+    "2019-10-30",
+    "2019-12-11"
+   ],
+   "excluded_tags": []
+  },
+  "2020": {
+   "year": 2020,
+   "cdx_http": 200,
+   "captures": 29,
+   "ts": "20191224181536",
+   "snap_sha256": "a6a72d8e2a3964beece91cae5cff835ffa5b492d3bf73a63adb28a439f725958",
+   "method": "structured",
+   "parsed": 8,
+   "url": "https://web.archive.org/web/20191224181536id_/https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+   "scheduled": [
+    "2020-01-29",
+    "2020-03-18",
+    "2020-04-29",
+    "2020-06-10",
+    "2020-07-29",
+    "2020-09-16",
+    "2020-11-05",
+    "2020-12-16"
+   ],
+   "excluded_tags": []
+  },
+  "2021": {
+   "year": 2021,
+   "cdx_http": 200,
+   "captures": 40,
+   "ts": "20201227032039",
+   "snap_sha256": "c8f474d401b54909e8f37fbb95733d1e4e34a32a131ce5893b1120093761737c",
+   "method": "structured",
+   "parsed": 8,
+   "url": "https://web.archive.org/web/20201227032039id_/https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+   "scheduled": [
+    "2021-01-27",
+    "2021-03-17",
+    "2021-04-28",
+    "2021-06-16",
+    "2021-07-28",
+    "2021-09-22",
+    "2021-11-03",
+    "2021-12-15"
+   ],
+   "excluded_tags": []
+  },
+  "2022": {
+   "year": 2022,
+   "cdx_http": 200,
+   "captures": 40,
+   "ts": "20211228042053",
+   "snap_sha256": "1e8745e0028794ad8f2f9ff3ce577cc885e5dbd9b33bdd52b2790a04adefd60d",
+   "method": "structured",
+   "parsed": 8,
+   "url": "https://web.archive.org/web/20211228042053id_/https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+   "scheduled": [
+    "2022-01-26",
+    "2022-03-16",
+    "2022-05-04",
+    "2022-06-15",
+    "2022-07-27",
+    "2022-09-21",
+    "2022-11-02",
+    "2022-12-14"
+   ],
+   "excluded_tags": []
+  },
+  "2023": {
+   "year": 2023,
+   "cdx_http": 200,
+   "captures": 117,
+   "ts": "20221231063331",
+   "snap_sha256": "256ae7621ec5314b8f24ca4a4b0b83991671b5de1bd7f1fb844286db23b5a3c7",
+   "method": "structured",
+   "parsed": 8,
+   "url": "https://web.archive.org/web/20221231063331id_/https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+   "scheduled": [
+    "2023-02-01",
+    "2023-03-22",
+    "2023-05-03",
+    "2023-06-14",
+    "2023-07-26",
+    "2023-09-20",
+    "2023-11-01",
+    "2023-12-13"
+   ],
+   "excluded_tags": []
+  },
+  "2024": {
+   "year": 2024,
+   "cdx_http": 200,
+   "captures": 156,
+   "ts": "20231231123800",
+   "snap_sha256": "90e268567133112bc9773287129d5a4d5593c7df500d1c78c9dfa72b6f87d676",
+   "method": "structured",
+   "parsed": 8,
+   "url": "https://web.archive.org/web/20231231123800id_/https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+   "scheduled": [
+    "2024-01-31",
+    "2024-03-20",
+    "2024-05-01",
+    "2024-06-12",
+    "2024-07-31",
+    "2024-09-18",
+    "2024-11-07",
+    "2024-12-18"
+   ],
+   "excluded_tags": []
+  },
+  "2025": {
+   "year": 2025,
+   "cdx_http": 200,
+   "captures": 149,
+   "ts": "20241230113909",
+   "snap_sha256": "5b482277ed0a0e9fd67f4573d9ff641b9ff835d4bfdb7a3c800b1857d7517b85",
+   "method": "structured",
+   "parsed": 8,
+   "url": "https://web.archive.org/web/20241230113909id_/https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+   "scheduled": [
+    "2025-01-29",
+    "2025-03-19",
+    "2025-05-07",
+    "2025-06-18",
+    "2025-07-30",
+    "2025-09-17",
+    "2025-10-29",
+    "2025-12-10"
+   ],
+   "excluded_tags": []
+  },
+  "2026": {
+   "year": 2026,
+   "cdx_http": 200,
+   "captures": 67,
+   "ts": "20251226115329",
+   "snap_sha256": "27e54cc75b0e8446173f1184f97f2bfd48b9504f7bdcd35b31566b22d61b819f",
+   "method": "structured",
+   "parsed": 8,
+   "url": "https://web.archive.org/web/20251226115329id_/https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+   "scheduled": [
+    "2026-01-28",
+    "2026-03-18",
+    "2026-04-29",
+    "2026-06-17",
+    "2026-07-29",
+    "2026-09-16",
+    "2026-10-28",
+    "2026-12-09"
+   ],
+   "excluded_tags": []
+  }
+ },
+ "events_total": 72,
+ "not_realized": [
+  "FOMC-2020-03-18"
+ ],
+ "future": [
+  "FOMC-2026-12-09"
+ ],
+ "pit_unknown": [],
+ "coverage_lt_1": [
+  "FOMC-2023-03-22",
+  "FOMC-2026-12-09"
+ ],
+ "binance_files": {
+  "BTCUSDT": 87,
+  "ETHUSDT": 87
+ },
+ "notes": []
+}
