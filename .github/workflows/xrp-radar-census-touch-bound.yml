@@ -1,0 +1,30 @@
+name: XRP census upper-bound sensitivity (OHLC touches, no predictions)
+on:
+  push:
+    branches: [claude/radar-census-touch-bound-20261112]
+    paths:
+      - research/top_risk_radar_v1/census_touch_bound.py
+      - .github/workflows/xrp-radar-census-touch-bound.yml
+permissions:
+  contents: read
+jobs:
+  census:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Unit tests
+        run: pip install -q pytest && python -m pytest -q research/top_risk_radar_v1/test_census_touch_bound.py
+      - name: Upper-bound census (no model, no predictions)
+        env:
+          CENSUS_START: '2022-01'
+          CENSUS_END: '2026-10'
+        run: python -m research.top_risk_radar_v1.census_touch_bound
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xrp-census-touch-bound
+          path: xrp_census_touch_bound.json
+          retention-days: 30
