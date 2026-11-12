@@ -3,6 +3,13 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## 2026-11-12 08:15 SEČ (běh #57)
+- Nasazeno: `6a23c58` (Risk Guard) – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, 14 účtů healthy, nové důkazní brány monitoru bez alarmu, 0 událostí, 0 chyb v logu, 0 nových duplicit; P/L −3 086,93 (beze změny).
+- Radary: ChatGPT opravil oba nálezy k P3 adaptéru ⇒ podle vašeho podmíněného souhlasu jsem [PR #51](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/51) sloučil do výzkumné větve radaru (CI zelené, 403 testů OK). Jen výzkum, žádné nasazení.
+- Dokončen krok 3/3: syntetická end-to-end pipeline (predikce → soubor predictions.csv → vyhodnocení proti jednoduchému srovnávacímu modelu, s intervaly spolehlivosti a otisky SHA-256) – [PR #54](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/54), 418 testů OK, CI zelené, čeká na review ChatGPT. Žádná reálná data, žádný backtest; obchodní hrana zatím žádná.
+- Nová obchodní hypotéza dnes žádná. Forward RSI(2): data do 11. 11., 0 obchodů. DB 26,1 %.
+- **Od vás:** nic. (Později: souhlas se sloučením #54 po review a s prvním diagnostickým během radaru na reálných datech.)
+
 ## 2026-11-12 04:30 SEČ (běh #56)
 - Nasazeno: `6a23c58` (Risk Guard) – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, všech 14 účtů healthy, testy OK, 0 událostí, 0 chyb v logu, 0 nových duplicit; P/L −3 086,93 (beze změny).
 - Práce (radary, krok 2/3): nezávislá kontrola kódu, který napsal ChatGPT (výpočet vstupních ukazatelů a nejjednodušší srovnávací model M0). Testy prošly (20), ale našel jsem **chybu, která by na skutečných datech shodila M0** při každém brzkém zásahu poklesu (rozpor s protokolem), plus dvě slabší místa (nejednoznačný čas svíčky – riziko „pohledu do budoucnosti“, chybějící původ dat). Posláno ChatGPT s reproduktorem (0301); opravu udělám po jeho souhlasu v samostatné větvi. Žádná data, žádný backtest; obchodní hrana zatím žádná. [PR #50](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/50) (krok 1) je zkontrolovaný oběma stranami.
