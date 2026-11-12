@@ -90,7 +90,11 @@ def label_touch(decision_at: datetime, trades: Iterable[Trade], as_of: datetime,
     if ref is None:
         return Label(decision_at, None, None, deadline, None, None, "missing_reference")
     threshold = ref.price * ratio
-    hit = next((x for x in rows if decision_at < x.timestamp <= deadline
+    # A touch before the first eligible reference trade is not a future event.
+    # Preserve native trade-ID ordering for multiple trades at one timestamp.
+    reference_index = rows.index(ref)
+    hit = next((x for x in rows[reference_index + 1:]
+                if decision_at < x.timestamp <= deadline
                 and (x.price <= threshold if ratio < 1 else x.price >= threshold)), None)
     if hit is not None:
         return Label(decision_at, ref.timestamp, ref.price, deadline, hit.timestamp, 1, "positive")
