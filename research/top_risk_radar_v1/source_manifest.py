@@ -22,7 +22,7 @@ def validate_manifest(record: Mapping[str,object]) -> list[str]:
     for k in ("start_utc","end_utc","acquisition_utc"):
         try:
             dt=datetime.fromisoformat(str(record[k]).replace("Z","+00:00"))
-            if dt.utcoffset() != timezone.utc.utcoffset(dt):
+            if dt.tzinfo is None or dt.utcoffset() != timezone.utc.utcoffset(dt):
                 issues.append("non_utc:"+k)
         except (ValueError,TypeError):
             issues.append("invalid_timestamp:"+k)
@@ -31,6 +31,9 @@ def validate_manifest(record: Mapping[str,object]) -> list[str]:
         end=datetime.fromisoformat(str(record["end_utc"]).replace("Z","+00:00"))
         if start>=end:
             issues.append("invalid_coverage_range")
+        acquired=datetime.fromisoformat(str(record["acquisition_utc"]).replace("Z","+00:00"))
+        if acquired.tzinfo is not None and end.tzinfo is not None and acquired < end:
+            issues.append("acquisition_before_coverage_end")
     except (ValueError,TypeError):
         pass
     if type(record["point_in_time_supported"]) is not bool:
