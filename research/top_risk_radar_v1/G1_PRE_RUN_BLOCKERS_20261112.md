@@ -30,3 +30,48 @@ Status: **NOT FROZEN / NOT EXECUTED**. PAPER research only. This document is a p
 ## Execution record
 [P] Documented blocking conditions and reconciled the primary trade-level protocol against the 00:05-minute-candle draft.
 [S] No performance backtest, data G0 execution, local tests, merge, deploy, Render, LIVE or production changes. CI statuses above were read-only verified.
+
+## 2026-11-13 preflight integration audit (no performance execution)
+
+Verified on the research branch: `g1_preflight.complete_g1_folds` composes
+`require_complete_g1_decision_days`, `validate_g1_decisions`, and
+`g1_calendar_folds`. The last function fixes a 14-day label horizon and
+an **additional** 14-day embargo. These functions are deterministic calendar
+QA only; they do not fetch, inspect or verify market trades.
+
+**Critical distinction: calendar completeness is not source completeness.**
+Passing `complete_g1_folds` demonstrates only that supplied daily 00:05 UTC
+*decision timestamps* cover the caller-declared inclusive bounds. It does NOT
+establish that the caller declared the entire frozen observation period, that
+underlying trades exist within the required 60-second reference window, that
+future trades cover all 336 hours, that archive hashes and trade identities
+are correct, or that PIT feature publication timestamps precede decisions.
+An attacker or buggy loader could fabricate a perfect daily decision grid from
+an incomplete trade archive and pass this gate. Treat such a result as
+**NOT DATA-QA-PASSED** until independent source checks are attached.
+
+Before any G1 runner may execute, require the following *separate* evidence:
+
+- Coverage bounds come from the frozen dataset manifest, never from the
+  observed first/last decision rows. The manifest must explicitly enumerate
+  expected train and OOS calendar periods and exclusions.
+- For every included decision, record first eligible reference trade's
+  timestamp, unique trade ID, price and source checksum; exclude and count
+  decisions without an eligible trade in [00:05:00, 00:06:00) UTC.
+- Verify chronological trade ordering for every label hit; same-timestamp
+  ties must be resolved using exchange trade IDs. Report missing archives,
+  duplicate IDs, timestamp-unit mismatches, archive continuity and price
+  anomalies separately from daily decision-grid coverage.
+- Freeze and independently inspect each feature's `source_published_at` and
+  `collector_received_at` before allowing it into a decision; no imputed
+  publication times or revised future values without a pre-registered rule.
+- The eventual G1 runner must call `complete_g1_folds` **and** the distinct
+  trade/PIT/data-manifest gates, then produce an auditable fail-closed receipt
+  before the single owner-authorized performance run. This integration is
+  **NOT IMPLEMENTED** as of this audit; tests of individual helpers do not
+  establish it.
+
+[P] Read-only inspected the preflight, calendar coverage and fold contract;
+recorded their actual limits and the required runner-level gate wiring.
+[S] No new test executed and no performance backtest executed. Prior CI success
+for calendar-only unit tests must not be interpreted as trade-level validation.
