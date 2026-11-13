@@ -16,13 +16,18 @@ def expanding_calendar_folds(decisions: Sequence[datetime], *,
                              as_of: datetime,
                              first_train_year: int = 2018,
                              first_test_year: int = 2022,
-                             last_test_year: int = 2026) -> list[Fold]:
+                             last_test_year: int = 2026,
+                             embargo: timedelta = timedelta(0)) -> list[Fold]:
     """Require full label maturity before training or evaluation.
 
     The test year's training window ends at Jan 1 of that year, with a
     horizon-sized purge so no training label reaches into test time.
+    An additional embargo can be requested explicitly (G1 requires >=14 days).
+    The default zero preserves historical callers; G1 callers must supply embargo.
     Only chronological calendar splits; no fitting/calibration performed.
     """
+    if embargo < timedelta(0):
+        raise ValueError("embargo must be nonnegative")
     if label_horizon <= timedelta(0):
         raise ValueError("positive label horizon required")
     if as_of.tzinfo is None or as_of.utcoffset() != timedelta(0):
@@ -38,7 +43,7 @@ def expanding_calendar_folds(decisions: Sequence[datetime], *,
         end=datetime(year+1,1,1,tzinfo=timezone.utc)
         train=tuple(i for i,d in enumerate(decisions)
                     if first_train_year <= d.year < year
-                    and d+label_horizon <= start
+                    and d+label_horizon+embargo <= start
                     and d+label_horizon <= as_of)
         test=tuple(i for i,d in enumerate(decisions)
                    if start <= d < end and d+label_horizon <= as_of)
