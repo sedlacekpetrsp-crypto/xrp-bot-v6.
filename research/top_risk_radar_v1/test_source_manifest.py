@@ -18,3 +18,17 @@ class ManifestTests(unittest.TestCase):
         self.assertIn("invalid_pit_flag",validate_manifest({**GOOD,"point_in_time_supported":"yes"}))
     def test_zero_rows(self):
         self.assertIn("invalid_row_count",validate_manifest({**GOOD,"row_count":0}))
+
+    def test_naive_timestamp_is_not_utc(self):
+        for field in ("start_utc", "end_utc", "acquisition_utc"):
+            with self.subTest(field=field):
+                manifest = {**GOOD, field: "2025-01-01T00:00:00"}
+                self.assertIn("non_utc:" + field, validate_manifest(manifest))
+
+    def test_acquisition_cannot_precede_covered_trades(self):
+        manifest = {**GOOD, "acquisition_utc": "2025-01-31T23:59:59Z"}
+        self.assertIn("acquisition_before_coverage_end", validate_manifest(manifest))
+
+    def test_acquisition_at_end_is_acceptable(self):
+        manifest = {**GOOD, "acquisition_utc": GOOD["end_utc"]}
+        self.assertNotIn("acquisition_before_coverage_end", validate_manifest(manifest))
