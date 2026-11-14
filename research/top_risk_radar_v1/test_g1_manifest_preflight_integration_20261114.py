@@ -12,7 +12,7 @@ START = datetime(2022, 1, 1, 0, 5, tzinfo=timezone.utc)
 AS_OF = datetime(2026, 11, 14, tzinfo=timezone.utc)
 DAY = timedelta(days=1)
 DECISIONS = [START + i * DAY for i in range(4)]
-READY = {**GOOD, "qa_status": "verified"}
+READY = {**GOOD, "qa_status": "verified", "start_utc": "2022-01-01T00:00:00Z", "end_utc": "2022-01-05T00:00:00Z"}
 
 
 def prepare(manifest=READY, decisions=DECISIONS):
@@ -34,7 +34,7 @@ def test_verified_metadata_and_complete_calendar_preserve_fixed_folds():
     ({"qa_status": "rejected"}, "source_not_verified"),
     ({"point_in_time_supported": False}, "pit_not_supported"),
     ({"raw_sha256": "bad"}, "invalid_sha256"),
-    ({"acquisition_utc": "2025-01-31T00:00:00Z"}, "acquisition_before_coverage_end"),
+    ({"acquisition_utc": "2022-01-04T00:00:00Z"}, "acquisition_before_coverage_end"),
 ])
 def test_unready_source_fails_before_folds(change, reason):
     with pytest.raises(ValueError, match=reason):
@@ -44,3 +44,17 @@ def test_unready_source_fails_before_folds(change, reason):
 def test_verified_manifest_cannot_mask_missing_calendar_day():
     with pytest.raises(ValueError, match="coverage incomplete"):
         prepare(decisions=[DECISIONS[0], DECISIONS[1], DECISIONS[3]])
+
+
+@pytest.mark.parametrize("change", [
+    {"start_utc": "2022-01-02T00:00:00Z"},
+    {"end_utc": "2022-01-04T00:05:00Z"},
+    {"start_utc": "2025-01-01T00:00:00Z", "end_utc": "2025-02-01T00:00:00Z"},
+])
+def test_verified_source_must_cover_entire_decision_interval(change):
+    with pytest.raises(ValueError, match="does not cover decision interval"):
+        prepare({**READY, **change})
+
+
+def test_source_end_after_last_decision_is_accepted():
+    assert prepare({**READY, "end_utc": "2022-01-04T00:05:01Z"}) == prepare()
