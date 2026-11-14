@@ -44,3 +44,13 @@ class ManifestTests(unittest.TestCase):
     def test_naive_acquisition_does_not_crash_range_comparison(self):
         manifest = {**GOOD, "acquisition_utc": "2025-02-02T00:00:00"}
         self.assertIn("non_utc:acquisition_utc", validate_manifest(manifest))
+
+    def test_whitespace_only_required_metadata_fails_closed(self):
+        for field in ("source_id", "provider", "venue", "symbol", "event_timestamp_field", "granularity", "qa_status"):
+            with self.subTest(field=field):
+                manifest = {**GOOD, field: " \t "}
+                self.assertIn("missing:" + field, validate_manifest(manifest))
+
+    def test_whitespace_only_hash_does_not_bypass_required_field(self):
+        manifest = {**GOOD, "raw_sha256": " " * 64}
+        self.assertIn("missing:raw_sha256", validate_manifest(manifest))
