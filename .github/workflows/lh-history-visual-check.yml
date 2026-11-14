@@ -1,7 +1,5 @@
 name: LH history visual check
 on:
-  push:
-    branches: [research/lh-whale-dashboard-history-20261114]
   pull_request:
     branches: [v8-fly-layer-test]
     paths: [lh_whale_dashboard.py, app_v8_fly.py, tools/check_lh_history_ui.py, .github/workflows/lh-history-visual-check.yml]
@@ -9,7 +7,7 @@ permissions:
   contents: read
 jobs:
   browser-check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
