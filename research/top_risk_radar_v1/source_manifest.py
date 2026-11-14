@@ -29,7 +29,7 @@ def validate_manifest(record: Mapping[str,object]) -> list[str]:
     try:
         start=datetime.fromisoformat(str(record["start_utc"]).replace("Z","+00:00"))
         end=datetime.fromisoformat(str(record["end_utc"]).replace("Z","+00:00"))
-        if start>=end:
+        if start.tzinfo is not None and end.tzinfo is not None and start>=end:
             issues.append("invalid_coverage_range")
         acquired=datetime.fromisoformat(str(record["acquisition_utc"]).replace("Z","+00:00"))
         if acquired.tzinfo is not None and end.tzinfo is not None and acquired < end:
