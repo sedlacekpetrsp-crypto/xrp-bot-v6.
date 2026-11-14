@@ -32,3 +32,15 @@ class ManifestTests(unittest.TestCase):
     def test_acquisition_at_end_is_acceptable(self):
         manifest = {**GOOD, "acquisition_utc": GOOD["end_utc"]}
         self.assertNotIn("acquisition_before_coverage_end", validate_manifest(manifest))
+
+    def test_naive_start_does_not_crash_range_comparison(self):
+        manifest = {**GOOD, "start_utc": "2025-01-01T00:00:00"}
+        self.assertIn("non_utc:start_utc", validate_manifest(manifest))
+
+    def test_naive_end_does_not_crash_range_comparison(self):
+        manifest = {**GOOD, "end_utc": "2025-02-01T00:00:00"}
+        self.assertIn("non_utc:end_utc", validate_manifest(manifest))
+
+    def test_naive_acquisition_does_not_crash_range_comparison(self):
+        manifest = {**GOOD, "acquisition_utc": "2025-02-02T00:00:00"}
+        self.assertIn("non_utc:acquisition_utc", validate_manifest(manifest))
