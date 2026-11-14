@@ -58,6 +58,9 @@ async def main():
             await page.route('**/*',route)
             await page.goto('http://lh-test/')
             history=page.locator('#lhWhaleHistory')
+            await history.wait_for()
+            assert not await history.evaluate('(e)=>e.open')
+            await page.locator('[data-lh-history]').click()
             await history.locator('.history-row:not(.history-heading)').wait_for()
             assert await history.locator('.history-heading span').count()==4
             assert '49.14 USDT' in await history.inner_text()
