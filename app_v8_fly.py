@@ -1067,7 +1067,7 @@ async def combined_paper_dashboard():
 main{max-width:900px;margin:auto}.card{background:#1c2a39;border:1px solid #33485d;border-radius:12px;padding:18px;margin:14px 0}
 a{color:#8bd3ff}h1{font-size:25px}h2{font-size:18px}pre{white-space:pre-wrap;overflow-wrap:anywhere}
 small{color:#a8bacb}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
-strong{font-size:23px}</style></head><body><main>
+strong{font-size:23px}summary{cursor:pointer;touch-action:manipulation;user-select:none;font-weight:700;padding:8px 0;min-height:28px}summary:focus-visible{outline:2px solid #8bd3ff;outline-offset:3px}details pre{margin-top:14px}</style></head><body><main>
 <a href="/">← Přehled všech botů</a><h1>🧩 Combined Best Signals V1</h1>
 <p>Pouze simulované PAPER obchody · žádné příkazy na burzu</p>
 <div id="health" class="card">Načítám stav…</div>
@@ -1075,8 +1075,8 @@ strong{font-size:23px}</style></head><body><main>
 <div class="card">Realizovaný P/L<br><strong id="pnl">—</strong></div>
 <div class="card">Otevřené pozice<br><strong id="open">—</strong></div>
 <div class="card">Uzavřené obchody<br><strong id="count">—</strong></div></div>
-<div class="card"><h2>Pozice</h2><pre id="positions">—</pre></div>
-<div class="card"><h2>Historie simulovaných obchodů</h2><pre id="trades">—</pre></div>
+<details class="card" id="openDetails"><summary>Otevřené obchody (<span id="openSummary">—</span>)</summary><pre id="positions">—</pre></details>
+<details class="card" id="closedDetails"><summary>Uzavřené obchody (<span id="closedSummary">—</span>)</summary><pre id="trades">—</pre></details>
 <small>Historie je ukládána do PostgreSQL. Údaje nejsou skutečné burzovní obchody.</small>
 <script>
 async function refresh(){
@@ -1088,8 +1088,10 @@ document.getElementById('equity').textContent=p.equity==null?'—':Number(p.equi
 document.getElementById('pnl').textContent=p.realized_pnl==null?'—':Number(p.realized_pnl).toFixed(2)+' USDT';
 document.getElementById('open').textContent=p.open_count??'—';
 document.getElementById('count').textContent=p.trade_count??'—';
+document.getElementById('openSummary').textContent=p.open_count??'—';
+document.getElementById('closedSummary').textContent=p.trade_count??'—';
 document.getElementById('positions').textContent=JSON.stringify(p.positions||{},null,2);
-document.getElementById('trades').textContent=JSON.stringify((p.trades||[]).slice(-30),null,2);
+document.getElementById('trades').textContent=(p.trades||[]).length?JSON.stringify((p.trades||[]).slice(-30),null,2):'Žádné uzavřené obchody';
 }catch(e){document.getElementById('health').textContent='Chyba načtení: '+e.message;}
 }refresh();setInterval(refresh,15000);
 </script></main></body></html>""")
