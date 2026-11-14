@@ -12,26 +12,21 @@ async function refreshLHWhale(){
  try{
   const r=await fetch('/lh-whale/status',{cache:'no-store',signal:AbortSignal.timeout(10000)});if(!r.ok)throw Error(r.status);
   const d=await r.json(),a=d.analysis||{},f=a.futures||{};
-  const opened=root.querySelector('details')?.open ?? true;
+  const opened=root.querySelector('details')?.open ?? false;
   const trades=Array.isArray(d.trades)?d.trades:[];
   const epochCount=Number(d.trades_count)||0;
   const displayedCount=Math.min(trades.length,20);
   const historyNote=displayedCount<epochCount?'Zobrazeno '+displayedCount+' z '+epochCount+' obchodů aktuální epochy.':'Historie aktuální PAPER epochy.';
+  const historyMarkup='<details class="coin" id="lhWhaleHistory" style="grid-column:1/-1"><summary data-lh-history style="cursor:pointer;min-height:44px;font-weight:700">Uzavřené / otevřené<br>'+epochCount+' / '+d.positions.length+'</summary><div style="margin-top:12px">'+renderTradeHistory(trades.map(t=>({...t,strategy:t.strategy||'LH_WHALE'})),'USDT')+'</div><p class="muted history-note">'+historyNote+'</p></details>';
   root.innerHTML='<b>'+(d.healthy?'🟢 Běží':d.running?'🟠 Běží · čekám na aktuální data':'🟠 Stav nelze ověřit')+'</b><div class="grid" style="margin-top:12px">'+
-   [['Zůstatek',num(d.balance)+' USDT'],['Hodnota účtu',num(d.equity)+' USDT'],['Čistý realizovaný výsledek',pnl(d.net_pnl)],['Uzavřené / otevřené','<button type="button" data-lh-history aria-controls="lhWhaleHistory" style="font:inherit;color:inherit;background:transparent;border:1px solid #66e0c1;border-radius:6px;min-height:44px;padding:8px 12px;cursor:pointer;text-decoration:underline">'+epochCount+' / '+d.positions.length+' · Zobrazit obchody</button>'],['Win rate',num(d.win_rate)+' %'],['Cena XRP',num(d.market_price,6)]].map(x=>'<div class="coin">'+x[0]+'<br><b>'+x[1]+'</b></div>').join('')+'</div>'+
+   [['Zůstatek',num(d.balance)+' USDT'],['Hodnota účtu',num(d.equity)+' USDT'],['Čistý realizovaný výsledek',pnl(d.net_pnl)],['history',historyMarkup],['Win rate',num(d.win_rate)+' %'],['Cena XRP',num(d.market_price,6)]].map(x=>x[0]==='history'?x[1]:'<div class="coin">'+x[0]+'<br><b>'+x[1]+'</b></div>').join('')+'</div>'+
    '<div class="coin" style="margin-top:12px"><b>Signál '+esc(a.signal||'WAIT')+'</b><br>'+esc(a.reason||'Čekám na data')+'<br>Zdroj '+esc(a.futures_provider||'—')+' · OI změna '+num(f.oi_change_pct)+' % · Top L/S '+num(f.top_ratio)+' · Taker B/S '+num(f.taker_ratio)+'</div>'+
    (d.positions.length?d.positions.map(p=>'<div class="coin" style="margin-top:8px"><b class="'+(p.side==='LONG'?'green':'red')+'">'+esc(p.symbol)+' '+esc(p.side)+'</b><br>Čistý průběžný P/L '+pnl(p.unrealized_net_pnl)+'<br>Vstup '+num(p.entry_price,6)+' · cena '+num(p.current_price,6)+'<br>SL '+num(p.stop_loss,6)+' · TP '+num(p.take_profit,6)+'<br>Otevřeno '+when(p.opened_at)+'</div>').join(''):'<p>⏳ Čekám na potvrzený obchod</p>')+
    '<div class="grid" style="margin-top:12px">'+[['Ziskové obchody',num(d.trades_count?Math.round(Number(d.win_rate||0)*epochCount/100):0,0)],['Neziskové obchody (včetně nuly)',num(d.trades_count?epochCount-Math.round(Number(d.win_rate||0)*epochCount/100):0,0)],['Úspěšnost',d.win_rate==null?'—':num(d.win_rate)+' %']].map(x=>'<div class="coin">'+x[0]+'<br><b>'+x[1]+'</b></div>').join('')+'</div>'+
-   '<details id="lhWhaleHistory" style="margin-top:12px"><summary style="cursor:pointer;font-weight:700;min-height:44px;align-content:center">Historie obchodů ('+epochCount+')</summary><div style="margin-top:8px">'+renderTradeHistory(trades.map(t=>({...t,strategy:t.strategy||'LH_WHALE'})),'USDT')+'</div><p class="muted history-note">'+historyNote+'</p></details>'+
    (d.last_error?'<p class="red">'+esc(d.last_error)+'</p>':'')+(d.data_error?'<p class="yellow">Nové vstupy pozastavené: '+esc(d.data_error)+'</p>':'')+
    '<div class="muted" style="margin-top:12px">Poslední kontrola '+when(d.last_cycle_at)+' · ukládání '+esc(d.persistence)+'</div>';
   const history=root.querySelector('#lhWhaleHistory');
   history.open=!!opened;
-  root.querySelector('[data-lh-history]').onclick=()=>{
-   history.open=true;
-   history.scrollIntoView({block:'start',behavior:'smooth'});
-   history.querySelector('summary').focus({preventScroll:true});
-  };
  }catch(e){root.innerHTML='<p class="yellow">Stav Liquidity Hunter není dostupný. Čekám na obnovení spojení.</p>';}
 }
 refreshLHWhale();setInterval(refreshLHWhale,5000);
