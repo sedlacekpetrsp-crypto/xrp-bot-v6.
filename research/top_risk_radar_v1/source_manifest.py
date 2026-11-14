@@ -9,7 +9,7 @@ FIELDS=("source_id","provider","market_type","venue","symbol","timezone","start_
 def validate_manifest(record: Mapping[str,object]) -> list[str]:
     issues=[]
     for field in FIELDS:
-        if field not in record or record[field] is None or record[field] == "":
+        if field not in record or record[field] is None or (isinstance(record[field], str) and not record[field].strip()):
             issues.append("missing:"+field)
     if issues:
         return issues
