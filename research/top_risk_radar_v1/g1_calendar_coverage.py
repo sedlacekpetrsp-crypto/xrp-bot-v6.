@@ -20,7 +20,10 @@ def missing_g1_decision_days(
     Bounds must themselves be canonical G1 decision timestamps. No dates are
     synthesized into the dataset; this is a fail-closed reporting primitive.
     """
-    validate_g1_decisions((start, end) if start < end else (start,))
+    # Validate each bound before ordering comparisons: mixed naive/aware
+    # datetimes otherwise raise TypeError rather than a controlled QA error.
+    validate_g1_decisions((start,))
+    validate_g1_decisions((end,))
     if end < start:
         raise ValueError("end precedes start")
     validate_g1_decisions(decisions)
