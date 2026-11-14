@@ -72,3 +72,9 @@ def test_manifest_preflight_rejects_invalid_bounds_with_value_error(bad_bound, b
         complete_g1_folds_with_manifest(
             DECISIONS, as_of=AS_OF, source_manifest=READY, **bounds,
         )
+
+
+@pytest.mark.parametrize("invalid_manifest", [None, [], "verified", 42, True])
+def test_non_mapping_manifest_fails_closed(invalid_manifest):
+    with pytest.raises(ValueError, match="invalid_manifest_type"):
+        prepare(manifest=invalid_manifest)
