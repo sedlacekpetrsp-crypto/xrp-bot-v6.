@@ -54,7 +54,7 @@ def complete_g1_folds_with_manifest(
     # Source interval is [start_utc, end_utc); a verified manifest from an
     # unrelated period must not authorize decision folds outside its coverage.
     # Metadata checks alone still do not establish trade-level completeness.
-    source_start = datetime.fromisoformat(str(source_manifest["start_utc"]).replace("Z", "+00:00"))
+    # Validate bounds before comparing against timezone-aware manifest timestamps.\n    # Naive/non-datetime bounds must produce controlled QA errors, not TypeError.\n    validate_g1_decisions((coverage_start,))\n    validate_g1_decisions((coverage_end,))\n    source_start = datetime.fromisoformat(str(source_manifest["start_utc"]).replace("Z", "+00:00"))
     source_end = datetime.fromisoformat(str(source_manifest["end_utc"]).replace("Z", "+00:00"))
     if source_start > coverage_start or source_end <= coverage_end:
         raise ValueError("G1 source manifest does not cover decision interval")
