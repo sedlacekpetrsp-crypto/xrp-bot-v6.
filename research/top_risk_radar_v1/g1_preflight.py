@@ -51,6 +51,13 @@ def complete_g1_folds_with_manifest(
     issues = g1_manifest_readiness_issues(source_manifest)
     if issues:
         raise ValueError("G1 source manifest not ready: " + ", ".join(issues))
+    # Source interval is [start_utc, end_utc); a verified manifest from an
+    # unrelated period must not authorize decision folds outside its coverage.
+    # Metadata checks alone still do not establish trade-level completeness.
+    source_start = datetime.fromisoformat(str(source_manifest["start_utc"]).replace("Z", "+00:00"))
+    source_end = datetime.fromisoformat(str(source_manifest["end_utc"]).replace("Z", "+00:00"))
+    if source_start > coverage_start or source_end <= coverage_end:
+        raise ValueError("G1 source manifest does not cover decision interval")
     return complete_g1_folds(
         decisions, as_of=as_of, coverage_start=coverage_start,
         coverage_end=coverage_end,
