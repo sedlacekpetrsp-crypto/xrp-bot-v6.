@@ -58,3 +58,17 @@ def test_verified_source_must_cover_entire_decision_interval(change):
 
 def test_source_end_after_last_decision_is_accepted():
     assert prepare({**READY, "end_utc": "2022-01-04T00:05:01Z"}) == prepare()
+
+@pytest.mark.parametrize("bad_bound", [
+    START.replace(tzinfo=None),
+    "2022-01-01T00:05:00Z",
+    START.replace(hour=1),
+])
+@pytest.mark.parametrize("bound_name", ["coverage_start", "coverage_end"])
+def test_manifest_preflight_rejects_invalid_bounds_with_value_error(bad_bound, bound_name):
+    bounds = {"coverage_start": START, "coverage_end": START + 3 * DAY}
+    bounds[bound_name] = bad_bound
+    with pytest.raises(ValueError, match="must be (UTC|a datetime|exactly 00:05)"):
+        complete_g1_folds_with_manifest(
+            DECISIONS, as_of=AS_OF, source_manifest=READY, **bounds,
+        )
