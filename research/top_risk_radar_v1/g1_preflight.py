@@ -18,6 +18,10 @@ from .walkforward import Fold
 def validated_g1_folds(decisions: Sequence[datetime], *, as_of: datetime) -> list[Fold]:
     """Validate the full 00:05 UTC grid before constructing embargoed folds."""
     validate_g1_decisions(decisions)
+    if not isinstance(as_of, datetime):
+        raise ValueError("G1 as_of must be a UTC datetime")
+    if as_of.tzinfo is None or as_of.utcoffset() is None or as_of.utcoffset().total_seconds() != 0:
+        raise ValueError("G1 as_of must be UTC")
     return g1_calendar_folds(decisions, as_of=as_of)
 
 
