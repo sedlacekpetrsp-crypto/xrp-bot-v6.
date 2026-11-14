@@ -16,6 +16,8 @@ def g1_manifest_readiness_issues(record: Mapping[str, object]) -> list[str]:
     This pure function must not be used as a substitute for verifying the
     archived trade data or for the eventual runner's full preflight receipt.
     """
+    if not isinstance(record, Mapping):
+        return ["invalid_manifest_type"]
     issues = validate_manifest(record)
     if issues:
         return issues
