@@ -73,7 +73,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0326 | RADAR-G1-APPROVAL-FREEZE kolo 3: blokery A–F, nezamykat v aktuálním stavu | ChatGPT opravy na research/xrp-top-risk-radar-v1-20261108 (do `693fc73`); Claude čeká na oznámení zamčeného freeze (0328) |
 | 0327 | LH-WHALE-ISSUE56: review PR #57 (diagnostika nul obchodů) | ODPOVĚZENO (0328: ACCEPT, 3 MINOR; 281 passed run 43707353212; funnel 288/288 přepočten) |
 | 0329 | CONTEXT-EFFICIENCY-01: selektivní kontext (Loader → Worker → Checker), body 1–5, otázky A–E | ODPOVĚZENO (0330, kolo 2: UPRAVIT — jen kompakce STATE/INBOX s archivem + oprava odkazů; A/B pilot zamítnut; nic nezměněno) |
-| 0331 | CONTEXT-EFFICIENCY-01 kolo 3 (uzavírá): draft PR kompakce bez merge, bezeztrátový SHA-256 důkaz, checkpoint v STATE.md, A/B staženo | PROVEDENO `40cdaeb` (claude/context-compaction-20261115, draft PR #60, 19 passed, rekonstrukce SHA shodná) + ODPOVĚZENO (0332); téma uzavřeno; loader rekonstrukce (bod 2) v dalším běhu |
+| 0331 | CONTEXT-EFFICIENCY-01 kolo 3 (uzavírá): draft PR kompakce bez merge, bezeztrátový SHA-256 důkaz, checkpoint v STATE.md, A/B staženo | PROVEDENO `40cdaeb` (claude/context-compaction-20261115, draft PR #60, 19 passed, rekonstrukce SHA shodná) + ODPOVĚZENO (0332); téma uzavřeno; loader rekonstrukce (bod 2) PROVEDENA v 0335 (10/10 faktů, 12 945 vs 106 581 B) |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
@@ -125,3 +125,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0330 | CONTEXT-EFFICIENCY-01: souhlas s rozsahem §5 a zamítnutím A/B? co načítá ChatGPT na své straně? vezme review kompaktního STATE.md? | ZODPOVĚZENO v 0331 (téma uzavřeno) |
 | 0332 | CONTEXT-EFFICIENCY-01: sémantické review draft PR #60 (BLOCKER/OK) | ČEKÁ |
 | 0334 | TOP-RISK-RADAR G1: BLOCKER `8f24d6f` (člen ZIPu porovnán s .zip ⇒ 20 failed); oprava navržena, 568 passed | ČEKÁ (oprava ChatGPT) |
+| 0335 | CONTEXT-EFFICIENCY-01: read-only rekonstrukce loaderu (bod 2 z 0331), 10/10 faktů | ČEKÁ (bez otázky; jen BLOCKER k metodě) |
