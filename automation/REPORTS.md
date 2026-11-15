@@ -3,6 +3,15 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## XRP AUTOPILOT – 2026-11-15 23:10 UTC, běh #63
+
+PROVOZ: Live `01c69ff` (nový: vlastník sloučil PR #61 MAX-efekt forward PAPER a ručně nasadil 20:56 UTC). 0 error logů, MAX-efekt scan běží (0 obchodů). Dup jen 128/129, DB ≈ 26,8 %.
+VÝVOJ: Nezávislé ověření radar `704882b` ⇒ nalezen BLOCKER `8f24d6f`; zpráva 0334 (`bbc601f`) s ověřenou opravou.
+TESTY: 1× pytest radar: 20 failed / 548 passed; s navrženou opravou 568 passed. Žádný výkonnostní test (freeze nezamčen).
+CHATGPT: Oprava G0 jména členu ZIPu (vlastník ChatGPT); PR #60 review čeká.
+DALŠÍ KROK: Ověřit opravu 0334, pak čekat na oznámení freeze G1.
+ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné schválení.
+
 ## 2026-11-15 20:10 SEČ (běh #62)
 - Nasazeno: `6a23c58` (Risk Guard), beze změny. Od #61 (15:00 UTC) 0 událostí/restartů, 0 chyb v logu, 0 nových duplicit (jen pár 128/129). DB 288 151 231 B ≈ 26,8 %. lh_whale_trades n=3.
 - Radar Top Risk G1: ChatGPT přidal opravy G0 QA (`349cf1a`–`a390efe`, fail-closed na duplicitní/nemonotónní trade ID, neplatnou cenu/množství, booleany, řádek mimo den). Nezávisle ověřeno: `pytest research/top_risk_radar_v1` @ `a390efe` = 560 passed + 32 subtestů, diff přečten, vada nenalezena (1 MINOR návrh: kontrola price×qty ≈ quote_qty). Freeze stále NEOZNÁMEN ⇒ test nespouštím.
