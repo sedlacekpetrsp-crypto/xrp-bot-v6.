@@ -3,6 +3,13 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## 2026-11-15 12:15 SEČ (běh #60)
+- Nasazeno: `6a23c58` (Risk Guard) – PR #5 ano. Produkce bez odchylek od 12. 11.: 6× HTTP 200, 14 účtů healthy, bez alarmů, 0 událostí/restartů, 0 chyb v logu, 0 nových duplicit. P/L −3 086,27. DB 26,8 %.
+- LH-WHALE (Issue #56): nezávisle jsem zkontroloval [PR #57](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/57) od ChatGPT – jen diagnostika, obchodní logiku nemění (288/288 shodných signálů, 281 testů OK). Verdikt: přijmout. Bot navíc 14. 11. sám otevřel a uzavřel PAPER obchod (SHORT, +49,14 USDT) ⇒ nuly obchodů byly čekáním na setup, ne poruchou.
+- Radar Top Risk G1: váš souhlas je zapsán; ChatGPT ještě opravuje metodické blokery, test zatím nespouštím (spustí se jednou, až bude protokol zamčený a zkontrolovaný).
+- Obchodní hrana zatím žádná; nová hypotéza dnes žádná. Forward RSI(2): 0 obchodů, trh (B&H) −18,6 % za 8 dní.
+- **Od vás:** jen pokud chcete diagnostiku LH-WHALE na dashboardu: souhlas s nasazením PR #57 (nemění obchodování). Jinak nic.
+
 ## 2026-11-12 16:10 SEČ (běh #59)
 - Nasazeno: `6a23c58` (Risk Guard) – PR #5 ano. Produkce bez odchylek: 6× HTTP 200, 14 účtů healthy, důkazní brány bez alarmu, 0 událostí, 0 chyb v logu, 0 nových duplicit; P/L −3 086,93 (beze změny). DB 26,3 %.
 - Radary: s ChatGPT uzavřeno sčítání historických epizod. Radar velkého poklesu (Top Risk, −20 % / 14 dní) má 21 nezávislých epizod – jen těsně nad hranicí, kterou jsme si předem nestanovili, takže to není důkaz, jen „dat je možná dost“. Radar růstu (15 epizod) odkládáme – málo dat.
