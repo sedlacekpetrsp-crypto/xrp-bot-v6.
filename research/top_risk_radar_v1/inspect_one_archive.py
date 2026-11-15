@@ -43,14 +43,24 @@ def analyze(zip_bytes: bytes, checksum_text: str) -> dict:
         count=0
         duplicates=0
         prev=None
+        prev_id=None
         with z.open(members[0]) as raw:
             for row in csv.reader(io.TextIOWrapper(raw,encoding="utf-8-sig")):
                 if not row: continue
                 if count==0 and row[0].strip().lower()=="id": continue
                 if len(row)!=7: raise ValueError("unexpected CSV columns")
-                if not row[0].isdigit() or Decimal(row[1])<=0:
-                    raise ValueError("invalid trade row")
+                if not row[0].isdigit():
+                    raise ValueError("invalid trade ID")
+                trade_id=int(row[0])
+                price=Decimal(row[1])
+                if not price.is_finite() or price<=0:
+                    raise ValueError("invalid trade price")
+                if prev_id is not None and trade_id<=prev_id:
+                    raise ValueError("duplicate or nonmonotonic trade ID")
+                prev_id=trade_id
                 ts=epoch_to_utc(row[4])
+                if ts.date()!=datetime.fromisoformat(DAY).date():
+                    raise ValueError("out-of-day trade row")
                 if prev is not None and ts<prev:
                     raise ValueError("nonmonotonic timestamps")
                 duplicates+=int(prev==ts)
