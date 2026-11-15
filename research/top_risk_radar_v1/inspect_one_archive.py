@@ -35,8 +35,10 @@ def analyze(zip_bytes: bytes, checksum_text: str) -> dict:
         raise ValueError("checksum mismatch")
     with zipfile.ZipFile(io.BytesIO(zip_bytes)) as z:
         members=[x for x in z.infolist() if not x.is_dir()]
-        if len(members)!=1 or not members[0].filename.endswith(".csv"):
-            raise ValueError("unexpected archive members")
+        if len(members)!=1 or members[0].filename != NAME:
+            raise ValueError("unexpected archive members or filename")
+        if members[0].flag_bits & 0x1:
+            raise ValueError("encrypted archive member")
         if members[0].file_size>2_000_000_000:
             raise ValueError("uncompressed file too large")
         first=last=None
