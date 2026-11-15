@@ -61,3 +61,19 @@ def test_archive_fail_closed_on_malformed_trade_fields(field, value, expected):
     blob, digest = archive([",".join(fields)])
     with pytest.raises(ValueError, match=expected):
         analyze(blob, digest)
+
+
+@pytest.mark.parametrize("quote_qty", ["0.59", "0.61", "1.20"])
+def test_archive_rejects_inconsistent_quote_quantity(quote_qty):
+    fields = row(10).split(",")
+    fields[3] = quote_qty
+    blob, digest = archive([",".join(fields)])
+    with pytest.raises(ValueError, match="inconsistent quote quantity"):
+        analyze(blob, digest)
+
+
+def test_archive_accepts_quote_quantity_eight_decimal_rounding():
+    fields = row(10, price="0.600000003").split(",")
+    fields[3] = "0.60000000"
+    blob, digest = archive([",".join(fields)])
+    assert analyze(blob, digest)["row_count"] == 1
