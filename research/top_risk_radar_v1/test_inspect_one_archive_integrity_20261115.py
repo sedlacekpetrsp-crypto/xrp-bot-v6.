@@ -77,3 +77,20 @@ def test_archive_accepts_quote_quantity_eight_decimal_rounding():
     fields[3] = "0.60000000"
     blob, digest = archive([",".join(fields)])
     assert analyze(blob, digest)["row_count"] == 1
+
+
+
+@pytest.mark.parametrize("member_name", [
+    "ETHUSDT-trades-2024-01-02.csv",
+    "XRPUSDT-trades-2024-01-03.csv",
+    "nested/XRPUSDT-trades-2024-01-02.csv",
+    "XRPUSDT-trades-2024-01-02.csv.bak",
+])
+def test_archive_rejects_wrong_csv_identity(member_name):
+    """A valid checksum alone cannot prove the CSV belongs to the frozen source."""
+    payload = io.BytesIO()
+    with zipfile.ZipFile(payload, "w", zipfile.ZIP_DEFLATED) as z:
+        z.writestr(member_name, row(10) + "\n")
+    blob = payload.getvalue()
+    with pytest.raises(ValueError, match="unexpected archive members"):
+        analyze(blob, hashlib.sha256(blob).hexdigest())
