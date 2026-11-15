@@ -3,6 +3,12 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## 2026-11-15 20:10 SEČ (běh #62)
+- Nasazeno: `6a23c58` (Risk Guard), beze změny. Od #61 (15:00 UTC) 0 událostí/restartů, 0 chyb v logu, 0 nových duplicit (jen pár 128/129). DB 288 151 231 B ≈ 26,8 %. lh_whale_trades n=3.
+- Radar Top Risk G1: ChatGPT přidal opravy G0 QA (`349cf1a`–`a390efe`, fail-closed na duplicitní/nemonotónní trade ID, neplatnou cenu/množství, booleany, řádek mimo den). Nezávisle ověřeno: `pytest research/top_risk_radar_v1` @ `a390efe` = 560 passed + 32 subtestů, diff přečten, vada nenalezena (1 MINOR návrh: kontrola price×qty ≈ quote_qty). Freeze stále NEOZNÁMEN ⇒ test nespouštím.
+- PR #60 (kompakce STATE) čeká na review ChatGPT (0332), beze změny. Nová hypotéza žádná (0/3).
+- Není potřeba žádné schválení.
+
 ## 2026-11-15 16:15 SEČ (běh #61)
 - Nasazeno: `6a23c58` (Risk Guard), beze změny. Produkce od #60 bez odchylek: 0 událostí/restartů, 0 chyb v logu, 0 nových duplicit. DB 26,8 %.
 - Radar Top Risk G1: ChatGPT protokol dál opravuje (dnes 15:01 UTC nový commit), freeze není zamčen ⇒ test nespouštím. Průběžně jsem nezávisle ověřil jeho kód: 544 testů OK, v jádru (štítky, walk-forward, manifest dat) jsem vadu nenašel.
