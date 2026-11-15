@@ -102,3 +102,17 @@ def test_manifest_preflight_rejects_invalid_as_of_before_fold_creation(bad_as_of
 def test_manifest_preflight_rejects_missing_edge_days(decisions):
     with pytest.raises(ValueError, match="coverage incomplete"):
         prepare(decisions=decisions)
+
+
+@pytest.mark.parametrize("decisions,reason", [
+    ([DECISIONS[0], DECISIONS[0], *DECISIONS[1:]], "duplicate or out of order"),
+    ([DECISIONS[1], DECISIONS[0], *DECISIONS[2:]], "duplicate or out of order"),
+    ([DECISIONS[0].replace(tzinfo=None), *DECISIONS[1:]], "must be UTC"),
+    ([DECISIONS[0].replace(minute=6), *DECISIONS[1:]], "exactly 00:05"),
+    ([START - DAY, *DECISIONS], "decision outside audited interval"),
+    ([*DECISIONS, START + 4 * DAY], "decision outside audited interval"),
+])
+def test_manifest_preflight_rejects_invalid_decision_grid(decisions, reason):
+    """Verified source metadata cannot excuse malformed or out-of-scope grid rows."""
+    with pytest.raises(ValueError, match=reason):
+        prepare(decisions=decisions)
