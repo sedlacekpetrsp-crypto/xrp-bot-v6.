@@ -243,8 +243,8 @@ async def dashboard_with_pnl_breakdown():
     old = "const p=d.position; document.getElementById('position').innerHTML=p?`<b>${p.symbol} ${p.side}</b> • entry ${f(p.entry_price,6)} • SL ${f(p.stop_loss,6)} • TP ${f(p.take_profit,6)} • uPnL ${f(d.unrealized_pnl,2)}`:'Žádná otevřená pozice';"
     new = "const p=d.position; document.getElementById('position').innerHTML=p?`<b>${p.symbol} ${p.side}</b> • entry ${f(p.entry_price,6)} • SL ${f(p.stop_loss,6)} • TP ${f(p.take_profit,6)}<br>Hrubý P/L <b class=\"${Number(d.unrealized_gross_pnl)>=0?'green':'red'}\">${Number(d.unrealized_gross_pnl)>=0?'+':''}${f(d.unrealized_gross_pnl,2)} USDC</b> • Čistý P/L <b class=\"${Number(d.unrealized_pnl)>=0?'green':'red'}\">${Number(d.unrealized_pnl)>=0?'+':''}${f(d.unrealized_pnl,2)} USDC</b> • Náklady ${f(d.estimated_costs,2)} USDC`:'Žádná otevřená pozice';"
     html = html.replace(old, new)
-    html = html.replace("</body>", '<div style="position:fixed;bottom:16px;right:16px;background:#1c2a39;padding:12px;border:2px solid #7dd3fc;border-radius:10px;z-index:1000"><a href="/combined" style="color:#7dd3fc;font-weight:bold">🧩 Combined Best Signals V1 · PAPER</a></div></body>')
-    html = html.replace("⚡ BOT V8 ADAPTIVE BREAKOUT SCALPER", "🎯 LIQUIDITY HUNTER + 🐋 LH-WHALE + ELITE + 🧩 COMBINED — 24/7 PAPER")
+    html = html.replace("</body>", '<div style="position:fixed;bottom:16px;right:16px;background:#1c2a39;padding:12px;border:2px solid #7dd3fc;border-radius:10px;z-index:1000"><a href="/max-effect" style="color:#7dd3fc;font-weight:bold">🎲 MAX-efekt long/short · PAPER</a></div></body>')
+    html = html.replace("⚡ BOT V8 ADAPTIVE BREAKOUT SCALPER", "🎯 LIQUIDITY HUNTER + 🐋 LH-WHALE + ELITE + 🎲 MAX-EFEKT — 24/7 PAPER")
     html = html.replace("PAPER • pouze BREAKOUT • čisté R:R 1:1,3", "Aktivní PAPER boti • zastavené strategie jsou skryté")
     fly_guard_card = """
 <div class="card" id="flyGuardCard" style="display:none;border:1px solid #7a2b2b;background:#2a1518">
@@ -1058,41 +1058,12 @@ async def combined_paper_status():
                             headers={"Cache-Control": "no-store"})
 
 
-@app.get("/combined", response_class=HTMLResponse)
+# 2026-11-15 (rozhodnutí vlastníka): Combined nahrazen forward PAPER botem MAX-efekt.
+# Stará adresa přesměruje; /combined/status zůstává jen pro čtení (historie v DB se nemaže).
+@app.get("/combined", include_in_schema=False)
 async def combined_paper_dashboard():
-    return HTMLResponse("""<!doctype html><html lang="cs"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Combined Best Signals V1 · PAPER</title>
-<style>body{font:16px system-ui;background:#101923;color:#e9f2fb;margin:0;padding:22px}
-main{max-width:900px;margin:auto}.card{background:#1c2a39;border:1px solid #33485d;border-radius:12px;padding:18px;margin:14px 0}
-a{color:#8bd3ff}h1{font-size:25px}h2{font-size:18px}pre{white-space:pre-wrap;overflow-wrap:anywhere}
-small{color:#a8bacb}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
-strong{font-size:23px}</style></head><body><main>
-<a href="/">← Přehled všech botů</a><h1>🧩 Combined Best Signals V1</h1>
-<p>Pouze simulované PAPER obchody · žádné příkazy na burzu</p>
-<div id="health" class="card">Načítám stav…</div>
-<div class="grid"><div class="card">Equity<br><strong id="equity">—</strong></div>
-<div class="card">Realizovaný P/L<br><strong id="pnl">—</strong></div>
-<div class="card">Otevřené pozice<br><strong id="open">—</strong></div>
-<div class="card">Uzavřené obchody<br><strong id="count">—</strong></div></div>
-<div class="card"><h2>Pozice</h2><pre id="positions">—</pre></div>
-<div class="card"><h2>Historie simulovaných obchodů</h2><pre id="trades">—</pre></div>
-<small>Historie je ukládána do PostgreSQL. Údaje nejsou skutečné burzovní obchody.</small>
-<script>
-async function refresh(){
-try{
-const r=await fetch('/combined/status',{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);
-const d=await r.json(),p=d.paper_portfolio||{};
-document.getElementById('health').textContent='Stav: '+d.status+' · poslední sken: '+(d.generated_at_utc||'zatím žádný')+' · signály: '+(d.signal_count??'—');
-document.getElementById('equity').textContent=p.equity==null?'—':Number(p.equity).toFixed(2)+' USDT';
-document.getElementById('pnl').textContent=p.realized_pnl==null?'—':Number(p.realized_pnl).toFixed(2)+' USDT';
-document.getElementById('open').textContent=p.open_count??'—';
-document.getElementById('count').textContent=p.trade_count??'—';
-document.getElementById('positions').textContent=JSON.stringify(p.positions||{},null,2);
-document.getElementById('trades').textContent=JSON.stringify((p.trades||[]).slice(-30),null,2);
-}catch(e){document.getElementById('health').textContent='Chyba načtení: '+e.message;}
-}refresh();setInterval(refresh,15000);
-</script></main></body></html>""")
+    from starlette.responses import RedirectResponse
+    return RedirectResponse("/max-effect", status_code=307)
 
 
 # Isolated combined PAPER signal monitor. No order execution or account credentials.
@@ -1102,8 +1073,17 @@ import threading as _combined_threading
 
 @app.on_event("startup")
 async def _start_combined_paper_monitor():
-    if _combined_os.getenv("COMBINED_PAPER_ENABLED", "1") != "1":
+    if _combined_os.getenv("COMBINED_PAPER_ENABLED", "0") != "1":
         return
     from research.combined_best_signals_bot import run_forever
     _combined_threading.Thread(target=run_forever,
                                name="combined-paper-signals", daemon=True).start()
+
+
+# Forward PAPER výzkumné hypotézy R12 (MAX efekt long/short), nahrazuje Combined.
+# Jen veřejná data, žádné objednávky. Chyba modulu nesmí shodit ostatní boty.
+try:
+    from research import max_effect_forward_bot as _max_effect_bot
+    _max_effect_bot.install(app)
+except Exception as _max_effect_exc:  # pragma: no cover
+    print("MAX_EFFECT_PAPER install failed: " + repr(_max_effect_exc), flush=True)
