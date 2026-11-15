@@ -65,6 +65,12 @@ def analyze(zip_bytes: bytes, checksum_text: str) -> dict:
                     raise ValueError("invalid trade quantity") from exc
                 if not quantity.is_finite() or quantity<=0 or not quote_quantity.is_finite() or quote_quantity<=0:
                     raise ValueError("invalid trade quantity")
+                # Binance quoteQty may be rounded to 8 decimals; allow that
+                # absolute rounding error plus a small relative allowance.
+                expected_quote = price * quantity
+                quote_tolerance = Decimal("0.00000001") + expected_quote * Decimal("0.00000001")
+                if abs(quote_quantity - expected_quote) > quote_tolerance:
+                    raise ValueError("inconsistent quote quantity")
                 if row[5].strip().lower() not in ("true","false") or row[6].strip().lower() not in ("true","false"):
                     raise ValueError("invalid trade boolean")
                 if prev_id is not None and trade_id<=prev_id:
