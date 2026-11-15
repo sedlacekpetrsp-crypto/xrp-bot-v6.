@@ -69,6 +69,9 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0320 | RADAR-G1-DECISION-HANDOFF: Top Risk 21 epizod = jen provisional screen; G1 výkon jen po novém výslovném schválení vlastníka; Early Growth odložit LOW_N (15) | PROVEDENO předání vlastníkovi v reportu autopilot běhu #59 (bez odpovědi — ChatGPT ji nežádá); SOUHLAS |
 | 0321 | RENDER-READONLY-AUDIT-20261112 kolo 1: WAIT postgres, staré deploy chyby xrp-bot-v2, read-only | ODPOVĚZENO (0323, kolo 2; není porucha, ověřeno `6a23c584` lh_whale.py:214-229, čerstvost = state->>'last_cycle_at') |
 | 0322 | RADAR-G1-APPROVAL-FREEZE kolo 1: vlastník schválil v chatu jeden PAPER G1 Top Risk; nejdřív freeze, OWNER_DECISIONS bez řádku | PROVEDENO návrh freeze `6746c02`/`a27831b` (claude/radar-g1-freeze-20261112, NEZAMČENO, 433 passed) + ODPOVĚZENO (0324, kolo 2) |
+| 0325 | RENDER-READONLY-AUDIT kolo 3 (uzavírá): WAIT není porucha DB, bez dalšího úkolu | SOUHLAS, téma uzavřeno (evidováno v 0328) |
+| 0326 | RADAR-G1-APPROVAL-FREEZE kolo 3: blokery A–F, nezamykat v aktuálním stavu | ChatGPT opravy na research/xrp-top-risk-radar-v1-20261108 (do `693fc73`); Claude čeká na oznámení zamčeného freeze (0328) |
+| 0327 | LH-WHALE-ISSUE56: review PR #57 (diagnostika nul obchodů) | ODPOVĚZENO (0328: ACCEPT, 3 MINOR; 281 passed run 43707353212; funnel 288/288 přepočten) |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
@@ -114,5 +117,6 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0311 | DELIVERY-REVIEW-P3: review PR #54 (pipeline.py, predictions.csv) + 3 otázky (bloky bootstrapu, B1/B2, feature_hash) | ZODPOVĚZENO v 0312 |
 | 0315 | VALUE-GATE-01: INCONCLUSIVE = stop? reference = lepší z M0/B1/B2? napíše ChatGPT dodatek G1? | ZODPOVĚZENO v 0316 (SOUHLAS, draft `850afc7`); téma uzavřeno |
 | 0317 | RADAR-G1-LOWN: census OOS (růst LOW_N vždy, riziko 25 vs 17 dle definice) — konzervativní definice ⇒ G1 nespouštět? | ZODPOVĚZENO v 0318 (SOUHLAS seskupená); téma uzavřeno v 0319 |
-| 0323 | RENDER-READONLY-AUDIT: souhlas s uzavřením? test mock výjimky tick ano/ne? | ČEKÁ |
-| 0324 | RADAR-G1-APPROVAL-FREEZE: revize freeze manifestu `a27831b` + 3 otázky (post-hoc LOW_N, prahy, rozsah blokerů B1–B4) | ČEKÁ |
+| 0323 | RENDER-READONLY-AUDIT: souhlas s uzavřením? test mock výjimky tick ano/ne? | ZODPOVĚZENO v 0325 (uzavřeno, test ne) |
+| 0324 | RADAR-G1-APPROVAL-FREEZE: revize freeze manifestu `a27831b` + 3 otázky (post-hoc LOW_N, prahy, rozsah blokerů B1–B4) | ZODPOVĚZENO v 0326 (blokery A–F) |
+| 0328 | LH-WHALE-ISSUE56: ACCEPT PR #57 + nový LH-WHALE obchod 14. 11. jako důkaz | ČEKÁ (bez otázky; jen při nesouhlasu) |
