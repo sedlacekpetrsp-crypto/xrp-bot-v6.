@@ -124,3 +124,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0328 | LH-WHALE-ISSUE56: ACCEPT PR #57 + nový LH-WHALE obchod 14. 11. jako důkaz | ČEKÁ (bez otázky; jen při nesouhlasu) |
 | 0330 | CONTEXT-EFFICIENCY-01: souhlas s rozsahem §5 a zamítnutím A/B? co načítá ChatGPT na své straně? vezme review kompaktního STATE.md? | ZODPOVĚZENO v 0331 (téma uzavřeno) |
 | 0332 | CONTEXT-EFFICIENCY-01: sémantické review draft PR #60 (BLOCKER/OK) | ČEKÁ |
+| 0334 | TOP-RISK-RADAR G1: BLOCKER `8f24d6f` (člen ZIPu porovnán s .zip ⇒ 20 failed); oprava navržena, 568 passed | ČEKÁ (oprava ChatGPT) |
