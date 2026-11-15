@@ -101,6 +101,18 @@
 "sha256": "22ca716fa0b1fc80aa8b3bef3879cd0532364ef8180f58019b2ccc989f297a41"
 },
 {
+"url": "https://data.binance.vision/data/spot/daily/klines/BTCUSDT/1d/BTCUSDT-1d-2026-11-12.zip",
+"sha256": "fd53a05f0aa1b5986ceda02583e83785fc5987f9d4024bc4b4dfeb2ea9d9f1f4"
+},
+{
+"url": "https://data.binance.vision/data/spot/daily/klines/BTCUSDT/1d/BTCUSDT-1d-2026-11-13.zip",
+"sha256": "36ce0fae15cd18a08592ff111e03c31ac2fba184fd32682cf5c4448557974a6b"
+},
+{
+"url": "https://data.binance.vision/data/spot/daily/klines/BTCUSDT/1d/BTCUSDT-1d-2026-11-14.zip",
+"sha256": "460e900a1c6360558308a2e7b1f7f5bef1b38afe446806db6473dae9fb0d017f"
+},
+{
 "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1d/ETHUSDT-1d-2025-09.zip",
 "sha256": "2362f78fe5ef79628fe7a16fcd720ba5e2490bd05806943d092d0c2bbc025403"
 },
@@ -199,6 +211,18 @@
 {
 "url": "https://data.binance.vision/data/spot/daily/klines/ETHUSDT/1d/ETHUSDT-1d-2026-11-11.zip",
 "sha256": "91b19776a22ff4a032c1810d476526e7d4c0a81e2bf1ffa211c763c074cb45a6"
+},
+{
+"url": "https://data.binance.vision/data/spot/daily/klines/ETHUSDT/1d/ETHUSDT-1d-2026-11-12.zip",
+"sha256": "54cc1da8ef8561ae097bfc0654dee561bd2ec0c02bebdccfe44796e4c459ec2c"
+},
+{
+"url": "https://data.binance.vision/data/spot/daily/klines/ETHUSDT/1d/ETHUSDT-1d-2026-11-13.zip",
+"sha256": "5065d30bf2ccc1ed376a49c5fba18daa08ee09fce5f61811c3650789347ed20c"
+},
+{
+"url": "https://data.binance.vision/data/spot/daily/klines/ETHUSDT/1d/ETHUSDT-1d-2026-11-14.zip",
+"sha256": "9ef35b63dadd6d3273465cb425322c5d006cd3d57224efe3768394e5294c1925"
 },
 {
 "url": "https://data.binance.vision/data/spot/monthly/klines/XRPUSDT/1d/XRPUSDT-1d-2025-09.zip",
@@ -301,6 +325,18 @@
 "sha256": "c1ed36124e208ab8800d03d59977d9daf8e36964e41220f8d153f76e6eaf590f"
 },
 {
+"url": "https://data.binance.vision/data/spot/daily/klines/XRPUSDT/1d/XRPUSDT-1d-2026-11-12.zip",
+"sha256": "0e0c30f040f0fa6edb9102c31a2f5891e22aa324b0c2612596d03b39b5a6ef09"
+},
+{
+"url": "https://data.binance.vision/data/spot/daily/klines/XRPUSDT/1d/XRPUSDT-1d-2026-11-13.zip",
+"sha256": "8e270853e39601b88ce958451a441f458f35dd0f03730a785a45e7b9d1e062a0"
+},
+{
+"url": "https://data.binance.vision/data/spot/daily/klines/XRPUSDT/1d/XRPUSDT-1d-2026-11-14.zip",
+"sha256": "bb02b07d0d2d62979f73b2a2a751ee17f6c6db4605271e05af8ae8680faf9f8d"
+},
+{
 "url": "https://data.binance.vision/data/spot/monthly/klines/LTCUSDT/1d/LTCUSDT-1d-2025-09.zip",
 "sha256": "02c6b7e02f37f9a94a65752672fb7e92236571a1331c2a0e6c19feb4fa436039"
 },
@@ -399,6 +435,18 @@
 {
 "url": "https://data.binance.vision/data/spot/daily/klines/LTCUSDT/1d/LTCUSDT-1d-2026-11-11.zip",
 "sha256": "b9f7ad60fb9c7150fcbcd38bdce07d5b030b72d5cc6589a678b3b53590187ea3"
+},
+{
+"url": "https://data.binance.vision/data/spot/daily/klines/LTCUSDT/1d/LTCUSDT-1d-2026-11-12.zip",
+"sha256": "7ec3f6be3b1d65c047a3d2c04a62ab7c7f49c36997671c2f5882aa0c38047f97"
+},
+{
+"url": "https://data.binance.vision/data/spot/daily/klines/LTCUSDT/1d/LTCUSDT-1d-2026-11-13.zip",
+"sha256": "bdb9e2c99e58046c4c255d41d70a375fe3e1f0561bcd6ed1a644a0b3ab35f37c"
+},
+{
+"url": "https://data.binance.vision/data/spot/daily/klines/LTCUSDT/1d/LTCUSDT-1d-2026-11-14.zip",
+"sha256": "035058ecb052eec662d9bf25929a94aff47eedb6b1f736eb7e06333fb109f266"
 }
 ]
 }
