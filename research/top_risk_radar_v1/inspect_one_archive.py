@@ -52,9 +52,21 @@ def analyze(zip_bytes: bytes, checksum_text: str) -> dict:
                 if not row[0].isdigit():
                     raise ValueError("invalid trade ID")
                 trade_id=int(row[0])
-                price=Decimal(row[1])
+                try:
+                    price=Decimal(row[1])
+                except Exception as exc:
+                    raise ValueError("invalid trade price") from exc
                 if not price.is_finite() or price<=0:
                     raise ValueError("invalid trade price")
+                try:
+                    quantity=Decimal(row[2])
+                    quote_quantity=Decimal(row[3])
+                except Exception as exc:
+                    raise ValueError("invalid trade quantity") from exc
+                if not quantity.is_finite() or quantity<=0 or not quote_quantity.is_finite() or quote_quantity<=0:
+                    raise ValueError("invalid trade quantity")
+                if row[5].strip().lower() not in ("true","false") or row[6].strip().lower() not in ("true","false"):
+                    raise ValueError("invalid trade boolean")
                 if prev_id is not None and trade_id<=prev_id:
                     raise ValueError("duplicate or nonmonotonic trade ID")
                 prev_id=trade_id
