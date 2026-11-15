@@ -43,3 +43,21 @@ def test_archive_fail_closed_on_trade_integrity(rows, expected):
     blob, digest = archive(rows)
     with pytest.raises(ValueError, match=expected):
         analyze(blob, digest)
+
+
+@pytest.mark.parametrize("field,value,expected", [
+    (1, "not-a-price", "price"),
+    (2, "0", "quantity"),
+    (2, "NaN", "quantity"),
+    (2, "bad", "quantity"),
+    (3, "-1", "quantity"),
+    (3, "Infinity", "quantity"),
+    (5, "maybe", "boolean"),
+    (6, "1", "boolean"),
+])
+def test_archive_fail_closed_on_malformed_trade_fields(field, value, expected):
+    fields = row(10).split(",")
+    fields[field] = value
+    blob, digest = archive([",".join(fields)])
+    with pytest.raises(ValueError, match=expected):
+        analyze(blob, digest)
