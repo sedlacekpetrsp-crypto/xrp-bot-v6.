@@ -78,3 +78,27 @@ def test_manifest_preflight_rejects_invalid_bounds_with_value_error(bad_bound, b
 def test_non_mapping_manifest_fails_closed(invalid_manifest):
     with pytest.raises(ValueError, match="invalid_manifest_type"):
         prepare(manifest=invalid_manifest)
+
+
+@pytest.mark.parametrize("bad_as_of", [
+    None,
+    "2026-11-14T00:00:00Z",
+    AS_OF.replace(tzinfo=None),
+    AS_OF.replace(tzinfo=timezone(timedelta(hours=1))),
+])
+def test_manifest_preflight_rejects_invalid_as_of_before_fold_creation(bad_as_of):
+    """An apparently ready source must not bypass evaluation-time validation."""
+    with pytest.raises(ValueError, match="G1 as_of must be"):
+        complete_g1_folds_with_manifest(
+            DECISIONS, as_of=bad_as_of, coverage_start=START,
+            coverage_end=START + 3 * DAY, source_manifest=READY,
+        )
+
+
+@pytest.mark.parametrize("decisions", [
+    DECISIONS[1:],  # Missing the independently declared first day.
+    DECISIONS[:-1],  # Missing the independently declared last day.
+])
+def test_manifest_preflight_rejects_missing_edge_days(decisions):
+    with pytest.raises(ValueError, match="coverage incomplete"):
+        prepare(decisions=decisions)
