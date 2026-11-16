@@ -136,3 +136,5 @@
 | 2026-11-16 15:12 | 597443c (research/k9-step0-phase-a-tools-20261116, PR #62) | pytest tests/test_k9_round_number.py tests/test_k9_step0_phase_a.py lokálně | 19 passed; jen syntetické testy, žádná data, žádný výnos | autopilot #67, dialog 0352 |
 | 2026-11-16 19:09 | d475660→68d9bd7 | K9 krok 0 datový audit (CI) | DATA GO 243/246 (XRP 2020-01, 2022-02, 2022-04 LOW_COVERAGE); SHA-256 ověřen | actions/runs/43935532445 |
 | 2026-11-16 19:38 | c029c41→0e06623 | K9 fáze A mikrostruktura (CI), bez výnosu | GO: D1 dev +0,110 [0,090;0,130], D2 +0,0175, závěr D1 +0,180; invalid 0; síla 1,00; nezávislý přepočet D shoda; pytest 26 passed | actions/runs/43936758796 |
+| 2026-11-16 23:05 | acc7c5d | pytest lokálně (PIT gate ChatGPT, review kolo 2) | 14 passed; MAJOR 2 vyřešen, MAJOR 1 otevřen | dialog 0360 |
+| 2026-11-16 23:00 | 6faa8c3 | K9 fáze B síla (syntetická, jen časy událostí) | n závěr H15 12 417 / H60 11 653; síla ≥ 0,99; výnos NEPOČÍTÁN | PR #64 |
