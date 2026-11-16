@@ -45,7 +45,9 @@ Všechno musí platit:
   produkčních botů, údržba nástrojů.
 - Jedna hypotéza smí trvat i několik běhů; mezistav vždy commitnout se zápisem „kde pokračovat“.
 
-## 5. Kde hledat (pořadí fronty ve STATE.md)
+## 5. Kde hledat (pořadí fronty: aktivní výtah ve STATE.md, plné znění v archivu)
+Od kompakce 2026-11-16 (PR #60) je plné pořadí front (FRONTA v2 + fronta 11-05) jen v
+`automation/archive/STATE-do-20261116.md` ř. 177–314; `automation/STATE.md` drží jen výtah aktivních bodů.
 Přednost mají zdroje výhody, které v1 netestovala: delta-neutrální carry (funding/basis), průřezové
 strategie na širším koši aktiv, řízení velikosti pozice (volatilitní cílení), a vyhodnocení skutečných
 produkčních PAPER botů. Další denní TA na samotném BTC/ETH jen s jasným zdůvodněním odlišnosti.

@@ -1,0 +1,35 @@
+{
+ "source": "research/autopilot@9e61f50:automation/STATE.md",
+ "source_sha256": "5284b7395024d71638b1272e4450c689a2d286e64f27325374636ce7f223ade4",
+ "segments": [
+  {
+   "lines": [
+    1,
+    94
+   ],
+   "where": "archive"
+  },
+  {
+   "lines": [
+    95,
+    176
+   ],
+   "where": "state"
+  },
+  {
+   "lines": [
+    177,
+    314
+   ],
+   "where": "archive"
+  },
+  {
+   "lines": [
+    315,
+    356
+   ],
+   "where": "state"
+  }
+ ],
+ "regenerated": "2026-11-16 13:5x UTC (před merge, schváleno vlastníkem v chatu); předchozí zdroj 7ede20b / 6473429f…"
+}
