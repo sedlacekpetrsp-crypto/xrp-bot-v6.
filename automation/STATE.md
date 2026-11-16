@@ -11,15 +11,15 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-16 11:05 UTC, autopilot běh #66; hlavička doplněna při merge PR #60)
+## CHECKPOINT (přepisuje se; stav k 2026-11-16 15:15 UTC, autopilot běh #67)
 - **Produkce (jen čtení):** live `01c69ff` (Merge PR #61, MAX-efekt forward PAPER R12 L14_H28 nahrazuje Combined; ruční
-  deploy vlastníka 2026-11-15 20:56 UTC); 0 událostí a 0 error logů 07:00–11:04; MAX-efekt 6 pozic, equity ≈ 9 986,
-  warnings []; 0 nových duplicit (jen 128/129); `lh_whale_trades` n=3; DB 287 839 935 B ≈ 26,8 % z 1 GB.
+  deploy vlastníka 2026-11-15 20:56 UTC); 0 událostí a 0 error logů 11:00–15:05; 0 nových duplicit (jen 128/129);
+  `lh_whale_trades` n=3; DB 288 298 687 B ≈ 26,8 % z 1 GB.
 - **Výzkumné větve a SHA:** `research/autopilot` @ `9e61f50` (zdroj archivu); G1 Top Risk radar
-  `research/xrp-top-risk-radar-v1-20261108` tip `cb04a4d` (vlastník úkolu = ChatGPT, reviewer = Claude);
+  `research/xrp-top-risk-radar-v1-20261108` tip `ff67bc2` (vlastník úkolu = ChatGPT, reviewer = Claude);
   K7 FOMC `research/k7-macro-audit-20261111` (`78abe38`, auditní balíček `dcf753a`).
-- **Poslední skutečně spuštěný test/CI:** Claude lokálně `pytest research/top_risk_radar_v1` @ `cb04a4d` = 612 passed
-  + 32 subtestů (0341); CI 43821544636 success na `cb04a4d` (ověřili oba, 0341/0342). CI ≠ OOS validace.
+- **Poslední skutečně spuštěný test/CI:** Claude lokálně `pytest research/top_risk_radar_v1` @ `ff67bc2` = 586 passed
+  + 32 subtestů (týž příkaz @ `cb04a4d` = 576; 0352); K9 19 passed (`597443c`). CI ≠ OOS validace.
 - **G1 (schváleno v OWNER_DECISIONS 2026-11-12, max. 1 běh, shodný rozsah znovu neschvalovat):** freeze **NEZAMČEN**;
   téma G0 syntetického QA uzavřeno (0340); zbývá skutečné archivy, PIT dostupnost, kontinuita, neměnný freeze manifest
   (ChatGPT). ⇒ výkon NESPOUŠTĚT. Další krok: oznámení zamčeného freeze ⇒ formální review Claude ⇒ jediný `workflow_dispatch`.
@@ -27,7 +27,7 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
   id 129 nemazat/neupravovat; K7 výkon jen s „SCHVÁLENO: výkonnost K7“. Kompakce STATE (PR #60) sloučena 2026-11-16 se souhlasem vlastníka (chat 13:5x UTC).
 - **Bezpečnostní brány:** výhradně PAPER; žádný LIVE/Render zápis/deploy/merge/force push; `FUNDING_SEMANTICS.json`
   (performance_hold, R8/R9) neměnit; výkon jen s řádkem SCHVÁLENO; `OWNER_DECISIONS.md` nikdy neupravovat ani nezkracovat.
-- **Hypotézy:** fronta A1–A6, K3, K6, K8 uzavřeny; **od 2026-11-16 TRVALÝ LOV (ROZHODNUTÍ níže)** — každý běh bez P1/P2 práce posune novou hypotézu; dnes 0/3; nová přes novelty gate (§6).
+- **Hypotézy:** fronta A1–A6, K3, K6, K8 uzavřeny; **od 2026-11-16 TRVALÝ LOV (ROZHODNUTÍ níže)** — každý běh bez P1/P2 práce posune novou hypotézu; dnes 1/3 (K9 ROUND_NUMBER: protokol `a14b596`, nástroje kroku 0/fáze A `597443c` draft PR #62, čeká oponentura ChatGPT 0351/0352 ⇒ pak krok 0 jen audit dat); nová přes novelty gate (§6).
 - **Forward RSI(2) (post-hoc výjimka vlastníka):** 0 obchodů; kontrola 2026-12-16 (stop: forward ×2 < −10 % nebo 5 ztrát
   po sobě ⇒ vlastníkovi), hlavní vyhodnocení ≥ 30 obchodů a nejdřív 2027-01-05.
 - **Další plánované:** 2026-12-01 nový běh Combined replay s `--end 2026-12-01` (Otevřené úkoly bod 3).
