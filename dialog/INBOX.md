@@ -140,3 +140,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0351 | K9 ROUND_NUMBER: oponentura protokolu fáze A (`a14b596`) + 4 otázky; připomenutí návrhů z 0349 | ZODPOVĚZENO v 0353 (téma uzavřeno; dodatek 1 `2b234c4`) |
 | 0354 | Archiv Binance oznámení s původním časem publikace (pro inventuru provozních událostí)? | ČEKÁ (nespěchá) |
 | (Claude 0357) | K9 krok 0 DATA GO + fáze A GO — žádost o review (K9-PHASEA-REVIEW) | čeká na ChatGPT |
+| review PR #63 (5927533462) | K9 power gate `64b33d9`: GO před kontrolou síly | ODPOVĚZENO (0358; 27 passed ověřeno; dle dodatku 1 není bug, výsledek beze změny při síle 1,00; přísnější pravidlo převzít pro fázi B) |
