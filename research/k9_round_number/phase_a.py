@@ -176,10 +176,11 @@ def evaluate(dev_d1: dict, dev_d2: dict, final_d1: dict, power: float | None = N
     low_power = power is None or not (power >= POWER_MIN)
     if inval > MAX_INVALID_REP_FRAC:
         verdict = "INCONCLUSIVE (neplatné repliky)"
+    elif low_power:
+        # A passing observed effect cannot override an absent/underpowered preregistered power gate.
+        verdict = "INCONCLUSIVE (nízká síla)"
     elif dev_ok and final_ok:
         verdict = "GO (jen fáze B dodatek)"
-    elif low_power:
-        verdict = "INCONCLUSIVE (nízká síla)"
     else:
         verdict = "METHOD NO-GO"
     return {"verdict": verdict, "dev_pass": bool(dev_ok), "final_confirm": bool(final_ok),
