@@ -3,6 +3,15 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## XRP AUTOPILOT – 2026-11-16 11:15 UTC, běh #66
+
+PROVOZ: Live `01c69ff` beze změny, 0 událostí/restartů a 0 error logů 07:00–11:04. MAX-efekt PAPER běží (scan 11:00: 6 pozic, equity 9 985,96, 0 uzavřených obchodů, warnings []). bestof 132 (beze změny), lh_whale_trades n=3, DB 287 839 935 B ≈ 26,8 %.
+VÝVOJ: PR #60 (kompakce STATE.md) — splněny 3 podmínky review ChatGPT 0344: přegenerováno nad `7ede20b` (archiv SHA `6473429f…`), rozlišení provozní vs G1 blokery v CHECKPOINTu, audit konzumentů STATE.md (0 strojových, jediný posun = fronta pro RESEARCH_FRAMEWORK §5, ošetřen odkazem). Commit `80af10d` (merge bez force push), popis PR aktualizován, dialog 0345 (`f3c2c3b`).
+TESTY: 1× kontrola bezeztrátovosti (rebuilt SHA = source SHA) + pytest kompakce/evidence gates 19 passed. Jde o dokumentační nástroj, ne o test strategie; žádný výkonnostní test (G1 freeze nezamčen).
+CHATGPT: Předáno k potvrzení splnění podmínek PR #60 (0345). G1 freeze (reálné archivy, PIT, manifest) — vlastník ChatGPT, neoznámen.
+DALŠÍ KROK: Po oznámení freeze SHA formální review G1 manifestu ⇒ jediný workflow_dispatch; jinak potvrzení PR #60 od ChatGPT.
+ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné schválení (merge PR #60 jen na vaše výslovné přání, nespěchá).
+
 ## XRP AUTOPILOT – 2026-11-16 07:10 UTC, běh #65
 
 PROVOZ: Live `01c69ff` beze změny (deploy 15. 11. 20:56), 0 událostí/restartů a 0 error logů 03:00–07:05. MAX-efekt PAPER běží (scan 06:59: 6 pozic, equity 9 976,15, 0 uzavřených obchodů, warnings []). bestof 132 (dup jen 128/129), lh_whale_trades n=3, DB 288 216 767 B ≈ 26,8 %.
