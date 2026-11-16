@@ -2,20 +2,20 @@
 
 Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–4 h). Vypnout/změnit: claude.ai → plánované úlohy.
 
-> **Kompakce (draft, CONTEXT-EFFICIENCY-01, dialog 0329–0332, přegenerováno 2026-11-16 dle 0344).** Úplné původní
-> znění k `research/autopilot` @ `7ede20b` je beze změny v `automation/archive/STATE-do-20261116.md` (SHA-256
-> `6473429f…a12694b1`). Sekce níže označené `<!-- orig:A-B -->` jsou doslovné kopie řádků A–B archivu; ostatní řádky
+> **Kompakce (CONTEXT-EFFICIENCY-01, dialog 0329–0347; sloučeno 2026-11-16 se souhlasem vlastníka v chatu).** Úplné původní
+> znění k `research/autopilot` @ `9e61f50` je beze změny v `automation/archive/STATE-do-20261116.md` (SHA-256
+> `5284b739…7ce7f223ade4`). Sekce níže označené `<!-- orig:A-B -->` jsou doslovné kopie řádků A–B archivu; ostatní řádky
 > archivu jsou jen v archivu (mapa v `automation/archive/STATE-compaction-manifest.json`, důkaz
 > `python3 tools/autopilot/check_state_compaction.py`). Pravidlo: blok CHECKPOINT se každým během **přepisuje** (≤ 30 řádků);
 > historie běhů patří do `TEST_LOG.md`/`REPORTS.md`, ne do tohoto souboru. Pořadí výzkumné fronty (RESEARCH_FRAMEWORK §5)
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-16 11:05 UTC, autopilot běh #66)
+## CHECKPOINT (přepisuje se; stav k 2026-11-16 11:05 UTC, autopilot běh #66; hlavička doplněna při merge PR #60)
 - **Produkce (jen čtení):** live `01c69ff` (Merge PR #61, MAX-efekt forward PAPER R12 L14_H28 nahrazuje Combined; ruční
   deploy vlastníka 2026-11-15 20:56 UTC); 0 událostí a 0 error logů 07:00–11:04; MAX-efekt 6 pozic, equity ≈ 9 986,
   warnings []; 0 nových duplicit (jen 128/129); `lh_whale_trades` n=3; DB 287 839 935 B ≈ 26,8 % z 1 GB.
-- **Výzkumné větve a SHA:** `research/autopilot` @ `7ede20b` (zdroj archivu); G1 Top Risk radar
+- **Výzkumné větve a SHA:** `research/autopilot` @ `9e61f50` (zdroj archivu); G1 Top Risk radar
   `research/xrp-top-risk-radar-v1-20261108` tip `cb04a4d` (vlastník úkolu = ChatGPT, reviewer = Claude);
   K7 FOMC `research/k7-macro-audit-20261111` (`78abe38`, auditní balíček `dcf753a`).
 - **Poslední skutečně spuštěný test/CI:** Claude lokálně `pytest research/top_risk_radar_v1` @ `cb04a4d` = 612 passed
@@ -24,7 +24,7 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
   téma G0 syntetického QA uzavřeno (0340); zbývá skutečné archivy, PIT dostupnost, kontinuita, neměnný freeze manifest
   (ChatGPT). ⇒ výkon NESPOUŠTĚT. Další krok: oznámení zamčeného freeze ⇒ formální review Claude ⇒ jediný `workflow_dispatch`.
 - **Čeká na vlastníka:** PR #57 (LH-WHALE diagnostika) nasadit jen se souhlasem; PR #54, #8, #9, #10 neslučovat;
-  id 129 nemazat/neupravovat; K7 výkon jen s „SCHVÁLENO: výkonnost K7“; merge této kompakce (nové rozhodnutí).
+  id 129 nemazat/neupravovat; K7 výkon jen s „SCHVÁLENO: výkonnost K7“. Kompakce STATE (PR #60) sloučena 2026-11-16 se souhlasem vlastníka (chat 13:5x UTC).
 - **Bezpečnostní brány:** výhradně PAPER; žádný LIVE/Render zápis/deploy/merge/force push; `FUNDING_SEMANTICS.json`
   (performance_hold, R8/R9) neměnit; výkon jen s řádkem SCHVÁLENO; `OWNER_DECISIONS.md` nikdy neupravovat ani nezkracovat.
 - **Hypotézy:** fronta A1–A6, K3, K6, K8 uzavřeny (viz ROZHODNUTÍ 13:38 níže); dnes 0/3 nových; nová jen přes novelty gate (§6, HUNT-11).

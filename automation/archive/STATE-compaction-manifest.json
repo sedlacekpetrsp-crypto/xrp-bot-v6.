@@ -1,6 +1,6 @@
 {
- "source": "research/autopilot@7ede20b:automation/STATE.md",
- "source_sha256": "6473429fe585c98ff3ec095981775e3d56cffb2a6314c4c86b874ab6a12694b1",
+ "source": "research/autopilot@9e61f50:automation/STATE.md",
+ "source_sha256": "5284b7395024d71638b1272e4450c689a2d286e64f27325374636ce7f223ade4",
  "segments": [
   {
    "lines": [
@@ -31,5 +31,5 @@
    "where": "state"
   }
  ],
- "regenerated": "2026-11-16 (dialog 0344: podmínka 1); předchozí zdroj f799288 / 93c86428…1549824"
+ "regenerated": "2026-11-16 13:5x UTC (před merge, schváleno vlastníkem v chatu); předchozí zdroj 7ede20b / 6473429f…"
 }
