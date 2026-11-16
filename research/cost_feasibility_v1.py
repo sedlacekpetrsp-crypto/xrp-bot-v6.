@@ -54,7 +54,14 @@ class CostGate:
         )
 
     def net_return(self, gross_return: Number) -> Decimal:
-        gross = _rate(gross_return, "gross_return")
+        if isinstance(gross_return, bool) or isinstance(gross_return, float):
+            raise ValueError("gross_return: use exact decimal")
+        try:
+            gross = Decimal(gross_return)
+        except (ValueError, ArithmeticError, TypeError) as exc:
+            raise ValueError("gross_return: invalid decimal") from exc
+        if not gross.is_finite() or gross <= -1:
+            raise ValueError("gross_return: must be finite and greater than -1")
         return (
             (1 + gross) * (1 - self.exit_slippage) * (1 - self.exit_fee)
             / ((1 + self.entry_slippage) * (1 + self.entry_fee))
