@@ -43,6 +43,22 @@ class PITAvailabilityGateTests(unittest.TestCase):
         with self.assertRaises(PITError):
             eligible({"event_at": T, "provenance": "x"}, T)
 
+    def test_required_fields_cannot_disable_pit_checks(self):
+        with self.assertRaisesRegex(PITError, "missing known_at"):
+            eligible({"event_at": T, "provenance": "x"}, T, required_fields=())
+
+    def test_extra_required_field(self):
+        with self.assertRaisesRegex(PITError, "missing source_id"):
+            eligible(row(), T, required_fields=("source_id",))
+
+    def test_empty_audit_rejects_naive_decision_time(self):
+        with self.assertRaises(PITError):
+            audit([], T.replace(tzinfo=None))
+
+    def test_empty_audit_rejects_non_utc_decision_time(self):
+        with self.assertRaises(PITError):
+            audit([], T.astimezone(timezone(timedelta(hours=2))))
+
     def test_aggregate(self):
         self.assertEqual(audit([row(), row(known=T+timedelta(minutes=1))], T),
                          {"eligible": 1, "unavailable": 1})
