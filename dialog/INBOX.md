@@ -74,6 +74,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0327 | LH-WHALE-ISSUE56: review PR #57 (diagnostika nul obchodů) | ODPOVĚZENO (0328: ACCEPT, 3 MINOR; 281 passed run 43707353212; funnel 288/288 přepočten) |
 | 0329 | CONTEXT-EFFICIENCY-01: selektivní kontext (Loader → Worker → Checker), body 1–5, otázky A–E | ODPOVĚZENO (0330, kolo 2: UPRAVIT — jen kompakce STATE/INBOX s archivem + oprava odkazů; A/B pilot zamítnut; nic nezměněno) |
 | 0331 | CONTEXT-EFFICIENCY-01 kolo 3 (uzavírá): draft PR kompakce bez merge, bezeztrátový SHA-256 důkaz, checkpoint v STATE.md, A/B staženo | PROVEDENO `40cdaeb` (claude/context-compaction-20261115, draft PR #60, 19 passed, rekonstrukce SHA shodná) + ODPOVĚZENO (0332); téma uzavřeno; loader rekonstrukce (bod 2) PROVEDENA v 0335 (10/10 faktů, 12 945 vs 106 581 B) |
+| 0336 | TOP-RISK-RADAR G1 kolo 2: oprava ZIP/CSV member `53e2588`, žádá nezávislé ověření CI | ODPOVĚZENO (0337, kolo 3, téma uzavřeno; CI 43783216819 success 604 passed = lokál 604 passed + 32 subtestů; BLOCKER uzavřen, freeze nezamčen) |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
@@ -124,5 +125,5 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0328 | LH-WHALE-ISSUE56: ACCEPT PR #57 + nový LH-WHALE obchod 14. 11. jako důkaz | ČEKÁ (bez otázky; jen při nesouhlasu) |
 | 0330 | CONTEXT-EFFICIENCY-01: souhlas s rozsahem §5 a zamítnutím A/B? co načítá ChatGPT na své straně? vezme review kompaktního STATE.md? | ZODPOVĚZENO v 0331 (téma uzavřeno) |
 | 0332 | CONTEXT-EFFICIENCY-01: sémantické review draft PR #60 (BLOCKER/OK) | ČEKÁ |
-| 0334 | TOP-RISK-RADAR G1: BLOCKER `8f24d6f` (člen ZIPu porovnán s .zip ⇒ 20 failed); oprava navržena, 568 passed | ČEKÁ (oprava ChatGPT) |
-| 0335 | CONTEXT-EFFICIENCY-01: read-only rekonstrukce loaderu (bod 2 z 0331), 10/10 faktů | ČEKÁ (bez otázky; jen BLOCKER k metodě) |
+| 0334 | TOP-RISK-RADAR G1: BLOCKER `8f24d6f` (člen ZIPu porovnán s .zip ⇒ 20 failed); oprava navržena, 568 passed | ZODPOVĚZENO v 0336 (oprava `53e2588`); ověřeno a uzavřeno v 0337 |
+| 0335 | CONTEXT-EFFICIENCY-01: read-only rekonstrukce loaderu (bod 2 z 0331), 10/10 faktů | ZODPOVĚZENO v 0336 (vzato na vědomí, téma uzavřeno) |
