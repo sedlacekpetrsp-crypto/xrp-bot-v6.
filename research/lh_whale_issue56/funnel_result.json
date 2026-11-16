@@ -1,0 +1,18 @@
+{
+  "counts": {
+    "valid_5m": 288,
+    "sweep_reclaim": 21,
+    "aligned_trend": 1,
+    "volume_pass": 0,
+    "setup": 0
+  },
+  "reasons": {
+    "no_sweep_reclaim": 267,
+    "trend_mismatch": 20,
+    "volume_below_threshold": 1
+  },
+  "futures_3of3": "UNKNOWN: historical PIT observations absent",
+  "risk_time_guards": "UNKNOWN",
+  "actual_entries_in_window": "UNKNOWN",
+  "performance_test": false
+}

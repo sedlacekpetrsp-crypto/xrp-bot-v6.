@@ -15,7 +15,7 @@ from lh_sweep import signal_from_closed_candles
 import paper_epoch
 import risk_guard
 
-BUILD = 'LH-WHALE-OKX-2026-10-23-4'
+BUILD = 'LH-WHALE-DIAGNOSTICS-ISSUE56-v1'
 _futures_retry_at = 0.0
 SYMBOL = 'XRPUSDT'
 FEE, SLIP, RISK, RR = .0005, .0002, .005, 2.5
@@ -38,6 +38,12 @@ def advance(state, quote, analysis, now):
     s = copy.deepcopy(state)
     if s['activated_at'] is None: s['activated_at'] = now
     valid = quote and 0 <= now-quote['time'] <= 15000
+    decision = dict(code='analysis_unavailable', at=iso(now),
+                    candle=analysis.get('candle') if analysis else None)
+    s['entry_decision'] = decision
+    if not valid: decision['code'] = 'quote_stale_or_missing'
+    elif s['position']: decision['code'] = 'position_open'
+    elif analysis: decision['code'] = analysis.get('reason_code', 'waiting_signal')
     just_closed = False
     if valid and s['position']:
         p = s['position']; price = quote['price']; side = p['direction']
@@ -54,16 +60,30 @@ def advance(state, quote, analysis, now):
             s['trades'].insert(0,t); s['trades'] = s['trades'][:500]
             s['position'] = None; s['cooldown'] = now+(20 if pnl<0 else 5)*60000
             just_closed = True
+            decision['code'] = 'position_just_closed'
     if valid and analysis and not s['position'] and not just_closed:
         stamp = analysis['candle']
+        if analysis.get('signal') in ('LONG','SHORT') and stamp<=s['seen']:
+            decision['code'] = 'already_seen'
         # WAIT data can be retried while futures statistics are being published.
         if analysis.get('signal') in ('LONG','SHORT') and stamp>s['seen']:
             s['seen'] = stamp
+            decision.update(age_ms=now-stamp, activated_at=s['activated_at'],
+                            cooldown_until=s['cooldown'])
+            decision['code'] = ('before_activation' if stamp<s['activated_at']
+                                else 'future_signal' if now<stamp
+                                else 'stale_signal' if now-stamp>120000
+                                else 'cooldown' if now<s['cooldown'] else 'risk_check')
             if stamp>=s['activated_at'] and 0<=now-stamp<=120000 and now>=s['cooldown']:
                 side = 1 if analysis['signal']=='LONG' else -1
                 entry = quote['price']*(1+side*SLIP); stop = analysis['stop']
                 distance = side*(entry-stop)
                 rg_ok, rg_mult = risk_guard.gate(s, s['balance'], now, data_ok=bool(valid), peak=s.get('peak'))
+                decision.update(risk_reason=s.get('risk_guard', {}).get('last_decision'),
+                                stop_distance_ratio=distance/entry)
+                decision['code'] = ('risk_guard' if not rg_ok else
+                                    'stop_distance' if not .001<=distance/entry<=.05 else
+                                    'nonpositive_balance' if s['balance']<=0 else 'invalid_size_or_target')
                 if rg_ok and .001<=distance/entry<=.05 and s['balance']>0:
                     stopfill = stop*(1-side*SLIP)
                     loss = -side*(stopfill-entry)+FEE*(entry+stopfill)
@@ -78,6 +98,9 @@ def advance(state, quote, analysis, now):
                             futures_provider=analysis.get('futures_provider','binance'),
                             confirmation_variant=analysis.get('confirmation_variant','BINANCE_ORIGINAL'))
                         paper_stop_policy.apply(s['position'], FEE, SLIP)
+                        decision['code'] = 'paper_entry_opened'
+    if decision['code'] not in ('already_seen', 'position_open', 'quote_stale_or_missing', 'position_just_closed') and analysis and analysis.get('signal') in ('LONG','SHORT'):
+        s['last_signal_decision'] = copy.deepcopy(decision)
     s['equity_stale'] = not valid
     if valid:
         s['equity'] = s['balance']+(net(s['position'],quote['price'])[0] if s['position'] else 0)
@@ -158,10 +181,11 @@ async def analyze(core,client):
     now = int(time.time()*1000)
     rows = [closed(r,m,now) for r,m in zip(raw,(5,15,60))]
     c5,c15,c1h = rows; stamp = int(c5[-1][6])+1
+    setup = {}
     sig = signal_from_closed_candles([float(r[2]) for r in c5],[float(r[3]) for r in c5],
         [float(r[4]) for r in c5],[float(r[5]) for r in c5],
-        [float(r[4]) for r in c15],[float(r[4]) for r in c1h],stop_atr=2.,rr=RR)
-    result = dict(candle=stamp,signal='WAIT',reason='Čekám na sweep + reclaim + 15m/1h trend + volume')
+        [float(r[4]) for r in c15],[float(r[4]) for r in c1h],stop_atr=2.,rr=RR,diagnostics=setup)
+    result = dict(candle=stamp,signal='WAIT',setup=setup,reason_code=setup.get('reason_code','setup_not_found'),reason='Čekám na sweep + reclaim + 15m/1h trend + volume')
     # Fetch periodically even without a sweep so API availability is visible.
     async def get(path):
         r = await client.get('https://fapi.binance.com/futures/data/'+path,
@@ -188,17 +212,22 @@ async def analyze(core,client):
             statistics = await fetch(client, stamp)
         except (httpx.HTTPError, ValueError, TypeError, KeyError, IndexError):
             result.update(reason='Futures potvrzení není dostupné; nové vstupy pozastavené',
-                          data_status='blocked', futures_provider='unavailable')
+                          data_status='blocked', futures_provider='unavailable', reason_code='futures_unavailable')
             return result
     oi, top, taker = statistics
     result.update(data_status='available', futures_provider=provider,
                   confirmation_variant='OKX_TOP5_PAPER' if provider == 'okx' else 'BINANCE_ORIGINAL')
     f = futures_confirmation(oi,top,taker,stamp,sig.side if sig else 'LONG')
     f['provider'] = provider
+    f['evaluated_side'] = sig.side if sig else 'LONG'
+    f['setup_present'] = bool(sig)
     result['futures'] = f
     if sig:
         result.update(reason=sig.reason+'; futures potvrzení '+str(f['score'])+'/3',stop=sig.stop)
-        if f['score']==3: result['signal']=sig.side
+        result['reason_code'] = 'futures_not_confirmed'
+        if f['score']==3:
+            result['signal']=sig.side
+            result['reason_code']='signal_ready'
     return result
 
 async def worker(core):
@@ -213,12 +242,19 @@ async def worker(core):
                 q = dict(price=float(await asyncio.wait_for(core.get_live_price(SYMBOL,max_age=1),timeout=6)),time=int(time.time()*1000))
                 if not math.isfinite(q['price']) or q['price']<=0: raise ValueError('Neplatná cena')
                 s = await asyncio.to_thread(tick,core.DATABASE_URL,q,analysis,int(time.time()*1000))
+                previous = (runtime.get('state') or {}).get('entry_decision')
                 runtime.update(state=s,quote=q,last_error=None,persistence='postgres')
+                decision = s.get('entry_decision', {})
+                if not previous or (decision.get('code'), decision.get('candle')) != (previous.get('code'), previous.get('candle')):
+                    print('LH-WHALE entry', json.dumps(decision, sort_keys=True), flush=True)
                 if time.monotonic()>=next_scan:
                     try:
                         analysis = await asyncio.wait_for(analyze(core,client),timeout=20)
                         runtime.update(analysis=analysis,data_error=None)
-                        print('LH-WHALE scan',BUILD,analysis['signal'],'postgres',flush=True)
+                        print('LH-WHALE scan',BUILD, 'signal='+analysis['signal'],
+                              'reason='+analysis.get('reason_code','unknown'),
+                              'persistence='+runtime.get('persistence','pending'),
+                              'setup='+json.dumps(analysis.get('setup',{}),sort_keys=True),flush=True)
                     except Exception as exc:
                         analysis = None; runtime.update(analysis=None,data_error=type(exc).__name__+': '+str(exc))
                         print('LH-WHALE data unavailable',BUILD,type(exc).__name__,str(exc),flush=True)
@@ -249,6 +285,8 @@ def snapshot():
         trades=s['trades'][:50] if s else [],analysis=runtime.get('analysis'),
         market_price=q['price'] if fresh else None,risk_pct=.5,stop_atr=2.,net_rr=RR,
         last_cycle_at=s.get('last_cycle_at') if s else None,persistence=runtime.get('persistence','pending'),
+        entry_decision=s.get('entry_decision') if s else None,
+        last_signal_decision=s.get('last_signal_decision') if s else None,
         last_error=runtime.get('last_error'),data_error=runtime.get('data_error'))
 
 def install(app,core,local_only=False):

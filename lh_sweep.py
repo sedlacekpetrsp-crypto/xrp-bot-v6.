@@ -50,7 +50,7 @@ def signal_from_closed_candles(
     high5, low5, close5, volume5,
     close15, close1h,
     lookback=20, volume_ratio_min=1.05,
-    stop_atr=1.8, rr=2.0
+    stop_atr=1.8, rr=2.0, diagnostics=None
 ) -> Optional[Signal]:
     """Return a signal after a confirmed liquidity sweep/reclaim.
 
@@ -59,6 +59,9 @@ def signal_from_closed_candles(
     SHORT: latest candle trades above prior lookback high then closes back below it.
     15m and 1h EMA20/50 must agree with the trade direction.
     """
+    d = diagnostics if diagnostics is not None else {}
+    d.update(reason_code="insufficient_candles", candles_5m=len(close5),
+             candles_15m=len(close15), candles_1h=len(close1h))
     n=max(55, lookback+2)
     if min(len(close5),len(high5),len(low5),len(volume5)) < n:
         return None
@@ -67,6 +70,7 @@ def signal_from_closed_candles(
 
     a=atr(high5,low5,close5,14)
     if not a or a<=0:
+        d["reason_code"] = "invalid_atr"
         return None
 
     prior_low=min(low5[-lookback-1:-1])
@@ -78,6 +82,16 @@ def signal_from_closed_candles(
     t15=_trend(close15); t1h=_trend(close1h)
     long_sweep=l < prior_low and c > prior_low
     short_sweep=h > prior_high and c < prior_high
+
+    d.update(long_sweep=long_sweep, short_sweep=short_sweep,
+             trend_15m=t15, trend_1h=t1h, volume_ratio=vr,
+             volume_pass=vr>=volume_ratio_min, atr=a,
+             long_trend=t15=="BULL" and t1h=="BULL",
+             short_trend=t15=="BEAR" and t1h=="BEAR")
+    aligned = (long_sweep and d['long_trend']) or (short_sweep and d['short_trend'])
+    d['reason_code'] = ('no_sweep_reclaim' if not (long_sweep or short_sweep)
+                        else 'trend_mismatch' if not aligned
+                        else 'volume_below_threshold' if vr<volume_ratio_min else 'setup_ready')
 
     if long_sweep and t15=="BULL" and t1h=="BULL" and vr>=volume_ratio_min:
         stop=min(l, c-stop_atr*a)
