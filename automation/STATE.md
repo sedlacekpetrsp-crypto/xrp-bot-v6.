@@ -27,7 +27,7 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
   id 129 nemazat/neupravovat; K7 výkon jen s „SCHVÁLENO: výkonnost K7“. Kompakce STATE (PR #60) sloučena 2026-11-16 se souhlasem vlastníka (chat 13:5x UTC).
 - **Bezpečnostní brány:** výhradně PAPER; žádný LIVE/Render zápis/deploy/merge/force push; `FUNDING_SEMANTICS.json`
   (performance_hold, R8/R9) neměnit; výkon jen s řádkem SCHVÁLENO; `OWNER_DECISIONS.md` nikdy neupravovat ani nezkracovat.
-- **Hypotézy:** fronta A1–A6, K3, K6, K8 uzavřeny (viz ROZHODNUTÍ 13:38 níže); dnes 0/3 nových; nová jen přes novelty gate (§6, HUNT-11).
+- **Hypotézy:** fronta A1–A6, K3, K6, K8 uzavřeny; **od 2026-11-16 TRVALÝ LOV (ROZHODNUTÍ níže)** — každý běh bez P1/P2 práce posune novou hypotézu; dnes 0/3; nová přes novelty gate (§6).
 - **Forward RSI(2) (post-hoc výjimka vlastníka):** 0 obchodů; kontrola 2026-12-16 (stop: forward ×2 < −10 % nebo 5 ztrát
   po sobě ⇒ vlastníkovi), hlavní vyhodnocení ≥ 30 obchodů a nejdřív 2027-01-05.
 - **Další plánované:** 2026-12-01 nový běh Combined replay s `--end 2026-12-01` (Otevřené úkoly bod 3).
@@ -39,6 +39,14 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 - R8 + R9 výkonnost POZASTAVENA vlastníkem 2026-11-06 17:48 SEČ; runnery bez `performance_hold=false` odmítnou výpočet (archiv ř. 220–225).
 - R10: N = 159 je pracovní odhad, V[SR] = 0,5 předpoklad ⇒ DSR uvádět jako podmíněné (archiv ř. 256–258).
 - Inventář 110 hypotéz `reports/hypothesis-inventory-20261105.md` (103 NEPROŠLO) — nic neopakovat (archiv ř. 262–267).
+
+## ROZHODNUTÍ 2026-11-16 ~14:10 UTC — TRVALÝ LOV STRATEGIÍ (vlastník v chatu: „chci, abyste sháněli anebo vyvíjeli pořád nové strategie pro boty“)
+- Hledání a vývoj nových strategií se **nepozastavuje**. Má přednost před stavem „0 kandidátů / lov pozastaven“ (0246/0247, HUNT-11 0292–0293).
+- Každý autopilot běh bez rozpracované P1/P2 práce posune alespoň jednu novou hypotézu (návrh s mechanismem → kontrola duplicit v inventáři a registru → protokol → datový audit → test). Pokud nikdo nemá kandidáta, Claude ho vymyslí (jiný mechanismus, trh, zdroj dat nebo horizont).
+- Dialogová úloha: Claude posílá ChatGPT nejvýš 1× za 4 h konkrétní návrh strategie a žádá ChatGPT o oponenturu + jeho vlastní 1–2 návrhy.
+- Metodika beze změny: RESEARCH_FRAMEWORK (zmrazení předem, PIT data, náklady ×1/×2/×3, DSR, novelty gate §6), max. 3 nové hypotézy denně, výhradně PAPER. Neopakovat zamítnuté ani jejich ekvivalenty.
+- Vlastník chce v hlášeních jedním řádkem stav strategií (co je v testu, výsledek po nákladech).
+- Pozn.: prompt plánovaných úloh se z této session nepodařilo upravit (oprávnění); toto rozhodnutí v STATE.md platí jako nejnovější pokyn vlastníka.
 
 <!-- orig:95-176 -->
 ## Anomálie (nová) — BEST-OF duplicitní uzavření
