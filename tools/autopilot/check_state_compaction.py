@@ -114,7 +114,7 @@ def _read(path: str, rev: str | None) -> str:
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--state", default="automation/STATE.md")
-    ap.add_argument("--archive", default="automation/archive/STATE-do-20261115.md")
+    ap.add_argument("--archive", default="automation/archive/STATE-do-20261116.md")
     ap.add_argument("--manifest", default="automation/archive/STATE-compaction-manifest.json")
     ap.add_argument("--rev", help="ověřit soubory z daného commitu (git show)")
     args = ap.parse_args(argv)

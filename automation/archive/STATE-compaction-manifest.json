@@ -1,6 +1,6 @@
 {
- "source": "research/autopilot@f799288:automation/STATE.md",
- "source_sha256": "93c86428d34bc935d8489b862175972a5f6c2007f2c280416b5f653ba1549824",
+ "source": "research/autopilot@7ede20b:automation/STATE.md",
+ "source_sha256": "6473429fe585c98ff3ec095981775e3d56cffb2a6314c4c86b874ab6a12694b1",
  "segments": [
   {
    "lines": [
@@ -30,5 +30,6 @@
    ],
    "where": "state"
   }
- ]
+ ],
+ "regenerated": "2026-11-16 (dialog 0344: podmínka 1); předchozí zdroj f799288 / 93c86428…1549824"
 }

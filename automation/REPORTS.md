@@ -3,6 +3,39 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## XRP AUTOPILOT – 2026-11-16 07:10 UTC, běh #65
+
+PROVOZ: Live `01c69ff` beze změny (deploy 15. 11. 20:56), 0 událostí/restartů a 0 error logů 03:00–07:05. MAX-efekt PAPER běží (scan 06:59: 6 pozic, equity 9 976,15, 0 uzavřených obchodů, warnings []). bestof 132 (dup jen 128/129), lh_whale_trades n=3, DB 288 216 767 B ≈ 26,8 %.
+VÝVOJ: Bez nové změny — od 0340 (Claude, 05:38) žádný nový commit ChatGPT na radarové větvi (tip `6f21d81`) ani nová zpráva; freeze G1 NEOZNÁMEN, takže formální review ani workflow_dispatch nelze provést. Novou hypotézu nezahajuji (novelty gate bez kandidáta, 0/3).
+TESTY: 0 (stejný commit `6f21d81` už ověřen: 609 passed, CI 43807898013 — opakování by bylo duplicitní).
+CHATGPT: Na tahu ChatGPT — reálné archivy + PIT + neměnný manifest ⇒ oznámení freeze SHA; PR #60 review čeká.
+DALŠÍ KROK: Po oznámení freeze SHA formální review G1 manifestu ⇒ jediný workflow_dispatch.
+ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné schválení.
+
+## XRP AUTOPILOT – 2026-11-16 03:15 UTC, běh #64
+
+PROVOZ: Live `01c69ff` beze změny, 0 událostí/restartů, 0 error logů. MAX-efekt PAPER provedl první rebalance (00:12 UTC, 6 pozic, equity 9 984,76, bez varování). Dup jen 128/129, DB ≈ 26,8 %.
+VÝVOJ: Nezávislé ověření radar `dd3d9f1` (5 syntetických G0 testů archivu); zpráva 0338 (`09e0e52`).
+TESTY: 1× pytest radarů: 609 passed + 32 subtestů; CI 43795826294 success. Žádný výkonnostní test (freeze nezamčen).
+CHATGPT: Freeze G1 a 1 MINOR z 0338 (vlastník ChatGPT); PR #60 review čeká.
+DALŠÍ KROK: Po oznámení freeze SHA formální review G1 manifestu.
+ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné schválení.
+
+## XRP AUTOPILOT – 2026-11-15 23:10 UTC, běh #63
+
+PROVOZ: Live `01c69ff` (nový: vlastník sloučil PR #61 MAX-efekt forward PAPER a ručně nasadil 20:56 UTC). 0 error logů, MAX-efekt scan běží (0 obchodů). Dup jen 128/129, DB ≈ 26,8 %.
+VÝVOJ: Nezávislé ověření radar `704882b` ⇒ nalezen BLOCKER `8f24d6f`; zpráva 0334 (`bbc601f`) s ověřenou opravou.
+TESTY: 1× pytest radar: 20 failed / 548 passed; s navrženou opravou 568 passed. Žádný výkonnostní test (freeze nezamčen).
+CHATGPT: Oprava G0 jména členu ZIPu (vlastník ChatGPT); PR #60 review čeká.
+DALŠÍ KROK: Ověřit opravu 0334, pak čekat na oznámení freeze G1.
+ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné schválení.
+
+## 2026-11-15 20:10 SEČ (běh #62)
+- Nasazeno: `6a23c58` (Risk Guard), beze změny. Od #61 (15:00 UTC) 0 událostí/restartů, 0 chyb v logu, 0 nových duplicit (jen pár 128/129). DB 288 151 231 B ≈ 26,8 %. lh_whale_trades n=3.
+- Radar Top Risk G1: ChatGPT přidal opravy G0 QA (`349cf1a`–`a390efe`, fail-closed na duplicitní/nemonotónní trade ID, neplatnou cenu/množství, booleany, řádek mimo den). Nezávisle ověřeno: `pytest research/top_risk_radar_v1` @ `a390efe` = 560 passed + 32 subtestů, diff přečten, vada nenalezena (1 MINOR návrh: kontrola price×qty ≈ quote_qty). Freeze stále NEOZNÁMEN ⇒ test nespouštím.
+- PR #60 (kompakce STATE) čeká na review ChatGPT (0332), beze změny. Nová hypotéza žádná (0/3).
+- Není potřeba žádné schválení.
+
 ## 2026-11-15 16:15 SEČ (běh #61)
 - Nasazeno: `6a23c58` (Risk Guard), beze změny. Produkce od #60 bez odchylek: 0 událostí/restartů, 0 chyb v logu, 0 nových duplicit. DB 26,8 %.
 - Radar Top Risk G1: ChatGPT protokol dál opravuje (dnes 15:01 UTC nový commit), freeze není zamčen ⇒ test nespouštím. Průběžně jsem nezávisle ověřil jeho kód: 544 testů OK, v jádru (štítky, walk-forward, manifest dat) jsem vadu nenašel.
