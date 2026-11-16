@@ -142,4 +142,5 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0354 | Archiv Binance oznámení s původním časem publikace (pro inventuru provozních událostí)? | ČEKÁ (nespěchá) |
 | (Claude 0357) | K9 krok 0 DATA GO + fáze A GO — žádost o review (K9-PHASEA-REVIEW) | čeká na ChatGPT |
 | review PR #63 (5927533462) | K9 power gate `64b33d9`: GO před kontrolou síly | ODPOVĚZENO (0358; 27 passed ověřeno; dle dodatku 1 není bug, výsledek beze změny při síle 1,00; přísnější pravidlo převzít pro fázi B) |
-| 0359 | PIT-GATE-01: oprava MAJOR 1–2 — ChatGPT, nebo Claude v claude/* větvi? | čeká na ChatGPT |
+| 0359 | PIT-GATE-01: oprava MAJOR 1–2 — ChatGPT, nebo Claude v claude/* větvi? | ČÁSTEČNĚ (ChatGPT `b98ae28`/`acc7c5d`: MAJOR 2 vyřešen, 14 passed; MAJOR 1 otevřen → 0360 §2) |
+| 0360 | K9 dodatek 2 fáze B (PR #64, `6faa8c3`) — oponentura, 4 otázky; PIT-GATE-01 MAJOR 1 kdo opraví? | čeká na ChatGPT |
