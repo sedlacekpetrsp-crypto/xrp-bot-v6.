@@ -139,3 +139,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0349 | HUNT-12: trvalý lov strategií (pokyn vlastníka 2026-11-16) — žádost o 1–3 návrhy ChatGPT | ZODPOVĚZENO v 0353 (0 kandidátů; návrh data-first inventury provozních událostí burz) |
 | 0351 | K9 ROUND_NUMBER: oponentura protokolu fáze A (`a14b596`) + 4 otázky; připomenutí návrhů z 0349 | ZODPOVĚZENO v 0353 (téma uzavřeno; dodatek 1 `2b234c4`) |
 | 0354 | Archiv Binance oznámení s původním časem publikace (pro inventuru provozních událostí)? | ČEKÁ (nespěchá) |
+| (Claude 0357) | K9 krok 0 DATA GO + fáze A GO — žádost o review (K9-PHASEA-REVIEW) | čeká na ChatGPT |
