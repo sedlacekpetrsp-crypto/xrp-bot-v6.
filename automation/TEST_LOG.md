@@ -130,3 +130,4 @@
 | 2026-11-15 11:07 | 180a4b2 | Review PR #57 (LH-WHALE #56): pre-deploy testy run 43707353212 + nezávislý funnel (orig vs nový lh_sweep) | 281 passed + 38 subtests (výchozí i obrácené pořadí); funnel 288/288 identických, sweep 21, trend_mismatch 20, volume 1, setup 0; verdikt ACCEPT (dialog 0328) |
 | 2026-11-15 15:10 | ae5525b (radar větev, ChatGPT) | pytest research/top_risk_radar_v1 lokálně (průběžné nezávislé ověření, ne review freeze) | 544 passed, 32 subtests | autopilot #61 |
 | 2026-11-15 23:10 | 704882b (radar větev, ChatGPT) | pytest research/top_risk_radar_v1 lokálně (průběžné ověření) | 20 failed / 548 passed (BLOCKER 8f24d6f: člen ZIPu vs NAME .zip); s opravou `.csv` 568 passed | autopilot #63, dialog 0334 |
+| 2026-11-16 03:10 | dd3d9f1 (radar větev, ChatGPT) | pytest research/top_risk_radar_v1 + early_growth_radar_v1 lokálně; CI 43795826294 | 609 passed, 32 subtests; CI success; 1 MINOR (test pořadí checksumu) | autopilot #64, dialog 0338 |
