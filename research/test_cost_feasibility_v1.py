@@ -28,3 +28,17 @@ def test_bad_cost_rates_fail_closed(bad):
 def test_bad_gross_return_fails_closed(bad):
     with pytest.raises(ValueError):
         CostGate.from_rates(0, 0, 0, 0).net_return(bad)
+
+
+@pytest.mark.parametrize("bad", [Decimal("-0.1"), Decimal("1"), Decimal("NaN"), Decimal("Infinity"), True, 0.1])
+def test_direct_constructor_rejects_invalid_rates(bad):
+    with pytest.raises(ValueError):
+        CostGate(bad, Decimal("0"), Decimal("0"), Decimal("0"))
+
+
+def test_direct_constructor_normalizes_exact_values():
+    gate = CostGate("0.00095", 0, Decimal("0.0002"), "0")
+    assert all(isinstance(v, Decimal) for v in (
+        gate.entry_fee, gate.exit_fee, gate.entry_slippage, gate.exit_slippage
+    ))
+    assert gate.minimum_gross_return() > 0
