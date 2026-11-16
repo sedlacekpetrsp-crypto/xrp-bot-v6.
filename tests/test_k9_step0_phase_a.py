@@ -185,3 +185,29 @@ def test_pooled_diff_reports_per_asset_ci_and_invalid_frac():
     assert res["invalid_frac"] == 0.0 and res["reps"] == 500
     a, b = res["per_asset"]["A"], res["per_asset"]["B"]
     assert a["lo"] > 0.4 and b["lo"] < 0 < b["hi"]
+
+
+def test_step0_runner_offline_writes_manifest_and_deletes_zips(tmp_path, monkeypatch):
+    """Runner kroku 0 bez sítě: 1 OK měsíc, ostatní MISSING ⇒ DATA NO-GO, manifest se SHA, ZIP smazán."""
+    import json
+
+    from research.k9_round_number import step0
+
+    ok_zip, ok_ck = _zip_month(tmp_path, 2020, 1)
+
+    def fake_download(sym, y, m, dest):
+        if (sym, y, m) == ("BTCUSDT", 2020, 1):
+            dest.mkdir(parents=True, exist_ok=True)
+            z, c = dest / ok_zip.name, dest / ok_ck.name
+            z.write_bytes(ok_zip.read_bytes())
+            c.write_text(ok_ck.read_text())
+            return z, c
+        return None, None
+
+    monkeypatch.setattr(audit, "download_month", fake_download)
+    g = step0.run(tmp_path / "out", tmp_path / "data")
+    man = json.loads((tmp_path / "out" / "step0_manifest.json").read_text())
+    assert g["verdict"] == "DATA NO-GO" and g["ok_months"] == 1 and g["total_months"] == 3 * 82
+    ok = [r for r in man["months"] if r["status"] == "OK"]
+    assert len(ok) == 1 and len(ok[0]["sha256"]) == 64
+    assert not (tmp_path / "data" / "BTCUSDT" / ok_zip.name).exists()
