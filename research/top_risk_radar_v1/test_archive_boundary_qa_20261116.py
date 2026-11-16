@@ -55,3 +55,22 @@ def test_archive_rejects_missing_checksum():
     data, _ = make_archive([trade(10, T0)])
     with pytest.raises(ValueError, match="missing sha256"):
         analyze(data, "not-a-checksum")
+
+
+def test_archive_rejects_duplicate_trade_id_with_later_timestamp():
+    data, digest = make_archive([trade(10, T0), trade(10, T1)])
+    with pytest.raises(ValueError, match="duplicate or nonmonotonic trade ID"):
+        analyze(data, digest)
+
+
+def test_archive_rejects_out_of_day_row_even_with_valid_checksum():
+    # The archive filename alone cannot establish its actual UTC date.
+    data, digest = make_archive([trade(10, "1704240000000")])
+    with pytest.raises(ValueError, match="out-of-day trade row"):
+        analyze(data, digest)
+
+
+def test_archive_rejects_inconsistent_quote_notional():
+    data, digest = make_archive([f"10,0.60,1,0.90,{T0},false,true"])
+    with pytest.raises(ValueError, match="inconsistent quote quantity"):
+        analyze(data, digest)
