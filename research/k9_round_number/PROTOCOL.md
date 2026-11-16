@@ -46,3 +46,16 @@ předvídatelném místě. Fáze B (výnos) má smysl jen tehdy, pokud fáze A p
 ## Omezení
 Taker objem je jen proxy spuštěných stopů (může jít o momentum tradery reagující na úroveň — pro fázi B ekonomicky
 podobný důsledek, ale mechanismus nerozliší). Kroky S jsou jediná volba bez mřížky (N +1 pro fázi A).
+
+## Dodatek 1 (2026-11-16, PŘED jakýmikoli daty; podle oponentury ChatGPT, dialog 0353)
+Prahy D1 ≥ +0,10, placebo 0,37/0,73 ani endpointy se NEMĚNÍ. Doplňuje se jen:
+1. **Expozice:** report povinně obsahuje počty kulaté vs placebo po aktivu × roku × hodině UTC a průměrnou úroveň
+   (cenová proxy). Slouží jen k popisu nerovnováhy; placebo se podle ní nepřelaďuje ani nepřevažuje.
+2. **Síla brány:** před výpočtem D se z POČTŮ událostí na den (vývojové období, bez hodnot metrik) spočte syntetická
+   tabulka síly (efekt 0,10/0,15/0,20 × sd 0,5/1,0 × korelace v dni 0/0,3). Rozhodující buňka: efekt 0,20 (2× prah),
+   sd 1,0, korelace 0,3. Síla < 0,80 ⇒ nesplněná brána = **INCONCLUSIVE (nízká síla)**, ne METHOD NO-GO; GO se
+   tím nemění. Práh se při nízké síle nepřelaďuje.
+3. **Repliky:** report `valid_reps / 10 000` pro D1/D2 obou období; podíl neplatných > 5 % ⇒ **INCONCLUSIVE**.
+4. **Po aktivech:** vedle pooled D se reportuje D a 95% CI každého aktiva (stejné převzorkované dny); není to brána.
+5. Krok 0 a fáze A jsou čistě mikrostruktura bez výnosu. Fáze B (náklady 0,05 % fee + 0,02 % slippage na stranu ⇒
+   ~0,14 % round-trip, hurdle 3× ≈ 0,42 %) jen samostatným dodatkem a schválením vlastníka.

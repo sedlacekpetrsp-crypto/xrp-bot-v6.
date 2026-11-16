@@ -130,6 +130,58 @@ def test_evaluate_gate_rules():
     ok2 = {"d": 0.01, "lo": 0.001}
     fin = {"d": 0.05, "lo": 0.01}
     assert phase_a.evaluate(ok1, ok2, fin)["verdict"].startswith("GO")
-    assert phase_a.evaluate({"d": 0.09, "lo": 0.02}, ok2, fin)["verdict"] == "METHOD NO-GO"
-    assert phase_a.evaluate(ok1, {"d": 0.01, "lo": -0.001}, fin)["verdict"] == "METHOD NO-GO"
-    assert phase_a.evaluate(ok1, ok2, {"d": 0.05, "lo": -0.01})["verdict"] == "METHOD NO-GO"
+    assert phase_a.evaluate({"d": 0.09, "lo": 0.02}, ok2, fin, 0.9)["verdict"] == "METHOD NO-GO"
+    assert phase_a.evaluate(ok1, {"d": 0.01, "lo": -0.001}, fin, 0.9)["verdict"] == "METHOD NO-GO"
+    assert phase_a.evaluate(ok1, ok2, {"d": 0.05, "lo": -0.01}, 0.9)["verdict"] == "METHOD NO-GO"
+
+
+# --- dodatek 1 (dialog 0353): neplatné repliky, síla, expozice, CI po aktivech ---
+
+def test_evaluate_invalid_reps_over_5pct_is_inconclusive_even_if_gate_passes():
+    ok1, ok2, fin = {"d": 0.2, "lo": 0.05}, {"d": 0.02, "lo": 0.001}, {"d": 0.1, "lo": 0.01}
+    bad = dict(ok1, invalid_frac=0.051)
+    assert phase_a.evaluate(bad, ok2, fin, 0.95)["verdict"] == "INCONCLUSIVE (neplatné repliky)"
+    assert phase_a.evaluate(dict(ok1, invalid_frac=0.05), ok2, fin, 0.95)["verdict"].startswith("GO")
+
+
+def test_evaluate_low_power_failure_is_inconclusive_not_no_go():
+    ok2, fin = {"d": 0.02, "lo": 0.001}, {"d": 0.1, "lo": 0.01}
+    fail = {"d": 0.05, "lo": -0.02}
+    assert phase_a.evaluate(fail, ok2, fin, 0.5)["verdict"] == "INCONCLUSIVE (nízká síla)"
+    assert phase_a.evaluate(fail, ok2, fin, None)["verdict"] == "INCONCLUSIVE (nízká síla)"
+    assert phase_a.evaluate(fail, ok2, fin, 0.8)["verdict"] == "METHOD NO-GO"
+
+
+def test_power_table_monotone_in_days_and_uses_only_counts():
+    few = phase_a.power_table(np.full(30, 2), np.full(30, 4), effects=(0.20,), sds=(1.0,), rhos=(0.3,),
+                              sims=60, reps=300)
+    many = phase_a.power_table(np.full(1000, 2), np.full(1000, 4), effects=(0.20,), sds=(1.0,), rhos=(0.3,),
+                               sims=60, reps=300)
+    assert few["power"].iloc[0] < 0.5 < many["power"].iloc[0]
+    assert phase_a.decisive_power(many) == many["power"].iloc[0]
+    zero = phase_a.power_table(np.full(500, 2), np.full(500, 4), effects=(0.0,), sds=(1.0,), rhos=(0.3,),
+                               sims=60, reps=300)
+    assert zero["power"].iloc[0] <= 0.05
+
+
+def test_exposure_table_counts_by_asset_year_hour():
+    t = pd.to_datetime(["2021-01-01 03:10", "2021-01-01 03:50", "2022-05-01 12:00"], utc=True)
+    ev = pd.DataFrame({"time": t, "level": [100.0, 200.0, 300.0], "direction": [1, 1, -1],
+                       "r_vol": 0.0, "m2": 0.0})
+    tab = phase_a.exposure_table({"X": {"round": ev, "placebo": ev.iloc[:1]}})
+    r = tab[(tab.kind == "round") & (tab.year == 2021) & (tab.hour == 3)]
+    assert int(r["n"].iloc[0]) == 2 and float(r["mean_level"].iloc[0]) == 150.0
+    assert int(tab[tab.kind == "placebo"]["n"].sum()) == 1
+
+
+def test_pooled_diff_reports_per_asset_ci_and_invalid_frac():
+    rng = np.random.default_rng(1)
+    days = pd.date_range("2021-01-01", periods=200, freq="D", tz="UTC")
+    def ev(shift):
+        return pd.DataFrame({"time": days + pd.Timedelta(hours=1), "level": 1.0, "direction": 1,
+                             "r_vol": rng.normal(shift, 0.1, len(days)), "m2": 0.0})
+    res = phase_a.pooled_diff({"A": {"round": ev(0.5), "placebo": ev(0.0)},
+                               "B": {"round": ev(0.0), "placebo": ev(0.0)}}, "r_vol", reps=500)
+    assert res["invalid_frac"] == 0.0 and res["reps"] == 500
+    a, b = res["per_asset"]["A"], res["per_asset"]["B"]
+    assert a["lo"] > 0.4 and b["lo"] < 0 < b["hi"]

@@ -16,3 +16,10 @@ oponentuře ChatGPT k PROTOCOL.md (dialog 0351) a jen v rozsahu kroku 0 → fáz
   3. Hranice období: událost s časem < 2024-01-01 00:00 UTC = vývoj; okno lookback smí sahat přes hranici (jen
      minulost, žádný look-ahead).
 - Testy: `tests/test_k9_round_number.py` (6) + `tests/test_k9_step0_phase_a.py` (13), lokálně 19 passed.
+
+## Oponentura ChatGPT 0353 (kolo 3, téma uzavřeno) → dodatek 1 PROTOCOL.md
+- Volba 1 (pevné váhy, společné dny): SOUHLAS + povinně CI po aktivech → `pooled_diff()["per_asset"][a]["lo"/"hi"]`.
+- Volba 2 (vyřazení replik): PODMÍNĚNÝ SOUHLAS → `invalid_frac` > 5 % ⇒ INCONCLUSIVE (`evaluate`).
+- Volba 3 (lookback přes hranici): SOUHLAS beze změny.
+- Síla: `power_table()` (jen počty/den) + `decisive_power()`; expozice: `exposure_table()`.
+- Testy: +5 syntetických (`tests/test_k9_step0_phase_a.py`), lokálně 24 passed.
