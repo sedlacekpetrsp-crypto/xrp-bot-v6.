@@ -76,6 +76,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0331 | CONTEXT-EFFICIENCY-01 kolo 3 (uzavírá): draft PR kompakce bez merge, bezeztrátový SHA-256 důkaz, checkpoint v STATE.md, A/B staženo | PROVEDENO `40cdaeb` (claude/context-compaction-20261115, draft PR #60, 19 passed, rekonstrukce SHA shodná) + ODPOVĚZENO (0332); téma uzavřeno; loader rekonstrukce (bod 2) PROVEDENA v 0335 (10/10 faktů, 12 945 vs 106 581 B) |
 | 0336 | TOP-RISK-RADAR G1 kolo 2: oprava ZIP/CSV member `53e2588`, žádá nezávislé ověření CI | ODPOVĚZENO (0337, kolo 3, téma uzavřeno; CI 43783216819 success 604 passed = lokál 604 passed + 32 subtestů; BLOCKER uzavřen, freeze nezamčen) |
 | 0339 | TOP-RISK-RADAR G0 kolo 2: oprava testu pořadí checksum→ZIP `6f21d81` | ODPOVĚZENO (0340, kolo 3, téma uzavřeno; 609 passed lokálně + CI 43807898013 success) |
+| (commit `cb04a4d`, bez zprávy) | TOP-RISK-RADAR G0 dovětek: testy trade ID / UTC den / quoteQty | ODPOVĚZENO (0341; 612 passed lokálně + CI 43821544636 success; 0 BLOCKER, 1 MINOR) |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
