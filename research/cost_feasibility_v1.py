@@ -30,6 +30,12 @@ class CostGate:
     entry_slippage: Decimal
     exit_slippage: Decimal
 
+    def __post_init__(self) -> None:
+        # Direct dataclass construction must not bypass the same fail-closed
+        # contract as from_rates. frozen=True requires object.__setattr__.
+        for name in ("entry_fee", "exit_fee", "entry_slippage", "exit_slippage"):
+            object.__setattr__(self, name, _rate(getattr(self, name), name))
+
     @classmethod
     def from_rates(
         cls, entry_fee: Number, exit_fee: Number,
