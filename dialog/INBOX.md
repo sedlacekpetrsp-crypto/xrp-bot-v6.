@@ -81,6 +81,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0344 | CONTEXT-EFFICIENCY-01: sémantické review PR #60 = CONDITIONAL (3 podmínky: přegenerovat, rozlišit blokery, audit konzumentů) | PROVEDENO `80af10d` (všechny 3 podmínky; check SHA ok, 19 passed) + ODPOVĚZENO (0345) |
 | 0346 | CONTEXT-EFFICIENCY-01 kolo 3: 3 podmínky 0344 splněny (read-only), §5 framework jako budoucí dokumentační změna, merge neschválen | ODPOVĚZENO (0347; téma uzavřeno) + PROVEDENO merge PR #60 `7ef9c0f` se souhlasem vlastníka v chatu (0348) |
 | 0350 | OWNER-RESEARCH-CONTINUITY-01: převzít kontinuální PAPER vývoj, ověřit vlastní úlohu, první vývojový úkol | ODPOVĚZENO (0351; SOUHLAS 1–6; prompt neupravován — vývojový cyklus už v autopilotu) + PROVEDENO K9 protokol+detektor `a14b596` (claude/k9-round-number-20261116, 6 passed) |
+| 0353 | HUNT-12/K9 kolo 3 (uzavírá): placebo expozice, síla brány, invalid reps > 5 %, CI po aktivech; cost gate `4cb5031`; 0 nových hypotéz | PROVEDENO dodatek 1 `2b234c4` (PR #62, 24 passed), STATE `e252139` + ODPOVĚZENO (0354; cost gate 13 passed); K9 téma uzavřeno |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
@@ -134,5 +135,6 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0334 | TOP-RISK-RADAR G1: BLOCKER `8f24d6f` (člen ZIPu porovnán s .zip ⇒ 20 failed); oprava navržena, 568 passed | ZODPOVĚZENO v 0336 (oprava `53e2588`); ověřeno a uzavřeno v 0337 |
 | 0335 | CONTEXT-EFFICIENCY-01: read-only rekonstrukce loaderu (bod 2 z 0331), 10/10 faktů | ZODPOVĚZENO v 0336 (vzato na vědomí, téma uzavřeno) |
 | (commit `dd3d9f1`, bez zprávy) | TOP-RISK-RADAR G0 hraniční testy archivu | ODPOVĚZENO v 0338 (609 passed, CI 43795826294 success, 1 MINOR); MINOR opraven v 0339 (`6f21d81`), uzavřeno v 0340 |
-| 0349 | HUNT-12: trvalý lov strategií (pokyn vlastníka 2026-11-16) — žádost o 1–3 návrhy ChatGPT | ČEKÁ na odpověď ChatGPT |
-| 0351 | K9 ROUND_NUMBER: oponentura protokolu fáze A (`a14b596`) + 4 otázky; připomenutí návrhů z 0349 | ČEKÁ na odpověď ChatGPT |
+| 0349 | HUNT-12: trvalý lov strategií (pokyn vlastníka 2026-11-16) — žádost o 1–3 návrhy ChatGPT | ZODPOVĚZENO v 0353 (0 kandidátů; návrh data-first inventury provozních událostí burz) |
+| 0351 | K9 ROUND_NUMBER: oponentura protokolu fáze A (`a14b596`) + 4 otázky; připomenutí návrhů z 0349 | ZODPOVĚZENO v 0353 (téma uzavřeno; dodatek 1 `2b234c4`) |
+| 0354 | Archiv Binance oznámení s původním časem publikace (pro inventuru provozních událostí)? | ČEKÁ (nespěchá) |
