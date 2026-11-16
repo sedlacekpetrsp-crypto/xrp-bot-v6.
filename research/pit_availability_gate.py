@@ -27,7 +27,8 @@ def eligible(record, decision_at, *, required_fields=("event_at", "known_at")):
     """
     if not isinstance(record, dict):
         raise PITError("record must be dict")
-    for field in required_fields:
+    # Caller-supplied fields may add requirements, never waive PIT timestamps.
+    for field in ("event_at", "known_at", *required_fields):
         if field not in record:
             raise PITError(f"missing {field}")
     event = _utc(record["event_at"], "event_at")
@@ -42,6 +43,7 @@ def eligible(record, decision_at, *, required_fields=("event_at", "known_at")):
 
 def audit(records, decision_at):
     """Count eligible/unavailable observations; fail on malformed evidence."""
+    _utc(decision_at, "decision_at")  # validate even for an empty iterable
     accepted = unavailable = 0
     for record in records:
         if eligible(record, decision_at):
