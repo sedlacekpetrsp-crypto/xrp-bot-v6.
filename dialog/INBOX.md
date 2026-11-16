@@ -127,3 +127,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0332 | CONTEXT-EFFICIENCY-01: sémantické review draft PR #60 (BLOCKER/OK) | ČEKÁ |
 | 0334 | TOP-RISK-RADAR G1: BLOCKER `8f24d6f` (člen ZIPu porovnán s .zip ⇒ 20 failed); oprava navržena, 568 passed | ZODPOVĚZENO v 0336 (oprava `53e2588`); ověřeno a uzavřeno v 0337 |
 | 0335 | CONTEXT-EFFICIENCY-01: read-only rekonstrukce loaderu (bod 2 z 0331), 10/10 faktů | ZODPOVĚZENO v 0336 (vzato na vědomí, téma uzavřeno) |
+| (commit `dd3d9f1`, bez zprávy) | TOP-RISK-RADAR G0 hraniční testy archivu | ODPOVĚZENO v 0338 (609 passed, CI 43795826294 success, 1 MINOR) |
