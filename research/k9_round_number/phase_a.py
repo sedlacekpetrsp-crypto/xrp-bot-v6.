@@ -200,6 +200,9 @@ def run(frames: dict[str, pd.DataFrame], reps: int = REPS) -> dict:  # pragma: n
                   .to_numpy() for e in dev.values()) for k in ("round", "placebo")}
     res["power_table"] = power_table(cnt["round"], cnt["placebo"])
     res["exposure"] = exposure_table(per)
+    # jen výstup pro nezávislý přepočet D z jednotlivých událostí (nemění žádný výpočet ani bránu)
+    res["events"] = pd.concat([v.assign(asset=a, kind=k) for a, e in per.items() for k, v in e.items()],
+                              ignore_index=True)
     res["gate"] = evaluate(res["dev"]["D1"], res["dev"]["D2"], res["final"]["D1"],
                            decisive_power(res["power_table"]))
     return res

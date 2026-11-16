@@ -211,3 +211,66 @@ def test_step0_runner_offline_writes_manifest_and_deletes_zips(tmp_path, monkeyp
     ok = [r for r in man["months"] if r["status"] == "OK"]
     assert len(ok) == 1 and len(ok[0]["sha256"]) == 64
     assert not (tmp_path / "data" / "BTCUSDT" / ok_zip.name).exists()
+
+
+def _price_zip(tmp_path, sym, y, m, base, amp):
+    """Syntetický měsíc s oscilací kolem kulaté úrovně (dotyky existují), objem konstantní."""
+    lo = pd.Timestamp(year=y, month=m, day=1, tz="UTC")
+    n = int((lo + pd.offsets.MonthBegin(1) - lo) / pd.Timedelta("1min"))
+    idx = pd.date_range(lo, periods=n, freq="1min")
+    rng = np.random.default_rng(y * 100 + m)
+    c = base + amp * np.sin(np.arange(n) / 300.0) + rng.normal(0, amp * 0.01, n)
+    ms = idx.as_unit("ns").asi8 // 1_000_000
+    buf = io.StringIO()
+    for t, x in zip(ms, c):
+        buf.write(f"{t},{x},{x*1.0002},{x*0.9998},{x},10,{t+59999},15,3,{rng.uniform(3, 7):.3f},7,0\n")
+    d = tmp_path / "src" / sym
+    d.mkdir(parents=True, exist_ok=True)
+    zp = d / f"{sym}-1m-{y}-{m:02d}.zip"
+    with zipfile.ZipFile(zp, "w") as z:
+        z.writestr(zp.name.replace(".zip", ".csv"), buf.getvalue())
+    return zp
+
+
+def test_phase_a_runner_offline_sha_guard_and_outputs(tmp_path, monkeypatch):
+    import json
+    import shutil
+
+    from research.k9_round_number import phase_a_run
+
+    months_ = [(2023, 12), (2024, 1)]
+    src = {(s, y, m): _price_zip(tmp_path, s, y, m, b, a)
+           for s, b, a in (("BTCUSDT", 30000, 1500), ("XRPUSDT", 0.5, 0.15)) for y, m in months_}
+    recs = [{"symbol": s, "month": f"{y}-{m:02d}", "status": "OK",
+             "sha256": hashlib.sha256(p.read_bytes()).hexdigest()} for (s, y, m), p in src.items()]
+    recs.append({"symbol": "ETHUSDT", "month": "2023-12", "status": "LOW_COVERAGE", "sha256": ""})
+    man = tmp_path / "step0_manifest.json"
+    man.write_text(json.dumps({"gate": {"verdict": "DATA GO"}, "months": recs}))
+
+    def fetch(sym, y, m, dest):
+        dest.mkdir(parents=True, exist_ok=True)
+        out = dest / src[(sym, y, m)].name
+        shutil.copy(src[(sym, y, m)], out)
+        return out, None
+
+    res = phase_a_run.run(man, tmp_path / "out", tmp_path / "data", reps=50, fetch=fetch)
+    out = json.loads((tmp_path / "out" / "phaseA_results.json").read_text())
+    assert out["gate"]["verdict"] in {"GO (jen fáze B dodatek)", "METHOD NO-GO", "INCONCLUSIVE (nízká síla)",
+                                      "INCONCLUSIVE (neplatné repliky)"}
+    ev = pd.read_csv(tmp_path / "out" / "phaseA_events.csv.gz")
+    assert set(ev["asset"]) <= {"BTCUSDT", "XRPUSDT"} and len(ev) == len(res["events"]) > 0
+    # nezávislý přepočet bodového D1 z jednotlivých událostí (dev období) = výstup runneru
+    dev = ev[pd.to_datetime(ev["time"], utc=True) < pd.Timestamp("2024-01-01", tz="UTC")]
+    w = dev[dev.kind == "round"].groupby("asset").size()
+    diff = {a: g[g.kind == "round"].r_vol.mean() - g[g.kind == "placebo"].r_vol.mean() for a, g in dev.groupby("asset")}
+    assert abs(sum(diff[a] * w[a] for a in w.index) / w.sum() - out["dev"]["D1"]["d"]) < 1e-9
+
+    # SHA neshoda ⇒ konec s chybou, fáze A se nespočte
+    recs[0]["sha256"] = "0" * 64
+    man.write_text(json.dumps({"gate": {"verdict": "DATA GO"}, "months": recs}))
+    with pytest.raises(RuntimeError, match="SHA-256"):
+        phase_a_run.run(man, tmp_path / "out2", tmp_path / "data", reps=50, fetch=fetch)
+    # krok 0 bez DATA GO ⇒ nespouští se
+    man.write_text(json.dumps({"gate": {"verdict": "DATA NO-GO"}, "months": recs}))
+    with pytest.raises(RuntimeError, match="DATA GO"):
+        phase_a_run.run(man, tmp_path / "out3", tmp_path / "data", reps=50, fetch=fetch)
