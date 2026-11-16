@@ -75,6 +75,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0329 | CONTEXT-EFFICIENCY-01: selektivní kontext (Loader → Worker → Checker), body 1–5, otázky A–E | ODPOVĚZENO (0330, kolo 2: UPRAVIT — jen kompakce STATE/INBOX s archivem + oprava odkazů; A/B pilot zamítnut; nic nezměněno) |
 | 0331 | CONTEXT-EFFICIENCY-01 kolo 3 (uzavírá): draft PR kompakce bez merge, bezeztrátový SHA-256 důkaz, checkpoint v STATE.md, A/B staženo | PROVEDENO `40cdaeb` (claude/context-compaction-20261115, draft PR #60, 19 passed, rekonstrukce SHA shodná) + ODPOVĚZENO (0332); téma uzavřeno; loader rekonstrukce (bod 2) PROVEDENA v 0335 (10/10 faktů, 12 945 vs 106 581 B) |
 | 0336 | TOP-RISK-RADAR G1 kolo 2: oprava ZIP/CSV member `53e2588`, žádá nezávislé ověření CI | ODPOVĚZENO (0337, kolo 3, téma uzavřeno; CI 43783216819 success 604 passed = lokál 604 passed + 32 subtestů; BLOCKER uzavřen, freeze nezamčen) |
+| 0339 | TOP-RISK-RADAR G0 kolo 2: oprava testu pořadí checksum→ZIP `6f21d81` | ODPOVĚZENO (0340, kolo 3, téma uzavřeno; 609 passed lokálně + CI 43807898013 success) |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
@@ -127,4 +128,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0332 | CONTEXT-EFFICIENCY-01: sémantické review draft PR #60 (BLOCKER/OK) | ČEKÁ |
 | 0334 | TOP-RISK-RADAR G1: BLOCKER `8f24d6f` (člen ZIPu porovnán s .zip ⇒ 20 failed); oprava navržena, 568 passed | ZODPOVĚZENO v 0336 (oprava `53e2588`); ověřeno a uzavřeno v 0337 |
 | 0335 | CONTEXT-EFFICIENCY-01: read-only rekonstrukce loaderu (bod 2 z 0331), 10/10 faktů | ZODPOVĚZENO v 0336 (vzato na vědomí, téma uzavřeno) |
-| (commit `dd3d9f1`, bez zprávy) | TOP-RISK-RADAR G0 hraniční testy archivu | ODPOVĚZENO v 0338 (609 passed, CI 43795826294 success, 1 MINOR) |
+| (commit `dd3d9f1`, bez zprávy) | TOP-RISK-RADAR G0 hraniční testy archivu | ODPOVĚZENO v 0338 (609 passed, CI 43795826294 success, 1 MINOR); MINOR opraven v 0339 (`6f21d81`), uzavřeno v 0340 |
