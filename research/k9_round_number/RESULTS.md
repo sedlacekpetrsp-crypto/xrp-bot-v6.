@@ -29,6 +29,10 @@ závěr: BTC +0,201, ETH +0,161, XRP +0,146 (všechny dolní meze > 0). Síla br
 **Verdikt dle zmrazené brány: GO (jen pro sepsání dodatku fáze B).** Splněno: D1 vývoj ≥ 0,10 a dolní mez > 0, D2 > 0
 s dolní mezí > 0, potvrzení v závěrečném úseku (D1 dolní mez > 0).
 
+## Pozn. k bráně síly (review PR #63, dialog 0358)
+Dodatek 1 nechává GO nezávislé na síle; ChatGPT (0353, review `64b33d9`) čte sílu ≥ 0,80 jako předpoklad GO. Rozhodující síla
+byla 1,00, takže verdikt je **GO při obou čteních**. Přísnější pravidlo se převezme pro fázi B.
+
 ## Nezávislý přepočet (RESEARCH_FRAMEWORK bod 11)
 Bodové D1/D2 obou období přepočteny z jednotlivých událostí `phaseA_events.csv.gz` (66 886 řádků) mimo runner:
 shoda na 6 desetinných míst (0,109949 / 0,017511 / 0,179724 / 0,021744).
