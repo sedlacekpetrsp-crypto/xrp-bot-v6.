@@ -59,3 +59,46 @@ Prahy D1 ≥ +0,10, placebo 0,37/0,73 ani endpointy se NEMĚNÍ. Doplňuje se je
 4. **Po aktivech:** vedle pooled D se reportuje D a 95% CI každého aktiva (stejné převzorkované dny); není to brána.
 5. Krok 0 a fáze A jsou čistě mikrostruktura bez výnosu. Fáze B (náklady 0,05 % fee + 0,02 % slippage na stranu ⇒
    ~0,14 % round-trip, hurdle 3× ≈ 0,42 %) jen samostatným dodatkem a schválením vlastníka.
+
+## Dodatek 2 — předregistrace fáze B (výnos) (2026-11-17, Claude; NAVRŽENO, PŘED výpočtem jakéhokoli výnosu)
+Stav: **NAVRŽENO k oponentuře ChatGPT. Výkon NESPOUŠTĚT**, dokud (a) ChatGPT nepotvrdí/neupraví tento dodatek v dialogu,
+(b) v `dialog/OWNER_DECISIONS.md` není řádek vlastníka „SCHVÁLENO: výkonnost K9“. Do té doby se z dat nepočítá žádný
+výnos K9 (ani průzkumně). Jediná data použitá při psaní: ČASY událostí fáze A (`phaseA_events.csv.gz`, bez cen/výnosů)
+pro počty obchodů a sílu (`phase_b_power.py` → `phaseB_power_table.json`, SHA-256 `997625a6…bcde2734f`).
+
+1. **Obchod (pevně).** Událost = dotyk z fáze A (stejný detektor `events.py`, stejné úrovně S, stejné měsíce z manifestu
+   kroku 0). Směr = směr průrazu (nahoru ⇒ long, dolů ⇒ short). Vstup = **open minuty t+1** (signál je znám až po close t;
+   pohyb uvnitř minuty t se nezapočítává). Výstup = **close minuty t+H**. Žádný stop/TP, žádná páka v metrice (výnos na
+   1 jednotku notional). Na jednom aktivu nejvýš 1 pozice: signál během otevřené pozice se ignoruje (stejné pravidlo
+   zvlášť pro kulaté a zvlášť pro placebo „portfolio“). Chybějící minuta v okně ⇒ obchod neplatný, vykázat podíl (> 1 % ⇒ INCONCLUSIVE).
+2. **Varianty:** H ∈ {15, 60} min — jediné 2 varianty (žádná mřížka úrovní, směrů, filtrů hodin). **DSR N = 162**
+   (159 předchozích + K9 fáze A + 2 varianty H). V[SR] podle R10 jako předpoklad ⇒ DSR je podmíněné.
+3. **Náklady:** taker 0,05 % + skluz 0,02 % na stranu ⇒ 0,14 % round trip (×1), ×2 = 0,28 %, ×3 = 0,42 %. Funding:
+   obchod, jehož držení překročí 00/08/16 UTC, dostane konzervativní **nepříznivý** poplatek 0,03 % za každé překročení
+   (= 3× základní sazba; skutečný funding se nestahuje — omezení). Funding se násobí stejným multiplikátorem nákladů.
+4. **Vývoj → výběr H (jen 2020-01..2023-12).** Spočte se hrubý průměrný výnos/obchod G(H) a čistý ×1 pro obě H.
+   **Ekonomická předbrána (RESEARCH_FRAMEWORK, hrana ≥ 3× náklad):** pokud max_H G_dev(H) < **0,42 %** ⇒
+   **NO-GO (ekonomicky)**, závěrečný úsek se pro výnos **NEOTEVÍRÁ** a K9 se uzavírá bez dalších variant.
+   Jinak H* = argmax čistého ×1 ve vývoji (při shodě kratší H). Výběr se zapíše a commitne **před** výpočtem závěru.
+5. **Závěrečný úsek (2024-01..2026-10), H* jen jednou.** Primární endpoint E = průměrný čistý výnos/obchod ×1.
+   GO (jen návrh forward PAPER, nikdy produkce) vyžaduje **všechny** body:
+   a) E > 0 a dolní mez 95% CI > 0 (blokový bootstrap přes kalendářní dny, 10 000 replik, seed 20261117; `invalid_frac` > 5 % ⇒ INCONCLUSIVE);
+   b) čistý průměr ×2 > 0 (bodově) a ×3 se vykáže;
+   c) **placebo benchmark:** Δ = G(kulaté) − G(placebo) se stejnými pravidly > 0, dolní mez CI > 0 (stejné převzorkované dny);
+   d) **náhodný vstup:** pro každý obchod 5 náhodných minut stejného aktiva, stejného dne a stejné UTC hodiny, stejný směr
+      a H (seed 20261117); G(kulaté) − G(náhodné) > 0, dolní mez CI > 0;
+   e) DSR (Sharpe denní řady PnL, stejný notional na obchod, aktiva sečtena, anualizace 365, N = 162) ≥ 0,95;
+   f) stabilita: čistý ×1 > 0 bodově u ≥ 2 ze 3 aktiv a v ≥ 2 ze 3 kalendářních let závěru (2024, 2025, 2026-01..10);
+   g) síla: v rozhodující buňce (efekt 0,14 % = 1× náklad, sd 0,8 % pro H=15 / 1,6 % pro H=60, ρ 0,3) ≥ 0,80 —
+      podle přísnějšího čtení 0353/0358 je síla **předpoklad** GO (NaN/ < 0,80 ⇒ INCONCLUSIVE). Předpočteno z časů: síla
+      ≥ 0,99 ve všech buňkách (n závěr H15 = 12 417, H60 = 11 653 neprekrývajících se obchodů na kulatých úrovních).
+   Selže-li a) nebo c) ⇒ **NO-GO**; selže-li jen b), d), e) nebo f) ⇒ **NO-GO** (bez ladění); g) ⇒ INCONCLUSIVE.
+6. **Povinný report (ne brána):** trades.csv (každý obchod: aktivum, čas, směr, vstup, výstup, hrubý, náklady, funding,
+   čistý ×1/×2/×3), results.json, RESULTS.md; rozpad po aktivu × roku × směru × UTC hodině; max drawdown denní equity,
+   expozice (podíl času v pozici), počet obchodů; **buy-and-hold** stejně vážený BTC/ETH/XRP za závěrečný úsek a
+   long-only expozičně párovaný B&H (stejné minuty v pozici, vždy long). Nezávislý přepočet E, Δ a DSR z trades.csv mimo runner.
+7. **Interpretace:** GO ⇒ pouze návrh forward PAPER ≥ 60–90 dní (samostatné schválení vlastníka), žádná produkční změna.
+   Kladný výsledek NENÍ důkaz ziskovosti. Závěrečný úsek 2024–26 byl už jednou použit pro mechanismus (objem, ne výnos) —
+   omezení se uvede. Prior zůstává nízký: 0,42 % hrubě za 15–60 min je na BTC/ETH výrazně nad typickou volatilitou
+   průrazů; očekávaný výsledek je spíš NO-GO ekonomickou předbránou.
+8. Žádné další varianty (jiné S, filtry objemu/hodin, maker vstupy, trailing stop) bez nové hypotézy a nového dodatku.
