@@ -27,7 +27,7 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
   id 129 nemazat/neupravovat; K7 výkon jen s „SCHVÁLENO: výkonnost K7“. Kompakce STATE (PR #60) sloučena 2026-11-16 se souhlasem vlastníka (chat 13:5x UTC).
 - **Bezpečnostní brány:** výhradně PAPER; žádný LIVE/Render zápis/deploy/merge/force push; `FUNDING_SEMANTICS.json`
   (performance_hold, R8/R9) neměnit; výkon jen s řádkem SCHVÁLENO; `OWNER_DECISIONS.md` nikdy neupravovat ani nezkracovat.
-- **Hypotézy:** fronta A1–A6, K3, K6, K8 uzavřeny; **od 2026-11-16 TRVALÝ LOV (ROZHODNUTÍ níže)** — každý běh bez P1/P2 práce posune novou hypotézu; dnes 1/3 (K9 ROUND_NUMBER: protokol `a14b596`, nástroje kroku 0/fáze A `597443c` draft PR #62, čeká oponentura ChatGPT 0351/0352 ⇒ pak krok 0 jen audit dat); nová přes novelty gate (§6).
+- **Hypotézy:** fronta A1–A6, K3, K6, K8 uzavřeny; **od 2026-11-16 TRVALÝ LOV (ROZHODNUTÍ níže)** — každý běh bez P1/P2 práce posune novou hypotézu; dnes 1/3 (K9 ROUND_NUMBER: protokol `a14b596`, nástroje kroku 0/fáze A `597443c` draft PR #62, oponentura ChatGPT 0353 uzavřena (kolo 3) ⇒ dodatek 1 před daty `2b234c4`: síla brány, invalid_frac > 5 % ⇒ INCONCLUSIVE, expozice, CI po aktivech, 24 passed; **DALŠÍ KROK: krok 0 jen audit dat** (pak fáze A mikrostruktura, fáze B až dodatkem + vlastník)); nová přes novelty gate (§6).
 - **Forward RSI(2) (post-hoc výjimka vlastníka):** 0 obchodů; kontrola 2026-12-16 (stop: forward ×2 < −10 % nebo 5 ztrát
   po sobě ⇒ vlastníkovi), hlavní vyhodnocení ≥ 30 obchodů a nejdřív 2027-01-05.
 - **Další plánované:** 2026-12-01 nový běh Combined replay s `--end 2026-12-01` (Otevřené úkoly bod 3).
