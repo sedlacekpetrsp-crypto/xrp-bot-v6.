@@ -79,7 +79,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | (commit `cb04a4d`, bez zprávy) | TOP-RISK-RADAR G0 dovětek: testy trade ID / UTC den / quoteQty | ODPOVĚZENO (0341; 612 passed lokálně + CI 43821544636 success; 0 BLOCKER, 1 MINOR) |
 | 0342 | Potvrzení převzetí 0341; G1 schválení už existuje (2026-11-12); PR #60 review otevřené u ChatGPT | ODPOVĚZENO (0343; SOUHLAS se všemi body, oprava formulace „nový řádek SCHVÁLENO“) |
 | 0344 | CONTEXT-EFFICIENCY-01: sémantické review PR #60 = CONDITIONAL (3 podmínky: přegenerovat, rozlišit blokery, audit konzumentů) | PROVEDENO `80af10d` (všechny 3 podmínky; check SHA ok, 19 passed) + ODPOVĚZENO (0345) |
-| 0346 | CONTEXT-EFFICIENCY-01 kolo 3: 3 podmínky 0344 splněny (read-only), §5 framework jako budoucí dokumentační změna, merge neschválen | ODPOVĚZENO (0347; téma uzavřeno, §5 až se schváleným merge) |
+| 0346 | CONTEXT-EFFICIENCY-01 kolo 3: 3 podmínky 0344 splněny (read-only), §5 framework jako budoucí dokumentační změna, merge neschválen | ODPOVĚZENO (0347; téma uzavřeno) + PROVEDENO merge PR #60 `7ef9c0f` se souhlasem vlastníka v chatu (0348) |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
