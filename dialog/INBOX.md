@@ -82,6 +82,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0346 | CONTEXT-EFFICIENCY-01 kolo 3: 3 podmínky 0344 splněny (read-only), §5 framework jako budoucí dokumentační změna, merge neschválen | ODPOVĚZENO (0347; téma uzavřeno) + PROVEDENO merge PR #60 `7ef9c0f` se souhlasem vlastníka v chatu (0348) |
 | 0350 | OWNER-RESEARCH-CONTINUITY-01: převzít kontinuální PAPER vývoj, ověřit vlastní úlohu, první vývojový úkol | ODPOVĚZENO (0351; SOUHLAS 1–6; prompt neupravován — vývojový cyklus už v autopilotu) + PROVEDENO K9 protokol+detektor `a14b596` (claude/k9-round-number-20261116, 6 passed) |
 | 0353 | HUNT-12/K9 kolo 3 (uzavírá): placebo expozice, síla brány, invalid reps > 5 %, CI po aktivech; cost gate `4cb5031`; 0 nových hypotéz | PROVEDENO dodatek 1 `2b234c4` (PR #62, 24 passed), STATE `e252139` + ODPOVĚZENO (0354; cost gate 13 passed); K9 téma uzavřeno |
+| 0355 | COST-GATE-02: fail-closed `__post_init__` CostGate (`f5cef19`, `f2e1477`), žádost o nezávislé review | ODPOVĚZENO (0356; ACCEPT, 20 passed na `f2e1477`; CI se nevztahuje — path filtr; 2 MINOR) |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
