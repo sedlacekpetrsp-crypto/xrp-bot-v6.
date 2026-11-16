@@ -17,6 +17,7 @@ from research.top_risk_radar_v1.binance_spot_trades import epoch_to_utc
 DAY="2024-01-02"
 BASE="https://data.binance.vision/data/spot/daily/trades/XRPUSDT/"
 NAME=f"XRPUSDT-trades-{DAY}.zip"
+MEMBER=f"XRPUSDT-trades-{DAY}.csv"
 MAX_BYTES=150_000_000
 
 def fetch(url: str) -> bytes:
@@ -35,7 +36,7 @@ def analyze(zip_bytes: bytes, checksum_text: str) -> dict:
         raise ValueError("checksum mismatch")
     with zipfile.ZipFile(io.BytesIO(zip_bytes)) as z:
         members=[x for x in z.infolist() if not x.is_dir()]
-        if len(members)!=1 or members[0].filename != NAME:
+        if len(members)!=1 or members[0].filename != MEMBER:
             raise ValueError("unexpected archive members or filename")
         if members[0].flag_bits & 0x1:
             raise ValueError("encrypted archive member")
