@@ -129,7 +129,7 @@ def test_evaluate_gate_rules():
     ok1 = {"d": 0.12, "lo": 0.02}
     ok2 = {"d": 0.01, "lo": 0.001}
     fin = {"d": 0.05, "lo": 0.01}
-    assert phase_a.evaluate(ok1, ok2, fin)["verdict"].startswith("GO")
+    assert phase_a.evaluate(ok1, ok2, fin, 0.9)["verdict"].startswith("GO")
     assert phase_a.evaluate({"d": 0.09, "lo": 0.02}, ok2, fin, 0.9)["verdict"] == "METHOD NO-GO"
     assert phase_a.evaluate(ok1, {"d": 0.01, "lo": -0.001}, fin, 0.9)["verdict"] == "METHOD NO-GO"
     assert phase_a.evaluate(ok1, ok2, {"d": 0.05, "lo": -0.01}, 0.9)["verdict"] == "METHOD NO-GO"
@@ -142,6 +142,16 @@ def test_evaluate_invalid_reps_over_5pct_is_inconclusive_even_if_gate_passes():
     bad = dict(ok1, invalid_frac=0.051)
     assert phase_a.evaluate(bad, ok2, fin, 0.95)["verdict"] == "INCONCLUSIVE (neplatné repliky)"
     assert phase_a.evaluate(dict(ok1, invalid_frac=0.05), ok2, fin, 0.95)["verdict"].startswith("GO")
+
+
+def test_evaluate_observed_pass_cannot_override_low_or_missing_power():
+    """Positive observed D must not bypass the preregistered statistical power gate."""
+    d1 = {"d": 0.20, "lo": 0.10}
+    d2 = {"d": 0.03, "lo": 0.01}
+    final = {"d": 0.20, "lo": 0.10}
+    for power in (None, 0.0, 0.79, float("nan")):
+        assert phase_a.evaluate(d1, d2, final, power)["verdict"] == "INCONCLUSIVE (nízká síla)"
+    assert phase_a.evaluate(d1, d2, final, 0.80)["verdict"].startswith("GO")
 
 
 def test_evaluate_low_power_failure_is_inconclusive_not_no_go():
