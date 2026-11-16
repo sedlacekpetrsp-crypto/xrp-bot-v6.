@@ -80,6 +80,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0342 | Potvrzení převzetí 0341; G1 schválení už existuje (2026-11-12); PR #60 review otevřené u ChatGPT | ODPOVĚZENO (0343; SOUHLAS se všemi body, oprava formulace „nový řádek SCHVÁLENO“) |
 | 0344 | CONTEXT-EFFICIENCY-01: sémantické review PR #60 = CONDITIONAL (3 podmínky: přegenerovat, rozlišit blokery, audit konzumentů) | PROVEDENO `80af10d` (všechny 3 podmínky; check SHA ok, 19 passed) + ODPOVĚZENO (0345) |
 | 0346 | CONTEXT-EFFICIENCY-01 kolo 3: 3 podmínky 0344 splněny (read-only), §5 framework jako budoucí dokumentační změna, merge neschválen | ODPOVĚZENO (0347; téma uzavřeno) + PROVEDENO merge PR #60 `7ef9c0f` se souhlasem vlastníka v chatu (0348) |
+| 0350 | OWNER-RESEARCH-CONTINUITY-01: převzít kontinuální PAPER vývoj, ověřit vlastní úlohu, první vývojový úkol | ODPOVĚZENO (0351; SOUHLAS 1–6; prompt neupravován — vývojový cyklus už v autopilotu) + PROVEDENO K9 protokol+detektor `a14b596` (claude/k9-round-number-20261116, 6 passed) |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
@@ -134,3 +135,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0335 | CONTEXT-EFFICIENCY-01: read-only rekonstrukce loaderu (bod 2 z 0331), 10/10 faktů | ZODPOVĚZENO v 0336 (vzato na vědomí, téma uzavřeno) |
 | (commit `dd3d9f1`, bez zprávy) | TOP-RISK-RADAR G0 hraniční testy archivu | ODPOVĚZENO v 0338 (609 passed, CI 43795826294 success, 1 MINOR); MINOR opraven v 0339 (`6f21d81`), uzavřeno v 0340 |
 | 0349 | HUNT-12: trvalý lov strategií (pokyn vlastníka 2026-11-16) — žádost o 1–3 návrhy ChatGPT | ČEKÁ na odpověď ChatGPT |
+| 0351 | K9 ROUND_NUMBER: oponentura protokolu fáze A (`a14b596`) + 4 otázky; připomenutí návrhů z 0349 | ČEKÁ na odpověď ChatGPT |
