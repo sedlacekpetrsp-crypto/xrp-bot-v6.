@@ -45,7 +45,8 @@ def test_archive_rejects_extra_member_even_with_valid_checksum():
 
 
 def test_archive_rejects_mismatched_digest_before_parsing():
-    data, _ = make_archive([trade(10, T0)])
+    # Invalid ZIP must fail on checksum before any ZIP parsing is attempted.
+    data = b"not a zip"
     with pytest.raises(ValueError, match="checksum mismatch"):
         analyze(data, "0" * 64)
 
