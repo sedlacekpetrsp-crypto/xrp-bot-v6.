@@ -13,7 +13,7 @@ def audit_placebo_minutes(signals: Iterable[tuple[str, str, int]],
     """Keys: (asset, UTC YYYY-MM-DDTHH hour, minute 0..59).
 
     A placebo is contaminated when it equals ANY signal key, not just the
-    signal against which it was matched. Does not assert exchange coverage.
+    signal against which it was matched. Asset IDs must be canonical uppercase\n    without surrounding whitespace; hour strings are UTC by caller contract\n    (the naive hour format cannot independently prove timezone).\n    Does not assert exchange coverage.
     """
     if type(min_clean_support) is not int or min_clean_support < 1:
         raise ValueError('min_clean_support must be positive integer')
@@ -24,7 +24,7 @@ def audit_placebo_minutes(signals: Iterable[tuple[str, str, int]],
             if not isinstance(key, tuple) or len(key) != 3:
                 raise ValueError(f'{label}: expected 3-tuple')
             asset, hour, minute = key
-            if (not isinstance(asset, str) or not asset.strip()
+            if (not isinstance(asset, str) or not asset or asset != asset.strip().upper()
                     or not isinstance(hour, str) or len(hour) != 13
                     or hour[10] != 'T' or type(minute) is not int
                     or not 0 <= minute < 60):
