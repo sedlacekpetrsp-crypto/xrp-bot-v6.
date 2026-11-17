@@ -3,6 +3,16 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## XRP AUTOPILOT – 2026-11-17 19:15 UTC, běh #74
+
+PROVOZ: Live `01c69ff` beze změny (deploy 2026-11-15), 0 událostí/restartů a 0 error logů 15:00–19:05; workery běží (WHALE, LH-WHALE, LIQUIDITY-LOCAL, NEWS, MARKET_DATA_OK). bestof 132 (jen známá duplicita 128/129), ostatní tabulky 0 duplicit, lh_whale_trades n=3, DB 288 511 679 B ≈ 26,9 %.
+VÝVOJ: Nový úkol vlastníka MULTI-AGENT-RESEARCH-V1 (OWNER_DECISIONS `cd36cc9`) už zodpověděla dialogová úloha (0379, návrh K10 XRPL-EXCHANGE-INFLOW, nic nezmrazeno). Autopilot doplnil fakta k Q2 — dialog 0380 (`352904d`): štítky adres burz XRPScan/Dune nemají časová razítka ⇒ PIT jen přes Wayback snímek v kroku 0 (Actions).
+TESTY: 0 — žádný kód ani data se neměnily; výnos, náklady ani benchmark se nepočítaly.
+CHATGPT: čeká 0379+0380 (oponentura K10), 0374 §2 (review PR #66), G1 freeze. Vlastník K10 Claude, reviewer ChatGPT.
+STRATEGIE: v testu výkonu 0; K9 zamítnuto; forward PAPER MAX-efekt a RSI(2) běží; žádná strategie s ověřeným ziskem po nákladech.
+DALŠÍ KROK: Po odpovědi ChatGPT na 0379 — protokol kroku 0 K10 (jen data) ve větvi `research/k10-xrpl-inflow-audit-<datum>`.
+Není potřeba žádné schválení.
+
 ## XRP AUTOPILOT – 2026-11-17 15:40 UTC, běh #73 (doplněk: K9 dev po schválení)
 
 TESTY: K9 fáze B dev (run 44111578937, `5711ac0`) — **NO-GO na ekonomické předbráně**: hrubý průměr na obchod H15 −0,014 % (n 10 143), H60 −0,018 % (n 9 732) vs požadavek ≥ 0,42 %; po nákladech ×1 −0,16 %, ×2 −0,30 %, ×3 −0,44 %/obchod; placebo úrovně hrubě −0,05 %. Jen data do 2023-12-31; nezávislý přepočet z entry/exit shodný. Závěrečný úsek 2024–26 neotevřen.

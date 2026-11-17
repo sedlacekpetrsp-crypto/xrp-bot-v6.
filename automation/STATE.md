@@ -11,9 +11,9 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-17 15:40 UTC, autopilot běh #73 + K9 dev)
-- **Produkce (jen čtení):** live `01c69ff` beze změny (deploy 2026-11-15 20:56 UTC); 0 událostí a 0 error logů 11:00–15:05;
-  bestof 132, jen známá duplicita 128/129 (1 skupina); `lh_whale_trades` n=3; DB 287 258 303 B ≈ 26,8 % z 1 GB.
+## CHECKPOINT (přepisuje se; stav k 2026-11-17 19:15 UTC, autopilot běh #74)
+- **Produkce (jen čtení):** live `01c69ff` beze změny (deploy 2026-11-15 20:56 UTC); 0 událostí a 0 error logů 15:00–19:05;
+  bestof 132, jen známá duplicita 128/129 (1 skupina); `lh_whale_trades` n=3; DB 288 511 679 B ≈ 26,9 % z 1 GB.
 - **Výzkumné větve a SHA:** K9 `research/k9-step0-audit-20261116` tip `aa9bbbb` (draft [PR #63](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/63));
   K9 dodatek 2 `research/k9-phaseB-prereg-20261117` tip `6faa8c3` (draft [PR #64](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/64));
   **K9 runner fáze B `research/k9-phaseB-runner-20261117` tip `de05c40`** (patch 0366 `8f29fd4`, nonfinite `458cabd`, **oprava 3** 0369/0370: benchmark d) bez všech signálních minut) (draft [PR #65](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/65), base = PR #64; dodatek 2 oprava 1 + **oprava 2** dle ChatGPT 0364: párovaný benchmark d) RV+likvidita PIT, DSR brána N = 450, funding = modelovaná citlivost, ekonomické NO-GO důvody zvlášť);
@@ -29,8 +29,9 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
   (performance_hold, R8/R9) neměnit; výkon jen s řádkem SCHVÁLENO; `OWNER_DECISIONS.md` nikdy neupravovat ani nezkracovat.
 - **Čeká na ChatGPT:** 0357 (review fáze A), **0374 (oprava BLOCKER cost gate; review PR #66 ledger N)**, 0375 (K9 dev NO-GO). Code review runneru K9 uzavřeno (0371/0372).
   LABEL-EMBARGO-REVIEW uzavřeno dialogovou úlohou (0361/0362).
-- **Hypotézy (TRVALÝ LOV):** 2026-11-17 0/3 (K9 pokračuje, R10b je metodika). K9 předbrána: hrubý průměr ve vývoji < 0,42 % ⇒ NO-GO bez otevření závěru (prior nízký).
-- **DALŠÍ KROK:** TRVALÝ LOV — návrh nové hypotézy s jiným mechanismem než K9 (ne mikrostruktura kulatých čísel; hrubá hrana ≥ 3× náklad), novelty gate proti inventáři + registru, dialog s ChatGPT.
+- **Hypotézy (TRVALÝ LOV):** 2026-11-17 1/3 (K10 navrženo v 0379) (K9 pokračuje, R10b je metodika). K9 předbrána: hrubý průměr ve vývoji < 0,42 % ⇒ NO-GO bez otevření závěru (prior nízký).
+- **MULTI-AGENT-RESEARCH-V1 (vlastník 2026-11-17, OWNER_DECISIONS `cd36cc9`, jen PAPER):** dialog 0378→0379 (inventura, REJECT LLM v exekuci/riziku, návrh **K10 XRPL-EXCHANGE-INFLOW**, nic nezmrazeno) + 0380 (štítky adres XRPScan/Dune bez PIT razítek ⇒ Wayback v kroku 0). Čeká oponentura ChatGPT.
+- **DALŠÍ KROK:** po odpovědi ChatGPT na 0379/0380 protokol kroku 0 K10 (jen data, před stažením) ve větvi `research/k10-xrpl-inflow-audit-<datum>`; bez odpovědi nic nezmrazovat.
 - **Forward RSI(2) (post-hoc výjimka vlastníka):** 0 obchodů; kontrola 2026-12-16, hlavní vyhodnocení ≥ 30 obchodů a nejdřív 2027-01-05.
 - **Další plánované:** 2026-12-01 Combined replay s `--end 2026-12-01`.
 - **Provozní/autopilot blokery:** žádné. Sandbox nemá přístup na data.binance.vision ani PyPI ⇒ data jen přes Actions.
