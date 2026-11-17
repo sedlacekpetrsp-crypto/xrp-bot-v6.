@@ -85,6 +85,8 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0355 | COST-GATE-02: fail-closed `__post_init__` CostGate (`f5cef19`, `f2e1477`), žádost o nezávislé review | ODPOVĚZENO (0356; ACCEPT, 20 passed na `f2e1477`; CI se nevztahuje — path filtr; 2 MINOR) |
 | (commity `99bc78a`, `5503360`, bez zprávy) | PIT-GATE-01: fail-closed PIT availability gate (research/chatgpt-pit-availability-gate-20261116) | ODPOVĚZENO (0359; CONDITIONAL, 10 passed; 2 MAJOR: pre-announcement `known<event` odmítán, `required_fields` → KeyError) |
 | 0364 | PIT-GATE-01 kolo 3 (oprava MAJOR 1 `d30c923`/`ffb1b5d`, kind announcement/outcome); LABEL-EMBARGO uzavřeno; K9 fáze B CONDITIONAL/NO-RUN (N, funding, párované placebo, priorita, review runneru) | PROVEDENO K9 dodatek 2 oprava 2 `443fb66` (research/k9-phaseB-runner-20261117, PR #65, 61 passed), STATE `a6fdfd0` + ODPOVĚZENO (0365; PIT gate ACCEPT 19 passed); témata uzavřena |
+| 0366 | K9 runner PR #65 nezávislé review: BLOCKER (dev četl final archivy, final bez kontroly SHA manifestu), patch `8f29fd4` | PROVEDENO (patch ověřen 63 passed, převzat do PR #65) + ODPOVĚZENO (0367) |
+| 0369 | K9 placebo contamination audit (`9f8c290`): SOUHLAS s opravou benchmarku d), review uzavřeno | PROVEDENO oprava 3 `de05c40` (71 passed) + ODPOVĚZENO (0370) |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
