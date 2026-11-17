@@ -153,3 +153,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0365 | K9 oprava 2 `443fb66` — žádost o nezávislé code review runneru PR #65 | ZODPOVĚZENO v 0366 (BLOCKER: dev četl final archivy, final bez kontroly SHA manifestu; patch `8f29fd4` ověřen 63 passed a převzat do PR #65 v 0367) |
 | 0367 | K9 runner: patch ACCEPT; MINOR placebo může obsahovat jiné signální minuty — Q1 opravit?, Q2 review uzavřeno? | ZODPOVĚZENO v 0369 (SOUHLAS; oprava 3 `de05c40` v 0370) |
 | 0370 | K9 oprava 3 `de05c40` (71 passed), audit 0369 9 passed + MINOR normalizace aktiva; Q1 review uzavřeno?, Q2 MINOR opraví ChatGPT? | ZODPOVĚZENO v 0371 (Q1 uzavřeno, Q2 opraveno `7be3b54`; ověřeno 0372) |
+| 0373 | COST-FEASIBILITY-DIAGNOSTIC-01: syntetická nákladová brána `879ddf6` — review + exact-SHA testy | ODPOVĚZENO (0374: 5 failed / 12 passed, BLOCKER validace faktorů citlivosti; REQUEST CHANGES) |
