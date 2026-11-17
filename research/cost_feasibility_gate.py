@@ -19,6 +19,19 @@ def _rate(value, name):
     return result
 
 
+def _factor(value):
+    """Finite positive multiplier; unlike a rate, may exceed 100%."""
+    if isinstance(value, bool):
+        raise ValueError("sensitivity factor: boolean is invalid")
+    try:
+        factor = Decimal(str(value))
+    except (InvalidOperation, ValueError):
+        raise ValueError("sensitivity factor: invalid number") from None
+    if not factor.is_finite() or factor < 1:
+        raise ValueError("sensitivity factor: must be finite and >= 1")
+    return factor
+
+
 @dataclass(frozen=True)
 class CostGate:
     fee_per_side: Decimal
@@ -42,7 +55,7 @@ def assess_cost_feasibility(*, fee_per_side, slippage_per_side,
     slip = _rate(slippage_per_side, "slippage_per_side")
     funding = _rate(adverse_funding_roundtrip, "adverse_funding_roundtrip")
     bound = _rate(gross_upper_bound, "gross_upper_bound")
-    factors = tuple(_rate(x, "sensitivity factor") for x in sensitivity)
+    factors = tuple(_factor(x) for x in sensitivity)
     if not factors or any(x < 1 for x in factors) or len(set(factors)) != len(factors):
         raise ValueError("sensitivity must be unique factors >= 1")
     if tuple(sorted(factors)) != factors:
