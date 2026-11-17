@@ -22,8 +22,8 @@ def _utc(value, name):
 def eligible(record, decision_at, *, required_fields=("event_at", "known_at")):
     """Return True only if evidence existed at decision time.
 
-    Reject missing fields, non-UTC timestamps, publication before event,
-    and future knowledge. An explicit provenance marker is mandatory.
+    Outcome evidence cannot predate its event. Announcements may describe
+    future events, but must be known by decision time. Unknown kinds fail closed.
     """
     if not isinstance(record, dict):
         raise PITError("record must be dict")
@@ -36,8 +36,13 @@ def eligible(record, decision_at, *, required_fields=("event_at", "known_at")):
     decision = _utc(decision_at, "decision_at")
     if not isinstance(record.get("provenance"), str) or not record["provenance"].strip():
         raise PITError("missing provenance")
-    if known < event:
-        raise PITError("known_at precedes event_at")
+    kind = record.get("kind")
+    if kind not in ("outcome", "announcement"):
+        raise PITError("kind must be outcome or announcement")
+    if kind == "outcome" and known < event:
+        raise PITError("outcome known_at precedes event_at")
+    if kind == "announcement":
+        return known <= decision
     return event <= decision and known <= decision
 
 
