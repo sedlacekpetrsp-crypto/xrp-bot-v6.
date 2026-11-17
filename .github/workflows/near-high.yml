@@ -1,0 +1,41 @@
+name: Near-52w-high 8 assets backtest (PAPER research, public data only)
+# Jen výzkumná větev. Žádné secrets, žádný Render, žádné objednávky.
+# Spouští se jen commitem research/near_high/RUN_REQUEST (backtest až od 2026-11-07, denní limit hypotéz).
+on:
+  push:
+    branches: ["research/near-high-*"]
+    paths:
+      - "research/near_high/RUN_REQUEST"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install pytest
+      - name: Mechanics tests (synthetic, not profitability evidence)
+        run: python -m pytest -q -p no:cacheprovider tests/test_near_high.py tests/test_deflated_sharpe.py
+      - name: Backtest per PROTOCOL.md
+        run: |
+          set -o pipefail
+          python -m research.near_high.run --cache /tmp/vision-1d --outdir research/near_high | tee summary.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: near-high
+          path: research/near_high/
+      - name: Commit results to this research branch
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          git add research/near_high/
+          git diff --cached --quiet && exit 0
+          git commit -m "Near-52w-high: backtest results (run ${GITHUB_RUN_ID}) [skip ci]"
+          git push origin HEAD:${GITHUB_REF_NAME}
