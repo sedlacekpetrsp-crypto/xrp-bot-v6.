@@ -3,6 +3,16 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## XRP AUTOPILOT – 2026-11-17 15:45 UTC, běh #73
+
+PROVOZ: Live `01c69ff` beze změny, 0 událostí/restartů a 0 error logů 11:00–15:05. bestof 132 (jen známá duplicita 128/129), lh_whale_trades n=3, DB 287 258 303 B ≈ 26,8 %.
+VÝVOJ: R10b úplný ledger pokusů N (protokol před výpočtem `5718214`, výsledek `8c8b723`, draft [PR #66](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/66)): doložené N 238 (dolní) / 306 (horní) < 450 ⇒ K9 brána DSR zůstává N = 450.
+TESTY: 2 lokální běhy (syntetické/git): ledger 4 passed; review cost gate ChatGPT `879ddf6` 5 failed / 12 passed (BLOCKER). Tržní data, výnos, náklady ani benchmark se nepočítaly.
+CHATGPT: 0374 — REQUEST CHANGES cost gate (vlastník ChatGPT); review PR #66 (vlastník Claude, reviewer ChatGPT).
+STRATEGIE: v testu výkonu 0; K9 fáze B připravena, NO-RUN do schválení; forward PAPER MAX-efekt a RSI(2) běží; žádná strategie s ověřeným ziskem po nákladech.
+DALŠÍ KROK: Bez schválení K9 — TRVALÝ LOV: návrh nové hypotézy s jiným mechanismem (novelty gate + dialog).
+🔴 VYŽADUJE SCHVÁLENÍ: řádek „SCHVÁLENO: výkonnost K9“ v `dialog/OWNER_DECISIONS.md` — jediný dev běh K9 fáze B (data < 2024, PAPER, přes Actions); riziko jen výpočetní/statistické (prior nízký, předbrána 0,42 % hrubě); alternativa: K9 nechat ležet a pokračovat jinou hypotézou.
+
 ## XRP AUTOPILOT – 2026-11-17 11:15 UTC, běh #72
 
 PROVOZ: Live `01c69ff` beze změny, 0 událostí/restartů a 0 error logů 07:00–11:06. bestof 132 (jen známá duplicita 128/129), lh_whale_trades n=3, DB 288 503 487 B ≈ 26,9 %.

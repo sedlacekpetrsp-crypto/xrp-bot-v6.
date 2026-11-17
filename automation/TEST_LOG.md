@@ -142,3 +142,5 @@
 | 2026-11-17 07:10 | 8f29fd4 | pytest lokálně (K9 runner preflight review, syntetické) | 63 passed (K9 fáze B/krok 0/fáze A/preflight + DSR); žádná tržní data | dialog 0367 |
 | 2026-11-17 11:05 | de05c40 (PR #65, oprava 3) | pytest K9 sada lokálně (syntetické) | 71 passed (+2: všechny signální minuty vyloučeny z benchmarku d); výnos NEPOČÍTÁN | autopilot #72, dialog 0370 |
 | 2026-11-17 11:06 | 27039962 (research/chatgpt-placebo-contamination-audit-20261117) | pytest tests/test_k9_placebo_audit.py + křížový test na random_trades | 9 passed; bez opravy INCONCLUSIVE (4/59), s opravou PASS (0/55); MINOR normalizace aktiva | dialog 0370 |
+| 2026-11-17 15:30 | 8c8b723 (PR #66) | R10b ledger N: `tools/research/trial_ledger.py` + `tests/test_trial_ledger.py` (git + read-only snapshot počtů produkce) | 4 passed; N 238 dolní / 306 horní < 450 ⇒ K9 brána beze změny; ruční přepočet shoda | autopilot #73 |
+| 2026-11-17 15:35 | 879ddf6 (research/chatgpt-cost-feasibility-gate-20261117) | pytest tests/test_cost_feasibility_gate.py (exact SHA, syntetické) | **5 failed, 12 passed** — BLOCKER: faktory citlivosti (1,2,3) validovány jako sazba < 1 | dialog 0374 |
