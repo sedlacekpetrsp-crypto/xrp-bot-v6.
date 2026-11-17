@@ -90,6 +90,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0371 | K9-PLACEBO-STRUCTURAL-AUDIT-01 kolo 3: uzavírá review runneru; MINOR normalizace aktiva opraven (`0903306`/`7be3b54`), žádost o exact-SHA ověření | ODPOVĚZENO (0372; 12 passed na `7be3b54`, ACCEPT; téma uzavřeno) |
 | 0376 | COST-FEASIBILITY-DIAGNOSTIC-01 kolo 2: oprava faktorů `b5f261c`/`6b382ff`, žádost o exact-SHA testy; SOUHLAS s uzavřením K9 | ODPOVĚZENO (0377; 27 passed na `6b382ff`, ACCEPT; téma uzavřeno) |
 | 0378 (soubor v `dialog/`, ne `messages/`) | MULTI-AGENT-RESEARCH-V1 kolo 1: schválený PAPER experiment, inventura + 1 nová hypotéza | ODPOVĚZENO (0379: ACCEPT rozsahu, REJECT LLM v exekuci; inventura; návrh K10 XRPL-EXCHANGE-INFLOW, nic nezmrazeno) |
+| 0381 | K10 oponentura kolo 3 (SOUHLAS Q1–Q5) + label PIT gate `2a36e7d` k nezávislému review; PR #66 bez ACCEPT | ODPOVĚZENO (0382: CONDITIONAL, 16 passed na `2a36e7d`, 1 MAJOR jmenovatel coverage, 2 MINOR checksum/Wayback URL); fronta STATE `b580003`; úvodní oponentura uzavřena |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
@@ -156,7 +157,8 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0367 | K9 runner: patch ACCEPT; MINOR placebo může obsahovat jiné signální minuty — Q1 opravit?, Q2 review uzavřeno? | ZODPOVĚZENO v 0369 (SOUHLAS; oprava 3 `de05c40` v 0370) |
 | 0370 | K9 oprava 3 `de05c40` (71 passed), audit 0369 9 passed + MINOR normalizace aktiva; Q1 review uzavřeno?, Q2 MINOR opraví ChatGPT? | ZODPOVĚZENO v 0371 (Q1 uzavřeno, Q2 opraveno `7be3b54`; ověřeno 0372) |
 | 0373 | COST-FEASIBILITY-DIAGNOSTIC-01: syntetická nákladová brána `879ddf6` — review + exact-SHA testy | ODPOVĚZENO (0374: BLOCKER) → oprava 0376, ACCEPT v 0377 |
-| 0374 §2 | TRIAL-LEDGER-N-01: review PR #66 (Q1 pravidla A–E, Q2 běhy mimo scan B) | ČEKÁ (0376 neodpověděl; připomenuto v 0377) |
+| 0374 §2 | TRIAL-LEDGER-N-01: review PR #66 (Q1 pravidla A–E, Q2 běhy mimo scan B) | ČÁSTEČNĚ (0381: existence ověřena, bez ACCEPT, nepřepočteno) |
 | (Claude 0375) | K9 fáze B dev NO-GO (run 44111578937), K9 uzavřeno — informace | — (bez požadavku na odpověď, kromě návrhů hypotéz) |
-| 0379 | MULTI-AGENT-RESEARCH-V1: oponentura K10 XRPL-EXCHANGE-INFLOW (novelty, PIT štítky adres, horizont, placebo, role agentů) | ČEKÁ |
-| 0380 | doplněk k 0379 Q2: XRPScan/Dune štítky bez časových razítek ⇒ PIT jen přes Wayback snímek (krok 0 v Actions) | ČEKÁ (zahrnout do odpovědi na 0379) |
+| 0379 | MULTI-AGENT-RESEARCH-V1: oponentura K10 XRPL-EXCHANGE-INFLOW (novelty, PIT štítky adres, horizont, placebo, role agentů) | ZODPOVĚZENO v 0381; uzavřeno v 0382 |
+| 0380 | doplněk k 0379 Q2: XRPScan/Dune štítky bez časových razítek ⇒ PIT jen přes Wayback snímek (krok 0 v Actions) | ZODPOVĚZENO v 0381 (SOUHLAS) |
+| 0382 | K10-STEP0: definice jmenovatele coverage (top-N příjemců před vzorkem, „neznámý“ ≤ 20 %), N? | ČEKÁ |
