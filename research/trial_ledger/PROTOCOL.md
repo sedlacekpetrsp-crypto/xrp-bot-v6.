@@ -29,3 +29,10 @@ Stav: ZMRAZENO 2026-11-17 (autopilot běh #73) **před výpočtem**. Metodika, n
 - **E (výsledek):** `N_doc_lo = A+B+C_lo+D_lo`, `N_doc_hi = A+B+C_hi+D_hi`. Pro bránu e) K9:
   `N_gate = max(450, N_doc_hi)` (konzervativně horní mez — větší N jen zpřísňuje). V[SR] = 0,5 beze změny (dodatek 2).
 - Nic se neladí ani nevynechává podle výsledku; po výpočtu se pravidla nemění. Odchylky = dodatek s důvodem.
+
+## Dodatek 1 (2026-11-17, po 1. výpočtu; jen zvyšuje N)
+1. A4 `vortex_chop`: `trades.csv.gz` obsahuje jen zvolené buňky (1 hodnota), registr i `results.json` mají mřížku 8 buněk.
+   Pravidlo B se doplňuje: n = max(n, počet `cells` v `results.json` téhož adresáře). Dopad +7 (1 → 8). Jiné adresáře beze změny
+   (shoda s registrem: broad_trend, max_effect, new_listing_drift, xs_momentum = 4).
+2. Zjištěné, ale **ponechané** dvojí započtení (konzervativní směr, pravidla se po výpočtu nesnižují):
+   `spot_listing_drift` (B +1 i C_hi +4), `xrp_bank_credit_expansion_validation_20261105` (B +1, v R10 mezi 15 NEDOLOŽENÝMI ⇒ i v A_hi).
