@@ -51,3 +51,10 @@ Jen výzkumné větve. Žádné schválení produkce, nasazení, LIVE ani výkon
 - Vlastník dne 2026-11-12 v chatu uvedl: „Schvaluji jeden předem definovaný PAPER historický výkonnostní test XRP Top Risk Radaru −20 % / 14 dní. Nejprve zmrazte protokol, data a kritéria vyhodnocení; žádný merge, deploy ani LIVE.“
 - Po vysvětlení, že je nutné zapsat toto schválení do `dialog/OWNER_DECISIONS.md`, vlastník výslovně potvrdil „Ano, Ano.“ Tím povolil právě tento zápis, nikoli rozšíření rozsahu testu.
 - Před spuštěním je nutné uzavřít PIT/datové/validační blokery a neměnný G1 freeze manifest. Zápis není důkazem splnění těchto bran ani záznamem spuštění. Povolen je nejvýše jeden výkonový běh, bez opakování nebo ladění podle výsledků.
+
+2026-11-17 SCHVÁLENO: výkonnost K9 — jediný vývojový běh fáze B (stage dev, data t < 2024-01-01) podle PROTOCOL.md dodatku 2 (opravy 1–3, PR #65 `de05c40`), výhradně PAPER přes GitHub Actions.
+### Původ a rozsah (zapsal Claude za vlastníka, chat s Claudem 2026-11-17)
+- Autopilot běh #73 (15:45 UTC) požádal o řádek „SCHVÁLENO: výkonnost K9“ pro jediný dev běh K9 fáze B (data < 2024, PAPER, Actions);
+  vlastník odpověděl přímo v chatu: „Schvaleno“.
+- Rozsah čtu úzce: pouze stage **dev** (výběr H* a předbrána 0,42 % hrubě). Stage **final** (závěrečný úsek 2024–26) se
+  spustí až po dalším výslovném potvrzení vlastníka, i když předbrána projde. Žádný merge, deploy, Render, LIVE ani změna produkce.
