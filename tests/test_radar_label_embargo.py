@@ -42,9 +42,12 @@ class RadarLabelEmbargoTests(unittest.TestCase):
     def test_label_before_horizon_fails_closed(self):
         with self.assertRaises(LabelEligibilityError):
             gate(label_available_at=T + timedelta(days=29))
-    def test_feature_publication_before_event_invalid(self):
-        with self.assertRaises(LabelEligibilityError):
-            gate(data_available_at=T - timedelta(seconds=1))
+    def test_past_observation_available_before_feature_is_valid(self):
+        self.assertTrue(gate(data_available_at=T - timedelta(days=2)))
+    def test_past_observation_at_feature_time_is_valid(self):
+        self.assertTrue(gate(data_available_at=T))
+    def test_future_observation_unavailable_at_feature_is_rejected(self):
+        self.assertFalse(gate(data_available_at=T + timedelta(microseconds=1)))
 
 if __name__ == "__main__":
     unittest.main()
