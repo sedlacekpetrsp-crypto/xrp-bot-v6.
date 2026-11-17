@@ -25,8 +25,6 @@ def eligible_training_label(*, feature_at: datetime, cutoff_at: datetime,
     data = _utc(data_available_at, "data_available_at")
     if type(horizon_days) is not int or horizon_days not in (14, 30):
         raise LabelEligibilityError("horizon_days must be 14 or 30")
-    if data < feature:
-        raise LabelEligibilityError("data_available_at precedes feature_at")
     if label < feature + timedelta(days=horizon_days):
         raise LabelEligibilityError("label_available_at precedes label horizon")
     return (feature < cutoff and data <= feature
