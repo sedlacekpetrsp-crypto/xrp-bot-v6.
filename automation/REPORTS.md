@@ -3,6 +3,13 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## XRP AUTOPILOT – 2026-11-17 15:40 UTC, běh #73 (doplněk: K9 dev po schválení)
+
+TESTY: K9 fáze B dev (run 44111578937, `5711ac0`) — **NO-GO na ekonomické předbráně**: hrubý průměr na obchod H15 −0,014 % (n 10 143), H60 −0,018 % (n 9 732) vs požadavek ≥ 0,42 %; po nákladech ×1 −0,16 %, ×2 −0,30 %, ×3 −0,44 %/obchod; placebo úrovně hrubě −0,05 %. Jen data do 2023-12-31; nezávislý přepočet z entry/exit shodný. Závěrečný úsek 2024–26 neotevřen.
+🟢 OVĚŘENÝ VÝSLEDEK: K9 ROUND_NUMBER zamítnuto (negativní výsledek, žádná hrana po nákladech).
+DALŠÍ KROK: nová hypotéza s jiným mechanismem (TRVALÝ LOV).
+Není potřeba žádné schválení.
+
 ## XRP AUTOPILOT – 2026-11-17 15:45 UTC, běh #73
 
 PROVOZ: Live `01c69ff` beze změny, 0 událostí/restartů a 0 error logů 11:00–15:05. bestof 132 (jen známá duplicita 128/129), lh_whale_trades n=3, DB 287 258 303 B ≈ 26,8 %.
