@@ -266,3 +266,27 @@ def test_end_to_end_final_and_independent_recompute():
     assert verify_phase_b.compare(rec, json.loads(json.dumps(res, default=str))) == []
     bd = phase_b.breakdown(tr[tr["kind"] == "round"])
     assert bd["n"].sum() == res["n_round"]
+
+
+def test_random_trades_excludes_all_signal_minutes_oprava3():
+    """Oprava 3 (dialog 0367/0369): kandidát nesmí být jiná signální minuta téhož aktiva v téže hodině."""
+    g = _grid("2024-02-01 00:00", 3000, step_fn=lambda i: 100 + 0.01 * i)
+    t0 = pd.Timestamp("2024-02-01 13:20", tz="UTC")
+    others = [pd.Timestamp(f"2024-02-01 13:{m:02d}", tz="UTC") for m in (5, 21, 22, 40)]
+    src = pd.DataFrame({"asset": ["XRPUSDT"], "time": [t0], "direction": [1]})
+    base = phase_b.random_trades(g, src, 15, np.random.default_rng(0), n=59)
+    assert set(base["time"]) & set(others)  # bez opravy by kontaminace nastala
+    diag = {}
+    r = phase_b.random_trades(g, src, 15, np.random.default_rng(0), n=59, exclude_times=others, diag=diag)
+    assert not (set(r["time"]) & set(others)) and t0 not in set(r["time"])
+    assert diag["excluded_signal_minutes"] == 4 and len(r) == len(base) - 4
+    sup = phase_b.random_support(src, r, excluded_signal_minutes=diag["excluded_signal_minutes"])
+    assert sup["excluded_signal_minutes"] == 4
+
+
+def test_signal_times_include_blocked_events():
+    g = _grid("2024-02-01 00:00", 300, step_fn=lambda i: 100 + 0.01 * i)
+    ts = pd.to_datetime(["2024-02-01 01:00", "2024-02-01 01:05", "2024-02-01 03:00"], utc=True)
+    ev = pd.DataFrame({"time": ts, "level": [1.0, 2.0, 3.0], "direction": [1, 1, -1]})
+    _, st = phase_b.build_trades(g, ev, 15)
+    assert st["blocked"] == 1 and list(st["signal_times"]) == list(ts)

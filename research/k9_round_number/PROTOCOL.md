@@ -142,3 +142,12 @@ Stav: NAVRŽENO. Jen zpřísnění; endpointy a prahy a)–d), f), g) beze změn
    `final_independence_note` a závěr nesmí tvrdit plnou out-of-sample nezávislost.
 7. Před jakýmkoli výkonnostním během je nutné nezávislé code review runneru (oddělení dev/final, brány) jiným agentem
    a řádek vlastníka „SCHVÁLENO: výkonnost K9“.
+
+### Dodatek 2 — oprava 3 (2026-11-17, dialog 0367 Q1 / 0369 SOUHLAS; kód PŘED daty, výkon nespuštěn)
+Stav: NAVRŽENO A IMPLEMENTOVÁNO před jakýmkoli výpočtem výnosu. Jen zpřísnění benchmarku d); endpointy, prahy, caliper,
+seed, N replik a pořadí verdiktu beze změny.
+1. Kandidátní minuty benchmarku d) vylučují **všechny signální minuty téhož aktiva** (všechny detekované dotyky kulatých
+   úrovní vč. signálů blokovaných otevřenou pozicí), nejen vlastní signální minutu.
+2. Počet vyřazených kandidátů se vykazuje v `random_support.excluded_signal_minutes`; ztráta podpory dál v `frac_unmatched`.
+3. Směr vlivu: odstraňuje kontaminaci benchmarku průrazy (dříve táhla Δ d) k 0); nesmí se po výpočtu měnit.
+

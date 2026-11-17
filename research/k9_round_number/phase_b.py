@@ -65,7 +65,8 @@ def _epoch_minutes(idx: pd.DatetimeIndex) -> np.ndarray:
 
 def build_trades(grid: pd.DataFrame, events: pd.DataFrame, H: int, asset: str = "", kind: str = "") -> tuple[pd.DataFrame, dict]:
     """Obchody z událostí jednoho aktiva a jednoho „portfolia“ (kulaté nebo placebo). `grid` = úplná minutová mřížka."""
-    stats = {"signals": int(len(events)), "blocked": 0, "taken": [], "invalid": []}
+    stats = {"signals": int(len(events)), "blocked": 0, "taken": [], "invalid": [],
+             "signal_times": sorted(pd.to_datetime(events["time"], utc=True)) if len(events) else []}
     if events.empty:
         return pd.DataFrame(columns=TRADE_COLS), stats
     idx = grid.index
@@ -135,12 +136,16 @@ def match_features(grid: pd.DataFrame, window: int = MATCH_WINDOW) -> tuple[np.n
 
 
 def random_trades(grid: pd.DataFrame, trades: pd.DataFrame, H: int, rng: np.random.Generator,
-                  n: int = N_RANDOM, caliper: float = MATCH_CALIPER) -> pd.DataFrame:
+                  n: int = N_RANDOM, caliper: float = MATCH_CALIPER, exclude_times=None,
+                  diag: dict | None = None) -> pd.DataFrame:
     """Benchmark d) (oprava 2): pro každý signál až n minut téhož aktiva, dne a UTC hodiny (bez signální minuty,
     jen úplné okno), PÁROVANÝCH na předchozí realizovanou volatilitu a likviditu (`match_features`, jen PIT minulost):
     |ln(rv_c/rv_s)| ≤ caliper a |ln(liq_c/liq_s)| ≤ caliper; z vyhovujících n nejbližších podle součtu |ln poměrů|,
     shody náhodně (rng). Bez vracení. Signál bez párovatelného kandidáta nemá repliku (ztráta podpory se vykazuje
-    v `random_support`). Párování nezávisí na výnosu."""
+    v `random_support`). Párování nezávisí na výnosu.
+    Oprava 3 (dialog 0367/0369): kandidát nesmí být ŽÁDNÁ signální minuta téhož aktiva (`exclude_times` = všechny
+    detekované kulaté dotyky vč. blokovaných; default = časy v `trades`), ne jen vlastní signál. Počet vyřazených
+    kandidátů se přičte do `diag["excluded_signal_minutes"]`."""
     cols = ["asset", "time", "src_time", "gross", "net_x1", "match_dist"]
     if trades.empty:
         return pd.DataFrame(columns=cols)
@@ -149,6 +154,11 @@ def random_trades(grid: pd.DataFrame, trades: pd.DataFrame, H: int, rng: np.rand
     miss = np.concatenate([[0], np.cumsum(np.isnan(o) | np.isnan(c))])
     rv, liq = match_features(grid)
     epoch_min = _epoch_minutes(idx)
+    excl_src = trades["time"] if exclude_times is None else list(exclude_times) + list(trades["time"])
+    excl_pos = idx.get_indexer(pd.DatetimeIndex(pd.to_datetime(pd.Series(list(excl_src)), utc=True)))
+    excl = set(int(i) for i in excl_pos if i >= 0)
+    if diag is not None:
+        diag.setdefault("excluded_signal_minutes", 0)
     rows = []
     for asset, t, d in zip(trades["asset"], trades["time"], trades["direction"]):
         s_i = idx.get_indexer([pd.Timestamp(t)])[0]
@@ -156,8 +166,11 @@ def random_trades(grid: pd.DataFrame, trades: pd.DataFrame, H: int, rng: np.rand
         start = idx.get_indexer([h0])[0]
         if start < 0 or s_i < 0 or not (rv[s_i] > 0 and liq[s_i] > 0):
             continue
-        cand = [i for i in range(start, min(start + 60, len(idx)))
-                if i != s_i and i + H < len(idx) and miss[i + H + 1] - miss[i + 1] == 0 and rv[i] > 0 and liq[i] > 0]
+        hour = range(start, min(start + 60, len(idx)))
+        if diag is not None:
+            diag["excluded_signal_minutes"] += sum(1 for i in hour if i != s_i and i in excl)
+        cand = [i for i in hour
+                if i != s_i and i not in excl and i + H < len(idx) and miss[i + H + 1] - miss[i + 1] == 0 and rv[i] > 0 and liq[i] > 0]
         if not cand:
             continue
         cand = np.array(cand)
@@ -177,11 +190,13 @@ def random_trades(grid: pd.DataFrame, trades: pd.DataFrame, H: int, rng: np.rand
     return pd.DataFrame(rows, columns=cols)
 
 
-def random_support(signals: pd.DataFrame, rand: pd.DataFrame, n: int = N_RANDOM) -> dict:
-    """Ztráta podpory párovaného benchmarku d): kolik signálů má ≥ 1 / plných n replik."""
+def random_support(signals: pd.DataFrame, rand: pd.DataFrame, n: int = N_RANDOM,
+                   excluded_signal_minutes: int | None = None) -> dict:
+    """Ztráta podpory párovaného benchmarku d): kolik signálů má ≥ 1 / plných n replik (+ oprava 3: počet
+    kandidátních minut vyřazených, protože byly jinou signální minutou)."""
     ns = int(len(signals))
     per = rand.groupby(["asset", "src_time"]).size() if len(rand) else pd.Series(dtype=int)
-    return {"n_signals": ns, "with_any": int(len(per)), "with_full": int((per >= n).sum()),
+    return {"n_signals": ns, "excluded_signal_minutes": excluded_signal_minutes, "with_any": int(len(per)), "with_full": int((per >= n).sum()),
             "frac_unmatched": float(1 - len(per) / ns) if ns else float("nan"),
             "mean_reps": float(per.mean()) if len(per) else 0.0}
 

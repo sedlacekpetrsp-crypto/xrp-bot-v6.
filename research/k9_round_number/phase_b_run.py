@@ -106,17 +106,19 @@ def stage_final(frames: dict[str, pd.DataFrame], sel: dict, power_table: dict, r
         raise RuntimeError(f"závěr se neotevírá: {sel.get('verdict')}")
     H = int(sel["h_star"])
     rng = np.random.default_rng(phase_b.SEED)
-    trs, rands, grids, stats = [], [], {}, {}
+    trs, rands, grids, stats, diag = [], [], {}, {}, {"excluded_signal_minutes": 0}
     for a in sorted(frames):
         tr, g, st = phase_b.asset_trades(frames[a], STEPS[a], H, a)
         fin = phase_b.split(tr, "final")
         trs.append(fin)
         grids[a], stats[a] = g, st
-        rands.append(phase_b.random_trades(g, fin[fin["kind"] == "round"].sort_values("time"), H, rng))
+        rands.append(phase_b.random_trades(g, fin[fin["kind"] == "round"].sort_values("time"), H, rng,
+                                           exclude_times=st["round"]["signal_times"], diag=diag))
     tr = pd.concat(trs, ignore_index=True)
     rnd, plc = tr[tr["kind"] == "round"], tr[tr["kind"] == "placebo"]
     rand = pd.concat(rands, ignore_index=True)
-    support = phase_b.random_support(tr[tr["kind"] == "round"], rand)
+    support = phase_b.random_support(tr[tr["kind"] == "round"], rand,
+                                     excluded_signal_minutes=diag["excluded_signal_minutes"])
     end = max(g.index.max() for g in grids.values())
     pnl = phase_b.daily_pnl(rnd, audit.DEV_END, end)
     power = power_table.get(f"H{H}_final_round", {}).get(phase_b.POWER_KEY[H])

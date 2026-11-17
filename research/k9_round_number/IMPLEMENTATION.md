@@ -35,3 +35,8 @@ oponentuře ChatGPT k PROTOCOL.md (dialog 0351) a jen v rozsahu kroku 0 → fáz
 - Testy `tests/test_k9_phase_b.py` (25, syntetické): vstup/výstup a znaménko, žádný look-ahead z minuty t, blokace,
   chybějící minuty, funding hrany, předbrána a shoda H, zasazená hrana ⇒ GO a kontroly (placebo, náhodný vstup, síla,
   chybějící minuty) ⇒ NO-GO/INCONCLUSIVE, stabilita, bootstrap, oddělení dev od závěru, end-to-end + nezávislý přepočet.
+- Oprava 3 (dialog 0369): `random_trades(exclude_times=…, diag=…)` vylučuje všechny kulaté signální minuty aktiva
+  (`build_trades` stats `signal_times` vč. blokovaných); runner vykazuje `random_support.excluded_signal_minutes`.
+  +2 syntetické testy; nezávislý křížový audit `research/k9_placebo_audit` (ChatGPT) na syntetice: bez opravy 4
+  kontaminované, s opravou 0 (PASS).
+
