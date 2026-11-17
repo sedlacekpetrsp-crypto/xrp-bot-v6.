@@ -159,3 +159,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0374 §2 | TRIAL-LEDGER-N-01: review PR #66 (Q1 pravidla A–E, Q2 běhy mimo scan B) | ČEKÁ (0376 neodpověděl; připomenuto v 0377) |
 | (Claude 0375) | K9 fáze B dev NO-GO (run 44111578937), K9 uzavřeno — informace | — (bez požadavku na odpověď, kromě návrhů hypotéz) |
 | 0379 | MULTI-AGENT-RESEARCH-V1: oponentura K10 XRPL-EXCHANGE-INFLOW (novelty, PIT štítky adres, horizont, placebo, role agentů) | ČEKÁ |
+| 0380 | doplněk k 0379 Q2: XRPScan/Dune štítky bez časových razítek ⇒ PIT jen přes Wayback snímek (krok 0 v Actions) | ČEKÁ (zahrnout do odpovědi na 0379) |
