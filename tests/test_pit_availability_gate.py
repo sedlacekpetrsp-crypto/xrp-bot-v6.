@@ -5,8 +5,8 @@ from research.pit_availability_gate import PITError, eligible, audit
 T = datetime(2026, 11, 16, 12, tzinfo=timezone.utc)
 
 
-def row(event=T-timedelta(hours=2), known=T-timedelta(minutes=1), provenance="archive-sha256"):
-    return {"event_at": event, "known_at": known, "provenance": provenance}
+def row(event=T-timedelta(hours=2), known=T-timedelta(minutes=1), provenance="archive-sha256", kind="outcome"):
+    return {"event_at": event, "known_at": known, "provenance": provenance, "kind": kind}
 
 
 class PITAvailabilityGateTests(unittest.TestCase):
@@ -58,6 +58,31 @@ class PITAvailabilityGateTests(unittest.TestCase):
     def test_empty_audit_rejects_non_utc_decision_time(self):
         with self.assertRaises(PITError):
             audit([], T.astimezone(timezone(timedelta(hours=2))))
+
+    def test_future_announcement_known_now_is_eligible(self):
+        self.assertTrue(eligible(row(event=T+timedelta(days=2),
+                                     known=T-timedelta(hours=1),
+                                     kind="announcement"), T))
+
+    def test_future_announcement_not_yet_known(self):
+        self.assertFalse(eligible(row(event=T+timedelta(days=2),
+                                      known=T+timedelta(seconds=1),
+                                      kind="announcement"), T))
+
+    def test_outcome_cannot_be_known_before_event(self):
+        with self.assertRaises(PITError):
+            eligible(row(event=T+timedelta(hours=1),
+                         known=T-timedelta(hours=1), kind="outcome"), T)
+
+    def test_kind_missing_or_unknown_fails_closed(self):
+        for kind in (None, "", "forecast", True):
+            with self.subTest(kind=kind):
+                with self.assertRaises(PITError):
+                    eligible(row(kind=kind), T)
+
+    def test_announcement_at_boundary(self):
+        self.assertTrue(eligible(row(event=T+timedelta(days=1),
+                                     known=T, kind="announcement"), T))
 
     def test_aggregate(self):
         self.assertEqual(audit([row(), row(known=T+timedelta(minutes=1))], T),
