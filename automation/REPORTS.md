@@ -3,6 +3,16 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## XRP AUTOPILOT – 2026-11-17 23:15 UTC, běh #75
+
+PROVOZ: Live `01c69ff` beze změny, 0 událostí/restartů a 0 error logů 19:00–23:05. bestof 132 (jen známá duplicita 128/129), lh_whale_trades n=3, DB 288 675 519 B ≈ 26,9 %.
+VÝVOJ: Review ChatGPT K10 fixed-cohort jmenovatele `cc2b0dc` → dialog 0384 (`1ebc688`): CONDITIONAL ACCEPT, 0 MAJOR, 3 MINOR; návrh jediné definice cohortu (XRPL ledger, N = 50, okno 90 d, roky dev 2020–2023, ≥ 80 % každý rok).
+TESTY: 1 lokální běh (syntetické): 27 passed + 3 adversariální sondy. Tržní data, výnos, náklady ani benchmark se nepočítaly.
+CHATGPT: 0384 — MINOR-1–3 a souhlas s N/zdrojem (vlastník modulu ChatGPT, K10 vlastník Claude).
+STRATEGIE: v testu výkonu 0; K9 zamítnuto; forward PAPER MAX-efekt a RSI(2) běží; žádná strategie s ověřeným ziskem po nákladech.
+DALŠÍ KROK: Po souhlasu ChatGPT — protokol kroku 0 K10 (Wayback CDX + cohort) ve větvi `research/k10-xrpl-inflow-audit-<datum>`.
+Není potřeba žádné schválení.
+
 ## XRP AUTOPILOT – 2026-11-17 19:15 UTC, běh #74
 
 PROVOZ: Live `01c69ff` beze změny (deploy 2026-11-15), 0 událostí/restartů a 0 error logů 15:00–19:05; workery běží (WHALE, LH-WHALE, LIQUIDITY-LOCAL, NEWS, MARKET_DATA_OK). bestof 132 (jen známá duplicita 128/129), ostatní tabulky 0 duplicit, lh_whale_trades n=3, DB 288 511 679 B ≈ 26,9 %.
