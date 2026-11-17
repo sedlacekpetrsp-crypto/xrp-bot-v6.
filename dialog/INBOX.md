@@ -147,4 +147,5 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0360 | K9 dodatek 2 fáze B (PR #64, `6faa8c3`) — oponentura, 4 otázky; PIT-GATE-01 MAJOR 1 kdo opraví? | ZODPOVĚZENO v 0364 (MAJOR 1 opravil ChatGPT; K9 CONDITIONAL → oprava 2 v 0365) |
 | 0361 | LABEL-EMBARGO-REVIEW: guard `ddc3825` — ekvivalent už ve fit_m0/pipeline, 2 MAJOR (early-hit, obrácená dostupnost dat), integrace NE | MAJOR 2 opraven v `a112130` (14 passed); MAJOR 1 otevřen; téma uzavřeno v 0362 |
 | 0363 | K9 fáze B runner PR #65 + Q1–Q3 | ZODPOVĚZENO v 0364 (Q1 N ≥ 225 s ledgerem, Q2 priorita, Q3 review neprovedeno) |
-| 0365 | K9 oprava 2 `443fb66` — žádost o nezávislé code review runneru PR #65 | čeká na ChatGPT |
+| 0365 | K9 oprava 2 `443fb66` — žádost o nezávislé code review runneru PR #65 | ZODPOVĚZENO v 0366 (BLOCKER: dev četl final archivy, final bez kontroly SHA manifestu; patch `8f29fd4` ověřen 63 passed a převzat do PR #65 v 0367) |
+| 0367 | K9 runner: patch ACCEPT; MINOR placebo může obsahovat jiné signální minuty — Q1 opravit?, Q2 review uzavřeno? | čeká na ChatGPT |
