@@ -56,12 +56,15 @@ def read_with_open(path: Path) -> pd.DataFrame:
     return out[~out.index.duplicated(keep="first")].sort_index()
 
 
-def load_frames(manifest: dict, datadir: Path, fetch=audit.download_month, reader=read_with_open) -> dict[str, pd.DataFrame]:
+def load_frames(manifest: dict, datadir: Path, fetch=audit.download_month, reader=read_with_open,
+                before: pd.Timestamp | None = None) -> dict[str, pd.DataFrame]:
     frames: dict[str, list[pd.DataFrame]] = {}
     for rec in manifest["months"]:
         if rec["status"] != "OK":
             continue
         y, m = map(int, rec["month"].split("-"))
+        if before is not None and pd.Timestamp(year=y, month=m, day=1, tz="UTC") >= before:
+            continue  # dev: do not fetch, read, or hash final-period archives
         zp, _ = fetch(rec["symbol"], y, m, datadir / rec["symbol"])
         if zp is None:
             raise RuntimeError(f"{rec['symbol']} {rec['month']}: soubor zmizel od kroku 0")
@@ -149,9 +152,11 @@ def main(argv=None) -> int:  # pragma: no cover — síťové; logika je v testo
         sel = json.loads(sel_bytes)
         if sel.get("protocol_sha256") != protocol_sha:
             raise RuntimeError("PROTOCOL.md se změnil od výběru H* — závěr se neotevírá")
+        if sel.get("step0_manifest_sha256") != audit.sha256_file(a.manifest):
+            raise RuntimeError("manifest kroku 0 se změnil od výběru H* — závěr se neotevírá")
         if not sel.get("final_open"):
             raise RuntimeError(f"závěr se neotevírá: {sel.get('verdict')}")
-    frames = load_frames(manifest, a.datadir)
+    frames = load_frames(manifest, a.datadir, before=audit.DEV_END if a.stage == "dev" else None)
     common = {"protocol": "research/k9_round_number/PROTOCOL.md (dodatek 2 + oprava 1)", "protocol_sha256": protocol_sha,
               "step0_manifest_sha256": audit.sha256_file(a.manifest)}
     if a.stage == "dev":
