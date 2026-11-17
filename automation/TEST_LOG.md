@@ -138,3 +138,4 @@
 | 2026-11-16 19:38 | c029c41→0e06623 | K9 fáze A mikrostruktura (CI), bez výnosu | GO: D1 dev +0,110 [0,090;0,130], D2 +0,0175, závěr D1 +0,180; invalid 0; síla 1,00; nezávislý přepočet D shoda; pytest 26 passed | actions/runs/43936758796 |
 | 2026-11-16 23:05 | acc7c5d | pytest lokálně (PIT gate ChatGPT, review kolo 2) | 14 passed; MAJOR 2 vyřešen, MAJOR 1 otevřen | dialog 0360 |
 | 2026-11-16 23:00 | 6faa8c3 | K9 fáze B síla (syntetická, jen časy událostí) | n závěr H15 12 417 / H60 11 653; síla ≥ 0,99; výnos NEPOČÍTÁN | PR #64 |
+| 2026-11-17 03:25 | dd44968 (research/k9-phaseB-runner-20261117, PR #65) | pytest test_k9_phase_b + test_deflated_sharpe + K9 krok 0/fáze A lokálně | 58 passed (25 nových syntetických); žádná data, výnos NEPOČÍTÁN | autopilot #70, dialog 0363 |

@@ -11,27 +11,29 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-16 23:10 UTC, autopilot běh #69)
-- **Produkce (jen čtení):** live `01c69ff` beze změny (deploy 2026-11-15 20:56 UTC); 0 událostí a 0 error logů 19:00–23:04;
-  bestof 132, jen známá duplicita 128/129; `lh_whale_trades` n=3; DB 288 216 767 B ≈ 26,8 % z 1 GB.
+## CHECKPOINT (přepisuje se; stav k 2026-11-17 03:40 UTC, autopilot běh #70)
+- **Produkce (jen čtení):** live `01c69ff` beze změny (deploy 2026-11-15 20:56 UTC); 0 událostí a 0 error logů 23:00–03:04;
+  bestof 132, jen známá duplicita 128/129; `lh_whale_trades` n=3; DB 288 372 415 B ≈ 26,9 % z 1 GB.
 - **Výzkumné větve a SHA:** K9 `research/k9-step0-audit-20261116` tip `aa9bbbb` (draft [PR #63](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/63));
-  K9 dodatek 2 `research/k9-phaseB-prereg-20261117` tip `6faa8c3` (draft [PR #64](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/64), base = větev PR #63);
-  G1 Top Risk radar `research/xrp-top-risk-radar-v1-20261108` tip `ff67bc2` (vlastník ChatGPT, reviewer Claude);
+  K9 dodatek 2 `research/k9-phaseB-prereg-20261117` tip `6faa8c3` (draft [PR #64](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/64));
+  **K9 runner fáze B `research/k9-phaseB-runner-20261117` tip `dd44968`** (draft [PR #65](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/65), base = PR #64; obsahuje dodatek 2 opravu 1: DSR N = 225);
+  G1 Top Risk radar `research/xrp-top-risk-radar-v1-20261108` tip `f2e1477` (vlastník ChatGPT, reviewer Claude);
   K7 FOMC `research/k7-macro-audit-20261111` (`78abe38`); PIT-GATE-01 (ChatGPT) `research/chatgpt-pit-availability-gate-20261116` tip `acc7c5d`.
-- **Poslední skutečně spuštěné testy:** K9 fáze A run 43936758796 (GO, mikrostruktura, ne výnos). Běh #69: PIT gate `acc7c5d` 14 passed;
-  syntetická síla fáze B jen z časů událostí (≥ 0,99). **Výnos K9 se nepočítal.**
+- **Poslední skutečně spuštěné testy:** běh #70 lokálně 58 passed (K9 fáze B 25 syntetických + DSR 7 + K9 krok 0/fáze A 26). **Výnos K9 se nepočítal.**
 - **G1 (schváleno 2026-11-12, max. 1 běh):** freeze **NEZAMČEN** (ChatGPT) ⇒ výkon NESPOUŠTĚT; po oznámení freeze review Claude ⇒ jediný `workflow_dispatch`.
-- **Čeká na vlastníka:** PR #57 nasadit jen se souhlasem; PR #54, #8, #9, #10, #62, #63, #64 neslučovat; id 129 neměnit;
-  K7 výkon jen s „SCHVÁLENO: výkonnost K7“; **K9 fáze B výkon jen po oponentuře dodatku 2 (0360) + „SCHVÁLENO: výkonnost K9“.**
+- **Čeká na vlastníka:** PR #57 nasadit jen se souhlasem; PR #54, #8, #9, #10, #62–#65 neslučovat; id 129 neměnit;
+  K7 výkon jen s „SCHVÁLENO: výkonnost K7“; **K9 fáze B výkon jen po oponentuře 0360/0363 + „SCHVÁLENO: výkonnost K9“** (runner fail closed).
 - **Bezpečnostní brány:** výhradně PAPER; žádný LIVE/Render zápis/deploy/merge/force push; `FUNDING_SEMANTICS.json`
   (performance_hold, R8/R9) neměnit; výkon jen s řádkem SCHVÁLENO; `OWNER_DECISIONS.md` nikdy neupravovat ani nezkracovat.
-- **Čeká na ChatGPT:** 0357 (review fáze A: runner + přepočet), 0360 (oponentura dodatku 2, 4 otázky; PIT-GATE-01 MAJOR 1 — kdo opraví).
-- **Hypotézy (TRVALÝ LOV):** 2026-11-16 1/3 (K9). K9 dodatek 2 = předbrána: hrubý průměr ve vývoji < 0,42 % ⇒ NO-GO bez otevření závěru (prior nízký).
-- **DALŠÍ KROK:** po oponentuře 0360 zapracovat připomínky do dodatku 2 (před daty) a připravit runner fáze B s testy (bez spuštění na datech);
-  bez odpovědi ChatGPT: implementovat runner + syntetické testy (výkon stejně čeká na vlastníka), případně nová hypotéza dle TRVALÉHO LOVU.
+- **Čeká na ChatGPT:** 0357 (review fáze A), 0360 (oponentura dodatku 2), **0363 (oprava 1: N 225, pořadí verdiktu Q2; review runneru PR #65)**.
+  LABEL-EMBARGO-REVIEW uzavřeno dialogovou úlohou (0361/0362).
+- **Hypotézy (TRVALÝ LOV):** 2026-11-17 0/3 (K9 pokračuje, není nová). K9 předbrána: hrubý průměr ve vývoji < 0,42 % ⇒ NO-GO bez otevření závěru (prior nízký).
+- **DALŠÍ KROK:** po odpovědi ChatGPT zapracovat 0360/0363 do PROTOCOL (před daty) a připravit žádost vlastníkovi o „SCHVÁLENO: výkonnost K9“;
+  bez odpovědi: TRVALÝ LOV — návrh nové hypotézy (jiný mechanismus než K9) s novelty gate a dialogem ChatGPT; runner K9 už neměnit bez review.
 - **Forward RSI(2) (post-hoc výjimka vlastníka):** 0 obchodů; kontrola 2026-12-16, hlavní vyhodnocení ≥ 30 obchodů a nejdřív 2027-01-05.
 - **Další plánované:** 2026-12-01 Combined replay s `--end 2026-12-01`.
 - **Provozní/autopilot blokery:** žádné. Sandbox nemá přístup na data.binance.vision ani PyPI ⇒ data jen přes Actions.
+- **Pozn. kolize čísel:** dialogová úloha a autopilot píší souběžně ⇒ před commitem zprávy vždy `git fetch` a kontrola posledního čísla.
 
 ## Aktivní body ze starších front (výtah; plné znění jen v archivu)
 - R3b forward PAPER RSI(2): parametry přesně jako PR #13, značit „(post-hoc, B6 nesplněno)“, žádný produkční bot (archiv ř. 190–211).

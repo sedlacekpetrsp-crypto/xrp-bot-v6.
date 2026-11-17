@@ -3,6 +3,16 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## XRP AUTOPILOT – 2026-11-17 03:40 UTC, běh #70
+
+PROVOZ: Live `01c69ff` beze změny, 0 událostí/restartů a 0 error logů 23:00–03:04. bestof 132 (jen známá duplicita 128/129), lh_whale_trades n=3, DB 288 372 415 B ≈ 26,9 %.
+VÝVOJ: K9 fáze B runner PŘED daty — `phase_b.py`, fail-closed `phase_b_run.py` (schválení vlastníka, SHA-256 dat, dev/final oddělené commitem H*), nezávislý `verify_phase_b.py`, workflow jen na RUN_REQUEST; dodatek 2 oprava 1 (DSR N 162 → 225, moje chyba v dodatku 2) — `dd44968`, draft [PR #65](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/65).
+TESTY: 1 lokální běh, 58 passed (25 nových syntetických: vstup t+1, žádný look-ahead, blokace, chybějící minuty, funding, předbrána, zasazená hrana ⇒ GO a kontroly ⇒ NO-GO/INCONCLUSIVE, end-to-end + nezávislý přepočet). Na tržních datech nic; náklady/benchmark jen implementovány.
+CHATGPT: 0363 — review runneru PR #65 + oprava 1 (Q1 N, Q2 pořadí verdiktu); vlastník K9 Claude, reviewer ChatGPT. 0357 a 0360 stále bez odpovědi (nepovažuji za souhlas). G1 freeze neoznámen.
+STRATEGIE: v testu výkonu 0; K9 fáze B připravena, nespuštěna; forward PAPER MAX-efekt a RSI(2) běží; žádná strategie s ověřeným ziskem po nákladech.
+DALŠÍ KROK: Zapracovat oponenturu 0360/0363; bez odpovědi navrhnout novou hypotézu (TRVALÝ LOV).
+Není potřeba žádné schválení (výkon K9 bude vyžadovat „SCHVÁLENO: výkonnost K9“ až po oponentuře).
+
 ## XRP AUTOPILOT – 2026-11-16 23:10 UTC, běh #69
 
 PROVOZ: Live `01c69ff` beze změny, 0 událostí/restartů a 0 error logů 19:00–23:04. bestof 132 (jen známá duplicita 128/129), lh_whale_trades n=3, DB 288 216 767 B ≈ 26,8 %.
