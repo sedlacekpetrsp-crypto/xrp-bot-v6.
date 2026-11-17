@@ -139,3 +139,4 @@
 | 2026-11-16 23:05 | acc7c5d | pytest lokálně (PIT gate ChatGPT, review kolo 2) | 14 passed; MAJOR 2 vyřešen, MAJOR 1 otevřen | dialog 0360 |
 | 2026-11-16 23:00 | 6faa8c3 | K9 fáze B síla (syntetická, jen časy událostí) | n závěr H15 12 417 / H60 11 653; síla ≥ 0,99; výnos NEPOČÍTÁN | PR #64 |
 | 2026-11-17 03:25 | dd44968 (research/k9-phaseB-runner-20261117, PR #65) | pytest test_k9_phase_b + test_deflated_sharpe + K9 krok 0/fáze A lokálně | 58 passed (25 nových syntetických); žádná data, výnos NEPOČÍTÁN | autopilot #70, dialog 0363 |
+| 2026-11-17 07:10 | 8f29fd4 | pytest lokálně (K9 runner preflight review, syntetické) | 63 passed (K9 fáze B/krok 0/fáze A/preflight + DSR); žádná tržní data | dialog 0367 |
