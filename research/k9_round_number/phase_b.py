@@ -257,7 +257,7 @@ def dev_selection(dev: dict[int, pd.DataFrame], missing: dict[int, float]) -> di
                     "net_x1": float(r["net_x1"].mean()) if len(r) else float("nan"),
                     "missing_frac": float(missing.get(H, 0.0))}
     gmax = max((v["gross"] for v in per_h.values() if np.isfinite(v["gross"])), default=float("nan"))
-    if max(v["missing_frac"] for v in per_h.values()) > MAX_MISSING_FRAC:
+    if any(not np.isfinite(v["missing_frac"]) or v["missing_frac"] > MAX_MISSING_FRAC for v in per_h.values()):
         return {"per_h": per_h, "gross_max": gmax, "final_open": False, "h_star": None,
                 "verdict": "INCONCLUSIVE (chybějící minuty > 1 %)"}
     if not (gmax >= PREGATE_GROSS):
@@ -295,7 +295,7 @@ def evaluate_final(rnd: pd.DataFrame, plc: pd.DataFrame, rand: pd.DataFrame, pnl
     inval = max(E["invalid_frac"], dlt["invalid_frac"], rd["invalid_frac"])
     # oprava 2: ekonomické NO-GO důvody se vykazují vždy samostatně, formální verdikt se jimi nemění
     econ = [k for k in ("a", "c") if not g[k]]
-    if missing_frac > MAX_MISSING_FRAC:
+    if not np.isfinite(missing_frac) or missing_frac > MAX_MISSING_FRAC:
         verdict = "INCONCLUSIVE (chybějící minuty > 1 %)"
     elif inval > MAX_INVALID_REP_FRAC:
         verdict = "INCONCLUSIVE (neplatné repliky)"
