@@ -113,11 +113,15 @@ def stage_final(frames: dict[str, pd.DataFrame], sel: dict, power_table: dict, r
     tr = pd.concat(trs, ignore_index=True)
     rnd, plc = tr[tr["kind"] == "round"], tr[tr["kind"] == "placebo"]
     rand = pd.concat(rands, ignore_index=True)
+    support = phase_b.random_support(tr[tr["kind"] == "round"], rand)
     end = max(g.index.max() for g in grids.values())
     pnl = phase_b.daily_pnl(rnd, audit.DEV_END, end)
     power = power_table.get(f"H{H}_final_round", {}).get(phase_b.POWER_KEY[H])
     res = phase_b.evaluate_final(rnd, plc, rand, pnl, power, phase_b.missing_frac(stats, "final"), reps)
     res.update({"h_star": H, "n_round": int(len(rnd)), "n_placebo": int(len(plc)), "n_random": int(len(rand)),
+                "random_support": support,
+                "final_independence_note": ("závěrečný úsek 2024–26 byl použit ve fázi A pro objem (mechanismus, ne výnos) ⇒ "
+                                            "není zcela nedotčená selekce; tvrzení o nezávislosti omezeno"),
                 "max_drawdown_daily_x1": phase_b.max_drawdown(pnl),
                 "exposure": phase_b.exposure(grids, rnd, audit.DEV_END),
                 "benchmarks": phase_b.benchmarks(grids, rnd, audit.DEV_END)})

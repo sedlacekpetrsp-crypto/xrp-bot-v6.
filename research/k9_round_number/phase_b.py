@@ -32,10 +32,15 @@ MULTS = (1, 2, 3)
 PREGATE_GROSS = 0.0042      # 3 × náklad ×1
 REPS = 10_000
 SEED = 20261117
-N_RANDOM = 5
+N_RANDOM = 20              # oprava 2: až 20 párovaných replik na signál (místo 5 náhodných)
+MATCH_WINDOW = 60          # oprava 2: párovací proměnné z minut i−60..i−1 (jen PIT minulost)
+MATCH_CALIPER = float(np.log(2.0))  # |ln poměru| RV i likvidity ≤ ln 2
 MAX_MISSING_FRAC = 0.01
 MAX_INVALID_REP_FRAC = 0.05
 DSR_N = 225                 # oprava 1 dodatku 2: 222 (K7 při spuštění, registr) + K9 fáze A + 2 varianty H
+DSR_N_GATE = 450            # oprava 2: brána e) při 2× doloženém N (225 není auditovaná horní mez); 225 jen informačně
+FUNDING_MODEL = ("MODELOVANÝ nepříznivý funding 0,03 %/překročení 00/08/16 UTC (předregistrovaná citlivost), "
+                 "NE historická PIT sazba ⇒ net není skutečný P/L")
 DSR_VAR_ANNUAL = 0.5        # R10 předpoklad ⇒ DSR podmíněné
 DSR_MIN = 0.95
 POWER_MIN = 0.80
@@ -118,33 +123,67 @@ def split(tr: pd.DataFrame, period: str) -> pd.DataFrame:
     return tr[t < DEV_END] if period == "dev" else tr[t >= DEV_END]
 
 
+def match_features(grid: pd.DataFrame, window: int = MATCH_WINDOW) -> tuple[np.ndarray, np.ndarray]:
+    """PIT párovací proměnné pro minutu i jen z minut i−window..i−1 (signální minuta ani budoucnost se nepoužijí):
+    rv = směrodatná odchylka 1m log výnosů close, liq = součet quote objemu (volume × close). Chybějící minuta v okně ⇒ NaN."""
+    c = grid["close"].to_numpy(float)
+    v = grid["volume"].to_numpy(float)
+    r = pd.Series(np.log(c)).diff()
+    rv = r.rolling(window - 1, min_periods=window - 1).std(ddof=1).shift(1).to_numpy()
+    liq = pd.Series(v * c).rolling(window, min_periods=window).sum().shift(1).to_numpy()
+    return rv, liq
+
+
 def random_trades(grid: pd.DataFrame, trades: pd.DataFrame, H: int, rng: np.random.Generator,
-                  n: int = N_RANDOM) -> pd.DataFrame:
-    """Benchmark d): pro každý obchod n náhodných minut téhož aktiva, dne a UTC hodiny (bez signální minuty),
-    stejný směr a H, jen minuty s úplným oknem. Bez vracení; méně platných kandidátů ⇒ méně replik."""
+                  n: int = N_RANDOM, caliper: float = MATCH_CALIPER) -> pd.DataFrame:
+    """Benchmark d) (oprava 2): pro každý signál až n minut téhož aktiva, dne a UTC hodiny (bez signální minuty,
+    jen úplné okno), PÁROVANÝCH na předchozí realizovanou volatilitu a likviditu (`match_features`, jen PIT minulost):
+    |ln(rv_c/rv_s)| ≤ caliper a |ln(liq_c/liq_s)| ≤ caliper; z vyhovujících n nejbližších podle součtu |ln poměrů|,
+    shody náhodně (rng). Bez vracení. Signál bez párovatelného kandidáta nemá repliku (ztráta podpory se vykazuje
+    v `random_support`). Párování nezávisí na výnosu."""
+    cols = ["asset", "time", "src_time", "gross", "net_x1", "match_dist"]
     if trades.empty:
-        return pd.DataFrame(columns=["asset", "time", "src_time", "gross", "net_x1"])
+        return pd.DataFrame(columns=cols)
     idx = grid.index
     o, c = grid["open"].to_numpy(float), grid["close"].to_numpy(float)
     miss = np.concatenate([[0], np.cumsum(np.isnan(o) | np.isnan(c))])
+    rv, liq = match_features(grid)
     epoch_min = _epoch_minutes(idx)
     rows = []
     for asset, t, d in zip(trades["asset"], trades["time"], trades["direction"]):
+        s_i = idx.get_indexer([pd.Timestamp(t)])[0]
         h0 = pd.Timestamp(t).floor("h")
         start = idx.get_indexer([h0])[0]
-        if start < 0:
+        if start < 0 or s_i < 0 or not (rv[s_i] > 0 and liq[s_i] > 0):
             continue
         cand = [i for i in range(start, min(start + 60, len(idx)))
-                if idx[i] != t and i + H < len(idx) and miss[i + H + 1] - miss[i + 1] == 0]
+                if i != s_i and i + H < len(idx) and miss[i + H + 1] - miss[i + 1] == 0 and rv[i] > 0 and liq[i] > 0]
         if not cand:
             continue
-        pick = rng.choice(np.array(cand), size=min(n, len(cand)), replace=False)
-        for i in sorted(pick):
+        cand = np.array(cand)
+        d_rv = np.abs(np.log(rv[cand] / rv[s_i]))
+        d_lq = np.abs(np.log(liq[cand] / liq[s_i]))
+        ok = (d_rv <= caliper) & (d_lq <= caliper)
+        cand, dist = cand[ok], (d_rv + d_lq)[ok]
+        if not len(cand):
+            continue
+        tie = rng.permutation(len(cand))
+        order = np.lexsort((tie, dist))[:n]
+        for i, dd in zip(cand[order], dist[order]):
             g = float(d) * (c[i + H] / o[i + 1] - 1.0)
             fc = _funding_crossings(int(epoch_min[i + 1]), int(epoch_min[i + H]) + 1)
             rows.append({"asset": asset, "time": idx[i], "src_time": t, "gross": g,
-                         "net_x1": g - COST_RT - FUNDING_PER_CROSS * fc})
-    return pd.DataFrame(rows, columns=["asset", "time", "src_time", "gross", "net_x1"])
+                         "net_x1": g - COST_RT - FUNDING_PER_CROSS * fc, "match_dist": float(dd)})
+    return pd.DataFrame(rows, columns=cols)
+
+
+def random_support(signals: pd.DataFrame, rand: pd.DataFrame, n: int = N_RANDOM) -> dict:
+    """Ztráta podpory párovaného benchmarku d): kolik signálů má ≥ 1 / plných n replik."""
+    ns = int(len(signals))
+    per = rand.groupby(["asset", "src_time"]).size() if len(rand) else pd.Series(dtype=int)
+    return {"n_signals": ns, "with_any": int(len(per)), "with_full": int((per >= n).sum()),
+            "frac_unmatched": float(1 - len(per) / ns) if ns else float("nan"),
+            "mean_reps": float(per.mean()) if len(per) else 0.0}
 
 
 # ---------------------------------------------------------------- statistika
@@ -247,12 +286,15 @@ def evaluate_final(rnd: pd.DataFrame, plc: pd.DataFrame, rand: pd.DataFrame, pnl
     rd = boot(rnd, "gross", rand, "gross", reps=reps, b_time_col="src_time")
     x2 = float(rnd["net_x2"].mean()) if len(rnd) else float("nan")
     x3 = float(rnd["net_x3"].mean()) if len(rnd) else float("nan")
-    ds = dsr(pnl)
+    ds = dsr(pnl, DSR_N_GATE)
+    ds_info = dsr(pnl, DSR_N)
     st = stability(rnd) if len(rnd) else {"ok": False}
     g = {"a": bool(E["point"] > 0 and E["lo"] > 0), "b": bool(x2 > 0), "c": bool(dlt["point"] > 0 and dlt["lo"] > 0),
          "d": bool(rd["point"] > 0 and rd["lo"] > 0), "e": bool(ds.get("dsr", float("nan")) >= DSR_MIN),
          "f": bool(st["ok"]), "g": bool(power is not None and power >= POWER_MIN)}
     inval = max(E["invalid_frac"], dlt["invalid_frac"], rd["invalid_frac"])
+    # oprava 2: ekonomické NO-GO důvody se vykazují vždy samostatně, formální verdikt se jimi nemění
+    econ = [k for k in ("a", "c") if not g[k]]
     if missing_frac > MAX_MISSING_FRAC:
         verdict = "INCONCLUSIVE (chybějící minuty > 1 %)"
     elif inval > MAX_INVALID_REP_FRAC:
@@ -263,7 +305,8 @@ def evaluate_final(rnd: pd.DataFrame, plc: pd.DataFrame, rand: pd.DataFrame, pnl
         verdict = "GO (jen návrh forward PAPER; samostatné schválení vlastníka)"
     else:
         verdict = "NO-GO"
-    return {"verdict": verdict, "gates": g, "E_net_x1": E, "net_x2_mean": x2, "net_x3_mean": x3,
+    return {"verdict": verdict, "gates": g, "economic_nogo_reasons": econ, "funding_model": FUNDING_MODEL,
+            "dsr_n225_info": ds_info, "E_net_x1": E, "net_x2_mean": x2, "net_x3_mean": x3,
             "delta_vs_placebo": dlt, "delta_vs_random": rd, "dsr": ds, "stability": st, "power": power,
             "missing_frac": missing_frac, "max_invalid_frac": float(inval)}
 

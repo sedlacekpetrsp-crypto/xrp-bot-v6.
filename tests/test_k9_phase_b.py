@@ -160,8 +160,51 @@ def test_random_trades_same_hour_day_excluding_signal_minute():
     g = _grid("2024-02-01 00:00", 3000, step_fn=lambda i: 100 + 0.01 * i)
     src = pd.DataFrame({"asset": ["XRPUSDT"], "time": [pd.Timestamp("2024-02-01 13:20", tz="UTC")], "direction": [1]})
     r = phase_b.random_trades(g, src, 15, np.random.default_rng(0))
-    assert len(r) == 5 and (r["time"].dt.hour == 13).all() and (r["time"].dt.day == 1).all()
+    assert len(r) == phase_b.N_RANDOM == 20 and (r["time"].dt.hour == 13).all() and (r["time"].dt.day == 1).all()
     assert not (r["time"] == src["time"].iloc[0]).any()
+
+
+def _vol_grid():
+    """Hodiny 13:00–13:59: první půlka klidná (malé výkyvy), druhá půlka 4× volatilnější; objem konstantní."""
+    n = 3000
+    rng = np.random.default_rng(5)
+    idx = pd.date_range("2024-02-01 00:00", periods=n, freq="1min", tz="UTC")
+    sd = np.where((idx.hour == 13) & (idx.minute >= 30), 0.004, 0.001)
+    c = 100 * np.exp(np.cumsum(rng.normal(0, sd)))
+    o = np.concatenate([[100.0], c[:-1]])
+    return pd.DataFrame({"open": o, "high": np.maximum(o, c), "low": np.minimum(o, c), "close": c,
+                         "volume": 10.0, "taker_buy": 5.0}, index=idx)
+
+
+def test_matched_random_respects_volatility_caliper():
+    g = _vol_grid()
+    rv, liq = phase_b.match_features(g)
+    src = pd.DataFrame({"asset": ["X"], "time": [pd.Timestamp("2024-02-01 13:20", tz="UTC")], "direction": [1]})
+    r = phase_b.random_trades(g, src, 15, np.random.default_rng(0))
+    pos = g.index.get_indexer(r["time"])
+    s_i = g.index.get_indexer(src["time"])[0]
+    assert len(r) > 0 and (np.abs(np.log(rv[pos] / rv[s_i])) <= phase_b.MATCH_CALIPER + 1e-12).all()
+    assert (r["match_dist"].diff().dropna() >= -1e-12).all()  # nejbližší první
+    # PIT: změna minut ≥ signální minuty nemění párovací proměnné signálu
+    g2 = g.copy()
+    g2.iloc[s_i:, g2.columns.get_loc("close")] *= 3
+    rv2, liq2 = phase_b.match_features(g2)
+    assert rv2[s_i] == rv[s_i] and liq2[s_i] == liq[s_i]
+
+
+def test_matched_random_support_loss_reported():
+    g = _vol_grid()
+    src = pd.DataFrame({"asset": ["X"], "time": [pd.Timestamp("2024-02-01 13:20", tz="UTC")], "direction": [1]})
+    r = phase_b.random_trades(g, src, 15, np.random.default_rng(0), caliper=0.0)  # nic nevyhoví
+    sup = phase_b.random_support(src, r)
+    assert r.empty and sup["frac_unmatched"] == 1.0 and sup["with_any"] == 0
+
+
+def test_low_power_inconclusive_still_reports_economic_nogo():
+    rnd = _trades(0.0)
+    pnl = phase_b.daily_pnl(rnd, DEV_END, pd.Timestamp("2024-12-31", tz="UTC"))
+    r = phase_b.evaluate_final(rnd, _trades(0.0, seed=2, kind="placebo"), _rand(rnd, 0.0), pnl, 0.5, 0.0, reps=200)
+    assert r["verdict"].startswith("INCONCLUSIVE") and "a" in r["economic_nogo_reasons"]
 
 
 def test_drawdown_and_daily_pnl_zero_days():
@@ -217,8 +260,9 @@ def test_end_to_end_final_and_independent_recompute():
     pt = {"H15_final_round": {phase_b.POWER_KEY[15]: 0.99}}
     res, tr = phase_b_run.stage_final({"BTCUSDT": df, "ETHUSDT": df / 10}, sel, pt, reps=200)
     assert res["n_round"] > 0 and res["n_placebo"] > 0 and res["n_random"] > 0
-    assert res["dsr"]["n_trials"] == phase_b.DSR_N == 225
-    rec = verify_phase_b.recompute(tr, "2024-01-01", str(df.index.max()), phase_b.DSR_N)
+    assert res["dsr"]["n_trials"] == phase_b.DSR_N_GATE == 450 and res["dsr_n225_info"]["n_trials"] == 225
+    assert res["random_support"]["n_signals"] == res["n_round"] and "MODELOVANÝ" in res["funding_model"]
+    rec = verify_phase_b.recompute(tr, "2024-01-01", str(df.index.max()), res["dsr"]["n_trials"])
     assert verify_phase_b.compare(rec, json.loads(json.dumps(res, default=str))) == []
     bd = phase_b.breakdown(tr[tr["kind"] == "round"])
     assert bd["n"].sum() == res["n_round"]

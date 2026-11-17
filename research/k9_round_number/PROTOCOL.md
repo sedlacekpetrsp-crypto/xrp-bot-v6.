@@ -120,3 +120,25 @@ Stav: NAVRŽENO. Jen zpřísnění a upřesnění implementace; endpointy, prahy
    `--stage final` se spustí jen s výběrem H* commitnutým v HEAD (bajtově), se shodnou SHA-256 PROTOCOL.md a
    `final_open = true`. Obě fáze vyžadují řádek „<datum> SCHVÁLENO: výkonnost K9“ (fail closed).
 7. Den v denní řadě PnL pro DSR/drawdown = den vstupu; den v bootstrapu E/Δ = den signálu (rozdíl jen u signálu 23:59).
+
+### Dodatek 2 — oprava 2 (2026-11-17, Claude, PŘED výpočtem jakéhokoli výnosu; zapracování oponentury ChatGPT 0364)
+Stav: NAVRŽENO. Jen zpřísnění; endpointy a prahy a)–d), f), g) beze změny. Nic se neladí podle výnosu.
+1. **DSR (brána e):** N = 225 není auditovaná horní mez pokusů ⇒ brána e) se počítá při **N = 450** (2× doložené N);
+   DSR při N = 225 se vykazuje jen informačně. Úplný ledger pokusů (rozšíření R10 `variant_count.py` o PR #35–#65
+   a forward PAPER boty) je samostatný úkol; pokud doloží N > 450, platí větší N (před otevřením závěru).
+2. **Předbrána 0,42 % hrubě** je přísná předregistrovaná předbrána (3 × 0,14 % RT), ne ekonomická rovnost „net ≥ 2× náklad“
+   ani důkaz hrany. Její splnění znamená jen otevření závěru.
+3. **Funding** 0,03 %/překročení je MODELOVANÁ nepříznivá citlivost, ne historická PIT sazba; výsledky ji nesou v poli
+   `funding_model` a net se nevykazuje jako skutečný P/L.
+4. **Benchmark d) párovaný:** místo 5 náhodných minut až **20 minut** téhož aktiva, dne a UTC hodiny (bez signální minuty,
+   jen úplné okno), párovaných na předchozí realizovanou volatilitu (sd 1m log výnosů) a likviditu (Σ volume × close),
+   obě **jen z minut i−60..i−1**; caliper |ln poměru| ≤ ln 2 pro obě proměnné, z vyhovujících nejbližší podle součtu
+   |ln poměrů|, shody náhodně (seed 20261117), bez vracení. Ztráta podpory (`random_support`: podíl signálů bez repliky,
+   průměr replik) se vykazuje; párování nezávisí na výnosu a nesmí se po výpočtu měnit.
+5. **Pořadí verdiktu (deterministické, beze změny bodu 5 opravy 1):** chybějící minuty > 1 % → neplatné repliky > 5 % →
+   síla < 0,80 ⇒ INCONCLUSIVE; jinak všechny a)–f) ⇒ GO, jinak NO-GO. Nesplněné a) nebo c) se vždy vykazují zvlášť
+   v `economic_nogo_reasons` (i při INCONCLUSIVE) — jako samostatný ekonomický důvod, formální verdikt nemění.
+6. **Nezávislost závěru:** úsek 2024–26 byl použit ve fázi A (objem, ne výnos) ⇒ není zcela nedotčený; výsledky nesou
+   `final_independence_note` a závěr nesmí tvrdit plnou out-of-sample nezávislost.
+7. Před jakýmkoli výkonnostním během je nutné nezávislé code review runneru (oddělení dev/final, brány) jiným agentem
+   a řádek vlastníka „SCHVÁLENO: výkonnost K9“.
