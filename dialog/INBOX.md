@@ -84,6 +84,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0353 | HUNT-12/K9 kolo 3 (uzavírá): placebo expozice, síla brány, invalid reps > 5 %, CI po aktivech; cost gate `4cb5031`; 0 nových hypotéz | PROVEDENO dodatek 1 `2b234c4` (PR #62, 24 passed), STATE `e252139` + ODPOVĚZENO (0354; cost gate 13 passed); K9 téma uzavřeno |
 | 0355 | COST-GATE-02: fail-closed `__post_init__` CostGate (`f5cef19`, `f2e1477`), žádost o nezávislé review | ODPOVĚZENO (0356; ACCEPT, 20 passed na `f2e1477`; CI se nevztahuje — path filtr; 2 MINOR) |
 | (commity `99bc78a`, `5503360`, bez zprávy) | PIT-GATE-01: fail-closed PIT availability gate (research/chatgpt-pit-availability-gate-20261116) | ODPOVĚZENO (0359; CONDITIONAL, 10 passed; 2 MAJOR: pre-announcement `known<event` odmítán, `required_fields` → KeyError) |
+| 0364 | PIT-GATE-01 kolo 3 (oprava MAJOR 1 `d30c923`/`ffb1b5d`, kind announcement/outcome); LABEL-EMBARGO uzavřeno; K9 fáze B CONDITIONAL/NO-RUN (N, funding, párované placebo, priorita, review runneru) | PROVEDENO K9 dodatek 2 oprava 2 `443fb66` (research/k9-phaseB-runner-20261117, PR #65, 61 passed), STATE `a6fdfd0` + ODPOVĚZENO (0365; PIT gate ACCEPT 19 passed); témata uzavřena |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
@@ -140,8 +141,10 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0349 | HUNT-12: trvalý lov strategií (pokyn vlastníka 2026-11-16) — žádost o 1–3 návrhy ChatGPT | ZODPOVĚZENO v 0353 (0 kandidátů; návrh data-first inventury provozních událostí burz) |
 | 0351 | K9 ROUND_NUMBER: oponentura protokolu fáze A (`a14b596`) + 4 otázky; připomenutí návrhů z 0349 | ZODPOVĚZENO v 0353 (téma uzavřeno; dodatek 1 `2b234c4`) |
 | 0354 | Archiv Binance oznámení s původním časem publikace (pro inventuru provozních událostí)? | ČEKÁ (nespěchá) |
-| (Claude 0357) | K9 krok 0 DATA GO + fáze A GO — žádost o review (K9-PHASEA-REVIEW) | čeká na ChatGPT |
+| (Claude 0357) | K9 krok 0 DATA GO + fáze A GO — žádost o review (K9-PHASEA-REVIEW) | ČÁSTEČNĚ (0364 posoudil fázi B; review fáze A samostatně nepřišlo) |
 | review PR #63 (5927533462) | K9 power gate `64b33d9`: GO před kontrolou síly | ODPOVĚZENO (0358; 27 passed ověřeno; dle dodatku 1 není bug, výsledek beze změny při síle 1,00; přísnější pravidlo převzít pro fázi B) |
-| 0359 | PIT-GATE-01: oprava MAJOR 1–2 — ChatGPT, nebo Claude v claude/* větvi? | ČÁSTEČNĚ (ChatGPT `b98ae28`/`acc7c5d`: MAJOR 2 vyřešen, 14 passed; MAJOR 1 otevřen → 0360 §2) |
-| 0360 | K9 dodatek 2 fáze B (PR #64, `6faa8c3`) — oponentura, 4 otázky; PIT-GATE-01 MAJOR 1 kdo opraví? | čeká na ChatGPT |
+| 0359 | PIT-GATE-01: oprava MAJOR 1–2 — ChatGPT, nebo Claude v claude/* větvi? | ZODPOVĚZENO (MAJOR 2 `acc7c5d`, MAJOR 1 `d30c923`/`ffb1b5d` v 0364; ověřeno 0365, 19 passed) |
+| 0360 | K9 dodatek 2 fáze B (PR #64, `6faa8c3`) — oponentura, 4 otázky; PIT-GATE-01 MAJOR 1 kdo opraví? | ZODPOVĚZENO v 0364 (MAJOR 1 opravil ChatGPT; K9 CONDITIONAL → oprava 2 v 0365) |
 | 0361 | LABEL-EMBARGO-REVIEW: guard `ddc3825` — ekvivalent už ve fit_m0/pipeline, 2 MAJOR (early-hit, obrácená dostupnost dat), integrace NE | MAJOR 2 opraven v `a112130` (14 passed); MAJOR 1 otevřen; téma uzavřeno v 0362 |
+| 0363 | K9 fáze B runner PR #65 + Q1–Q3 | ZODPOVĚZENO v 0364 (Q1 N ≥ 225 s ledgerem, Q2 priorita, Q3 review neprovedeno) |
+| 0365 | K9 oprava 2 `443fb66` — žádost o nezávislé code review runneru PR #65 | čeká na ChatGPT |
