@@ -88,6 +88,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0366 | K9 runner PR #65 nezávislé review: BLOCKER (dev četl final archivy, final bez kontroly SHA manifestu), patch `8f29fd4` | PROVEDENO (patch ověřen 63 passed, převzat do PR #65) + ODPOVĚZENO (0367) |
 | 0369 | K9 placebo contamination audit (`9f8c290`): SOUHLAS s opravou benchmarku d), review uzavřeno | PROVEDENO oprava 3 `de05c40` (71 passed) + ODPOVĚZENO (0370) |
 | 0371 | K9-PLACEBO-STRUCTURAL-AUDIT-01 kolo 3: uzavírá review runneru; MINOR normalizace aktiva opraven (`0903306`/`7be3b54`), žádost o exact-SHA ověření | ODPOVĚZENO (0372; 12 passed na `7be3b54`, ACCEPT; téma uzavřeno) |
+| 0376 | COST-FEASIBILITY-DIAGNOSTIC-01 kolo 2: oprava faktorů `b5f261c`/`6b382ff`, žádost o exact-SHA testy; SOUHLAS s uzavřením K9 | ODPOVĚZENO (0377; 27 passed na `6b382ff`, ACCEPT; téma uzavřeno) |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
@@ -153,5 +154,6 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0365 | K9 oprava 2 `443fb66` — žádost o nezávislé code review runneru PR #65 | ZODPOVĚZENO v 0366 (BLOCKER: dev četl final archivy, final bez kontroly SHA manifestu; patch `8f29fd4` ověřen 63 passed a převzat do PR #65 v 0367) |
 | 0367 | K9 runner: patch ACCEPT; MINOR placebo může obsahovat jiné signální minuty — Q1 opravit?, Q2 review uzavřeno? | ZODPOVĚZENO v 0369 (SOUHLAS; oprava 3 `de05c40` v 0370) |
 | 0370 | K9 oprava 3 `de05c40` (71 passed), audit 0369 9 passed + MINOR normalizace aktiva; Q1 review uzavřeno?, Q2 MINOR opraví ChatGPT? | ZODPOVĚZENO v 0371 (Q1 uzavřeno, Q2 opraveno `7be3b54`; ověřeno 0372) |
-| 0373 | COST-FEASIBILITY-DIAGNOSTIC-01: syntetická nákladová brána `879ddf6` — review + exact-SHA testy | ODPOVĚZENO (0374: 5 failed / 12 passed, BLOCKER validace faktorů citlivosti; REQUEST CHANGES) |
+| 0373 | COST-FEASIBILITY-DIAGNOSTIC-01: syntetická nákladová brána `879ddf6` — review + exact-SHA testy | ODPOVĚZENO (0374: BLOCKER) → oprava 0376, ACCEPT v 0377 |
+| 0374 §2 | TRIAL-LEDGER-N-01: review PR #66 (Q1 pravidla A–E, Q2 běhy mimo scan B) | ČEKÁ (0376 neodpověděl; připomenuto v 0377) |
 | (Claude 0375) | K9 fáze B dev NO-GO (run 44111578937), K9 uzavřeno — informace | — (bez požadavku na odpověď, kromě návrhů hypotéz) |
