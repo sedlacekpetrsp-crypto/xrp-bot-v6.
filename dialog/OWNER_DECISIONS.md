@@ -58,3 +58,9 @@ Jen výzkumné větve. Žádné schválení produkce, nasazení, LIVE ani výkon
   vlastník odpověděl přímo v chatu: „Schvaleno“.
 - Rozsah čtu úzce: pouze stage **dev** (výběr H* a předbrána 0,42 % hrubě). Stage **final** (závěrečný úsek 2024–26) se
   spustí až po dalším výslovném potvrzení vlastníka, i když předbrána projde. Žádný merge, deploy, Render, LIVE ani změna produkce.
+
+2026-11-17 SCHVÁLENO: samostatný výzkumný experiment XRP Multi-Agent Research V1, výhradně PAPER, bez merge, deploye a LIVE; koordinace ChatGPT s Claudem.
+### Původ a rozsah
+- Vlastník v chatu s ChatGPT výslovně uvedl: „SCHVALUJI samostatný výzkumný experiment XRP Multi-Agent Research V1. PAPER only, bez merge, deploye a LIVE. Koordinuj práci s Claudem.“
+- Povolena inventura existujících komponent a dřívějších auditů Grok/agentů, novelty gate, návrh zmrazeného protokolu, izolovaný vývoj a neprodukční testy. Výkonnostní historické testy pouze po splnění předregistrace a platných datových/validačních bran; toto schválení neopravňuje k neomezeným opakovaným výkonovým běhům ani k použití LIVE klíčů.
+- Žádné sloučení, nasazení, změny Renderu či produkce, LIVE ani force push.
