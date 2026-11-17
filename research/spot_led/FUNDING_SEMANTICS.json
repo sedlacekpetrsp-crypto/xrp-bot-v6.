@@ -1,0 +1,10 @@
+{
+ "semantics": "B",
+ "meaning": "funding_interval_hours záznamu = nastavení platné v okamžiku vypořádání = délka úseku KONČÍCÍHO touto událostí; při změně nastavení uprostřed úseku smí rozestup odpovídat intervalu kterékoli ze dvou sousedních událostí",
+ "decided_utc": "2026-11-06T17:10:00Z",
+ "decided_by": "Claude (na pokyn vlastníka 2026-11-06 17:48 SEČ: nejdřív rozhodnout sémantiku)",
+ "evidence": "Převzato z auditu PR #29 (run 42256020278, BTCUSDT/ETHUSDT/XRPUSDT: 0 přechodů intervalu 2020-08…2026-10, A i B 0 nesouladů; rozhodující přechody jen u SOLUSDT 2022-11). data_audit.json z run 42256020278 (commit e037402): 7 z 8 aktiv 2020-08…2026-10 bez jediného přechodu, vždy 8 h (A i B 0 nesouladů). SOLUSDT 3 přechody: 2022-11-09 16:00(8) → 20:00(4) rozestup 4 h = B; 2022-11-10 00:00(4) → 04:00(2) rozestup 4 h = změna uprostřed úseku (tolerance); 2022-11-18 08:00(2) → 16:00(8) rozestup 8 h = B (podle A by chyběly 3 platby 10/12/14 h). A: 2 nesoulady, B: 1, B s tolerancí: 0. Dokumentace Binance k poli v archivu Vision nenalezena.",
+ "impact": "pro BTC/ETH/XRP jsou A i B v datech 2020-08…2026-10 totožné; ověří i audit PR #30 (5m, od 2020-01)",
+ "performance_hold": true,
+ "performance_hold_reason": "vlastník 2026-11-06 17:48 SEČ: výpočet výkonnosti zatím nespouštět (čeká se na opravy podle oponentury ChatGPT kola 4); uvolní jen vlastník přepnutím na false"
+}

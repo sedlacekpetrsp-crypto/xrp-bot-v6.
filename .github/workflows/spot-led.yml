@@ -1,0 +1,47 @@
+name: Spot-led price discovery 5m backtest (PAPER research, public data only)
+# Jen výzkumná větev. Žádné secrets, žádný Render, žádné objednávky.
+# Backtest se spouští jen commitem research/spot_led/RUN_REQUEST (nejdřív 2026-11-07 UTC, denní limit hypotéz).
+on:
+  push:
+    branches: ["research/spot-led-*"]
+    paths:
+      - "research/spot_led/RUN_REQUEST"
+      - "research/spot_led/run.py"
+      - "tests/test_spot_led.py"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install pytest
+      - name: Mechanics tests (synthetic, not profitability evidence)
+        run: python -m pytest -q -p no:cacheprovider tests/test_spot_led.py tests/test_deflated_sharpe.py
+      - name: Backtest per PROTOCOL.md (only when RUN_REQUEST exists)
+        run: |
+          set -o pipefail
+          if [ ! -f research/spot_led/RUN_REQUEST ]; then echo "RUN_REQUEST chybí - jen testy"; exit 0; fi
+          # RUN_REQUEST začínající "AUDIT" = jen kontrola dat (data_audit.json), bez výpočtu výkonnosti (dodatek 3)
+          if head -1 research/spot_led/RUN_REQUEST | grep -q '^AUDIT'; then MODE=--audit-only; else MODE=; fi
+          python -m research.spot_led.run --cache /tmp/vision-5m --outdir research/spot_led $MODE | tee summary.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: spot-led
+          path: research/spot_led/
+      - name: Commit results to this research branch
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          git add research/spot_led/
+          git diff --cached --quiet && exit 0
+          if head -1 research/spot_led/RUN_REQUEST | grep -q '^AUDIT'; then KIND="data audit only, no performance"; else KIND="backtest results"; fi
+          git commit -m "Spot-led: ${KIND} (run ${GITHUB_RUN_ID}) [skip ci]"
+          git push origin HEAD:${GITHUB_REF_NAME}
