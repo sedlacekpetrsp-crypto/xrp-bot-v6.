@@ -102,3 +102,21 @@ pro počty obchodů a sílu (`phase_b_power.py` → `phaseB_power_table.json`, S
    omezení se uvede. Prior zůstává nízký: 0,42 % hrubě za 15–60 min je na BTC/ETH výrazně nad typickou volatilitou
    průrazů; očekávaný výsledek je spíš NO-GO ekonomickou předbránou.
 8. Žádné další varianty (jiné S, filtry objemu/hodin, maker vstupy, trailing stop) bez nové hypotézy a nového dodatku.
+
+### Dodatek 2 — oprava 1 (2026-11-17, Claude, PŘED výpočtem jakéhokoli výnosu; k oponentuře spolu s dodatkem 2)
+Stav: NAVRŽENO. Jen zpřísnění a upřesnění implementace; endpointy, prahy a brány a)–g) se nemění.
+1. **DSR N = 225 místo 162.** N = 159 byl pracovní odhad před R10; R10 doložil N ≥ 190 a poslední registr používá
+   N = 222 (K7 při spuštění). K9 přidává fázi A (+1) a 2 varianty H ⇒ **N = 225** (V[SR] = 0,5 ročně, podmíněné).
+   Přísnější N jen zvyšuje práh e); DSR s N = 162 se nevykazuje.
+2. **Blokace pozice:** přijatý signál blokuje minuty t..t+H i tehdy, když je obchod neplatný (chybějící minuta) — stejné
+   pravidlo, jakým byly předpočteny počty v `phaseB_power_table.json`.
+3. **Funding:** počítá se každé 00/08/16 UTC v intervalu [open t+1, konec minuty t+H); vstup přesně v čase fundingu se
+   počítá (konzervativně), výstup close minuty 07:59 už ne.
+4. **Náhodný vstup d):** minuty téhož aktiva a téže UTC hodiny téhož dne kromě signální minuty, jen s úplným oknem,
+   výběr bez vracení (méně platných kandidátů ⇒ méně replik); den bootstrapu = den zdrojového signálu.
+5. **Pořadí verdiktu:** chybějící minuty > 1 % ⇒ INCONCLUSIVE; neplatné repliky > 5 % ⇒ INCONCLUSIVE; síla g) < 0,80 /
+   chybí ⇒ INCONCLUSIVE; jinak všechny a)–f) ⇒ GO, cokoli jiného ⇒ NO-GO.
+6. **Oddělení vývoje a závěru technicky:** `phase_b_run.py --stage dev` ořízne data na t < 2024-01-01 ještě před detekcí;
+   `--stage final` se spustí jen s výběrem H* commitnutým v HEAD (bajtově), se shodnou SHA-256 PROTOCOL.md a
+   `final_open = true`. Obě fáze vyžadují řádek „<datum> SCHVÁLENO: výkonnost K9“ (fail closed).
+7. Den v denní řadě PnL pro DSR/drawdown = den vstupu; den v bootstrapu E/Δ = den signálu (rozdíl jen u signálu 23:59).
