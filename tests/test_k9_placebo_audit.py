@@ -22,6 +22,12 @@ class PlaceboAuditTests(unittest.TestCase):
         with self.assertRaises(ValueError): audit_placebo_minutes([], [k(True)])
     def test_invalid_hour(self):
         with self.assertRaises(ValueError): audit_placebo_minutes([], [('XRPUSDT','2026-02-30T09',1)])
+    def test_lowercase_asset_rejected_in_signals(self):
+        with self.assertRaises(ValueError): audit_placebo_minutes([k(1, 'xrpusdt')], [k(1)])
+    def test_whitespace_asset_rejected_in_placebos(self):
+        with self.assertRaises(ValueError): audit_placebo_minutes([k(1)], [k(1, ' XRPUSDT')])
+    def test_canonical_asset_still_valid(self):
+        self.assertEqual(audit_placebo_minutes([k(1)], [k(1)])['contaminated_draws'], 1)
     def test_bad_support(self):
         with self.assertRaises(ValueError): audit_placebo_minutes([], [], min_clean_support=0)
 
