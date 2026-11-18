@@ -76,6 +76,8 @@ def sample_cost(rpc, start: int, n: int) -> dict:
 
 
 def verdict(windows: list[dict]) -> dict:
+    if not windows or any(w["count"] <= 0 or w["sample"]["ledgers"] <= 0 for w in windows):
+        return {"verdict": "INVALID_SAMPLE", "reason": "empty windows or zero sample ledgers"}
     hours = sum(w["count"] * w["sample"]["seconds"] / w["sample"]["ledgers"] for w in windows) / 3600
     gb = sum(w["count"] * w["sample"]["bytes"] / w["sample"]["ledgers"] for w in windows) / 1e9
     ok = hours <= MAX_HOURS and gb <= MAX_GB
@@ -114,8 +116,14 @@ def probe(rpc_for_host, hosts=HOSTS, years=YEARS, n_sample=SAMPLE_LEDGERS) -> di
         w0 = int((start - timedelta(days=WINDOW_DAYS)).timestamp())
         a = first_at_or_after(rpc, w0, FIRST_LEDGER, top)
         b = first_at_or_after(rpc, int(start.timestamp()), a, top)
+        if b <= a:
+            raise RuntimeError(f"empty ranking window {y}: {a}..{b}")
+        # Never sample ledgers outside the preregistered ranking window.
+        actual_sample = min(n_sample, b - a)
+        if actual_sample <= 0:
+            raise RuntimeError(f"invalid sample size for {y}: {actual_sample}")
         out["windows"].append({"year": y, "first_ledger": a, "end_exclusive": b, "count": b - a,
-                               "sample": sample_cost(rpc, a, n_sample)})
+                               "sample": sample_cost(rpc, a, actual_sample)})
     out["result"] = verdict(out["windows"])
     return out
 
