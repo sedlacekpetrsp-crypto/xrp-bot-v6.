@@ -46,6 +46,8 @@ def make_rpc(host: str, timeout: float = 30.0, pause: float = 0.2):
 def close_unix(rpc, idx: int) -> int:
     res, _, _ = rpc("ledger", {"ledger_index": idx, "transactions": False})
     led = res["ledger"]
+    if int(led["ledger_index"]) != idx:
+        raise RuntimeError(f"ledger index mismatch: requested {idx}, received {led['ledger_index']}")
     if not res.get("validated", led.get("validated", True)):
         raise RuntimeError(f"ledger {idx} not validated")
     return int(led["close_time"]) + RIPPLE_EPOCH
@@ -69,7 +71,12 @@ def sample_cost(rpc, start: int, n: int) -> dict:
     secs = 0.0
     for idx in range(start, start + n):
         res, b, dt = rpc("ledger", {"ledger_index": idx, "transactions": True, "expand": True})
-        txs = res["ledger"].get("transactions", [])
+        led = res["ledger"]
+        if int(led["ledger_index"]) != idx:
+            raise RuntimeError(f"sample ledger index mismatch: requested {idx}, received {led['ledger_index']}")
+        if not res.get("validated", led.get("validated", True)):
+            raise RuntimeError(f"sample ledger {idx} not validated")
+        txs = led.get("transactions", [])
         nbytes += b
         secs += dt
         ntx += len(txs)
