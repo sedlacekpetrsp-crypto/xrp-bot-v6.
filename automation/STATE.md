@@ -11,35 +11,33 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-18 19:20 UTC, autopilot běh #80 — K10 krok 0 DATA NO-GO zaevidováno)
-- **Produkce (jen čtení, běh #80):** live `01c69ff` beze změny (deploy 2026-11-15 20:56 UTC); 0 událostí 15:00–19:10; 1 error log 19:00 UTC
-  (`SYMBOL SCAN ERROR XRPUSDT` — HTTP 500 z data-api.binance.vision, externí, jednorázový, stejná třída jako 13:00);
-  bestof 132, jen známá duplicita 128/129 (1 skupina); `lh_whale_trades` n=3; DB 288 577 215 B ≈ 26,9 % z 1 GB.
-- **Výzkumné větve a SHA:** K9 PR #63 `aa9bbbb`, #64 `6faa8c3`, #65 `de05c40` (K9 **ZAMÍTNUTO**, dev NO-GO předbrána, run 44111578937 → `5711ac0`, final NESPOUŠTĚT);
-  R10b ledger N PR #66 `8c8b723` (N 238/306 < 450); G1 Top Risk radar `research/xrp-top-risk-radar-v1-20261108` tip `f2e1477` (vlastník ChatGPT, reviewer Claude);
-  K7 FOMC `78abe38`; PIT-GATE-01 (ChatGPT) `research/chatgpt-pit-availability-gate-20261116` tip **`ffb1b5d`** (dříve uváděno `acc7c5d`);
-  **K10** `research/k10-step0-sources-20261118` tip **`6167226`** (draft [PR #68](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/68); `tests -k k10` 82 passed, ověřeno během #80).
-- **K10 XRPL-EXCHANGE-INFLOW krok 0: DATA NO-GO (zdroj ledgeru)** — ChatGPT odpověděl na 0393–0395 komentářem v PR #68 (2026-11-18 19:00 UTC):
-  řídký vzorek ledgerů měří jen proveditelnost, **nenahrazuje** plný výčet cohortu bez nové předregistrované metodiky; conflict gate `7494bca` NEINTEGROVAT
-  (S1/S2 stejný poskytovatel ⇒ nejsou nezávislé); `validated` striktně až ve sběru. Dialogová session Clauda (19:01): modul `a4221f1` (sample claim gate,
-  91 passed) NEINTEGROVAT (bez volajícího), místo toho PROTOCOL §6.3 `6167226`. Plný výčet ≈ 603–1 045 h / 1,08 TB ≫ práh 5 h / 50 GB.
-  Znovuotevření jen samostatně předregistrovaným dodatkem cohortové metodiky se souhlasem druhého vývojáře; výkon K10 se nepočítal. N +0.
-- **G1 (schváleno 2026-11-12, max. 1 běh):** freeze **NEZAMČEN** (ChatGPT, tip beze změny od 2026-11-16) ⇒ výkon NESPOUŠTĚT.
+## CHECKPOINT (přepisuje se; stav k 2026-11-18 23:20 UTC, autopilot běh #81 — review issue #69 MAX-efekt timestampy)
+- **Produkce (jen čtení, běh #81):** live `01c69ff` beze změny (0 událostí od 19:00, 0 error logů 19:10–23:03); bestof 132, jen známá
+  duplicita 128/129; `lh_whale_trades` n=3; DB 287 979 199 B ≈ 26,8 % z 1 GB. MAX-efekt ledger: 6 otevřených pozic (všechny s `entry_at`), 0 uzavřených.
+- **NOVÉ — issue #69 (vlastník schválil 2026-11-18; jen vývojová větev, PAPER, bez merge/deploye):** zobrazit čas otevření/uzavření PAPER obchodů
+  MAX-efekt (Europe/Prague). Implementace ChatGPT `feature/max-effect-trade-timestamps-69` @ `aa27c1f` (27 passed). Review Clauda (dialog **0397**):
+  zdroj OK (perzistentní `entry_at`/`exit_at`), **MAJOR** chybí označení zóny u času (25. 10. 00:30Z i 01:30Z ⇒ obojí „02:30“); návrh opravy
+  `claude/max-effect-tz-label-69-20261118` @ **`528ada0`** (`timeZoneName:'short'` + Node test skutečného JS; bez opravy 1 test selže; 32 passed).
+  Čeká na převzetí/odmítnutí ChatGPT (Q1 0397). Nasazení do produkce jen s novým výslovným schválením vlastníka.
+- **Výzkumné větve a SHA:** K9 PR #63 `aa9bbbb`, #64 `6faa8c3`, #65 `de05c40` (K9 **ZAMÍTNUTO**); R10b ledger N PR #66 `8c8b723` (N 238/306 < 450);
+  G1 Top Risk radar `research/xrp-top-risk-radar-v1-20261108` tip `f2e1477` (vlastník ChatGPT, reviewer Claude); K7 FOMC `78abe38`;
+  PIT-GATE-01 (ChatGPT) tip `ffb1b5d`; K10 `research/k10-step0-sources-20261118` tip `6167226` (draft PR #68).
+- **K10 XRPL-EXCHANGE-INFLOW: DATA NO-GO (zdroj ledgeru)**, §6.3 `6167226`; 0396 (dialog 21:45) — publisher independence ChatGPT `f733fb1`
+  9 passed, NEINTEGROVAT (duplicita R5/validate_labels, MAJOR obejití Wayback/subdoména). Další K10 gate nepsat. N +0.
+- **G1 (schváleno 2026-11-12, max. 1 běh):** freeze **NEZAMČEN** (ChatGPT) ⇒ výkon NESPOUŠTĚT.
 - **Čeká na vlastníka:** PR #57 nasadit jen se souhlasem; PR #54, #8, #9, #10, #62–#68 neslučovat; id 129 neměnit;
-  K7 výkon jen s „SCHVÁLENO: výkonnost K7“.
+  K7 výkon jen s „SCHVÁLENO: výkonnost K7“; #69 deploy jen s novým schválením.
 - **Bezpečnostní brány:** výhradně PAPER; žádný LIVE/Render zápis/deploy/merge/force push; `FUNDING_SEMANTICS.json`
   (performance_hold, R8/R9) neměnit; výkon jen s řádkem SCHVÁLENO; `OWNER_DECISIONS.md` nikdy neupravovat ani nezkracovat.
-- **Hypotézy (TRVALÝ LOV):** 2026-11-18 0 nových (K10 je z 11-17). Běh #80 prověřil kandidáty proti inventáři/registru a dialogu:
-  korejská prémie XRP (Upbit) = K4 už zamítnut v 0258 (NESOUHLAS ChatGPT), turn-of-month = PR #12 NEPROŠEL ⇒ žádný nový mechanismus
-  s dostatečnou novostí nenalezen, nic se nezakládá jen kvůli kvótě (prompt §12, rámec §6).
+- **Hypotézy (TRVALÝ LOV):** 2026-11-18 0 nových; běh #81 dal přednost vlastníkem schválenému #69 (P1). K11 zatím nenavržen.
 - **Forward RSI(2) (post-hoc výjimka vlastníka):** 0 obchodů; kontrola 2026-12-16, hlavní vyhodnocení ≥ 30 obchodů a nejdřív 2027-01-05.
 - **Další plánované:** 2026-12-01 Combined replay s `--end 2026-12-01`.
 - **Provozní/autopilot blokery:** žádné. Sandbox nemá přístup na data.binance.vision ani PyPI ⇒ data jen přes Actions.
 - **Pozn. kolize čísel:** dialogová úloha a autopilot píší souběžně ⇒ před commitem zprávy vždy `git fetch` a kontrola posledního čísla.
-  ChatGPT nyní odpovídá i komentáři v PR (ne jen zprávami v `dialog/messages/`) ⇒ INBOX kontrolovat i proti komentářům PR.
-- **Čeká na ChatGPT:** G1 freeze, 0374 (BLOCKER cost gate; PR #66), 0375, 0357; 0393–0395 věcně zodpovězeny v PR #68 (INBOX aktualizuje dialogová úloha).
-- **DALŠÍ KROK:** dialogová úloha pošle ChatGPT návrh K11 s mechanismem mimo vyčerpané rodiny (derivátový crowding, makro, on-chain aktivita,
-  kalendář, korejská prémie) a vyžádá jeho 1–2 návrhy; autopilot pak provede novelty gate a protokol. Bez nového kandidáta nic nespouštět.
+  ChatGPT odpovídá i komentáři v PR/issues ⇒ INBOX kontrolovat i proti komentářům.
+- **Čeká na ChatGPT:** 0397 Q1 (#69, `528ada0`), G1 freeze, 0374 (PR #66), 0375, 0357.
+- **DALŠÍ KROK:** po odpovědi na 0397 ověřit finální tip #69 (testy na přesném SHA) a ohlásit vlastníkovi připravenost k jeho rozhodnutí o nasazení;
+  bez odpovědi posunout K11 (nový mechanismus mimo vyčerpané rodiny) přes novelty gate.
 
 ## Aktivní body ze starších front (výtah; plné znění jen v archivu)
 - R3b forward PAPER RSI(2): parametry přesně jako PR #13, značit „(post-hoc, B6 nesplněno)“, žádný produkční bot (archiv ř. 190–211).

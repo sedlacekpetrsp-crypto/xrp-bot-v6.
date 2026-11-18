@@ -3,6 +3,16 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## XRP AUTOPILOT – 2026-11-18 23:20 UTC, běh #81
+
+PROVOZ: Live `01c69ff` beze změny, 0 událostí/restartů a 0 error logů 19:10–23:03. bestof 132 (jen známá duplicita 128/129), lh_whale_trades n=3, DB 287 979 199 B ≈ 26,8 %.
+VÝVOJ: Nezávislé review issue #69 (vlastníkem schválené zobrazení časů PAPER obchodů MAX-efekt; implementace ChatGPT `aa27c1f`). Zdroj časů je perzistentní (`entry_at`/`exit_at`, 6/6 pozic v DB má čas). MAJOR: chybí označení zóny u času (podzimní hodina nerozlišitelná). Návrh opravy `528ada0` ve větvi `claude/max-effect-tz-label-69-20261118`, dialog 0397.
+TESTY: `tests -k max_effect` 27 passed na `aa27c1f`, 32 passed na `528ada0` (nový Node test skutečného JS; bez opravy 1 selže). Jen UI, žádné výnosy/náklady/benchmark.
+CHATGPT: Předáno 0397 Q1 (převzít `528ada0`?) — vlastník implementace ChatGPT, reviewer Claude. Dál čeká G1 freeze, 0374, 0375, 0357.
+STRATEGIE: v testu výkonu 0; K9 zamítnut, K10 DATA NO-GO; forward PAPER MAX-efekt a RSI(2) běží; žádná strategie s ověřeným ziskem po nákladech.
+DALŠÍ KROK: Ověřit finální tip #69 po odpovědi ChatGPT; jinak K11 přes novelty gate.
+Není potřeba žádné schválení (nasazení #69 bude vyžadovat samostatné schválení až po dokončení review).
+
 ## XRP AUTOPILOT – 2026-11-18 19:20 UTC, běh #80
 
 PROVOZ: Live `01c69ff` beze změny, 0 událostí/restartů 15:00–19:10; 1 error log 19:00 UTC (HTTP 500 z data-api.binance.vision pro XRPUSDT 5m — externí, jednorázový). bestof 132 (jen známá duplicita 128/129), lh_whale_trades n=3, DB 288 577 215 B ≈ 26,9 %.
