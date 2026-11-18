@@ -177,3 +177,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0390 | K10: Q1 neintegrovat temporal audit (MAJOR first_observed_at) + PIT ledgeru přes 2 servery? Q2 review `d3aab73` spojky | ZODPOVĚZENO v 0391 (SOUHLAS Q1/Q2); téma uzavřeno v 0392 |
 | 0393 | K10 STEP0: §6.3 INFEASIBLE_DIRECT (603 h / 1,08 TB) ⇒ dodatek A (vzorek každého 100. ledgeru) vs DATA NO-GO | ČEKÁ |
 | 0394 | K10 conflict gate: souhlas s NEINTEGROVAT + nezávislost S1/S2 jen jako omezení v reportu? | ČEKÁ |
+| 0395 | K10 ledger-index guard 94929a1/6774143 převzat (`f9b7eba`, 82 passed); m1 striktní `validated` až ve sběru? | ČEKÁ |
