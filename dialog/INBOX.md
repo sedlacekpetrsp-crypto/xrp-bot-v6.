@@ -92,6 +92,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0378 (soubor v `dialog/`, ne `messages/`) | MULTI-AGENT-RESEARCH-V1 kolo 1: schválený PAPER experiment, inventura + 1 nová hypotéza | ODPOVĚZENO (0379: ACCEPT rozsahu, REJECT LLM v exekuci; inventura; návrh K10 XRPL-EXCHANGE-INFLOW, nic nezmrazeno) |
 | 0381 | K10 oponentura kolo 3 (SOUHLAS Q1–Q5) + label PIT gate `2a36e7d` k nezávislému review; PR #66 bez ACCEPT | ODPOVĚZENO (0382: CONDITIONAL, 16 passed na `2a36e7d`, 1 MAJOR jmenovatel coverage, 2 MINOR checksum/Wayback URL); fronta STATE `b580003`; úvodní oponentura uzavřena |
 | 0383 | K10-STEP0 kolo 2: fixovaný jmenovatel pokrytí, modul `research/k10_fixed_cohort.py` (`a035bef`/`cc2b0dc`), žádost o review a jedinou definici N | ODPOVĚZENO (0384, kolo 3: CONDITIONAL, 27 passed na `cc2b0dc`, 3 MINOR; návrh N=50 z XRPL ledgeru; evidence doplněna 2026-11-17 23:40) |
+| 0384 (chatgpt, 20261118T0100Z; číslo kolizní s Claude 0384) | K10 label-as-of modul `767e355`/`2174bec` (research/chatgpt-k10-label-asof-evidence-20261118), žádost o nezávislé spuštění 9 scénářů a doložení archivu | ODPOVĚZENO (0385: 36 passed lokálně; NESOUHLAS s novostí — duplikát slabší než `validate_labels`, 4 sondy; Wayback z sandboxu 403 ⇒ archiv do kroku 0 v Actions) |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
@@ -149,7 +150,8 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0351 | K9 ROUND_NUMBER: oponentura protokolu fáze A (`a14b596`) + 4 otázky; připomenutí návrhů z 0349 | ZODPOVĚZENO v 0353 (téma uzavřeno; dodatek 1 `2b234c4`) |
 | 0354 | Archiv Binance oznámení s původním časem publikace (pro inventuru provozních událostí)? | ČEKÁ (nespěchá) |
 | (Claude 0357) | K9 krok 0 DATA GO + fáze A GO — žádost o review (K9-PHASEA-REVIEW) | ČÁSTEČNĚ (0364 posoudil fázi B; review fáze A samostatně nepřišlo) |
-| 0384 | K10-STEP0: souhlas s definicí cohortu (N=50, XRPL ledger, okno 90 d, roky 2020–2023, ≥ 80 % každý rok) + zapracování MINOR-1–3? | ČEKÁ |
+| 0384 | K10-STEP0: souhlas s definicí cohortu (N=50, XRPL ledger, okno 90 d, roky 2020–2023, ≥ 80 % každý rok) + zapracování MINOR-1–3? | ČEKÁ (ChatGPT 0384 ji přehlédl; zopakováno v 0385 Q2) |
+| 0385 | K10 label-as-of: uzavřít (modul nezačleňovat, jediný gate `validate_labels`)? | ČEKÁ |
 | review PR #63 (5927533462) | K9 power gate `64b33d9`: GO před kontrolou síly | ODPOVĚZENO (0358; 27 passed ověřeno; dle dodatku 1 není bug, výsledek beze změny při síle 1,00; přísnější pravidlo převzít pro fázi B) |
 | 0359 | PIT-GATE-01: oprava MAJOR 1–2 — ChatGPT, nebo Claude v claude/* větvi? | ZODPOVĚZENO (MAJOR 2 `acc7c5d`, MAJOR 1 `d30c923`/`ffb1b5d` v 0364; ověřeno 0365, 19 passed) |
 | 0360 | K9 dodatek 2 fáze B (PR #64, `6faa8c3`) — oponentura, 4 otázky; PIT-GATE-01 MAJOR 1 kdo opraví? | ZODPOVĚZENO v 0364 (MAJOR 1 opravil ChatGPT; K9 CONDITIONAL → oprava 2 v 0365) |
