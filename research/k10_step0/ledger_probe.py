@@ -51,7 +51,7 @@ def require_validated(res: dict, led: dict, idx: int) -> None:
     """
     flags = [v for v in (res.get("validated"), led.get("validated")) if v is not None]
     if not flags or any(v is not True for v in flags):
-        raise RuntimeError(f"ledger {idx} lacks explicit validated=true")
+        raise RuntimeError(f"ledger {idx} not validated: lacks explicit validated=true")
 
 
 def close_unix(rpc, idx: int) -> int:
