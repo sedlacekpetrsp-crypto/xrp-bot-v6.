@@ -239,7 +239,7 @@ const fmtDate=v=>{
  if(v==null||v==='')return 'neuvedeno';
  const d=new Date(v);
  if(!Number.isFinite(d.getTime()))return 'neuvedeno';
- return new Intl.DateTimeFormat('cs-CZ',{timeZone:'Europe/Prague',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(d);
+ return new Intl.DateTimeFormat('cs-CZ',{timeZone:'Europe/Prague',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',hourCycle:'h23',timeZoneName:'short'}).format(d);
 };
 const duration=(a,b)=>{
  const x=Date.parse(a),y=Date.parse(b);
