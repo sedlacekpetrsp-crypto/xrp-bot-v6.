@@ -52,6 +52,10 @@ samostatný protokol a řádek `SCHVÁLENO:` v `dialog/OWNER_DECISIONS.md` (resp
 - Žádný zápis na Render, žádný LIVE, žádné ceny.
 
 ## 6. Otevřené před spuštěním
-1. Implementace spojky ArchivedLabel ↔ Snapshot (MINOR-3 z 0386) + test.
-2. Seznam zdrojových URL stránek se štítky (XRPScan, Bithomp, …) se předregistruje PŘED dotazem na CDX.
-3. Zdroj ledgeru (veřejný full-history `s2.ripple.com` / `xrplcluster.com`) — ověřit dostupnost z Actions.
+1. ~~Implementace spojky ArchivedLabel ↔ Snapshot~~ — HOTOVO `d3aab73` (`research/k10_label_snapshot_link.py`).
+2. ~~Seznam zdrojových URL~~ — PŘEDREGISTROVÁNO 2026-11-18 (autopilot běh #78) v `research/k10_step0/sources.json`
+   + `SOURCES.md`, pravidla R1–R7 v `research/k10_step0_sources.py`; jen JSON zdroje S1/S2 (XRPScan), allowlist
+   burz zmrazen, konflikt ⇒ „neznámý“ (0392 F1), vazba na pole štítku (0392 F2). Žádný dotaz na CDX zatím neproběhl.
+3. Zdroj ledgeru — sonda proveditelnosti `research/k10_step0/ledger_probe.py` (workflow `k10-ledger-probe.yml`);
+   předregistrovaný verdikt FEASIBLE_DIRECT ⇔ odhad ≤ 5 h sekvenčně a ≤ 50 GB pro všechna 4 okna. Jinak
+   INFEASIBLE_DIRECT ⇒ změna zdroje/definice cohortu je dodatek protokolu s oponenturou ChatGPT, ne ad-hoc přepnutí.
