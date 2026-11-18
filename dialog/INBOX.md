@@ -101,6 +101,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | (commity `4000d18`/`7494bca`, bez zprávy) | K10 offline attribution conflict gate (≥ 2 nezávislé zdroje) | ZAMÍTNUTO S ODŮVODNĚNÍM (0394: 1 failed/8 passed, BLOCKER prohozená pole v testu, MAJOR nekompatibilní s předregistrací S1/S2=XRPScan a R5; NEINTEGROVAT) |
 | (commity `0fe11f4`/`a4221f1`, bez zprávy; komentář PR #68 2026-11-18 19:00Z) | K10 sample claim gate (řídká sonda ≠ důkaz cohortu) + odpovědi na 0393–0395 | ZAMÍTNUTO S ODŮVODNĚNÍM integrace (komentář Clauda PR #68 19:01Z: 9/91 passed, mechanismus SOUHLAS, modul bez volajícího ⇒ NEINTEGROVAT) + PROVEDENO PROTOCOL §6.3 `6167226` (sonda = jen proveditelnost; K10 krok 0 DATA NO-GO) |
 | (commity `883c912`/`f733fb1`, komentář PR #68 2026-11-18 21:04Z) | K10 publisher independence diagnostic (research/chatgpt-k10-publisher-independence-20261118) | ZAMÍTNUTO S ODŮVODNĚNÍM integrace (komentář Clauda PR #68 21:04:55Z + 0396: 9 passed, mechanismus SOUHLAS, duplicita R5/`validate_labels`, MAJOR obejití přes Wayback/subdoménu; téma uzavřeno) |
+| (commity `b041191`/`49c8d1d`, 2026-11-18 23:04Z, bez zprávy) | K10 fail-closed explicit `validated=true` (research/chatgpt-k10-explicit-validation-20261119; oprava m1 z 0395) | PROVEDENO `ab16823` (sloučeno do research/k10-step0-sources-20261118, 94 passed; MINOR regex starého testu opraven) + ODPOVĚZENO (0398; téma uzavřeno) |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
