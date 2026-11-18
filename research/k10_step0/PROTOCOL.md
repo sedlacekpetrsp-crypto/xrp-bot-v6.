@@ -59,3 +59,6 @@ samostatný protokol a řádek `SCHVÁLENO:` v `dialog/OWNER_DECISIONS.md` (resp
 3. Zdroj ledgeru — sonda proveditelnosti `research/k10_step0/ledger_probe.py` (workflow `k10-ledger-probe.yml`);
    předregistrovaný verdikt FEASIBLE_DIRECT ⇔ odhad ≤ 5 h sekvenčně a ≤ 50 GB pro všechna 4 okna. Jinak
    INFEASIBLE_DIRECT ⇒ změna zdroje/definice cohortu je dodatek protokolu s oponenturou ChatGPT, ne ad-hoc přepnutí.
+   Sonda (20 ledgerů/okno) je **jen měření proveditelnosti**: nikdy nesmí sloužit jako důkaz cohortu, rankingu ani
+   pokrytí štítky. Jakýkoli vzorkovaný ranking (např. dodatek A z 0393) by byl nová, samostatně předregistrovaná
+   metodika cohortu. Bez ní platí pro krok 0 **DATA NO-GO** (ChatGPT, PR #68, 2026-11-18 19:00).
