@@ -43,13 +43,23 @@ def make_rpc(host: str, timeout: float = 30.0, pause: float = 0.2):
     return rpc
 
 
+def require_validated(res: dict, led: dict, idx: int) -> None:
+    """Fail closed when validation is absent, false, or contradictory.
+
+    A missing flag must not be interpreted as validated historical evidence.
+    Require a literal JSON boolean True, not a truthy string or integer.
+    """
+    flags = [v for v in (res.get("validated"), led.get("validated")) if v is not None]
+    if not flags or any(v is not True for v in flags):
+        raise RuntimeError(f"ledger {idx} lacks explicit validated=true")
+
+
 def close_unix(rpc, idx: int) -> int:
     res, _, _ = rpc("ledger", {"ledger_index": idx, "transactions": False})
     led = res["ledger"]
     if int(led["ledger_index"]) != idx:
         raise RuntimeError(f"ledger index mismatch: requested {idx}, received {led['ledger_index']}")
-    if not res.get("validated", led.get("validated", True)):
-        raise RuntimeError(f"ledger {idx} not validated")
+    require_validated(res, led, idx)
     return int(led["close_time"]) + RIPPLE_EPOCH
 
 
@@ -74,8 +84,7 @@ def sample_cost(rpc, start: int, n: int) -> dict:
         led = res["ledger"]
         if int(led["ledger_index"]) != idx:
             raise RuntimeError(f"sample ledger index mismatch: requested {idx}, received {led['ledger_index']}")
-        if not res.get("validated", led.get("validated", True)):
-            raise RuntimeError(f"sample ledger {idx} not validated")
+        require_validated(res, led, idx)
         txs = led.get("transactions", [])
         nbytes += b
         secs += dt
