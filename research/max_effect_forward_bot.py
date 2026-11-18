@@ -228,13 +228,25 @@ td:first-child,th:first-child{text-align:left}.g{color:#7ee0a1}.r{color:#ff9a9a}
 <div class="card">Otevřené pozice<br><strong id="open">—</strong></div>
 <div class="card">Uzavřené obchody<br><strong id="count">—</strong></div>
 <div class="card">Příští rebalance<br><strong id="next">—</strong></div></div>
-<div class="card"><h2>Otevřené pozice</h2><div class="scroll"><table id="positions"></table></div></div>
-<div class="card"><h2>Historie simulovaných obchodů</h2><div class="scroll"><table id="trades"></table></div></div>
+<div class="card"><h2>Otevřené pozice</h2><small>Časy: Praha (CET/CEST)</small><div class="scroll"><table id="positions"></table></div></div>
+<div class="card"><h2>Historie simulovaných obchodů</h2><small>Časy: Praha (CET/CEST)</small><div class="scroll"><table id="trades"></table></div></div>
 <small>Ceny a funding: veřejná data OKX (USDT swapy). Poplatek 0,095 % + skluz 0,02 % na stranu. Stav je uložen v PostgreSQL.</small>
 <script>
 const $=id=>document.getElementById(id),n=(v,d=2)=>v==null?'—':Number(v).toFixed(d);
 const col=v=>'<td class="'+(Number(v)>=0?'g':'r')+'">'+n(v)+'</td>';
 const day=ms=>ms==null?'—':new Date(ms).toISOString().slice(0,10);
+const fmtDate=v=>{
+ if(v==null||v==='')return 'neuvedeno';
+ const d=new Date(v);
+ if(!Number.isFinite(d.getTime()))return 'neuvedeno';
+ return new Intl.DateTimeFormat('cs-CZ',{timeZone:'Europe/Prague',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(d);
+};
+const duration=(a,b)=>{
+ const x=Date.parse(a),y=Date.parse(b);
+ if(!Number.isFinite(x)||!Number.isFinite(y)||y<x)return 'neuvedeno';
+ const m=Math.floor((y-x)/60000),days=Math.floor(m/1440),hours=Math.floor(m%1440/60);
+ return (days?days+' d ':'')+hours+' h '+m%60+' min';
+};
 function px(v){v=Number(v);return v>=100?v.toFixed(2):v>=1?v.toFixed(4):v.toFixed(5)}
 async function refresh(){
 try{
@@ -248,12 +260,12 @@ $('upnl').textContent=p.unrealized_pnl==null?'—':n(p.unrealized_pnl)+' USDT';
 $('open').textContent=p.open_count??'—';$('count').textContent=p.trade_count??'—';
 $('next').textContent=day(p.next_rebalance_day);
 const pos=Object.entries(p.positions||{});
-$('positions').innerHTML=pos.length?'<tr><th>Coin</th><th>Směr</th><th>Vstup</th><th>Cena</th><th>Funding</th><th>P/L</th></tr>'+
- pos.map(([s,x])=>'<tr><td>'+s.replace('USDT','')+'</td><td>'+(x.side>0?'LONG':'SHORT')+'</td><td>'+px(x.entry)+'</td><td>'+px(x.last_price)+'</td>'+col(x.funding)+col(x.unrealized_pnl)+'</tr>').join('')
+$('positions').innerHTML=pos.length?'<tr><th>Coin</th><th>Směr</th><th>Otevřeno</th><th>Vstup</th><th>Cena</th><th>Funding</th><th>P/L</th></tr>'+
+ pos.map(([s,x])=>'<tr><td>'+s.replace('USDT','')+'</td><td>'+(x.side>0?'LONG':'SHORT')+'</td><td>'+fmtDate(x.entry_at)+'</td><td>'+px(x.entry)+'</td><td>'+px(x.last_price)+'</td>'+col(x.funding)+col(x.unrealized_pnl)+'</tr>').join('')
  :'<tr><td>Žádná otevřená pozice – první vstup proběhne '+day(p.next_rebalance_day)+'.</td></tr>';
 const tr=(p.trades||[]).slice(-30).reverse();
-$('trades').innerHTML=tr.length?'<tr><th>Coin</th><th>Směr</th><th>Výstup</th><th>Důvod</th><th>P/L</th></tr>'+
- tr.map(t=>'<tr><td>'+t.symbol.replace('USDT','')+'</td><td>'+t.side+'</td><td>'+String(t.exit_at).slice(0,10)+'</td><td>'+t.reason+'</td>'+col(t.net_pnl)+'</tr>').join('')
+$('trades').innerHTML=tr.length?'<tr><th>Coin</th><th>Směr</th><th>Otevřeno</th><th>Uzavřeno</th><th>Držení</th><th>Vstup</th><th>Výstup</th><th>Důvod</th><th>Čistý P/L</th></tr>'+
+ tr.map(t=>'<tr><td>'+t.symbol.replace('USDT','')+'</td><td>'+t.side+'</td><td>'+fmtDate(t.entry_at)+'</td><td>'+fmtDate(t.exit_at)+'</td><td>'+duration(t.entry_at,t.exit_at)+'</td><td>'+px(t.entry)+'</td><td>'+(t.exit==null?'—':px(t.exit))+'</td><td>'+t.reason+'</td>'+col(t.net_pnl)+'</tr>').join('')
  :'<tr><td>Zatím žádný uzavřený obchod.</td></tr>';
 }catch(e){$('health').textContent='Chyba načtení: '+e.message;}
 }refresh();setInterval(refresh,15000);
