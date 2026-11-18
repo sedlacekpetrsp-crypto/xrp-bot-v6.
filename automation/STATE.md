@@ -11,39 +11,35 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-18 15:10 UTC, autopilot běh #79 — bez nové výzkumné změny)
-- **Produkce (jen čtení, běh #79):** live `01c69ff` beze změny (deploy 2026-11-15 20:56 UTC); 0 událostí 11:00–15:05; 1 error log 13:00 UTC
-  (`SYMBOL SCAN ERROR ETHUSDT` — HTTP 500 z data-api.binance.vision, externí, jednorázový); MAX-efekt PAPER equity 10 095,50, funding průběžně;
-  bestof 132, jen známá duplicita 128/129 (1 skupina); `lh_whale_trades` n=3; DB 289 207 999 B ≈ 26,9 % z 1 GB.
-- **Výzkumné větve a SHA:** K9 `research/k9-step0-audit-20261116` tip `aa9bbbb` (draft [PR #63](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/63));
-  K9 dodatek 2 `research/k9-phaseB-prereg-20261117` tip `6faa8c3` (draft [PR #64](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/64));
-  **K9 runner fáze B `research/k9-phaseB-runner-20261117` tip `de05c40`** (patch 0366 `8f29fd4`, nonfinite `458cabd`, **oprava 3** 0369/0370: benchmark d) bez všech signálních minut) (draft [PR #65](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/65), base = PR #64; dodatek 2 oprava 1 + **oprava 2** dle ChatGPT 0364: párovaný benchmark d) RV+likvidita PIT, DSR brána N = 450, funding = modelovaná citlivost, ekonomické NO-GO důvody zvlášť);
-  G1 Top Risk radar `research/xrp-top-risk-radar-v1-20261108` tip `f2e1477` (vlastník ChatGPT, reviewer Claude);
-  K7 FOMC `research/k7-macro-audit-20261111` (`78abe38`); PIT-GATE-01 (ChatGPT) `research/chatgpt-pit-availability-gate-20261116` tip `acc7c5d`.
-- **K9 fáze B dev (schváleno vlastníkem 2026-11-17 „Schvaleno“, OWNER_DECISIONS `28bc1d1`; run 44111578937 → `5711ac0`): NO-GO — předbrána.** Hrubý průměr/obchod H15 −0,014 % (n 10 143), H60 −0,018 % (n 9 732) ≪ 0,42 %; net ×1 −0,155/−0,162 %; nezávislý přepočet z cen shoda; data ≤ 2023-12-31. Závěr 2024–26 NEOTEVŘEN, final se nespouští. **K9 ZAMÍTNUTO.**
-- **R10b ledger N (běh #73):** `research/trial-ledger-20261117` tip `8c8b723`, draft [PR #66](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/66): doložené N **238 / 306 < 450** ⇒ K9 brána e) N = 450 beze změny (review ChatGPT 0374 Q1–Q2).
-- **G1 (schváleno 2026-11-12, max. 1 běh):** freeze **NEZAMČEN** (ChatGPT) ⇒ výkon NESPOUŠTĚT; po oznámení freeze review Claude ⇒ jediný `workflow_dispatch`.
-- **Čeká na vlastníka:** PR #57 nasadit jen se souhlasem; PR #54, #8, #9, #10, #62–#65 neslučovat; id 129 neměnit;
-  K7 výkon jen s „SCHVÁLENO: výkonnost K7“; K9 uzavřeno (dev NO-GO), final NESPOUŠTĚT.
+## CHECKPOINT (přepisuje se; stav k 2026-11-18 19:20 UTC, autopilot běh #80 — K10 krok 0 DATA NO-GO zaevidováno)
+- **Produkce (jen čtení, běh #80):** live `01c69ff` beze změny (deploy 2026-11-15 20:56 UTC); 0 událostí 15:00–19:10; 1 error log 19:00 UTC
+  (`SYMBOL SCAN ERROR XRPUSDT` — HTTP 500 z data-api.binance.vision, externí, jednorázový, stejná třída jako 13:00);
+  bestof 132, jen známá duplicita 128/129 (1 skupina); `lh_whale_trades` n=3; DB 288 577 215 B ≈ 26,9 % z 1 GB.
+- **Výzkumné větve a SHA:** K9 PR #63 `aa9bbbb`, #64 `6faa8c3`, #65 `de05c40` (K9 **ZAMÍTNUTO**, dev NO-GO předbrána, run 44111578937 → `5711ac0`, final NESPOUŠTĚT);
+  R10b ledger N PR #66 `8c8b723` (N 238/306 < 450); G1 Top Risk radar `research/xrp-top-risk-radar-v1-20261108` tip `f2e1477` (vlastník ChatGPT, reviewer Claude);
+  K7 FOMC `78abe38`; PIT-GATE-01 (ChatGPT) `research/chatgpt-pit-availability-gate-20261116` tip **`ffb1b5d`** (dříve uváděno `acc7c5d`);
+  **K10** `research/k10-step0-sources-20261118` tip **`6167226`** (draft [PR #68](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/68); `tests -k k10` 82 passed, ověřeno během #80).
+- **K10 XRPL-EXCHANGE-INFLOW krok 0: DATA NO-GO (zdroj ledgeru)** — ChatGPT odpověděl na 0393–0395 komentářem v PR #68 (2026-11-18 19:00 UTC):
+  řídký vzorek ledgerů měří jen proveditelnost, **nenahrazuje** plný výčet cohortu bez nové předregistrované metodiky; conflict gate `7494bca` NEINTEGROVAT
+  (S1/S2 stejný poskytovatel ⇒ nejsou nezávislé); `validated` striktně až ve sběru. Dialogová session Clauda (19:01): modul `a4221f1` (sample claim gate,
+  91 passed) NEINTEGROVAT (bez volajícího), místo toho PROTOCOL §6.3 `6167226`. Plný výčet ≈ 603–1 045 h / 1,08 TB ≫ práh 5 h / 50 GB.
+  Znovuotevření jen samostatně předregistrovaným dodatkem cohortové metodiky se souhlasem druhého vývojáře; výkon K10 se nepočítal. N +0.
+- **G1 (schváleno 2026-11-12, max. 1 běh):** freeze **NEZAMČEN** (ChatGPT, tip beze změny od 2026-11-16) ⇒ výkon NESPOUŠTĚT.
+- **Čeká na vlastníka:** PR #57 nasadit jen se souhlasem; PR #54, #8, #9, #10, #62–#68 neslučovat; id 129 neměnit;
+  K7 výkon jen s „SCHVÁLENO: výkonnost K7“.
 - **Bezpečnostní brány:** výhradně PAPER; žádný LIVE/Render zápis/deploy/merge/force push; `FUNDING_SEMANTICS.json`
   (performance_hold, R8/R9) neměnit; výkon jen s řádkem SCHVÁLENO; `OWNER_DECISIONS.md` nikdy neupravovat ani nezkracovat.
-- **Hypotézy (TRVALÝ LOV):** 2026-11-17 1/3 (K10 navrženo v 0379) (K9 pokračuje, R10b je metodika). K9 předbrána: hrubý průměr ve vývoji < 0,42 % ⇒ NO-GO bez otevření závěru (prior nízký).
+- **Hypotézy (TRVALÝ LOV):** 2026-11-18 0 nových (K10 je z 11-17). Běh #80 prověřil kandidáty proti inventáři/registru a dialogu:
+  korejská prémie XRP (Upbit) = K4 už zamítnut v 0258 (NESOUHLAS ChatGPT), turn-of-month = PR #12 NEPROŠEL ⇒ žádný nový mechanismus
+  s dostatečnou novostí nenalezen, nic se nezakládá jen kvůli kvótě (prompt §12, rámec §6).
 - **Forward RSI(2) (post-hoc výjimka vlastníka):** 0 obchodů; kontrola 2026-12-16, hlavní vyhodnocení ≥ 30 obchodů a nejdřív 2027-01-05.
 - **Další plánované:** 2026-12-01 Combined replay s `--end 2026-12-01`.
 - **Provozní/autopilot blokery:** žádné. Sandbox nemá přístup na data.binance.vision ani PyPI ⇒ data jen přes Actions.
 - **Pozn. kolize čísel:** dialogová úloha a autopilot píší souběžně ⇒ před commitem zprávy vždy `git fetch` a kontrola posledního čísla.
-- **K10 XRPL-EXCHANGE-INFLOW (krok 0, jen DATA):** historie dialogu 0378–0392 (cohort N=50 z XRPL ledgeru, 90 d, 2020–2023, ≥ 80 % pokrytí štítky z Wayback;
-  gate `validate_labels` + spojka `d3aab73` PR #67; moduly ChatGPT as-of/temporal/atribuce NEINTEGROVAT). **Běh #78:** §6.2 zdroje štítků předregistrovány
-  `ecb93b3` (`research/k10-step0-sources-20261118`, draft [PR #68](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/68); S1/S2 XRPScan JSON, allowlist 46, R1–R7, 72 passed);
-  §6.3 sonda ledgeru run 44292166671 (`cfc15a8`): oba hosty full-history, okna ~1,94–2,01 mil. ledgerů ⇒ ≈ 603 h / 1,08 TB ⇒ **INFEASIBLE_DIRECT** (práh 5 h / 50 GB).
-  Dialog **0393** (`c46d8c7`): Q1 dodatek A (vzorek každého 100. ledgeru ≈ 6 h / 11 GB), Q2 BigQuery jen s vlastníkem (nenavrhuji), Q3 jinak DATA NO-GO, Q4 překryv `7494bca` s R5.
-  **Žádný CDX dotaz ani vzorek ledgeru do odpovědi ChatGPT.**
-  Po #78 (dialogová session Clauda): sloučeny opravy ChatGPT do PR #68 — window-sample guard `d5cbf6c` (76 passed) a RPC wall-time `e631181`
-  (odhad konzervativnější, verdikt INFEASIBLE_DIRECT beze změny). **Formální odpověď ChatGPT na 0393 Q1–Q4 stále chybí** (k 15:05 UTC).
-- **Čeká na ChatGPT:** 0393 (K10 proveditelnost), 0390 Q2 (review `d3aab73`), 0374 (BLOCKER cost gate; PR #66), 0375, 0357.
-- **DALŠÍ KROK:** po odpovědi na 0393 buď předregistrovat dodatek A (k=100, zmrazit před během) a spustit krok 0 v Actions, nebo K10 uzavřít DATA NO-GO;
-  bez odpovědi nic nespouštět. Běh #79 novou hypotézu záměrně NEOTEVŘEL (rozpracovaný K10 má přednost, rámec §1 „dokončuj rozpracované“;
-  souběžně na K10 pracuje dialogová session ⇒ riziko duplicity); 2026-11-18 zatím 0 nových hypotéz.
+  ChatGPT nyní odpovídá i komentáři v PR (ne jen zprávami v `dialog/messages/`) ⇒ INBOX kontrolovat i proti komentářům PR.
+- **Čeká na ChatGPT:** G1 freeze, 0374 (BLOCKER cost gate; PR #66), 0375, 0357; 0393–0395 věcně zodpovězeny v PR #68 (INBOX aktualizuje dialogová úloha).
+- **DALŠÍ KROK:** dialogová úloha pošle ChatGPT návrh K11 s mechanismem mimo vyčerpané rodiny (derivátový crowding, makro, on-chain aktivita,
+  kalendář, korejská prémie) a vyžádá jeho 1–2 návrhy; autopilot pak provede novelty gate a protokol. Bez nového kandidáta nic nespouštět.
 
 ## Aktivní body ze starších front (výtah; plné znění jen v archivu)
 - R3b forward PAPER RSI(2): parametry přesně jako PR #13, značit „(post-hoc, B6 nesplněno)“, žádný produkční bot (archiv ř. 190–211).

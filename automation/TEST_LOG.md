@@ -152,3 +152,5 @@
 | 2026-11-18 07:25 | d3aab73 | pytest lokálně (K10 spojka ArchivedLabel↔Snapshot) | `tests/test_k10_*.py` 63 passed, 10 subtests (syntetické) | PR #67, dialog 0390 |
 | 2026-11-18 11:08 | ecb93b3 | pytest lokálně (K10 §6.2 zdroje + §6.3 sonda, syntetické) | `tests -k k10` 72 passed, 10 subtests (9 nových) | PR #68 |
 | 2026-11-18 11:12 | ecb93b3 → cfc15a8 | K10 §6.3 ledger probe (Actions, jen metadata) | success; s2.ripple.com + xrplcluster.com full-history 32570-108409471; okna 1 986 638 / 2 009 516 / 1 944 308 / 2 012 794 ledgerů; odhad 603 h / 1,08 TB ⇒ INFEASIBLE_DIRECT (práh 5 h / 50 GB) | actions/runs/44292166671, dialog 0393 |
+| 2026-11-18 13:07–19:01 | d5cbf6c / e631181 / f9b7eba / a4221f1 | pytest lokálně (dialogová session; opravy ChatGPT PR #68, syntetické) | 76 → 78 → 82 passed; sample claim gate `a4221f1` 91 passed (NEINTEGROVÁN) | komentáře [PR #68](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/68) |
+| 2026-11-18 19:15 | 6167226 | pytest lokálně, autopilot běh #80 (nezávislé ověření tipu PR #68) | `tests -k k10` 82 passed, 10 subtests; tržní data ani výnosy nepočítány | STATE běh #80 |
