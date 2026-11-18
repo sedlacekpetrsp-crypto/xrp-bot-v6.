@@ -1,0 +1,1 @@
+{"est_hours_sequential": 603.38, "est_gb": 1080.81, "thresholds": {"max_hours": 5.0, "max_gb": 50.0}, "verdict": "INFEASIBLE_DIRECT"} windows: [(2020, 1986638), (2021, 2009516), (2022, 1944308), (2023, 2012794)]

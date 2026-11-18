@@ -1,0 +1,83 @@
+{
+  "chosen_host": "https://s2.ripple.com:51234/",
+  "generated_at": "2026-11-18T11:12:15.721238+00:00",
+  "hosts": [
+    {
+      "build_version": null,
+      "complete_ledgers": "32570-108409471",
+      "full_history": true,
+      "host": "https://s2.ripple.com:51234/",
+      "validated": 108409471
+    },
+    {
+      "build_version": "3.4.1",
+      "complete_ledgers": "32570-108409471",
+      "full_history": true,
+      "host": "https://xrplcluster.com/",
+      "validated": 108409471
+    }
+  ],
+  "result": {
+    "est_gb": 1080.81,
+    "est_hours_sequential": 603.38,
+    "thresholds": {
+      "max_gb": 50.0,
+      "max_hours": 5.0
+    },
+    "verdict": "INFEASIBLE_DIRECT"
+  },
+  "windows": [
+    {
+      "count": 1986638,
+      "end_exclusive": 52431070,
+      "first_ledger": 50444432,
+      "sample": {
+        "bytes": 2236399,
+        "ledgers": 20,
+        "payments": 127,
+        "seconds": 5.355,
+        "tx": 697
+      },
+      "year": 2020
+    },
+    {
+      "count": 2009516,
+      "end_exclusive": 60596732,
+      "first_ledger": 58587216,
+      "sample": {
+        "bytes": 2758236,
+        "ledgers": 20,
+        "payments": 114,
+        "seconds": 5.274,
+        "tx": 882
+      },
+      "year": 2021
+    },
+    {
+      "count": 1944308,
+      "end_exclusive": 68710263,
+      "first_ledger": 66765955,
+      "sample": {
+        "bytes": 3018361,
+        "ledgers": 20,
+        "payments": 103,
+        "seconds": 5.736,
+        "tx": 1009
+      },
+      "year": 2022
+    },
+    {
+      "count": 2012794,
+      "end_exclusive": 76811784,
+      "first_ledger": 74798990,
+      "sample": {
+        "bytes": 2862646,
+        "ledgers": 20,
+        "payments": 236,
+        "seconds": 5.492,
+        "tx": 975
+      },
+      "year": 2023
+    }
+  ]
+}
