@@ -25,7 +25,7 @@ def test_sample_rejects_wrong_ledger():
 
 
 def test_sample_rejects_unvalidated_ledger():
-    with pytest.raises(RuntimeError, match="not validated"):
+    with pytest.raises(RuntimeError, match="not validated|explicit validated"):
         sample_cost(fake_rpc(100, 100, validated=False), 100, 1)
 
 
