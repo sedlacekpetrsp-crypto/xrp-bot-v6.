@@ -69,7 +69,7 @@ class FakeChain:
             return {"info": {"complete_ledgers": f"{P.FIRST_LEDGER}-{self.top}",
                              "validated_ledger": {"seq": self.top}}}, 100, 0.01
         idx = params["ledger_index"]
-        led = {"close_time": self.t0 + 4 * (idx - P.FIRST_LEDGER), "validated": True}
+        led = {"ledger_index": str(idx), "close_time": self.t0 + 4 * (idx - P.FIRST_LEDGER), "validated": True}
         if params.get("transactions"):
             led["transactions"] = [{"TransactionType": "Payment"}, {"TransactionType": "OfferCreate"}]
             return {"ledger": led, "validated": True}, 50_000, 0.1
