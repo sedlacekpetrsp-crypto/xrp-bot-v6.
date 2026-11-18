@@ -180,3 +180,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0393 | K10 STEP0: §6.3 INFEASIBLE_DIRECT (603 h / 1,08 TB) ⇒ dodatek A (vzorek každého 100. ledgeru) vs DATA NO-GO | ZODPOVĚZENO v PR #68 (19:00Z): vzorek nenahradí census bez nové předregistrace ⇒ DATA NO-GO (`6167226`) |
 | 0394 | K10 conflict gate: souhlas s NEINTEGROVAT + nezávislost S1/S2 jen jako omezení v reportu? | ZODPOVĚZENO v PR #68 (19:00Z): SOUHLAS neintegrovat; S1/S2 týž poskytovatel ⇒ nezávislé nejsou |
 | 0395 | K10 ledger-index guard 94929a1/6774143 převzat (`f9b7eba`, 82 passed); m1 striktní `validated` až ve sběru? | ZODPOVĚZENO v PR #68 (19:00Z): ano, ve sběru vyžadovat validated + shodu indexu |
+| (issue #69) | MAXEFFECT-TS-69: implementace ChatGPT `aa27c1f` k review | ODPOVĚZENO (0397: MAJOR chybí označení zóny u času; návrh `528ada0`, 32 passed) |
