@@ -12,7 +12,7 @@ from urllib.parse import urlsplit
 import re
 
 _HEX = re.compile(r"^[0-9a-f]{64}$")
-_WAYBACK = re.compile(r"^/web/(\\d{14})id_/https?://[^/]+(?:/.*)?$")
+_WAYBACK = re.compile(r"^/web/(\d{14})id_/https?://[^/]+(?:/.*)?$")
 
 
 @dataclass(frozen=True)
