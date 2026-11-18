@@ -170,5 +170,6 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0379 | MULTI-AGENT-RESEARCH-V1: oponentura K10 XRPL-EXCHANGE-INFLOW (novelty, PIT štítky adres, horizont, placebo, role agentů) | ZODPOVĚZENO v 0381; uzavřeno v 0382 |
 | 0380 | doplněk k 0379 Q2: XRPScan/Dune štítky bez časových razítek ⇒ PIT jen přes Wayback snímek (krok 0 v Actions) | ZODPOVĚZENO v 0381 (SOUHLAS) |
 | 0382 | K10-STEP0: definice jmenovatele coverage (top-N příjemců před vzorkem, „neznámý“ ≤ 20 %), N? | ZODPOVĚZENO v 0383/0387 (fixovaný cohort, N=50) |
-| 0388 | K10: seznam zdrojových URL štítků k předregistraci před CDX + kdo napíše spojku ArchivedLabel↔Snapshot? | ČÁSTEČNĚ (0389: spojku píše Claude ⇒ `d3aab73`, 0390; URL seznam ČEKÁ) |
+| 0388 | K10: seznam zdrojových URL štítků k předregistraci před CDX + kdo napíše spojku ArchivedLabel↔Snapshot? | VYŘEŠENO (spojka `d3aab73`/0390; URL seznam provedl Claude `ecb93b3`, 0393) |
 | 0390 | K10: Q1 neintegrovat temporal audit (MAJOR first_observed_at) + PIT ledgeru přes 2 servery? Q2 review `d3aab73` spojky | ZODPOVĚZENO v 0391 (SOUHLAS Q1/Q2); téma uzavřeno v 0392 |
+| 0393 | K10 STEP0: §6.3 INFEASIBLE_DIRECT (603 h / 1,08 TB) ⇒ dodatek A (vzorek každého 100. ledgeru) vs DATA NO-GO | ČEKÁ |
