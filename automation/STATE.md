@@ -11,9 +11,9 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-17 23:15 UTC, autopilot běh #75)
-- **Produkce (jen čtení):** live `01c69ff` beze změny (deploy 2026-11-15 20:56 UTC); 0 událostí a 0 error logů 19:00–23:05;
-  bestof 132, jen známá duplicita 128/129 (1 skupina); `lh_whale_trades` n=3; DB 288 675 519 B ≈ 26,9 % z 1 GB.
+## CHECKPOINT (přepisuje se; stav k 2026-11-18 03:20 UTC, autopilot běh #76)
+- **Produkce (jen čtení):** live `01c69ff` beze změny (deploy 2026-11-15 20:56 UTC); 0 událostí a 0 error logů 23:00–03:04;
+  bestof 132, jen známá duplicita 128/129 (1 skupina); `lh_whale_trades` n=3; DB 288 036 543 B ≈ 26,8 % z 1 GB.
 - **Výzkumné větve a SHA:** K9 `research/k9-step0-audit-20261116` tip `aa9bbbb` (draft [PR #63](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/63));
   K9 dodatek 2 `research/k9-phaseB-prereg-20261117` tip `6faa8c3` (draft [PR #64](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/64));
   **K9 runner fáze B `research/k9-phaseB-runner-20261117` tip `de05c40`** (patch 0366 `8f29fd4`, nonfinite `458cabd`, **oprava 3** 0369/0370: benchmark d) bez všech signálních minut) (draft [PR #65](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/65), base = PR #64; dodatek 2 oprava 1 + **oprava 2** dle ChatGPT 0364: párovaný benchmark d) RV+likvidita PIT, DSR brána N = 450, funding = modelovaná citlivost, ekonomické NO-GO důvody zvlášť);
@@ -32,6 +32,7 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 - **Hypotézy (TRVALÝ LOV):** 2026-11-17 1/3 (K10 navrženo v 0379) (K9 pokračuje, R10b je metodika). K9 předbrána: hrubý průměr ve vývoji < 0,42 % ⇒ NO-GO bez otevření závěru (prior nízký).
 - **MULTI-AGENT-RESEARCH-V1 (vlastník 2026-11-17, OWNER_DECISIONS `cd36cc9`, jen PAPER):** dialog 0378→0379 (inventura, REJECT LLM v exekuci/riziku, návrh **K10 XRPL-EXCHANGE-INFLOW**, nic nezmrazeno) + 0380 (štítky adres XRPScan/Dune bez PIT razítek ⇒ Wayback v kroku 0). Oponentura ChatGPT 0381 (kolo 3, SOUHLAS Q1–Q5: 60 min primární, matched non-exchange kontrola, DATA NO-GO bez historických PIT štítků) → Claude 0382: label PIT gate `2a36e7d` (research/chatgpt-k10-label-pit-gate-20261117) CONDITIONAL, 16 passed, 1 MAJOR (definice jmenovatele coverage) + 2 MINOR (base58 checksum, Wayback host).
 - **K10 krok 0 (běh #75):** ChatGPT 0383 fixed-cohort jmenovatel `cc2b0dc` (`research/chatgpt-k10-fixed-cohort-20261117`) → Claude **0384** (`1ebc688`): exact-SHA 27 passed, CONDITIONAL ACCEPT, 0 MAJOR, 3 MINOR (společné as-of, typ štítků PIT, validace adres). Návrh: ranking z XRPL ledgeru, **N = 50**, okno 90 d před 1. 1., roky dev 2020–2023, ≥ 80 % v každém roce, jinak DATA NO-GO. Čeká na souhlas ChatGPT.
+- **K10 běh #76:** ChatGPT bez zprávy pushnul snapshot-bytes gate `d9be866` (`research/chatgpt-k10-snapshot-bytes-20261118`) → Claude **0386** (`d77286f`): 44 passed, ACCEPT novosti (doplňuje `validate_labels`), MAJOR-1 `captured_at` odvodit z Wayback URL/CDX, MINOR: striktní `<`, allowlist hostů, spojka ArchivedLabel↔Snapshot. Čeká ChatGPT: 0384-claude (cohort N=50), 0385 Q1, 0386. **Mlčení ≠ souhlas ⇒ protokol kroku 0 zatím nepsán.**
 - **DALŠÍ KROK (fronta, dohodnuto 0381/0382):** protokol kroku 0 K10 = Wayback CDX inventura snímků štítků burzovních účtů XRPL (jen metadata+SHA, bez cen/výkonu); bez historických snímků ⇒ DATA NO-GO, žádné heuristické štítky. Původní text: (jen data, před stažením) ve větvi `research/k10-xrpl-inflow-audit-<datum>`; bez odpovědi nic nezmrazovat.
 - **Forward RSI(2) (post-hoc výjimka vlastníka):** 0 obchodů; kontrola 2026-12-16, hlavní vyhodnocení ≥ 30 obchodů a nejdřív 2027-01-05.
 - **Další plánované:** 2026-12-01 Combined replay s `--end 2026-12-01`.
