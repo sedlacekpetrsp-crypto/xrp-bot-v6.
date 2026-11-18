@@ -32,8 +32,10 @@ def make_rpc(host: str, timeout: float = 30.0, pause: float = 0.2):
         t0 = time.monotonic()
         with urllib.request.urlopen(req, timeout=timeout) as r:
             raw = r.read()
-        dt = time.monotonic() - t0
+        # Include the mandatory pacing delay in sequential fetch-cost estimates.
+        # Excluding it understates the preregistered 5-hour feasibility threshold.
         time.sleep(pause)
+        dt = time.monotonic() - t0
         res = json.loads(raw)["result"]
         if res.get("status") != "success":
             raise RuntimeError(f"{method}: {res.get('error', 'not success')}")
