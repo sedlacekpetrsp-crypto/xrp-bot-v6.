@@ -8,6 +8,8 @@ from datetime import datetime, timezone
 from math import fsum, isfinite
 from typing import Mapping, Sequence
 
+from research.k10_label_pit_gate import _ACCOUNT, ArchivedLabel
+
 @dataclass(frozen=True)
 class CohortMember:
     address: str
@@ -17,7 +19,7 @@ class CohortMember:
 def fixed_cohort_coverage(
     cohort: Sequence[CohortMember],
     destination_xrp: Mapping[str, float],
-    pit_labels: Mapping[str, object],
+    pit_labels: Mapping[str, ArchivedLabel],
     sample_start: datetime,
     threshold: float = 0.80,
 ) -> tuple[float, bool]:
@@ -34,18 +36,27 @@ def fixed_cohort_coverage(
         raise ValueError("empty preselected cohort")
     addresses = set()
     ranks = set()
+    as_of = cohort[0].ranked_at if isinstance(cohort[0], CohortMember) else None
     for member in cohort:
-        if not isinstance(member, CohortMember) or not member.address or member.address in addresses or isinstance(member.rank, bool) or not isinstance(member.rank, int) or member.rank < 1 or member.rank in ranks:
+        if not isinstance(member, CohortMember) or not isinstance(member.address, str) or not _ACCOUNT.fullmatch(member.address) or member.address in addresses or isinstance(member.rank, bool) or not isinstance(member.rank, int) or member.rank < 1 or member.rank in ranks:
             raise ValueError("invalid or duplicate frozen cohort")
         t = member.ranked_at
         if not isinstance(t, datetime) or t.tzinfo is None or t.utcoffset() is None or t.utcoffset().total_seconds() != 0 or t >= sample_start:
             raise ValueError("cohort ranking not PIT")
+        if t != as_of:
+            raise ValueError("cohort must share a single ranking as-of time")
         addresses.add(member.address)
         ranks.add(member.rank)
     if ranks != set(range(1, len(cohort) + 1)):
         raise ValueError("cohort rank gaps")
     if set(destination_xrp) != addresses:
         raise ValueError("all and only cohort destinations required, including unknowns")
+    for account, label in pit_labels.items():
+        if not isinstance(label, ArchivedLabel) or label.account != account:
+            raise ValueError("PIT label must be an ArchivedLabel keyed by its account")
+        c = label.captured_at
+        if not isinstance(c, datetime) or c.tzinfo is None or c.utcoffset() is None or c.utcoffset().total_seconds() != 0 or c >= sample_start:
+            raise ValueError("label snapshot not strictly prior to sample")
     amounts = []
     labeled = []
     for member in cohort:
