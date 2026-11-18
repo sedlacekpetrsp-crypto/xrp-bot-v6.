@@ -12,7 +12,7 @@ class SnapshotBytesGateTests(unittest.TestCase):
         t = datetime(2023, 1, 1, tzinfo=timezone.utc)
         content = b"archived exchange attribution fixture"
         self.valid = Snapshot(
-            "https://archive.example.org/snapshot/1", t, t + timedelta(days=1),
+            "https://web.archive.org/web/20230101000000id_/https://example.org/labels.csv", t, t + timedelta(days=1),
             sha256(content).hexdigest(), content,
         )
 
@@ -47,6 +47,26 @@ class SnapshotBytesGateTests(unittest.TestCase):
             with self.subTest(url=url):
                 with self.assertRaises(ValueError):
                     verify_snapshot(replace(self.valid, source_url=url))
+
+    def test_equal_decision_time_rejected(self):
+        with self.assertRaises(ValueError):
+            verify_snapshot(replace(self.valid, decision_at=self.valid.captured_at))
+
+    def test_url_timestamp_mismatch_rejected(self):
+        with self.assertRaises(ValueError):
+            verify_snapshot(replace(self.valid, source_url=self.valid.source_url.replace("20230101", "20240101")))
+
+    def test_untrusted_host_rejected(self):
+        with self.assertRaises(ValueError):
+            verify_snapshot(replace(self.valid, source_url=self.valid.source_url.replace("web.archive.org", "evil.example")))
+
+    def test_non_raw_wayback_rejected(self):
+        with self.assertRaises(ValueError):
+            verify_snapshot(replace(self.valid, source_url=self.valid.source_url.replace("id_/", "/")))
+
+    def test_invalid_port_rejected(self):
+        with self.assertRaises(ValueError):
+            verify_snapshot(replace(self.valid, source_url=self.valid.source_url.replace("web.archive.org", "web.archive.org:99999")))
 
     def test_empty_or_wrong_type_bytes(self):
         for payload in (b"", "text", None):
