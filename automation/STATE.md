@@ -11,9 +11,10 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-18 11:35 UTC, autopilot běh #78)
-- **Produkce (jen čtení):** live `01c69ff` beze změny (deploy 2026-11-15 20:56 UTC); 0 událostí a 0 error logů 07:00–11:05; workery skenují;
-  bestof 132, jen známá duplicita 128/129 (1 skupina); `lh_whale_trades` n=3; DB 288 593 599 B ≈ 26,9 % z 1 GB.
+## CHECKPOINT (přepisuje se; stav k 2026-11-18 15:10 UTC, autopilot běh #79 — bez nové výzkumné změny)
+- **Produkce (jen čtení, běh #79):** live `01c69ff` beze změny (deploy 2026-11-15 20:56 UTC); 0 událostí 11:00–15:05; 1 error log 13:00 UTC
+  (`SYMBOL SCAN ERROR ETHUSDT` — HTTP 500 z data-api.binance.vision, externí, jednorázový); MAX-efekt PAPER equity 10 095,50, funding průběžně;
+  bestof 132, jen známá duplicita 128/129 (1 skupina); `lh_whale_trades` n=3; DB 289 207 999 B ≈ 26,9 % z 1 GB.
 - **Výzkumné větve a SHA:** K9 `research/k9-step0-audit-20261116` tip `aa9bbbb` (draft [PR #63](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/63));
   K9 dodatek 2 `research/k9-phaseB-prereg-20261117` tip `6faa8c3` (draft [PR #64](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/64));
   **K9 runner fáze B `research/k9-phaseB-runner-20261117` tip `de05c40`** (patch 0366 `8f29fd4`, nonfinite `458cabd`, **oprava 3** 0369/0370: benchmark d) bez všech signálních minut) (draft [PR #65](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/65), base = PR #64; dodatek 2 oprava 1 + **oprava 2** dle ChatGPT 0364: párovaný benchmark d) RV+likvidita PIT, DSR brána N = 450, funding = modelovaná citlivost, ekonomické NO-GO důvody zvlášť);
@@ -37,9 +38,12 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
   §6.3 sonda ledgeru run 44292166671 (`cfc15a8`): oba hosty full-history, okna ~1,94–2,01 mil. ledgerů ⇒ ≈ 603 h / 1,08 TB ⇒ **INFEASIBLE_DIRECT** (práh 5 h / 50 GB).
   Dialog **0393** (`c46d8c7`): Q1 dodatek A (vzorek každého 100. ledgeru ≈ 6 h / 11 GB), Q2 BigQuery jen s vlastníkem (nenavrhuji), Q3 jinak DATA NO-GO, Q4 překryv `7494bca` s R5.
   **Žádný CDX dotaz ani vzorek ledgeru do odpovědi ChatGPT.**
+  Po #78 (dialogová session Clauda): sloučeny opravy ChatGPT do PR #68 — window-sample guard `d5cbf6c` (76 passed) a RPC wall-time `e631181`
+  (odhad konzervativnější, verdikt INFEASIBLE_DIRECT beze změny). **Formální odpověď ChatGPT na 0393 Q1–Q4 stále chybí** (k 15:05 UTC).
 - **Čeká na ChatGPT:** 0393 (K10 proveditelnost), 0390 Q2 (review `d3aab73`), 0374 (BLOCKER cost gate; PR #66), 0375, 0357.
 - **DALŠÍ KROK:** po odpovědi na 0393 buď předregistrovat dodatek A (k=100, zmrazit před během) a spustit krok 0 v Actions, nebo K10 uzavřít DATA NO-GO;
-  bez odpovědi nic nespouštět a případně posunout jinou hypotézu (TRVALÝ LOV, max 3/den; 2026-11-18 zatím 0 nových).
+  bez odpovědi nic nespouštět. Běh #79 novou hypotézu záměrně NEOTEVŘEL (rozpracovaný K10 má přednost, rámec §1 „dokončuj rozpracované“;
+  souběžně na K10 pracuje dialogová session ⇒ riziko duplicity); 2026-11-18 zatím 0 nových hypotéz.
 
 ## Aktivní body ze starších front (výtah; plné znění jen v archivu)
 - R3b forward PAPER RSI(2): parametry přesně jako PR #13, značit „(post-hoc, B6 nesplněno)“, žádný produkční bot (archiv ř. 190–211).

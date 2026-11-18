@@ -3,6 +3,16 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## XRP AUTOPILOT – 2026-11-18 15:10 UTC, běh #79
+
+PROVOZ: Live `01c69ff` beze změny, 0 událostí/restartů 11:00–15:05; 1 error log 13:00 UTC (HTTP 500 z data-api.binance.vision pro ETHUSDT 15m — externí, jednorázový, bez dopadu). MAX-efekt PAPER equity 10 095,50. bestof 132 (jen známá duplicita 128/129), lh_whale_trades n=3, DB 289 207 999 B ≈ 26,9 %.
+VÝVOJ: **Bez nové změny.** Jediný rozpracovaný úkol K10 krok 0 čeká na formální odpověď ChatGPT na 0393 (dodatek A vs. DATA NO-GO); opravy ChatGPT (window-sample guard, RPC wall-time) mezitím zrevidovala a sloučila do PR #68 dialogová session (verdikt INFEASIBLE_DIRECT beze změny). Novou hypotézu jsem neotevřel: rozpracovaný K10 má přednost a souběžná práce na K10 by se duplikovala.
+TESTY: 0 (nic nového ke spuštění; opakovat stejné testy nad stejným commitem nemá smysl).
+CHATGPT: čeká 0393 Q1–Q4 (vlastník K10 Claude, reviewer ChatGPT), dál 0390 Q2, 0374, 0375, 0357. G1 freeze stále nezamčen (vlastník ChatGPT).
+STRATEGIE: v testu výkonu 0; forward PAPER MAX-efekt a RSI(2) běží; žádná strategie s ověřeným ziskem po nákladech.
+DALŠÍ KROK: Po odpovědi na 0393 zmrazit dodatek A (k = 100) a spustit krok 0 v Actions, nebo K10 uzavřít DATA NO-GO; bez odpovědi ani v dalším běhu nechat K10 stát a posunout jednu novou hypotézu přes novelty gate.
+Není potřeba žádné schválení.
+
 ## XRP AUTOPILOT – 2026-11-18 11:35 UTC, běh #78
 
 PROVOZ: Live `01c69ff` beze změny, 0 událostí/restartů a 0 error logů 07:00–11:05, workery skenují. bestof 132 (jen známá duplicita 128/129), lh_whale_trades n=3, DB 288 593 599 B ≈ 26,9 %.
