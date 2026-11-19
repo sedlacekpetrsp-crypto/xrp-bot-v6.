@@ -117,14 +117,19 @@ def parse_cdx(rows) -> list:
 
 
 def needed_captures(captures, releases):
-    """Snímky v sjednocení oken [release − 7 d, release + 24 h] (dodatek 3), deduplikováno přes digest."""
+    """Snímky v sjednocení oken [release − 7 d, release + 24 h] (dodatek 3).
+
+    Stahuje se jen jednou na CDX `digest` (stejný obsah), ale **každý časový okamžik snímku se zachová** —
+    jinak by deduplikace zahodila pozdější snímek se stejným obsahem, který může být jediným potvrzením PIT
+    (review ChatGPT k PR #71). Vrací {digest: (fetch_capture, [všechny časy v oknech])}.
+    """
     wins = sorted((r - PIT_FETCH_BEFORE, r + PIT_AFTER) for r in releases)
-    keep, seen = [], set()
+    out = {}
     for cap in captures:
-        if any(a <= cap[0] <= b for a, b in wins) and cap[2] not in seen:
-            seen.add(cap[2])
-            keep.append(cap)
-    return keep
+        if any(a <= cap[0] <= b for a, b in wins):
+            first, times = out.setdefault(cap[2], (cap, []))
+            times.append(cap[0])
+    return out
 
 
 def pit_for_article(code, release, snapshots):
@@ -153,10 +158,12 @@ def open_minutes(zip_bytes: bytes) -> set:
         if len(names) != 1:
             raise ValueError("ZIP musí mít právě 1 CSV")
         out = set()
-        for line in z.read(names[0]).decode().splitlines():
+        for i, line in enumerate(z.read(names[0]).decode().splitlines()):
             first = line.split(",", 1)[0].strip()
-            if not first or not first.isdigit():
-                continue  # hlavička
+            if i == 0 and first == "open_time":
+                continue  # jediná povolená nečíselná řádka = hlavička na 1. řádku
+            if not first.isdigit():
+                raise ValueError("nečíselný open_time mimo hlavičku")  # fail closed (review ChatGPT k PR #71)
             v = int(first)
             out.add(v // 60_000_000 if v > 10**14 else v // 60_000)
     return out
@@ -242,9 +249,9 @@ def load_symbol_minutes(get, sym, t_ann, files):
         try:
             files.append({"url": url, "sha256": verify_checksum(z, ck if st2 == 200 else b"")})
             minutes |= open_minutes(z)
-        except ValueError:
+        except (ValueError, zipfile.BadZipFile):
             ok = False
-            files.append({"url": url, "sha256": None, "error": "checksum"})
+            files.append({"url": url, "sha256": None, "error": "checksum_or_parse"})
     return minutes, ok
 
 
@@ -289,10 +296,11 @@ def collect(fetch, pause=0.0):
         if st == 200 and body.strip():
             captures += parse_cdx(json.loads(body))
     snaps = []
-    for t, original, _ in needed_captures(sorted(set(captures)), [a["release"] for a in spot]):
+    for (t, original, _), times in needed_captures(sorted(set(captures)), [a["release"] for a in spot]).values():
         st, body = get(f"https://web.archive.org/web/{t:%Y%m%d%H%M%S}id_/{original}")
         if st == 200:
-            snaps.append((t, extract_codes(body)))
+            codes = extract_codes(body)
+            snaps += [(ti, codes) for ti in times]
 
     rows, files = [], []
     for a in arts:

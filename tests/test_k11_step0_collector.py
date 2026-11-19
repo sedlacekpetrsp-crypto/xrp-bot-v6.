@@ -51,10 +51,32 @@ def test_parse_cdx_only_200_and_real_timestamp():
         c.parse_cdx([rows[0], ["2025031009", "u", "200", "D"]])
 
 
-def test_needed_captures_window_and_digest_dedupe():
+def test_needed_captures_window_and_digest_dedupe_keeps_all_times():
     caps = [(T - timedelta(days=8), "u", "A"), (T - timedelta(days=6), "u", "B"),
             (T + timedelta(hours=1), "u", "B"), (T + timedelta(hours=25), "u", "C")]
-    assert [x[2] for x in c.needed_captures(caps, [T])] == ["B"]
+    got = c.needed_captures(caps, [T])
+    assert list(got) == ["B"]                                   # 1 stažení na digest
+    assert got["B"][1] == [T - timedelta(days=6), T + timedelta(hours=1)]  # oba okamžiky zachovány
+
+
+def test_same_digest_later_capture_still_corroborates():
+    """Snímek se stejným digestem v [release−24 h, release) a v [release, +24 h] ⇒ ok, ne unverified."""
+    net = FakeNet()
+    early, late = T - timedelta(hours=2), T + timedelta(hours=3)
+    rows = [["timestamp", "original", "statuscode", "digest"],
+            [early.strftime("%Y%m%d%H%M%S"), "https://www.binance.com/en/support/announcement/c-161", "200", "D"],
+            [late.strftime("%Y%m%d%H%M%S"), "https://www.binance.com/en/support/announcement/c-161", "200", "D"]]
+    orig = net.__call__
+
+    class Net(FakeNet):
+        def __call__(self, url):
+            if url.startswith("https://web.archive.org/cdx") and "c-161" in url:
+                return 200, json.dumps(rows).encode()
+            return orig(url)
+    n2 = Net()
+    n2.files = net.files
+    out, _ = c.collect(n2)
+    assert {r["pit_status"] for r in out if r["event_type"] == "spot_delist"} == {"ok"}
 
 
 def test_pit_unrendered_snapshot_ignored_and_contradiction():
@@ -94,6 +116,14 @@ def test_open_minutes_reads_only_timestamps_ms_and_us():
     ms = {int(T.timestamp()) // 60, int(T.timestamp()) // 60 + 1}  # realistické časy (µs > 1e14)
     assert c.open_minutes(_zip(ms)) == ms
     assert c.open_minutes(_zip(ms, micro=True)) == ms
+
+
+def test_open_minutes_rejects_non_numeric_row_after_header():
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as z:
+        z.writestr("x.csv", "open_time,open\n1741597200000,1\nGARBAGE,1\n")
+    with pytest.raises(ValueError):
+        c.open_minutes(buf.getvalue())
 
 
 def test_verify_checksum():

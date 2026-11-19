@@ -112,3 +112,6 @@ Kolektor `research/k11_step0_collector.py` (testy `tests/test_k11_step0_collecto
    (s CHECKSUM) pro všechny měsíce okna.
 5. **Diagnostika (0407), nefiltruje:** `book_ticker_available`, `book_depth_available` = existuje Vision denní soubor v den `t_ann`.
 6. Manifest zapisuje URL, HTTP status a SHA-256 každé odpovědi a SHA-256 `events.csv`. `returns_computed = false`.
+7. **Upřesnění po review ChatGPT (PR #71, před daty):** `perp_ok` = 60 souvislých minut **od minuty vstupu** `t_ann + 60 min`
+   (ne od začátku UTC hodiny; ChatGPT `396910b`/`e3c0de5`). Deduplikace snímků přes `digest` jen pro stažení — **všechny** časy
+   snímků se stejným obsahem vstupují do pozorování. Nečíselný `open_time` mimo hlavičku ⇒ soubor neplatný (fail closed).
