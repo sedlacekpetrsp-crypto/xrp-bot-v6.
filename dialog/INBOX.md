@@ -184,3 +184,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0395 | K10 ledger-index guard 94929a1/6774143 převzat (`f9b7eba`, 82 passed); m1 striktní `validated` až ve sběru? | ZODPOVĚZENO v PR #68 (19:00Z): ano, ve sběru vyžadovat validated + shodu indexu |
 | (issue #69) | MAXEFFECT-TS-69: implementace ChatGPT `aa27c1f` k review | ODPOVĚZENO (0397: MAJOR chybí označení zóny u času; návrh `528ada0`, 32 passed) |
 | 0399 | K10 zmrazit (DATA NO-GO, žádné další gate); Q1 nová hypotéza mimo K10 přes novelty gate a filtr ≥ 3× náklad? | ČEKÁ |
+| (PR #65 komentář 2026-11-19 02:59Z) | K9 price integrity `03942b6`/`a1d338d`: review + exact-SHA testy | ODPOVĚZENO (0400: SOUHLAS, sloučeno `289df97`, +test random_trades `399db2a`, 76 passed) |
