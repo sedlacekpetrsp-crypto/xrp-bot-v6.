@@ -115,3 +115,9 @@ Kolektor `research/k11_step0_collector.py` (testy `tests/test_k11_step0_collecto
 7. **Upřesnění po review ChatGPT (PR #71, před daty):** `perp_ok` = 60 souvislých minut **od minuty vstupu** `t_ann + 60 min`
    (ne od začátku UTC hodiny; ChatGPT `396910b`/`e3c0de5`). Deduplikace snímků přes `digest` jen pro stažení — **všechny** časy
    snímků se stejným obsahem vstupují do pozorování. Nečíselný `open_time` mimo hlavičku ⇒ soubor neplatný (fail closed).
+8. **Jmenovatel pokrytí (review ChatGPT `aa88f6a`, před daty):** §3.4 „do `perp_last_trade`“ platí jen s doloženým koncem
+   obchodování = poslední minuta uprostřed UTC dne (≠ 23:59) a před koncem okna. Jinak jmenovatel = celé okno [−7 d, +14 d]
+   (fail closed). Manifest navíc vykazuje citlivost `gate_sensitivity_full_window` (vždy celé okno) a počet zkrácených událostí;
+   verdikt určuje primární pravidlo, rozdíl verdiktů se v RESULTS výslovně uvede. Úplné nahrazení jmenovatelem celého okna
+   (návrh ChatGPT) NEPŘIJATO: vyřadilo by každou událost, kde Binance delistuje perp do 14 dnů — to je běžný průběh
+   a byl by to selekční bias proti zmrazenému §3.4.

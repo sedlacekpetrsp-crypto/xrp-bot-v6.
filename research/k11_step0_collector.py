@@ -182,14 +182,22 @@ def perp_and_coverage(minutes: set, t_ann: datetime):
     full_hour = all(m in minutes for m in range(entry_minute, entry_minute + 60))
     last = max(minutes) if minutes else None
     perp_ok = bool(full_hour and last is not None and last >= _minute(entry + MIN_AFTER_ENTRY))
-    lo = _minute(t_ann - COV_BEFORE)
-    hi = _minute(t_ann + COV_AFTER) if last is None else min(_minute(t_ann + COV_AFTER), last + 1)
-    expected = max(hi - lo, 1)
-    present = sum(1 for m in minutes if lo <= m < hi)
-    cov = present / expected
-    return perp_ok, cov >= MIN_MINUTE_COVERAGE, {"minute_coverage": round(cov, 6),
-                                                   "perp_last_minute_utc": None if last is None else
-                                                   datetime.fromtimestamp(last * 60, UTC).isoformat()}
+    lo, win_hi = _minute(t_ann - COV_BEFORE), _minute(t_ann + COV_AFTER)
+    # PROTOCOL §3.4: pokrytí „do perp_last_trade“. Konec obchodování se ale uznává jen s doložením:
+    # poslední minuta je UPROSTŘED UTC dne (denní soubor končí před 23:59 ⇒ obchodování skončilo, ne výpadek
+    # celých souborů). Jinak (konec 23:59 / žádná data) jmenovatel = celé zmrazené okno (fail closed;
+    # review ChatGPT aa88f6a k PR #71). Zbytkové riziko (výpadek uprostřed dne) kryje citlivost v manifestu.
+    end_ok = last is not None and last < win_hi - 1 and (last % 1440) != 1439
+    hi = last + 1 if end_ok else win_hi
+
+    def _cov(h):
+        return sum(1 for m in minutes if lo <= m < h) / max(h - lo, 1)
+
+    cov, cov_full = _cov(hi), _cov(win_hi)
+    return perp_ok, cov >= MIN_MINUTE_COVERAGE, {
+        "minute_coverage": round(cov, 6), "minute_coverage_full_window": round(cov_full, 6),
+        "coverage_truncated_at_last_trade": bool(end_ok),
+        "perp_last_minute_utc": None if last is None else datetime.fromtimestamp(last * 60, UTC).isoformat()}
 
 
 def days(t_ann):
@@ -335,7 +343,13 @@ def collect(fetch, pause=0.0):
                        book_depth_available=book.get("bookDepth", False), **info, **ev)
             rows.append(row)
 
-    gate = audit_gate([r for r in rows if r["event_type"] == "spot_delist"])
+    spot_rows = [r for r in rows if r["event_type"] == "spot_delist"]
+    gate = audit_gate(spot_rows)
+    # Citlivost (diagnostika, verdikt NEMĚNÍ): co kdyby se pokrytí vždy počítalo přes celé okno [−7 d, +14 d].
+    full = [dict(r, coverage_ok=bool(r["coverage_ok"] and r.get("minute_coverage_full_window", 0) >= MIN_MINUTE_COVERAGE))
+            for r in spot_rows]
+    manifest["gate_sensitivity_full_window"] = audit_gate(full)
+    manifest["coverage_truncated_events"] = sum(bool(r.get("coverage_truncated_at_last_trade")) for r in spot_rows)
     unparsed_share = len(unparsed) / len(spot) if spot else 1.0
     verdict = gate["verdict"] if unparsed_share <= MAX_UNPARSED_SHARE else "DATA_NO_GO"
     manifest.update(articles_in_window=len(arts), spot_articles=len(spot), spot_articles_unparsed=unparsed,
@@ -348,7 +362,8 @@ def collect(fetch, pause=0.0):
 
 
 COLUMNS = ["article_id", "token", "event_type", "announced_at", "title", "pit_status", "pit_ok", "perp_symbol",
-           "perp_ok", "coverage_ok", "checksum_ok", "funding_ok", "minute_coverage", "perp_last_minute_utc",
+           "perp_ok", "coverage_ok", "checksum_ok", "funding_ok", "minute_coverage", "minute_coverage_full_window",
+           "coverage_truncated_at_last_trade", "perp_last_minute_utc",
            "book_ticker_available", "book_depth_available", "observations", "earliest_contradiction_utc",
            "first_corroboration_utc"]
 
