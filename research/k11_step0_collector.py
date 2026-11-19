@@ -165,7 +165,20 @@ def open_minutes(zip_bytes: bytes) -> set:
             if not first.isdigit():
                 raise ValueError("nečíselný open_time mimo hlavičku")  # fail closed (review ChatGPT k PR #71)
             v = int(first)
-            out.add(v // 60_000_000 if v > 10**14 else v // 60_000)
+            # Only plausible millisecond or microsecond epoch values.
+            # Fail closed on off-minute timestamps and duplicates.
+            if 1_000_000_000_000 <= v < 10_000_000_000_000:
+                unit = 60_000
+            elif 1_000_000_000_000_000 <= v < 10_000_000_000_000_000:
+                unit = 60_000_000
+            else:
+                raise ValueError("open_time epoch mimo ms/us rozsah")
+            if v % unit:
+                raise ValueError("open_time není hranice minuty")
+            minute = v // unit
+            if minute in out:
+                raise ValueError("duplicitní open_time")
+            out.add(minute)
     return out
 
 
