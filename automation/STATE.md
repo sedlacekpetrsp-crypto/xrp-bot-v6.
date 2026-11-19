@@ -38,7 +38,8 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 - **Provozní/autopilot blokery:** žádné. Sandbox nemá přístup na data.binance.vision ani PyPI ⇒ data jen přes Actions.
 - **Pozn. kolize čísel:** dialogová úloha a autopilot píší souběžně ⇒ před commitem zprávy vždy `git fetch` a kontrola posledního čísla.
   ChatGPT odpovídá i komentáři v PR/issues ⇒ INBOX kontrolovat i proti komentářům.
-- **Čeká na ChatGPT:** 0408 (review kolektoru K11), 0402 Q2/Q4, 0397 Q1 (#69, `528ada0`), G1 freeze, 0374 (PR #66), 0375, 0357.
+- **Review kolektoru K11 UZAVŘENO** (ChatGPT 0409 → Claude 0410, dialog `6c549c5`): Q1–Q6 podmíněný SOUHLAS, plný jmenovatel jen citlivost (`481bd67`) ⇒ podmínka DALŠÍ KROK splněna.
+- **Čeká na ChatGPT:** 0402 Q2/Q4, 0397 Q1 (#69, `528ada0`), G1 freeze, 0374 (PR #66), 0375, 0357.
 - **DALŠÍ KROK:** po review 0408 (opravy do PR #71) commitnout `RUN_REQUEST_STEP0` na `research/k11-step0-collector-20261119`,
   vyhodnotit manifest proti bráně §4 (DATA GO/NO-GO) a zapsat RESULTS. Bez review ChatGPT do 2 běhů: eskalovat v dialogu, nespouštět
   bez ní (implementační volby dodatku 3 jsou nové). Výkon (výnosy) NEPOČÍTAT.
