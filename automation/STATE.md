@@ -11,34 +11,34 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-19 03:35 UTC, autopilot běh #82 — review K9 price integrity)
-- **Produkce (jen čtení, běh #82):** live `01c69ff` beze změny (0 událostí od 23:00, 0 error logů 23:00–03:04); MAX_EFFECT_PAPER_SCAN 03:03 OK
-  (equity 10 073,73, 6 otevřených, 0 uzavřených); bestof 132, jen známá duplicita 128/129; `lh_whale_trades` n=3; DB 288 593 599 B ≈ 26,9 % z 1 GB.
-- **NOVÉ (běh #82):** ChatGPT `research/chatgpt-k9-price-integrity-20261119` @ `a1d338d` (fail-closed na ±inf/≤0 open/close v `build_trades`
-  i `random_trades`). Review Claude dialog **0400**: SOUHLAS; přidán chybějící test benchmarku d) `claude/k9-price-integrity-review-20261119`
-  @ `399db2a`; sloučeno do PR #65 (`research/k9-phaseB-runner-20261117` @ **`289df97`**, 76 passed; mutace: stará maska ⇒ 7/9 + 3/3 FAIL).
-  K9 zůstává **ZAMÍTNUTO** (dev NO-GO, náklad 0,14 % RT je nižší než obecný ⇒ verdikt nezmění); výkon nespuštěn.
-- **Issue #69 (vlastník schválil 2026-11-18; jen vývojová větev, PAPER, bez merge/deploye):** ChatGPT `aa27c1f`, Claude návrh opravy zóny
-  `claude/max-effect-tz-label-69-20261118` @ `528ada0` (32 passed). K 03:30 UTC bez odpovědi ChatGPT na 0397 Q1 (issue #69 0 komentářů).
-- **Výzkumné větve a SHA:** K9 PR #63 `aa9bbbb`, #64 `6faa8c3`, #65 `289df97` (K9 **ZAMÍTNUTO**); R10b ledger N PR #66 `8c8b723` (N 238/306 < 450);
-  G1 Top Risk radar `research/xrp-top-risk-radar-v1-20261108` tip `f2e1477` (vlastník ChatGPT, reviewer Claude); K7 FOMC `78abe38`;
-  PIT-GATE-01 (ChatGPT) tip `ffb1b5d`; K10 `research/k10-step0-sources-20261118` tip `ab16823` (draft PR #68).
-- **K10 XRPL-EXCHANGE-INFLOW: DATA NO-GO (zdroj ledgeru)**, §6.3 `6167226`; Claude 0399 navrhl K10 zmrazit (žádné další gate). N +0.
+## CHECKPOINT (přepisuje se; stav k 2026-11-19 07:35 UTC, autopilot běh #83 — K11 návrh)
+- **Produkce (jen čtení, běh #83):** live `01c69ff` beze změny (0 událostí, 0 error logů 03:00–07:04); bestof 132, jen známá
+  duplicita 128/129; `lh_whale_trades` n=3; DB 288 724 671 B ≈ 26,9 % z 1 GB.
+- **NOVÉ (běh #83): K11 BINANCE_SPOT_DELIST_DRIFT** — short USDT-M perpu po oznámení spotového delistingu na Binance
+  (nucená migrace držitelů, odchod MM, omezená arbitráž). Protokol **jen kroku 0 (datový audit)** před daty:
+  `research/k11-delist-drift-20261119` @ `2db54b3`, draft **PR #70**; dialog **0402** (žádost o oponenturu, 4 otázky).
+  Brána GO: ≥ 60 způsobilých událostí (PIT Wayback ±24 h, perp obchodovatelný v t+60 min, 1m pokrytí ≥ 95 %),
+  ≥ 25 článků, ≥ 20 událostí od 2025-01-01, pit_unverified ≤ 30 %. Opora 3× filtru jen anekdotická ⇒ výnos se v kroku 0
+  NEPOČÍTÁ. Kód kroku 0 NEPSAT před oponenturou ChatGPT. Počítá se jako 1 nová hypotéza 2026-11-19; N zatím +0.
+- **ChatGPT mezitím (bez číslované zprávy):** `research/chatgpt-k9-manifest-uniqueness-20261119` @ `1f9cefa` (K9 je uzavřená;
+  review přísluší dialogové úloze, autopilot nereviewoval).
+- **Výzkumné větve a SHA:** K9 PR #63 `aa9bbbb`, #64 `6faa8c3`, #65 `289df97` (K9 **ZAMÍTNUTO**); R10b PR #66 `8c8b723` (N 238/306);
+  G1 Top Risk radar tip `f2e1477` (vlastník ChatGPT); K7 `78abe38`; PIT-GATE-01 `ffb1b5d`; K10 PR #68 `ab16823` (DATA NO-GO, zmrazit);
+  #69 návrh `528ada0` (čeká ChatGPT 0397 Q1); K11 PR #70 `2db54b3`.
 - **G1 (schváleno 2026-11-12, max. 1 běh):** freeze **NEZAMČEN** (ChatGPT) ⇒ výkon NESPOUŠTĚT.
-- **Čeká na vlastníka:** PR #57 nasadit jen se souhlasem; PR #54, #8, #9, #10, #62–#68 neslučovat; id 129 neměnit;
+- **Čeká na vlastníka:** PR #57 nasadit jen se souhlasem; PR #54, #8, #9, #10, #62–#68, #70 neslučovat; id 129 neměnit;
   K7 výkon jen s „SCHVÁLENO: výkonnost K7“; #69 deploy jen s novým schválením.
 - **Bezpečnostní brány:** výhradně PAPER; žádný LIVE/Render zápis/deploy/merge/force push; `FUNDING_SEMANTICS.json`
   (performance_hold, R8/R9) neměnit; výkon jen s řádkem SCHVÁLENO; `OWNER_DECISIONS.md` nikdy neupravovat ani nezkracovat.
-- **Hypotézy (TRVALÝ LOV):** 2026-11-19 0 nových. Rychlá novelty sonda běhu #82: funding-settlement timing = H-20261106-1 DUPLICITNÍ;
-  A1/A2/A3/A5 uzavřeny. K11 odložen už 3 běhy (#80–#82) ⇒ příští běh ho má jako jediný cíl.
 - **Forward RSI(2) (post-hoc výjimka vlastníka):** 0 obchodů; kontrola 2026-12-16, hlavní vyhodnocení ≥ 30 obchodů a nejdřív 2027-01-05.
 - **Další plánované:** 2026-12-01 Combined replay s `--end 2026-12-01`.
 - **Provozní/autopilot blokery:** žádné. Sandbox nemá přístup na data.binance.vision ani PyPI ⇒ data jen přes Actions.
 - **Pozn. kolize čísel:** dialogová úloha a autopilot píší souběžně ⇒ před commitem zprávy vždy `git fetch` a kontrola posledního čísla.
   ChatGPT odpovídá i komentáři v PR/issues ⇒ INBOX kontrolovat i proti komentářům.
-- **Čeká na ChatGPT:** 0397 Q1 (#69, `528ada0`), 0399/0400 Q1 (nová hypotéza mimo K9/K10), G1 freeze, 0374 (PR #66), 0375, 0357.
-- **DALŠÍ KROK:** K11 — jeden konkrétní návrh s ekonomickým mechanismem mimo vyčerpané rodiny (inventář 110 + REGISTRY + K1–K10),
-  novelty gate a protokol před daty, předat ChatGPT k oponentuře. Pokud mezitím odpoví na 0397, nejdřív ověřit finální tip #69.
+- **Čeká na ChatGPT:** 0402 (K11 oponentura), 0397 Q1 (#69, `528ada0`), G1 freeze, 0374 (PR #66), 0375, 0357.
+- **DALŠÍ KROK:** pokud ChatGPT odpoví na 0402 souhlasem (příp. s úpravami) ⇒ zapracovat dodatek protokolu a napsat kód
+  kroku 0 K11 (jen výčet článků + Wayback PIT + obchodovatelnost perpu, Actions, SHA-256) se syntetickými testy; bez
+  odpovědi ⇒ nic nespouštět a ověřit finální tip #69, pokud ChatGPT odpověděl na 0397.
 
 ## Aktivní body ze starších front (výtah; plné znění jen v archivu)
 - R3b forward PAPER RSI(2): parametry přesně jako PR #13, značit „(post-hoc, B6 nesplněno)“, žádný produkční bot (archiv ř. 190–211).
