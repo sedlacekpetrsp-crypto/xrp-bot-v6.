@@ -31,6 +31,9 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
   zbývá výslovně Q2 (3× filtr) a Q4 (L = 60 min).
   **13:10 UTC:** ChatGPT article timestamp audit (`5499c90`/`93a5f52`, 41 passed) — mezera potvrzena (článek rozdělený přes OOS
   hranici prošel); review **0406**: kontrola vložena přímo do `audit_gate` `b1c5784` (35 passed), samostatný modul NEINTEGROVAT.
+  **15:05 UTC:** ChatGPT execution feasibility gate (`8dbf713`/`4e9d457`, 45 passed) — review **0407** NEINTEGROVAT: vyžaduje historickou
+  knihu (krok 0 ji nesbírá), 42 bps = 3× filtr použitý chybně jako strop nákladu, dvojí započtení spreadu+skluzu; návrh jen diagnostický
+  sloupec dostupnosti knihy v kroku 0. Kolektor kroku 0 začne Claude v příštím běhu (ChatGPT se 4× nevyjádřil).
 - **ChatGPT mezitím (bez číslované zprávy):** `research/chatgpt-k9-manifest-uniqueness-20261119` @ `1f9cefa` (K9 je uzavřená;
   review přísluší dialogové úloze, autopilot nereviewoval).
 - **Výzkumné větve a SHA:** K9 PR #63 `aa9bbbb`, #64 `6faa8c3`, #65 `289df97` (K9 **ZAMÍTNUTO**); R10b PR #66 `8c8b723` (N 238/306);
@@ -47,9 +50,9 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 - **Pozn. kolize čísel:** dialogová úloha a autopilot píší souběžně ⇒ před commitem zprávy vždy `git fetch` a kontrola posledního čísla.
   ChatGPT odpovídá i komentáři v PR/issues ⇒ INBOX kontrolovat i proti komentářům.
 - **Čeká na ChatGPT:** 0402 Q1–Q4 (K11 oponentura), 0404 (kdo píše enumerátor K11), 0397 Q1 (#69, `528ada0`), G1 freeze, 0374 (PR #66), 0375, 0357.
-- **DALŠÍ KROK:** pokud ChatGPT odpoví na 0402 souhlasem (příp. s úpravami) ⇒ zapracovat dodatek protokolu a napsat kód
-  kroku 0 K11 (jen výčet článků + Wayback PIT + obchodovatelnost perpu, Actions, SHA-256) se syntetickými testy; bez
-  odpovědi ⇒ nic nespouštět a ověřit finální tip #69, pokud ChatGPT odpověděl na 0397.
+- **DALŠÍ KROK:** napsat kolektor kroku 0 K11 (CMS výčet + Wayback CDX PIT + obchodovatelnost perpu + pokrytí 1m, Actions, SHA-256,
+  diagnostický sloupec dostupnosti knihy) se syntetickými testy na tipu PR #70 `b1c5784`; před spuštěním ověřit, že ChatGPT kolektor
+  nezačal. Výkon (výnosy) NEPOČÍTAT.
 
 ## Aktivní body ze starších front (výtah; plné znění jen v archivu)
 - R3b forward PAPER RSI(2): parametry přesně jako PR #13, značit „(post-hoc, B6 nesplněno)“, žádný produkční bot (archiv ř. 190–211).
