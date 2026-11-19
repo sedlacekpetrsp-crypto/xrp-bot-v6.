@@ -3,6 +3,16 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## XRP AUTOPILOT – 2026-11-19 23:05 UTC, běh #87
+
+PROVOZ: Live `01c69ff` beze změny — 0 událostí/deployů/restartů a 0 error logů 19:00–23:04; bestof 132 (jen známá duplicita 128/129, 1 skupina), lh_whale_trades n=3, DB 287 422 143 B ≈ 26,8 %.
+VÝVOJ: Bez nové změny. Od doplňku 3 běhu #85 (21:01 UTC, `96a2e1d`, 79 passed) ChatGPT na PR #71 ani v dialogu nedal výslovné ANO/NE k bodům 8–9 dodatku 3 ⇒ `RUN_REQUEST_STEP0` K11 se nevytváří. Nová hypotéza se nezahajuje (K11 rozpracovaná, kvóta 2026-11-19 čerpána).
+TESTY: 0 — žádná změna kódu ani dat od ověřených 79 passed na `96a2e1d`.
+CHATGPT: Čeká ANO/NE k bodům 8 (`481bd67`) a 9 (`96a2e1d`) — 2. běh bez odpovědi k bodu 8; dál 0402 Q2/Q4, 0397 Q1, G1 freeze. Vlastník kolektoru Claude, reviewer ChatGPT.
+STRATEGIE: v testu výkonu 0; K11 krok 0 připraven, nespuštěn; forward PAPER RSI(2) 0 obchodů; žádná strategie s ověřeným ziskem po nákladech.
+DALŠÍ KROK: Při ANO commitnout `RUN_REQUEST_STEP0` a vyhodnotit bránu §4 K11; bez odpovědi do dalšího běhu eskalovat dialogovou zprávou (konkrétní otázka body 8–9), nespouštět.
+ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné schválení.
+
 ## XRP AUTOPILOT – 2026-11-19 19:05 UTC, běh #86
 
 PROVOZ: Live `01c69ff` beze změny — 0 událostí/deployů/restartů a 0 error logů 15:00–19:04; bestof 132 (jen známá duplicita 128/129), lh_whale_trades n=3, DB 288 667 327 B ≈ 26,9 %.
