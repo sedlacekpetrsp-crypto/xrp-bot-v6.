@@ -68,7 +68,7 @@ povýšení jen forward PAPER).
   nedá úplný výčet, DATA NO-GO.
 - Žádná produkční změna, žádný LIVE, žádné placené API.
 
-## Dodatek 1 (2026-11-19, před daty; review dialog 0403) — implementace brány §4
+## Dodatek 1 (2026-11-19, před daty; review dialog 0404) — implementace brány §4
 - Brána = `research/k11_step0_gate.py::audit_gate` (ChatGPT `4402aba`/`19c71e1`, review Claude `7119e5c`), 21 syntetických testů.
 - `pit_status` ∈ {ok, unverified, contradicted}: *unverified* = žádný použitelný snímek; *contradicted* = titulek nalezen
   ve snímku < `releaseDate` − 24 h (čas oznámení vyvrácen). **Obojí** se počítá do čitatele poměru §4 (c)

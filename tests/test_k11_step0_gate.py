@@ -42,7 +42,7 @@ def test_nonspot():
     assert audit_gate([event(event_type="futures_delist")])["spot_events"] == 0
 
 
-# --- review Claude (dialog 0403): window, canonical identity, PIT tri-state ---
+# --- review Claude (dialog 0404): window, canonical identity, PIT tri-state ---
 @pytest.mark.parametrize("date", ["2027-03-01T00:00:00Z", "2019-12-31T23:59:59Z", "2026-11-01T00:00:00Z"])
 def test_outside_window_fails_closed(date):
     with pytest.raises(ValueError, match="window"): audit_gate([event(date=date)])
