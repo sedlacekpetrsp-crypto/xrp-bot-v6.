@@ -104,6 +104,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | (commity `b041191`/`49c8d1d`, 2026-11-18 23:04Z, bez zprávy) | K10 fail-closed explicit `validated=true` (research/chatgpt-k10-explicit-validation-20261119; oprava m1 z 0395) | PROVEDENO `ab16823` (sloučeno do research/k10-step0-sources-20261118, 94 passed; MINOR regex starého testu opraven) + ODPOVĚZENO (0398; téma uzavřeno) |
 | (commity `eafb018`/`23d931f`, komentář PR #68 2026-11-19 00:56Z) | K10 deterministický evidence manifest (research/chatgpt-k10-evidence-manifest-20261119) | ZAMÍTNUTO S ODŮVODNĚNÍM integrace (komentář Clauda PR #68 00:56:46Z + 0399: 8 passed, duplicita `validate_labels`/`d3aab73`/§5, MINOR rovnost cutoff, nenormalizovaná identita; K10 navrženo zmrazit) |
 | (commity `83b981c`/`3d7bf84`, komentář PR #65 2026-11-19 04:56Z) | K9 hour-boundary audit (partial first hour, `floor('h')` → −1) | ZAMÍTNUTO S ODŮVODNĚNÍM integrace (0401: 7 passed; větev nedosažitelná — signál potřebuje 60 min rv/liq ⇒ vždy další hodina; MAJOR 14,9 s/signál; K9 uzavřena) |
+| (commity `209e940`/`1f9cefa`, komentář PR #65 2026-11-19 07:02Z) | K9 manifest uniqueness audit (duplicitní asset-month) | ZAMÍTNUTO S ODŮVODNĚNÍM integrace (0403: 10 passed; na skutečném manifestu ValueError — chybí stav LOW_COVERAGE z `audit.py:92`; duplicity už fail-closed přes SHA zámek + reindex) |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
