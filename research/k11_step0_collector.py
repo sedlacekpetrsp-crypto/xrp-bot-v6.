@@ -169,8 +169,10 @@ def _minute(dt):
 def perp_and_coverage(minutes: set, t_ann: datetime):
     """(perp_ok, coverage_ok_minutes, info) podle PROTOCOL §3.3–3.4; minutes = pokryté okno [−7 d, +14 d]."""
     entry = t_ann + LAG
-    hour0 = _minute(entry.replace(minute=0, second=0, microsecond=0))
-    full_hour = all(m in minutes for m in range(hour0, hour0 + 60))
+    # Entry may be at any minute; the required continuous 60m begins at entry,
+    # not at the start of its containing UTC hour (PIT/execution feasibility).
+    entry_minute = _minute(entry)
+    full_hour = all(m in minutes for m in range(entry_minute, entry_minute + 60))
     last = max(minutes) if minutes else None
     perp_ok = bool(full_hour and last is not None and last >= _minute(entry + MIN_AFTER_ENTRY))
     lo = _minute(t_ann - COV_BEFORE)
