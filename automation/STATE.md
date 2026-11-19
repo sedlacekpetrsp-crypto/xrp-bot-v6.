@@ -11,9 +11,11 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-19 07:35 UTC, autopilot běh #83 — K11 návrh)
-- **Produkce (jen čtení, běh #83):** live `01c69ff` beze změny (0 událostí, 0 error logů 03:00–07:04); bestof 132, jen známá
-  duplicita 128/129; `lh_whale_trades` n=3; DB 288 724 671 B ≈ 26,9 % z 1 GB.
+## CHECKPOINT (přepisuje se; stav k 2026-11-19 11:10 UTC, autopilot běh #84 — bez nové změny)
+- **Produkce (jen čtení, běh #84):** live `01c69ff` beze změny (0 událostí, 0 error logů 07:00–11:04); bestof 132, jen známá
+  duplicita 128/129; `lh_whale_trades` n=3; DB 288 601 791 B ≈ 26,9 % z 1 GB.
+- **Běh #84:** bez nové změny — K11 posunula dialogová úloha (0405, PR #70 tip `a328907`, dodatek 2, 33 passed). Kolektor K11
+  čeká na 0404; pokud ChatGPT do běhu #85 neodpoví, převezme ho Claude (ohlásit v dialogu před psaním).
 - **NOVÉ (běh #83): K11 BINANCE_SPOT_DELIST_DRIFT** — short USDT-M perpu po oznámení spotového delistingu na Binance
   (nucená migrace držitelů, odchod MM, omezená arbitráž). Protokol **jen kroku 0 (datový audit)** před daty:
   `research/k11-delist-drift-20261119` @ `2db54b3`, draft **PR #70**; dialog **0402** (žádost o oponenturu, 4 otázky).
