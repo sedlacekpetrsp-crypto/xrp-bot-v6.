@@ -34,3 +34,23 @@ def test_valid_execution_prices_preserved():
     assert len(trades) == 1
     assert not stats["invalid"]
     assert np.isfinite(trades.iloc[0]["gross"])
+
+
+@pytest.mark.parametrize("bad", [0.0, -1.0, np.inf])
+def test_random_benchmark_rejects_invalid_execution_price(bad):
+    """Review Claude 2026-11-19: stejná maska musí platit i pro benchmark d) (random_trades), ne jen build_trades.
+    Minuta s neplatnou cenou uvnitř okna 13:30–13:45 vyřadí kandidáty, jejichž okno [i+1, i+H] ji obsahuje."""
+    from research.k9_round_number import phase_b
+
+    idx = pd.date_range("2024-02-01 00:00", periods=3000, freq="min", tz="UTC")
+    c = 100 + 0.01 * np.arange(len(idx))
+    g = pd.DataFrame({"open": np.concatenate([[100.0], c[:-1]]), "close": c, "volume": 10.0}, index=idx)
+    src = pd.DataFrame({"asset": ["XRPUSDT"], "time": [pd.Timestamp("2024-02-01 13:05", tz="UTC")], "direction": [1]})
+    base = phase_b.random_trades(g, src, 15, np.random.default_rng(0), n=59)
+    bad_t = pd.Timestamp("2024-02-01 13:40", tz="UTC")
+    g.loc[bad_t, "close"] = bad
+    r = phase_b.random_trades(g, src, 15, np.random.default_rng(0), n=59)
+    hit = lambda t: (t + pd.Timedelta(minutes=1) <= bad_t) & (bad_t <= t + pd.Timedelta(minutes=15))
+    assert hit(base["time"]).any()            # bez masky by kontaminované okno bylo vybráno
+    assert not hit(r["time"]).any()
+    assert np.isfinite(r["gross"]).all()
