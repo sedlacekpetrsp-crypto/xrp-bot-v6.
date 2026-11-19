@@ -183,7 +183,10 @@ def perp_and_coverage(minutes: set, t_ann: datetime):
     last = max(minutes) if minutes else None
     perp_ok = bool(full_hour and last is not None and last >= _minute(entry + MIN_AFTER_ENTRY))
     lo = _minute(t_ann - COV_BEFORE)
-    hi = _minute(t_ann + COV_AFTER) if last is None else min(_minute(t_ann + COV_AFTER), last + 1)
+    # Full pre-registered window is the denominator even when the archive ends early.
+    # Truncating at the last observed minute turns a short, incomplete archive into
+    # apparently 100% coverage and can admit ineligible delisting events.
+    hi = _minute(t_ann + COV_AFTER)
     expected = max(hi - lo, 1)
     present = sum(1 for m in minutes if lo <= m < hi)
     cov = present / expected
