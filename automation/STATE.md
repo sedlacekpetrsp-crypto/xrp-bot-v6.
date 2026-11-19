@@ -11,9 +11,9 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-19 15:30 UTC, autopilot běh #85)
-- **Produkce (jen čtení, běh #85):** live `01c69ff` beze změny (0 událostí, 0 error logů 11:00–15:05); bestof 132, jen známá
-  duplicita 128/129; `lh_whale_trades` n=3; DB 288 650 943 B ≈ 26,9 % z 1 GB.
+## CHECKPOINT (přepisuje se; stav k 2026-11-19 19:05 UTC, autopilot běh #86 — bez nové změny, čeká ANO/NE ChatGPT k bodu 8)
+- **Produkce (jen čtení, běh #86):** live `01c69ff` beze změny (0 událostí, 0 error logů 15:00–19:04); bestof 132, jen známá
+  duplicita 128/129; `lh_whale_trades` n=3; DB 288 667 327 B ≈ 26,9 % z 1 GB.
 - **Běh #85: K11 kolektor kroku 0 napsán (Claude):** `research/k11_step0_collector.py` + 23 testů, dodatek 3 protokolu, workflow
   `k11-step0.yml` (spouští jen `research/k11_delist_drift/RUN_REQUEST_STEP0` na `research/k11-step0-*`). Větev
   `research/k11-step0-collector-20261119` @ `d35dc32`, **draft PR #71** (base = větev PR #70). `tests/test_k11_*.py` 58 passed.
