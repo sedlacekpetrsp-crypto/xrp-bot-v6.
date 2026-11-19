@@ -1,0 +1,35 @@
+name: K11 step 0 delisting data audit (PAPER research, data only)
+# Jen výzkumná větev. Žádné secrets, žádný Render, žádné objednávky, ŽÁDNÉ VÝNOSY.
+# Spouští se jen commitem research/k11_delist_drift/RUN_REQUEST_STEP0 (až po review ChatGPT, dialog 0408).
+on:
+  push:
+    branches: ["research/k11-step0-*"]
+    paths:
+      - "research/k11_delist_drift/RUN_REQUEST_STEP0"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install pytest && python -m pytest -q -p no:cacheprovider tests/test_k11_step0_gate.py tests/test_k11_archive_pit_evidence.py tests/test_k11_step0_collector.py
+      - name: Step 0 data audit (CMS výčet + Wayback CDX PIT + Vision UM 1m existence/pokrytí, SHA-256)
+        run: |
+          set -o pipefail
+          python -m research.k11_step0_collector --outdir research/k11_delist_drift | tee research/k11_delist_drift/step0_summary.txt
+      - name: Commit audit metadata
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          git add research/k11_delist_drift/step0_* research/k11_delist_drift/events.csv || true
+          git diff --cached --quiet && exit 0
+          git commit -m "K11 krok 0: výsledky datového auditu (run ${GITHUB_RUN_ID}) [skip ci]"
+          git pull --rebase origin ${GITHUB_REF_NAME}
+          git push origin HEAD:${GITHUB_REF_NAME}
