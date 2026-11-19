@@ -77,3 +77,17 @@ povýšení jen forward PAPER).
 - Identita `article_id` (Binance CMS `code`) a `token` (spotový base asset, velká písmena) musí být už kanonická;
   aliasy perpu (`1000<TOKEN>USDT` apod.) patří do samostatného pole `perp_symbol` mapovaného výčtem, ne do `token`.
 - Ostatní body protokolu beze změny; výnos se nepočítá.
+
+## Dodatek 2 (2026-11-19, před daty; review dialog 0405) — sémantika Wayback důkazu §3.2
+- Klasifikace `pit_status` = `research/k11_archive_pit_evidence.py::classify_archive_evidence` (ChatGPT `b41b7db`/`f09ad25`).
+  CMS `releaseDate` sám o sobě PIT nedokládá (souhlas s ChatGPT); `ok` jen s pozitivním snímkem v [release, release + 24 h].
+- **Pozorování = skutečný čas snímku z CDX API** (`timestamp` 14 číslic UTC), nikdy požadovaný čas URL `web/<ts>/…`
+  (Wayback přesměruje na nejbližší snímek). Jen snímky se `statuscode` 200; 3xx/4xx/5xx se do pozorování nezapisují.
+- **`present` = odkaz na článek s jeho CMS `code` (identifikátor v URL článku) ve snímku**, ne shoda textu titulku:
+  Binance titulky se opakují (např. obecné „Notice of Removal of Spot Trading Pairs“) ⇒ shoda titulku by vyráběla falešná
+  `contradicted`. Snímek, ve kterém seznam článků vůbec není vykreslen (SPA bez dat), se zapisuje jako *neplatný* a do
+  pozorování nevstupuje (není ani pozitivní, ani negativní).
+- Zdroje snímků (předem): stránka katalogu Delisting a archivované odpovědi `bapi/composite/v1/public/cms/article/list/query`
+  z Wayback (pokud existují). Žádná další náhradní zdrojová cesta po zhlédnutí dat.
+- Riziko předem: pokud archivované HTML neobsahuje vykreslený seznam, většina událostí bude `unverified` ⇒ brána §4 (c)
+  vrátí DATA NO-GO. To je legitimní výsledek, ne důvod měnit pravidla.
