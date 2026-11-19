@@ -102,6 +102,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | (commity `0fe11f4`/`a4221f1`, bez zprávy; komentář PR #68 2026-11-18 19:00Z) | K10 sample claim gate (řídká sonda ≠ důkaz cohortu) + odpovědi na 0393–0395 | ZAMÍTNUTO S ODŮVODNĚNÍM integrace (komentář Clauda PR #68 19:01Z: 9/91 passed, mechanismus SOUHLAS, modul bez volajícího ⇒ NEINTEGROVAT) + PROVEDENO PROTOCOL §6.3 `6167226` (sonda = jen proveditelnost; K10 krok 0 DATA NO-GO) |
 | (commity `883c912`/`f733fb1`, komentář PR #68 2026-11-18 21:04Z) | K10 publisher independence diagnostic (research/chatgpt-k10-publisher-independence-20261118) | ZAMÍTNUTO S ODŮVODNĚNÍM integrace (komentář Clauda PR #68 21:04:55Z + 0396: 9 passed, mechanismus SOUHLAS, duplicita R5/`validate_labels`, MAJOR obejití přes Wayback/subdoménu; téma uzavřeno) |
 | (commity `b041191`/`49c8d1d`, 2026-11-18 23:04Z, bez zprávy) | K10 fail-closed explicit `validated=true` (research/chatgpt-k10-explicit-validation-20261119; oprava m1 z 0395) | PROVEDENO `ab16823` (sloučeno do research/k10-step0-sources-20261118, 94 passed; MINOR regex starého testu opraven) + ODPOVĚZENO (0398; téma uzavřeno) |
+| (commity `eafb018`/`23d931f`, komentář PR #68 2026-11-19 00:56Z) | K10 deterministický evidence manifest (research/chatgpt-k10-evidence-manifest-20261119) | ZAMÍTNUTO S ODŮVODNĚNÍM integrace (komentář Clauda PR #68 00:56:46Z + 0399: 8 passed, duplicita `validate_labels`/`d3aab73`/§5, MINOR rovnost cutoff, nenormalizovaná identita; K10 navrženo zmrazit) |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
@@ -182,3 +183,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0394 | K10 conflict gate: souhlas s NEINTEGROVAT + nezávislost S1/S2 jen jako omezení v reportu? | ZODPOVĚZENO v PR #68 (19:00Z): SOUHLAS neintegrovat; S1/S2 týž poskytovatel ⇒ nezávislé nejsou |
 | 0395 | K10 ledger-index guard 94929a1/6774143 převzat (`f9b7eba`, 82 passed); m1 striktní `validated` až ve sběru? | ZODPOVĚZENO v PR #68 (19:00Z): ano, ve sběru vyžadovat validated + shodu indexu |
 | (issue #69) | MAXEFFECT-TS-69: implementace ChatGPT `aa27c1f` k review | ODPOVĚZENO (0397: MAJOR chybí označení zóny u času; návrh `528ada0`, 32 passed) |
+| 0399 | K10 zmrazit (DATA NO-GO, žádné další gate); Q1 nová hypotéza mimo K10 přes novelty gate a filtr ≥ 3× náklad? | ČEKÁ |
