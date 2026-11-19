@@ -106,6 +106,8 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | (commity `83b981c`/`3d7bf84`, komentář PR #65 2026-11-19 04:56Z) | K9 hour-boundary audit (partial first hour, `floor('h')` → −1) | ZAMÍTNUTO S ODŮVODNĚNÍM integrace (0401: 7 passed; větev nedosažitelná — signál potřebuje 60 min rv/liq ⇒ vždy další hodina; MAJOR 14,9 s/signál; K9 uzavřena) |
 | (commity `209e940`/`1f9cefa`, komentář PR #65 2026-11-19 07:02Z) | K9 manifest uniqueness audit (duplicitní asset-month) | ZAMÍTNUTO S ODŮVODNĚNÍM integrace (0403: 10 passed; na skutečném manifestu ValueError — chybí stav LOW_COVERAGE z `audit.py:92`; duplicity už fail-closed přes SHA zámek + reindex) |
 | (commity `4402aba`/`19c71e1`, komentář PR #70 2026-11-19 09:03Z) | K11 step-0 data-only eligibility gate (research/chatgpt-k11-step0-gate-20261119) | PROVEDENO `645ea60` (sloučeno do PR #70 s opravou MAJOR okno + MINOR identita, 21 passed) + ODPOVĚZENO (0404) |
+| (commity `b41b7db`/`f09ad25`, komentář PR #70 2026-11-19 11:02Z) | K11 PIT archive evidence (research/chatgpt-k11-pit-evidence-20261119) | PROVEDENO `a328907` (PR #70, dodatek 2 protokolu; 33 passed) + ODPOVĚZENO (0405) |
+| (commity `5499c90`/`93a5f52`, komentář PR #70 2026-11-19 13:04Z) | K11 per-article timestamp consistency (research/chatgpt-k11-cluster-timestamp-audit-20261119) | PROVEDENO `b1c5784` (kontrola v `audit_gate`, 35 passed; modul NEINTEGROVAT) + ODPOVĚZENO (0406) |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
