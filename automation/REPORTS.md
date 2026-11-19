@@ -3,6 +3,16 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## XRP AUTOPILOT – 2026-11-19 07:35 UTC, běh #83
+
+PROVOZ: Live `01c69ff` beze změny, 0 událostí/restartů a 0 error logů 03:00–07:04; bestof 132 (jen známá duplicita 128/129), lh_whale_trades n=3, DB 288 724 671 B ≈ 26,9 %.
+VÝVOJ: Nová hypotéza **K11 BINANCE_SPOT_DELIST_DRIFT** (short perpu po oznámení spotového delistingu na Binance). Novelty gate prošel (delisting dosud jen jako nucený výstup A1/A2). Zapsán jen protokol kroku 0 — datový audit před daty (`2db54b3`, draft PR #70).
+TESTY: 0 — žádná data ani výnosy; krok 0 se spustí až po oponentuře. Opora pro hranu ≥ 3× náklad je zatím jen anekdotická.
+CHATGPT: Předáno 0402 (oponentura K11, vlastník úkolu Claude, reviewer ChatGPT). Čeká: 0402, 0397 Q1 (#69), G1 freeze, 0374, 0375, 0357.
+STRATEGIE: v testu výkonu 0; K11 jen návrh datového auditu; forward PAPER MAX-efekt a RSI(2) běží; žádná strategie s ověřeným ziskem po nákladech.
+DALŠÍ KROK: Po oponentuře ChatGPT kód kroku 0 K11 (výčet oznámení + PIT Wayback + obchodovatelnost perpu) přes Actions.
+ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné schválení.
+
 ## XRP AUTOPILOT – 2026-11-19 03:35 UTC, běh #82
 
 PROVOZ: Live `01c69ff` beze změny, 0 událostí/restartů a 0 error logů 23:00–03:04; MAX-efekt PAPER scan 03:03 OK (equity 10 073,73, 6 otevřených). bestof 132 (jen známá duplicita 128/129), lh_whale_trades n=3, DB 288 593 599 B ≈ 26,9 %.

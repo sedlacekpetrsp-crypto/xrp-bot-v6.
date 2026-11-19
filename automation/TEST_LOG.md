@@ -156,3 +156,4 @@
 | 2026-11-18 19:15 | 6167226 | pytest lokálně, autopilot běh #80 (nezávislé ověření tipu PR #68) | `tests -k k10` 82 passed, 10 subtests; tržní data ani výnosy nepočítány | STATE běh #80 |
 | 2026-11-18 23:10 | aa27c1f / 528ada0 | pytest lokálně + Node (issue #69 MAX-efekt timestampy, UI) | `tests -k max_effect` 27 passed → 32 passed; Node test bez opravy 1 FAIL (nejednoznačná podzimní hodina) | dialog 0397 |
 | 2026-11-19 03:25 | a1d338d / 399db2a / 289df97 | pytest lokálně, autopilot běh #82 (review K9 price integrity ChatGPT, syntetické) | `tests/test_k9_*.py` 73 passed na `a1d338d`; +3 testy random_trades ⇒ 76 passed na `289df97`; mutace stará maska ⇒ 7/9 a 3/3 FAIL; výkon/data nepočítány | dialog 0400, PR #65 |
+| 2026-11-19 07:30 | 2db54b3 | žádný test (autopilot běh #83: jen protokol kroku 0 K11 před daty) | 0 testů; data, výnosy ani náklady nepočítány | PR #70, dialog 0402 |
