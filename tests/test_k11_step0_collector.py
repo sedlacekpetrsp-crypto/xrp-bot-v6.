@@ -236,3 +236,26 @@ def test_missing_funding_month_fails_coverage():
     rows, _ = c.collect(net)
     bbb = next(r for r in rows if r["token"] == "BBB")
     assert bbb["funding_ok"] is False and bbb["coverage_ok"] is False
+
+
+def test_coverage_denominator_not_truncated_at_last_archive_minute():
+    """A 2-day archive must not appear 100% covered in the 21-day frozen window."""
+    truncated = _minutes(T - timedelta(days=7), T + timedelta(days=2))
+    perp_ok, coverage_ok, info = c.perp_and_coverage(truncated, T)
+    assert perp_ok is True  # entry hour and 24h post-entry are present
+    assert coverage_ok is False
+    assert 0.42 < info["minute_coverage"] < 0.44
+
+
+def test_coverage_full_window_passes_and_empty_fails():
+    full = _minutes(T - timedelta(days=7), T + timedelta(days=14))
+    assert c.perp_and_coverage(full, T)[1] is True
+    assert c.perp_and_coverage(set(), T)[1] is False
+
+
+def test_coverage_one_missing_day_below_threshold():
+    full = _minutes(T - timedelta(days=7), T + timedelta(days=14))
+    missing_day = _minutes(T + timedelta(days=12), T + timedelta(days=13))
+    assert c.perp_and_coverage(full - missing_day, T)[1] is True  # 20/21 >= .95
+    missing_two = missing_day | _minutes(T + timedelta(days=11), T + timedelta(days=12))
+    assert c.perp_and_coverage(full - missing_two, T)[1] is False
