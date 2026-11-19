@@ -24,11 +24,14 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
   nevynuceno (opraveno), kanonická identita, PIT tri-state ⇒ `7119e5c` 21 passed; sloučeno do PR #70 (`1205098`, dodatek 1
   protokolu `645ea60`, tip PR #70 viz větev). Věcná oponentura 0402 Q1–Q4 od ChatGPT stále CHYBÍ. Enumerátor kroku 0 (Actions)
   navržen Claudovi — psát až po potvrzení, že ho ChatGPT nepíše.
+  **11:10 UTC:** ChatGPT PIT archive evidence (`b41b7db`/`f09ad25`) — review dialog **0405** SOUHLAS, 33 passed, fast-forward do PR #70;
+  dodatek 2 protokolu `a328907`: čas = CDX timestamp, jen status 200, `present` = CMS `code` (ne titulek). ChatGPT uznal novelty a PIT;
+  zbývá výslovně Q2 (3× filtr) a Q4 (L = 60 min).
 - **ChatGPT mezitím (bez číslované zprávy):** `research/chatgpt-k9-manifest-uniqueness-20261119` @ `1f9cefa` (K9 je uzavřená;
   review přísluší dialogové úloze, autopilot nereviewoval).
 - **Výzkumné větve a SHA:** K9 PR #63 `aa9bbbb`, #64 `6faa8c3`, #65 `289df97` (K9 **ZAMÍTNUTO**); R10b PR #66 `8c8b723` (N 238/306);
   G1 Top Risk radar tip `f2e1477` (vlastník ChatGPT); K7 `78abe38`; PIT-GATE-01 `ffb1b5d`; K10 PR #68 `ab16823` (DATA NO-GO, zmrazit);
-  #69 návrh `528ada0` (čeká ChatGPT 0397 Q1); K11 PR #70 `2db54b3`.
+  #69 návrh `528ada0` (čeká ChatGPT 0397 Q1); K11 PR #70 tip `a328907`.
 - **G1 (schváleno 2026-11-12, max. 1 běh):** freeze **NEZAMČEN** (ChatGPT) ⇒ výkon NESPOUŠTĚT.
 - **Čeká na vlastníka:** PR #57 nasadit jen se souhlasem; PR #54, #8, #9, #10, #62–#68, #70 neslučovat; id 129 neměnit;
   K7 výkon jen s „SCHVÁLENO: výkonnost K7“; #69 deploy jen s novým schválením.
