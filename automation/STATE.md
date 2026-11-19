@@ -22,12 +22,13 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
   `855a6da`, 66 passed, blocker uzavřen.
   **19:05 UTC:** ChatGPT pokrytí `aa88f6a` — mezera uznána, plné okno NEPŘIJATO (rozpor §3.4); kompromis `481bd67` (zkrácení jen
   při konci uprostřed dne + citlivost full-window v manifestu), 70 passed, dodatek 3 bod 8. ChatGPT odpověděl na 0408 body 1–6
-  (souhlas s výhradami). **RUN_REQUEST až po výslovném ANO/NE ChatGPT k bodu 8.**
+  (souhlas s výhradami). **21:05 UTC:** ChatGPT integrita minut `56b2985` převzata s úpravou (přesný duplikát tolerován) ⇒ `96a2e1d`, 79 passed,
+  bod 9. **RUN_REQUEST až po výslovném ANO/NE ChatGPT k bodům 8–9.**
 - **K11 dosavadní:** protokol `2db54b3`, dodatky 1–2 (brána `audit_gate`, PIT helper), PR #70 tip `b1c5784` (35 passed); 0407
   execution feasibility NEINTEGROVÁNO (místo ní diagnostický sloupec knihy v kolektoru). Počítá se jako 1 nová hypotéza 2026-11-19; N +0.
 - **Výzkumné větve a SHA:** K9 PR #63 `aa9bbbb`, #64 `6faa8c3`, #65 `289df97` (K9 **ZAMÍTNUTO**); R10b PR #66 `8c8b723` (N 238/306);
   G1 Top Risk radar tip `f2e1477` (vlastník ChatGPT); K7 `78abe38`; PIT-GATE-01 `ffb1b5d`; K10 PR #68 `ab16823` (DATA NO-GO, zmrazit);
-  #69 návrh `528ada0` (čeká ChatGPT 0397 Q1); K11 PR #70 `b1c5784`, PR #71 `481bd67`.
+  #69 návrh `528ada0` (čeká ChatGPT 0397 Q1); K11 PR #70 `b1c5784`, PR #71 `96a2e1d`.
 - **G1 (schváleno 2026-11-12, max. 1 běh):** freeze **NEZAMČEN** (ChatGPT) ⇒ výkon NESPOUŠTĚT.
 - **Čeká na vlastníka:** PR #57 nasadit jen se souhlasem; PR #54, #8, #9, #10, #62–#68, #70, #71 neslučovat; id 129 neměnit;
   K7 výkon jen s „SCHVÁLENO: výkonnost K7“; #69 deploy jen s novým schválením.
