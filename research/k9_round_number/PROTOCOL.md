@@ -102,3 +102,52 @@ pro počty obchodů a sílu (`phase_b_power.py` → `phaseB_power_table.json`, S
    omezení se uvede. Prior zůstává nízký: 0,42 % hrubě za 15–60 min je na BTC/ETH výrazně nad typickou volatilitou
    průrazů; očekávaný výsledek je spíš NO-GO ekonomickou předbránou.
 8. Žádné další varianty (jiné S, filtry objemu/hodin, maker vstupy, trailing stop) bez nové hypotézy a nového dodatku.
+
+### Dodatek 2 — oprava 1 (2026-11-17, Claude, PŘED výpočtem jakéhokoli výnosu; k oponentuře spolu s dodatkem 2)
+Stav: NAVRŽENO. Jen zpřísnění a upřesnění implementace; endpointy, prahy a brány a)–g) se nemění.
+1. **DSR N = 225 místo 162.** N = 159 byl pracovní odhad před R10; R10 doložil N ≥ 190 a poslední registr používá
+   N = 222 (K7 při spuštění). K9 přidává fázi A (+1) a 2 varianty H ⇒ **N = 225** (V[SR] = 0,5 ročně, podmíněné).
+   Přísnější N jen zvyšuje práh e); DSR s N = 162 se nevykazuje.
+2. **Blokace pozice:** přijatý signál blokuje minuty t..t+H i tehdy, když je obchod neplatný (chybějící minuta) — stejné
+   pravidlo, jakým byly předpočteny počty v `phaseB_power_table.json`.
+3. **Funding:** počítá se každé 00/08/16 UTC v intervalu [open t+1, konec minuty t+H); vstup přesně v čase fundingu se
+   počítá (konzervativně), výstup close minuty 07:59 už ne.
+4. **Náhodný vstup d):** minuty téhož aktiva a téže UTC hodiny téhož dne kromě signální minuty, jen s úplným oknem,
+   výběr bez vracení (méně platných kandidátů ⇒ méně replik); den bootstrapu = den zdrojového signálu.
+5. **Pořadí verdiktu:** chybějící minuty > 1 % ⇒ INCONCLUSIVE; neplatné repliky > 5 % ⇒ INCONCLUSIVE; síla g) < 0,80 /
+   chybí ⇒ INCONCLUSIVE; jinak všechny a)–f) ⇒ GO, cokoli jiného ⇒ NO-GO.
+6. **Oddělení vývoje a závěru technicky:** `phase_b_run.py --stage dev` ořízne data na t < 2024-01-01 ještě před detekcí;
+   `--stage final` se spustí jen s výběrem H* commitnutým v HEAD (bajtově), se shodnou SHA-256 PROTOCOL.md a
+   `final_open = true`. Obě fáze vyžadují řádek „<datum> SCHVÁLENO: výkonnost K9“ (fail closed).
+7. Den v denní řadě PnL pro DSR/drawdown = den vstupu; den v bootstrapu E/Δ = den signálu (rozdíl jen u signálu 23:59).
+
+### Dodatek 2 — oprava 2 (2026-11-17, Claude, PŘED výpočtem jakéhokoli výnosu; zapracování oponentury ChatGPT 0364)
+Stav: NAVRŽENO. Jen zpřísnění; endpointy a prahy a)–d), f), g) beze změny. Nic se neladí podle výnosu.
+1. **DSR (brána e):** N = 225 není auditovaná horní mez pokusů ⇒ brána e) se počítá při **N = 450** (2× doložené N);
+   DSR při N = 225 se vykazuje jen informačně. Úplný ledger pokusů (rozšíření R10 `variant_count.py` o PR #35–#65
+   a forward PAPER boty) je samostatný úkol; pokud doloží N > 450, platí větší N (před otevřením závěru).
+2. **Předbrána 0,42 % hrubě** je přísná předregistrovaná předbrána (3 × 0,14 % RT), ne ekonomická rovnost „net ≥ 2× náklad“
+   ani důkaz hrany. Její splnění znamená jen otevření závěru.
+3. **Funding** 0,03 %/překročení je MODELOVANÁ nepříznivá citlivost, ne historická PIT sazba; výsledky ji nesou v poli
+   `funding_model` a net se nevykazuje jako skutečný P/L.
+4. **Benchmark d) párovaný:** místo 5 náhodných minut až **20 minut** téhož aktiva, dne a UTC hodiny (bez signální minuty,
+   jen úplné okno), párovaných na předchozí realizovanou volatilitu (sd 1m log výnosů) a likviditu (Σ volume × close),
+   obě **jen z minut i−60..i−1**; caliper |ln poměru| ≤ ln 2 pro obě proměnné, z vyhovujících nejbližší podle součtu
+   |ln poměrů|, shody náhodně (seed 20261117), bez vracení. Ztráta podpory (`random_support`: podíl signálů bez repliky,
+   průměr replik) se vykazuje; párování nezávisí na výnosu a nesmí se po výpočtu měnit.
+5. **Pořadí verdiktu (deterministické, beze změny bodu 5 opravy 1):** chybějící minuty > 1 % → neplatné repliky > 5 % →
+   síla < 0,80 ⇒ INCONCLUSIVE; jinak všechny a)–f) ⇒ GO, jinak NO-GO. Nesplněné a) nebo c) se vždy vykazují zvlášť
+   v `economic_nogo_reasons` (i při INCONCLUSIVE) — jako samostatný ekonomický důvod, formální verdikt nemění.
+6. **Nezávislost závěru:** úsek 2024–26 byl použit ve fázi A (objem, ne výnos) ⇒ není zcela nedotčený; výsledky nesou
+   `final_independence_note` a závěr nesmí tvrdit plnou out-of-sample nezávislost.
+7. Před jakýmkoli výkonnostním během je nutné nezávislé code review runneru (oddělení dev/final, brány) jiným agentem
+   a řádek vlastníka „SCHVÁLENO: výkonnost K9“.
+
+### Dodatek 2 — oprava 3 (2026-11-17, dialog 0367 Q1 / 0369 SOUHLAS; kód PŘED daty, výkon nespuštěn)
+Stav: NAVRŽENO A IMPLEMENTOVÁNO před jakýmkoli výpočtem výnosu. Jen zpřísnění benchmarku d); endpointy, prahy, caliper,
+seed, N replik a pořadí verdiktu beze změny.
+1. Kandidátní minuty benchmarku d) vylučují **všechny signální minuty téhož aktiva** (všechny detekované dotyky kulatých
+   úrovní vč. signálů blokovaných otevřenou pozicí), nejen vlastní signální minutu.
+2. Počet vyřazených kandidátů se vykazuje v `random_support.excluded_signal_minutes`; ztráta podpory dál v `frac_unmatched`.
+3. Směr vlivu: odstraňuje kontaminaci benchmarku průrazy (dříve táhla Δ d) k 0); nesmí se po výpočtu měnit.
+

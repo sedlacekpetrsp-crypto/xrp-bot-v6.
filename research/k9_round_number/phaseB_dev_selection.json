@@ -1,0 +1,25 @@
+{
+ "protocol": "research/k9_round_number/PROTOCOL.md (dodatek 2 + oprava 1)",
+ "protocol_sha256": "f54ad10dd6546746603dc27ce0cc7bd77b254681651bd7886c5c08341df1cfe1",
+ "step0_manifest_sha256": "c193aba77bdbca00dc6a54fbd882e889d833fd71200e083f67cac9f447ad16d5",
+ "per_h": {
+  "15": {
+   "n": 10143,
+   "gross": -0.00013721527107535744,
+   "net_x1": -0.0015458813462010596,
+   "missing_frac": 0.0
+  },
+  "60": {
+   "n": 9732,
+   "gross": -0.00017864708972406196,
+   "net_x1": -0.0016156076322641356,
+   "missing_frac": 0.0
+  }
+ },
+ "gross_max": -0.00013721527107535744,
+ "final_open": false,
+ "h_star": null,
+ "verdict": "NO-GO (ekonomická předbrána: hrubý průměr < 0,42 %) — závěr NEOTEVŘEN",
+ "dsr_n": 225,
+ "stage": "dev"
+}
