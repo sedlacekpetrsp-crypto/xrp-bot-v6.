@@ -74,3 +74,15 @@ def test_pit_status_breakdown_and_denominator():
                                      dict(pit_ok=False, pit_status="maybe")])
 def test_pit_status_inconsistent_rejected(changes):
     with pytest.raises(ValueError, match="pit_status"): audit_gate([event(**changes)])
+
+
+# --- review Claude (dialog 0406): one article = one UTC instant (ChatGPT 5499c90 mechanism, integrated into the gate) ---
+def test_article_split_across_oos_boundary_rejected():
+    with pytest.raises(ValueError, match="inconsistent announced_at"):
+        audit_gate([event(article="a", token="X", date="2024-12-31T23:59:00Z"),
+                    event(article="a", token="Y", date="2025-01-01T00:01:00Z")])
+
+def test_article_same_instant_other_offset_accepted():
+    r = audit_gate([event(article="a", token="X", date="2025-03-01T12:00:00Z"),
+                    event(article="a", token="Y", date="2025-03-01T13:00:00+01:00")])
+    assert (r["eligible_events"], r["independent_articles"]) == (2, 1)

@@ -20,6 +20,7 @@ def _canonical(value, name):
 
 def audit_gate(events):
     seen, eligible, spot = set(), [], []
+    article_instant = {}  # one CMS article = one announcement instant (dialog 0406)
     for e in events:
         if not isinstance(e, dict):
             raise ValueError("event must be mapping")
@@ -43,6 +44,8 @@ def audit_gate(events):
         dt = dt.astimezone(timezone.utc)
         if not (WINDOW_START <= dt < WINDOW_END):
             raise ValueError("announcement outside protocol window")
+        if article_instant.setdefault(article, dt) != dt:
+            raise ValueError("inconsistent announced_at for article " + article)
         spot.append(e)
         for field in ("pit_ok", "perp_ok", "coverage_ok"):
             if type(e.get(field)) is not bool:
