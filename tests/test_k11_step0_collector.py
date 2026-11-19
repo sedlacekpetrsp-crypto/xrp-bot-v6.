@@ -98,7 +98,7 @@ def test_perp_and_coverage():
     assert c.perp_and_coverage(hole, T)[0] is False
     short = _minutes(T - timedelta(days=7), T + timedelta(hours=20))      # konec < t+L+24 h
     perp_ok, cov_ok, info = c.perp_and_coverage(short, T)
-    assert perp_ok is False and cov_ok is True                             # pokrytí jen do posledního obchodu
+    assert perp_ok is False and cov_ok is False                            # primárně celé okno (bod 8 revize)
     sparse = {m for m in full if m % 10}                                   # 90 % minut
     assert c.perp_and_coverage(sparse, T)[1] is False
 
@@ -238,17 +238,15 @@ def test_missing_funding_month_fails_coverage():
     assert bbb["funding_ok"] is False and bbb["coverage_ok"] is False
 
 
-def test_coverage_truncation_only_with_intraday_end():
-    """Review ChatGPT aa88f6a: archiv končící na hranici dne (23:59) NESMÍ zkrátit jmenovatel; konec uprostřed dne
-    (signatura delistingu perpu) smí — podle PROTOCOL §3.4 „do perp_last_trade“."""
+def test_coverage_primary_full_window_truncation_only_sensitivity():
+    """Bod 8 revize (ChatGPT ee681b6): konec dat uprostřed dne NEDOKLÁDÁ delisting ⇒ primárně celé okno."""
     day_end = (T + timedelta(days=2)).replace(hour=0, minute=0) + timedelta(days=1)   # konec 23:59 dne +2
-    ambiguous = _minutes(T - timedelta(days=7), day_end)
-    perp_ok, cov_ok, info = c.perp_and_coverage(ambiguous, T)
-    assert perp_ok is True and cov_ok is False and info["coverage_truncated_at_last_trade"] is False
+    perp_ok, cov_ok, info = c.perp_and_coverage(_minutes(T - timedelta(days=7), day_end), T)
+    assert perp_ok is True and cov_ok is False and info["coverage_end_intraday"] is False
     intraday = _minutes(T - timedelta(days=7), T + timedelta(days=2, hours=5))      # konec 14:00 dne +2
     perp_ok, cov_ok, info = c.perp_and_coverage(intraday, T)
-    assert cov_ok is True and info["coverage_truncated_at_last_trade"] is True
-    assert info["minute_coverage_full_window"] < 0.5
+    assert cov_ok is False and info["coverage_end_intraday"] is True
+    assert info["minute_coverage"] < 0.5 and info["minute_coverage_truncated_sensitivity"] == 1.0
 
 
 def test_coverage_full_window_passes_and_empty_fails():  # ChatGPT aa88f6a
@@ -267,5 +265,5 @@ def test_coverage_one_missing_day_below_threshold():  # ChatGPT aa88f6a
 
 def test_manifest_reports_full_window_sensitivity():
     _, man = c.collect(FakeNet())
-    assert man["gate_sensitivity_full_window"]["eligible_events"] == 2
-    assert man["coverage_truncated_events"] == 0
+    assert man["gate_sensitivity_truncated_intraday_end"]["eligible_events"] == 2
+    assert man["coverage_end_intraday_events"] == 0

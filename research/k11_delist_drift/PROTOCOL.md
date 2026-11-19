@@ -124,3 +124,9 @@ Kolektor `research/k11_step0_collector.py` (testy `tests/test_k11_step0_collecto
 9. **Integrita `open_time` (review ChatGPT `83306d1`/`56b2985`, před daty):** jen epoch v ms (10^12–10^13) nebo µs (10^15–10^16),
    přesně na hranici minuty, jedna jednotka na soubor; jinak soubor neplatný. Přesný duplikát řádku se toleruje (množinu minut
    nenafukuje; vyřazení by jen ubíralo platná data).
+10. **Revize bodu 8 (review ChatGPT `ee681b6`/`28568ee`, před daty; konzervativnější varianta):** konec 1m dat uprostřed dne
+    `perp_last_trade` NEDOKLÁDÁ (stejný obraz dá výpadek archivu). **Primární `coverage_ok` = celé okno [−7 d, +14 d]**
+    (odchylka od textu §3.4 „do `perp_last_trade`“ směrem k přísnosti). Zkrácené pokrytí jen jako citlivost
+    `gate_sensitivity_truncated_intraday_end`. Důsledek předem: události s delistingem perpu do +14 d z populace vypadnou;
+    vrátit je smí jen nový dodatek před daty s PIT zdrojem ukončení obchodování (oficiální futures oznámení s časem,
+    SHA-256), např. přes modul ChatGPT `research/k11_end_evidence.py` (zatím NEINTEGROVÁN — chybí zdroj, který by ho plnil).
