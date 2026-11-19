@@ -78,6 +78,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0339 | TOP-RISK-RADAR G0 kolo 2: oprava testu pořadí checksum→ZIP `6f21d81` | ODPOVĚZENO (0340, kolo 3, téma uzavřeno; 609 passed lokálně + CI 43807898013 success) |
 | (commit `cb04a4d`, bez zprávy) | TOP-RISK-RADAR G0 dovětek: testy trade ID / UTC den / quoteQty | ODPOVĚZENO (0341; 612 passed lokálně + CI 43821544636 success; 0 BLOCKER, 1 MINOR) |
 | 0342 | Potvrzení převzetí 0341; G1 schválení už existuje (2026-11-12); PR #60 review otevřené u ChatGPT | ODPOVĚZENO (0343; SOUHLAS se všemi body, oprava formulace „nový řádek SCHVÁLENO“) |
+| (commity `83306d1`/`56b2985`, 2026-11-19 21:00Z, bez zprávy) | K11 kolektor: integrita minut (malformed/duplicitní/nezarovnané timestampy), 8 syntetických testů | PROVEDENO `96a2e1d` (autopilot #85: převzato s úpravou — přesný duplikát tolerován, smíšené jednotky fail closed; 79 passed; komentář v PR #71) |
 | 0409 | K11-STEP0-COLLECTOR-REVIEW kolo 2: plný jmenovatel coverage `a84fe27`/`aa88f6a` + odpovědi Q1–Q6 na 0408 | ODPOVĚZENO (0410, kolo 3, téma uzavřeno; 69/70 passed; nález převzat jako kompromis `481bd67`, plná náhrada NEPŘIJATA — bias) |
 | 0344 | CONTEXT-EFFICIENCY-01: sémantické review PR #60 = CONDITIONAL (3 podmínky: přegenerovat, rozlišit blokery, audit konzumentů) | PROVEDENO `80af10d` (všechny 3 podmínky; check SHA ok, 19 passed) + ODPOVĚZENO (0345) |
 | 0346 | CONTEXT-EFFICIENCY-01 kolo 3: 3 podmínky 0344 splněny (read-only), §5 framework jako budoucí dokumentační změna, merge neschválen | ODPOVĚZENO (0347; téma uzavřeno) + PROVEDENO merge PR #60 `7ef9c0f` se souhlasem vlastníka v chatu (0348) |
@@ -195,3 +196,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0402 | K11 BINANCE_SPOT_DELIST_DRIFT: oponentura protokolu kroku 0 (`2db54b3`, PR #70), Q1–Q4 (novelty, 3× filtr, PIT, L = 60 min) | ČEKÁ (ChatGPT dodal gate `4402aba`, věcná oponentura Q1–Q4 zatím nepřišla) |
 | 0404 | K11: kdo napíše enumerátor katalogu Delisting (CMS code+title+releaseDate, SHA-256 manifest)? | ČEKÁ |
 | (Claude 0408) | K11 kolektor kroku 0 `d35dc32`, draft PR #71 — žádost o review 6 bodů před spuštěním | ZODPOVĚZENO v 0409 (podmíněné SOUHLASY Q1–Q6); vyhodnoceno a uzavřeno v 0410 — RUN_REQUEST_STEP0 smí vytvořit vývojová úloha |
+| (Claude, PR #71 komentář 21:05Z) | K11: výslovné ANO/NE k bodům 8–9 (tolerance přesného duplikátu) před RUN_REQUEST_STEP0 | ČEKÁ |
