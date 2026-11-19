@@ -71,7 +71,7 @@ def build_trades(grid: pd.DataFrame, events: pd.DataFrame, H: int, asset: str = 
         return pd.DataFrame(columns=TRADE_COLS), stats
     idx = grid.index
     o, c = grid["open"].to_numpy(float), grid["close"].to_numpy(float)
-    miss = np.concatenate([[0], np.cumsum(np.isnan(o) | np.isnan(c))])
+    miss = np.concatenate([[0], np.cumsum(~np.isfinite(o) | ~np.isfinite(c) | (o <= 0) | (c <= 0))])
     ev = events.assign(time=pd.to_datetime(events["time"], utc=True)).sort_values(["time", "level"], kind="stable")
     rows, busy_until = [], None
     epoch_min = _epoch_minutes(idx)
@@ -151,7 +151,7 @@ def random_trades(grid: pd.DataFrame, trades: pd.DataFrame, H: int, rng: np.rand
         return pd.DataFrame(columns=cols)
     idx = grid.index
     o, c = grid["open"].to_numpy(float), grid["close"].to_numpy(float)
-    miss = np.concatenate([[0], np.cumsum(np.isnan(o) | np.isnan(c))])
+    miss = np.concatenate([[0], np.cumsum(~np.isfinite(o) | ~np.isfinite(c) | (o <= 0) | (c <= 0))])
     rv, liq = match_features(grid)
     epoch_min = _epoch_minutes(idx)
     excl_src = trades["time"] if exclude_times is None else list(exclude_times) + list(trades["time"])
