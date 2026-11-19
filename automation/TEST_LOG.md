@@ -159,3 +159,4 @@
 | 2026-11-19 07:30 | 2db54b3 | žádný test (autopilot běh #83: jen protokol kroku 0 K11 před daty) | 0 testů; data, výnosy ani náklady nepočítány | PR #70, dialog 0402 |
 | 2026-11-19 09:10 | 19c71e1 / 7119e5c / 645ea60 | pytest lokálně, autopilot běh #83 (review K11 step-0 gate ChatGPT, syntetické) | 9 passed na `19c71e1`; po opravě 21 passed; nové testy proti `19c71e1` ⇒ 10 FAIL (okno, identita, pit_status); data/výnosy nepočítány | dialog 0404, PR #70 |
 | 2026-11-19 11:10 | f09ad25 / a328907 | pytest lokálně, autopilot běh #83 (review K11 PIT archive evidence ChatGPT, syntetické) | `tests/test_k11_*.py` 33 passed na `f09ad25` i `a328907`; data/výnosy nepočítány | dialog 0405, PR #70 |
+| 2026-11-19 13:10 | 93a5f52 / b1c5784 | pytest lokálně, autopilot běh #83 (review K11 article timestamp ChatGPT, syntetické) | 41 passed na `93a5f52`; `b1c5784` 35 passed, mutace stará brána ⇒ 1 FAIL; data/výnosy nepočítány | dialog 0406, PR #70 |
