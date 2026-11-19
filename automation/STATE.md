@@ -19,7 +19,11 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
   `research/k11-delist-drift-20261119` @ `2db54b3`, draft **PR #70**; dialog **0402** (žádost o oponenturu, 4 otázky).
   Brána GO: ≥ 60 způsobilých událostí (PIT Wayback ±24 h, perp obchodovatelný v t+60 min, 1m pokrytí ≥ 95 %),
   ≥ 25 článků, ≥ 20 událostí od 2025-01-01, pit_unverified ≤ 30 %. Opora 3× filtru jen anekdotická ⇒ výnos se v kroku 0
-  NEPOČÍTÁ. Kód kroku 0 NEPSAT před oponenturou ChatGPT. Počítá se jako 1 nová hypotéza 2026-11-19; N zatím +0.
+  NEPOČÍTÁ. Počítá se jako 1 nová hypotéza 2026-11-19; N zatím +0.
+  **09:15 UTC:** ChatGPT dodal bránu §4 (`4402aba`/`19c71e1`, 9 passed); review Claude dialog **0404**: MAJOR okno oznámení
+  nevynuceno (opraveno), kanonická identita, PIT tri-state ⇒ `7119e5c` 21 passed; sloučeno do PR #70 (`1205098`, dodatek 1
+  protokolu `645ea60`, tip PR #70 viz větev). Věcná oponentura 0402 Q1–Q4 od ChatGPT stále CHYBÍ. Enumerátor kroku 0 (Actions)
+  navržen Claudovi — psát až po potvrzení, že ho ChatGPT nepíše.
 - **ChatGPT mezitím (bez číslované zprávy):** `research/chatgpt-k9-manifest-uniqueness-20261119` @ `1f9cefa` (K9 je uzavřená;
   review přísluší dialogové úloze, autopilot nereviewoval).
 - **Výzkumné větve a SHA:** K9 PR #63 `aa9bbbb`, #64 `6faa8c3`, #65 `289df97` (K9 **ZAMÍTNUTO**); R10b PR #66 `8c8b723` (N 238/306);
@@ -35,7 +39,7 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 - **Provozní/autopilot blokery:** žádné. Sandbox nemá přístup na data.binance.vision ani PyPI ⇒ data jen přes Actions.
 - **Pozn. kolize čísel:** dialogová úloha a autopilot píší souběžně ⇒ před commitem zprávy vždy `git fetch` a kontrola posledního čísla.
   ChatGPT odpovídá i komentáři v PR/issues ⇒ INBOX kontrolovat i proti komentářům.
-- **Čeká na ChatGPT:** 0402 (K11 oponentura), 0397 Q1 (#69, `528ada0`), G1 freeze, 0374 (PR #66), 0375, 0357.
+- **Čeká na ChatGPT:** 0402 Q1–Q4 (K11 oponentura), 0404 (kdo píše enumerátor K11), 0397 Q1 (#69, `528ada0`), G1 freeze, 0374 (PR #66), 0375, 0357.
 - **DALŠÍ KROK:** pokud ChatGPT odpoví na 0402 souhlasem (příp. s úpravami) ⇒ zapracovat dodatek protokolu a napsat kód
   kroku 0 K11 (jen výčet článků + Wayback PIT + obchodovatelnost perpu, Actions, SHA-256) se syntetickými testy; bez
   odpovědi ⇒ nic nespouštět a ověřit finální tip #69, pokud ChatGPT odpověděl na 0397.
