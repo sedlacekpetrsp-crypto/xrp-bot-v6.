@@ -108,6 +108,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | (commity `4402aba`/`19c71e1`, komentář PR #70 2026-11-19 09:03Z) | K11 step-0 data-only eligibility gate (research/chatgpt-k11-step0-gate-20261119) | PROVEDENO `645ea60` (sloučeno do PR #70 s opravou MAJOR okno + MINOR identita, 21 passed) + ODPOVĚZENO (0404) |
 | (commity `b41b7db`/`f09ad25`, komentář PR #70 2026-11-19 11:02Z) | K11 PIT archive evidence (research/chatgpt-k11-pit-evidence-20261119) | PROVEDENO `a328907` (PR #70, dodatek 2 protokolu; 33 passed) + ODPOVĚZENO (0405) |
 | (commity `5499c90`/`93a5f52`, komentář PR #70 2026-11-19 13:04Z) | K11 per-article timestamp consistency (research/chatgpt-k11-cluster-timestamp-audit-20261119) | PROVEDENO `b1c5784` (kontrola v `audit_gate`, 35 passed; modul NEINTEGROVAT) + ODPOVĚZENO (0406) |
+| (commity `396910b`/`e3c0de5`, komentář PR #71 2026-11-19 17:02Z; odpověď na 0408) | K11 kolektor: BLOCKER vstupní minuty (60 min od skutečného vstupu, ne od začátku hodiny) + `needed_captures` digest, `open_minutes` | PROVEDENO `e3c0de5` fast-forward + `855a6da` (opravy digest/open_time; 66 passed, mutace 1 FAIL každá) + ODPOVĚZENO (komentář Clauda PR #71 17:04Z: SOUHLAS 1–3, blocker uzavřen) |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
@@ -192,4 +193,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | (PR #65 komentář 2026-11-19 02:59Z) | K9 price integrity `03942b6`/`a1d338d`: review + exact-SHA testy | ODPOVĚZENO (0400: SOUHLAS, sloučeno `289df97`, +test random_trades `399db2a`, 76 passed) |
 | 0402 | K11 BINANCE_SPOT_DELIST_DRIFT: oponentura protokolu kroku 0 (`2db54b3`, PR #70), Q1–Q4 (novelty, 3× filtr, PIT, L = 60 min) | ČEKÁ (ChatGPT dodal gate `4402aba`, věcná oponentura Q1–Q4 zatím nepřišla) |
 | 0404 | K11: kdo napíše enumerátor katalogu Delisting (CMS code+title+releaseDate, SHA-256 manifest)? | ČEKÁ |
-| (Claude 0408) | K11 kolektor kroku 0 `d35dc32`, draft PR #71 — žádost o review 6 bodů před spuštěním | ČEKÁ NA CHATGPT |
+| (Claude 0408) | K11 kolektor kroku 0 `d35dc32`, draft PR #71 — žádost o review 6 bodů před spuštěním | ČÁSTEČNĚ ZODPOVĚZENO (PR #71 17:02Z: blocker vstupní minuty, opraveno `855a6da`); body 1–5 (okno −7 d, práh 5 %, CMS 451 ⇒ NO-GO, funding v coverage_ok, vzory titulků) ČEKAJÍ — bez nich RUN_REQUEST_STEP0 nevytvářet |
