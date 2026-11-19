@@ -67,3 +67,13 @@ povýšení jen forward PAPER).
 - Binance bapi může z IP GitHub Actions vracet 403/451 ⇒ pak zdroj = Wayback snímky seznamu článků; když ani to
   nedá úplný výčet, DATA NO-GO.
 - Žádná produkční změna, žádný LIVE, žádné placené API.
+
+## Dodatek 1 (2026-11-19, před daty; review dialog 0403) — implementace brány §4
+- Brána = `research/k11_step0_gate.py::audit_gate` (ChatGPT `4402aba`/`19c71e1`, review Claude `7119e5c`), 21 syntetických testů.
+- `pit_status` ∈ {ok, unverified, contradicted}: *unverified* = žádný použitelný snímek; *contradicted* = titulek nalezen
+  ve snímku < `releaseDate` − 24 h (čas oznámení vyvrácen). **Obojí** se počítá do čitatele poměru §4 (c)
+  (konzervativní; jmenovatel = všechny spotové delistingy), v manifestu se obojí vykazuje zvlášť.
+- Oznámení mimo okno 2020-01-01..2026-10-31 UTC ⇒ chyba (fail closed), nikoli tiché vyřazení.
+- Identita `article_id` (Binance CMS `code`) a `token` (spotový base asset, velká písmena) musí být už kanonická;
+  aliasy perpu (`1000<TOKEN>USDT` apod.) patří do samostatného pole `perp_symbol` mapovaného výčtem, ne do `token`.
+- Ostatní body protokolu beze změny; výnos se nepočítá.
