@@ -157,7 +157,7 @@ def open_minutes(zip_bytes: bytes) -> set:
         names = [n for n in z.namelist() if n.endswith(".csv")]
         if len(names) != 1:
             raise ValueError("ZIP musí mít právě 1 CSV")
-        out = set()
+        out, raw, units = set(), set(), {}
         for i, line in enumerate(z.read(names[0]).decode().splitlines()):
             first = line.split(",", 1)[0].strip()
             if i == 0 and first == "open_time":
@@ -175,10 +175,12 @@ def open_minutes(zip_bytes: bytes) -> set:
                 raise ValueError("open_time epoch mimo ms/us rozsah")
             if v % unit:
                 raise ValueError("open_time není hranice minuty")
-            minute = v // unit
-            if minute in out:
-                raise ValueError("duplicitní open_time")
-            out.add(minute)
+            if units.setdefault("u", unit) != unit:
+                raise ValueError("smíšené jednotky ms/µs v jednom souboru")
+            if v in raw:
+                continue  # přesný duplikát řádku: pro množinu minut neškodný, nic nenafukuje (review Claude k 83306d1)
+            raw.add(v)
+            out.add(v // unit)
     return out
 
 

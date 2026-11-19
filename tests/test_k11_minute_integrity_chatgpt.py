@@ -25,10 +25,18 @@ def test_valid_microsecond_minutes():
     [1735689600001],               # non-minute ms
     [1735689600000001],            # non-minute us
     [1735689600],                  # seconds incorrectly treated as ms
-    [1735689600000, 1735689600000],  # duplicate
     [1735689600000, 1735689600000000],  # same minute in different units
     [999999999999999999],          # implausible epoch
 ])
 def test_invalid_timestamps_fail_closed(rows):
     with pytest.raises(ValueError):
         open_minutes(_zip(rows))
+
+
+def test_exact_duplicate_row_tolerated_not_inflating():  # review Claude: duplikát nemůže nafouknout množinu minut
+    assert len(open_minutes(_zip([1735689600000, 1735689600000, 1735689660000]))) == 2
+
+
+def test_mixed_units_different_minutes_fail_closed():
+    with pytest.raises(ValueError):
+        open_minutes(_zip([1735689600000, 1735689660000000]))

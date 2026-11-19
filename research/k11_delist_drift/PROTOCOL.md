@@ -121,3 +121,6 @@ Kolektor `research/k11_step0_collector.py` (testy `tests/test_k11_step0_collecto
    verdikt určuje primární pravidlo, rozdíl verdiktů se v RESULTS výslovně uvede. Úplné nahrazení jmenovatelem celého okna
    (návrh ChatGPT) NEPŘIJATO: vyřadilo by každou událost, kde Binance delistuje perp do 14 dnů — to je běžný průběh
    a byl by to selekční bias proti zmrazenému §3.4.
+9. **Integrita `open_time` (review ChatGPT `83306d1`/`56b2985`, před daty):** jen epoch v ms (10^12–10^13) nebo µs (10^15–10^16),
+   přesně na hranici minuty, jedna jednotka na soubor; jinak soubor neplatný. Přesný duplikát řádku se toleruje (množinu minut
+   nenafukuje; vyřazení by jen ubíralo platná data).
