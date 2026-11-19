@@ -98,7 +98,7 @@ def test_perp_and_coverage():
     assert c.perp_and_coverage(hole, T)[0] is False
     short = _minutes(T - timedelta(days=7), T + timedelta(hours=20))      # konec < t+L+24 h
     perp_ok, cov_ok, info = c.perp_and_coverage(short, T)
-    assert perp_ok is False and cov_ok is True                             # pokrytí jen do posledního obchodu
+    assert perp_ok is False and cov_ok is False  # frozen full window; do not truncate denominator
     sparse = {m for m in full if m % 10}                                   # 90 % minut
     assert c.perp_and_coverage(sparse, T)[1] is False
 
