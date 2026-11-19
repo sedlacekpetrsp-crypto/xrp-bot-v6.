@@ -11,36 +11,20 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-19 11:10 UTC, autopilot běh #84 — bez nové změny)
-- **Produkce (jen čtení, běh #84):** live `01c69ff` beze změny (0 událostí, 0 error logů 07:00–11:04); bestof 132, jen známá
-  duplicita 128/129; `lh_whale_trades` n=3; DB 288 601 791 B ≈ 26,9 % z 1 GB.
-- **Běh #84:** bez nové změny — K11 posunula dialogová úloha (0405, PR #70 tip `a328907`, dodatek 2, 33 passed). Kolektor K11
-  čeká na 0404; pokud ChatGPT do běhu #85 neodpoví, převezme ho Claude (ohlásit v dialogu před psaním).
-- **NOVÉ (běh #83): K11 BINANCE_SPOT_DELIST_DRIFT** — short USDT-M perpu po oznámení spotového delistingu na Binance
-  (nucená migrace držitelů, odchod MM, omezená arbitráž). Protokol **jen kroku 0 (datový audit)** před daty:
-  `research/k11-delist-drift-20261119` @ `2db54b3`, draft **PR #70**; dialog **0402** (žádost o oponenturu, 4 otázky).
-  Brána GO: ≥ 60 způsobilých událostí (PIT Wayback ±24 h, perp obchodovatelný v t+60 min, 1m pokrytí ≥ 95 %),
-  ≥ 25 článků, ≥ 20 událostí od 2025-01-01, pit_unverified ≤ 30 %. Opora 3× filtru jen anekdotická ⇒ výnos se v kroku 0
-  NEPOČÍTÁ. Počítá se jako 1 nová hypotéza 2026-11-19; N zatím +0.
-  **09:15 UTC:** ChatGPT dodal bránu §4 (`4402aba`/`19c71e1`, 9 passed); review Claude dialog **0404**: MAJOR okno oznámení
-  nevynuceno (opraveno), kanonická identita, PIT tri-state ⇒ `7119e5c` 21 passed; sloučeno do PR #70 (`1205098`, dodatek 1
-  protokolu `645ea60`, tip PR #70 viz větev). Věcná oponentura 0402 Q1–Q4 od ChatGPT stále CHYBÍ. Enumerátor kroku 0 (Actions)
-  navržen Claudovi — psát až po potvrzení, že ho ChatGPT nepíše.
-  **11:10 UTC:** ChatGPT PIT archive evidence (`b41b7db`/`f09ad25`) — review dialog **0405** SOUHLAS, 33 passed, fast-forward do PR #70;
-  dodatek 2 protokolu `a328907`: čas = CDX timestamp, jen status 200, `present` = CMS `code` (ne titulek). ChatGPT uznal novelty a PIT;
-  zbývá výslovně Q2 (3× filtr) a Q4 (L = 60 min).
-  **13:10 UTC:** ChatGPT article timestamp audit (`5499c90`/`93a5f52`, 41 passed) — mezera potvrzena (článek rozdělený přes OOS
-  hranici prošel); review **0406**: kontrola vložena přímo do `audit_gate` `b1c5784` (35 passed), samostatný modul NEINTEGROVAT.
-  **15:05 UTC:** ChatGPT execution feasibility gate (`8dbf713`/`4e9d457`, 45 passed) — review **0407** NEINTEGROVAT: vyžaduje historickou
-  knihu (krok 0 ji nesbírá), 42 bps = 3× filtr použitý chybně jako strop nákladu, dvojí započtení spreadu+skluzu; návrh jen diagnostický
-  sloupec dostupnosti knihy v kroku 0. Kolektor kroku 0 začne Claude v příštím běhu (ChatGPT se 4× nevyjádřil).
-- **ChatGPT mezitím (bez číslované zprávy):** `research/chatgpt-k9-manifest-uniqueness-20261119` @ `1f9cefa` (K9 je uzavřená;
-  review přísluší dialogové úloze, autopilot nereviewoval).
+## CHECKPOINT (přepisuje se; stav k 2026-11-19 15:30 UTC, autopilot běh #85)
+- **Produkce (jen čtení, běh #85):** live `01c69ff` beze změny (0 událostí, 0 error logů 11:00–15:05); bestof 132, jen známá
+  duplicita 128/129; `lh_whale_trades` n=3; DB 288 650 943 B ≈ 26,9 % z 1 GB.
+- **Běh #85: K11 kolektor kroku 0 napsán (Claude):** `research/k11_step0_collector.py` + 23 testů, dodatek 3 protokolu, workflow
+  `k11-step0.yml` (spouští jen `research/k11_delist_drift/RUN_REQUEST_STEP0` na `research/k11-step0-*`). Větev
+  `research/k11-step0-collector-20261119` @ `d35dc32`, **draft PR #71** (base = větev PR #70). `tests/test_k11_*.py` 58 passed.
+  **RUN_REQUEST NEVYTVOŘEN** — čeká review ChatGPT dialog **0408** (6 bodů). Výnosy ani ceny se nečtou.
+- **K11 dosavadní:** protokol `2db54b3`, dodatky 1–2 (brána `audit_gate`, PIT helper), PR #70 tip `b1c5784` (35 passed); 0407
+  execution feasibility NEINTEGROVÁNO (místo ní diagnostický sloupec knihy v kolektoru). Počítá se jako 1 nová hypotéza 2026-11-19; N +0.
 - **Výzkumné větve a SHA:** K9 PR #63 `aa9bbbb`, #64 `6faa8c3`, #65 `289df97` (K9 **ZAMÍTNUTO**); R10b PR #66 `8c8b723` (N 238/306);
   G1 Top Risk radar tip `f2e1477` (vlastník ChatGPT); K7 `78abe38`; PIT-GATE-01 `ffb1b5d`; K10 PR #68 `ab16823` (DATA NO-GO, zmrazit);
-  #69 návrh `528ada0` (čeká ChatGPT 0397 Q1); K11 PR #70 tip `b1c5784`.
+  #69 návrh `528ada0` (čeká ChatGPT 0397 Q1); K11 PR #70 `b1c5784`, PR #71 `d35dc32`.
 - **G1 (schváleno 2026-11-12, max. 1 běh):** freeze **NEZAMČEN** (ChatGPT) ⇒ výkon NESPOUŠTĚT.
-- **Čeká na vlastníka:** PR #57 nasadit jen se souhlasem; PR #54, #8, #9, #10, #62–#68, #70 neslučovat; id 129 neměnit;
+- **Čeká na vlastníka:** PR #57 nasadit jen se souhlasem; PR #54, #8, #9, #10, #62–#68, #70, #71 neslučovat; id 129 neměnit;
   K7 výkon jen s „SCHVÁLENO: výkonnost K7“; #69 deploy jen s novým schválením.
 - **Bezpečnostní brány:** výhradně PAPER; žádný LIVE/Render zápis/deploy/merge/force push; `FUNDING_SEMANTICS.json`
   (performance_hold, R8/R9) neměnit; výkon jen s řádkem SCHVÁLENO; `OWNER_DECISIONS.md` nikdy neupravovat ani nezkracovat.
@@ -49,10 +33,10 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 - **Provozní/autopilot blokery:** žádné. Sandbox nemá přístup na data.binance.vision ani PyPI ⇒ data jen přes Actions.
 - **Pozn. kolize čísel:** dialogová úloha a autopilot píší souběžně ⇒ před commitem zprávy vždy `git fetch` a kontrola posledního čísla.
   ChatGPT odpovídá i komentáři v PR/issues ⇒ INBOX kontrolovat i proti komentářům.
-- **Čeká na ChatGPT:** 0402 Q1–Q4 (K11 oponentura), 0404 (kdo píše enumerátor K11), 0397 Q1 (#69, `528ada0`), G1 freeze, 0374 (PR #66), 0375, 0357.
-- **DALŠÍ KROK:** napsat kolektor kroku 0 K11 (CMS výčet + Wayback CDX PIT + obchodovatelnost perpu + pokrytí 1m, Actions, SHA-256,
-  diagnostický sloupec dostupnosti knihy) se syntetickými testy na tipu PR #70 `b1c5784`; před spuštěním ověřit, že ChatGPT kolektor
-  nezačal. Výkon (výnosy) NEPOČÍTAT.
+- **Čeká na ChatGPT:** 0408 (review kolektoru K11), 0402 Q2/Q4, 0397 Q1 (#69, `528ada0`), G1 freeze, 0374 (PR #66), 0375, 0357.
+- **DALŠÍ KROK:** po review 0408 (opravy do PR #71) commitnout `RUN_REQUEST_STEP0` na `research/k11-step0-collector-20261119`,
+  vyhodnotit manifest proti bráně §4 (DATA GO/NO-GO) a zapsat RESULTS. Bez review ChatGPT do 2 běhů: eskalovat v dialogu, nespouštět
+  bez ní (implementační volby dodatku 3 jsou nové). Výkon (výnosy) NEPOČÍTAT.
 
 ## Aktivní body ze starších front (výtah; plné znění jen v archivu)
 - R3b forward PAPER RSI(2): parametry přesně jako PR #13, značit „(post-hoc, B6 nesplněno)“, žádný produkční bot (archiv ř. 190–211).

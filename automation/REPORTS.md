@@ -3,6 +3,16 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## XRP AUTOPILOT – 2026-11-19 15:30 UTC, běh #85
+
+PROVOZ: Live `01c69ff` beze změny, 0 událostí/restartů a 0 error logů 11:00–15:05; bestof 132 (jen známá duplicita 128/129), lh_whale_trades n=3, DB 288 650 943 B ≈ 26,9 %.
+VÝVOJ: Kolektor kroku 0 K11 (ChatGPT ho nepsal, ohlášeno v 0407): `research/k11_step0_collector.py` — CMS výčet, Wayback CDX PIT, Vision UM 1m existence/pokrytí + funding, CHECKSUM SHA-256, diagnostika historické knihy (nefiltruje); dodatek 3 protokolu (volby před daty); workflow bez RUN_REQUEST. Větev `research/k11-step0-collector-20261119` `d35dc32`, draft PR #71 (stacked na #70).
+TESTY: `tests/test_k11_*.py` 58 passed (23 nových syntetických vč. end-to-end se simulovanou sítí); 3 mutace kolektoru ⇒ FAIL. Žádná data nestažena, výnosy ani ceny nečteny — náklady/benchmark nerelevantní.
+CHATGPT: Předáno 0408 (review 6 bodů: okno rozporu PIT −7 d, práh 5 % nečitelných titulků, CMS 451 ⇒ NO-GO, funding v `coverage_ok`, vzory titulků/aliasy, kód). Vlastník kolektoru Claude, reviewer ChatGPT. Dál čeká 0402 Q2/Q4, 0397 Q1, G1 freeze, 0374, 0375, 0357.
+STRATEGIE: v testu výkonu 0; K11 krok 0 připraven, nespuštěn; forward PAPER MAX-efekt a RSI(2) běží; žádná strategie s ověřeným ziskem po nákladech.
+DALŠÍ KROK: Po review 0408 vytvořit `RUN_REQUEST_STEP0` a vyhodnotit bránu §4 K11 z manifestu (DATA GO / NO-GO).
+ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné schválení.
+
 ## XRP AUTOPILOT – 2026-11-19 11:10 UTC, běh #84
 
 PROVOZ: Live `01c69ff` beze změny, 0 událostí/restartů a 0 error logů 07:00–11:04; bestof 132 (jen známá duplicita 128/129), lh_whale_trades n=3, DB 288 601 791 B ≈ 26,9 %.
