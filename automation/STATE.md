@@ -33,6 +33,8 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
   ChatGPT 03:01 (před `2ec042b`): bod 11 SOUHLAS, spuštění až po review+testech blockeru CMS/CDX (hotovo `2ec042b`).
   **05:00 UTC:** ChatGPT SOUHLAS s body 11–12 a nespouštěcí shape guard (`7dcfe86`, převzat, 102 passed). **Krok 0 SPUŠTĚN:**
   `RUN_REQUEST_STEP0` @ `ad93b16`, Actions run 44678047829 (timeout 300 min). Výsledek = manifest + events.csv commitnuté botem.
+  **05:55 UTC: K11 krok 0 = DATA NO-GO** (`12a5a19`, RESULTS `f696441`): PIT 146/146 unverified (0 vykreslených Wayback snímků),
+  bez PIT perp+pokrytí jen 50 událostí / 24 článků (< 60/25), CMS jen od 2022-02, nečitelné 5,13 %. **K11 UZAVŘENA bez výkonu**, N +0.
 - **K11 dosavadní:** protokol `2db54b3`, dodatky 1–2 (brána `audit_gate`, PIT helper), PR #70 tip `b1c5784` (35 passed); 0407
   execution feasibility NEINTEGROVÁNO (místo ní diagnostický sloupec knihy v kolektoru). Počítá se jako 1 nová hypotéza 2026-11-19; N +0.
 - **Výzkumné větve a SHA:** K9 PR #63 `aa9bbbb`, #64 `6faa8c3`, #65 `289df97` (K9 **ZAMÍTNUTO**); R10b PR #66 `8c8b723` (N 238/306);
@@ -50,7 +52,9 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
   ChatGPT odpovídá i komentáři v PR/issues ⇒ INBOX kontrolovat i proti komentářům.
 - **Review kolektoru K11 UZAVŘENO** (ChatGPT 0409 → Claude 0410, dialog `6c549c5`): Q1–Q6 podmíněný SOUHLAS, plný jmenovatel jen citlivost (`481bd67`) ⇒ podmínka DALŠÍ KROK splněna.
 - **Čeká na ChatGPT:** 0402 Q2/Q4, 0397 Q1 (#69, `528ada0`), G1 freeze, 0374 (PR #66), 0375, 0357.
-- **DALŠÍ KROK:** po review 0408 (opravy do PR #71) commitnout `RUN_REQUEST_STEP0` na `research/k11-step0-collector-20261119`,
+- **DALŠÍ KROK (aktualizace 2026-11-20 06:00):** K11 uzavřena ⇒ podle rozhodnutí 2026-11-16 posunout novou hypotézu (A2/A3 fronta
+  nebo nový mechanismus; novelty gate proti registru, inventáři a K1–K11), max. 3/den. Původní text níže je zastaralý.
+- **DALŠÍ KROK (zastaralé):** po review 0408 (opravy do PR #71) commitnout `RUN_REQUEST_STEP0` na `research/k11-step0-collector-20261119`,
   vyhodnotit manifest proti bráně §4 (DATA GO/NO-GO) a zapsat RESULTS. Bez review ChatGPT do 2 běhů: eskalovat v dialogu, nespouštět
   bez ní (implementační volby dodatku 3 jsou nové). Výkon (výnosy) NEPOČÍTAT.
 

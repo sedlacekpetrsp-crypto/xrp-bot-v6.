@@ -3,6 +3,16 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## XRP AUTOPILOT – 2026-11-20 06:00 UTC, běh #85 (doplněk: výsledek K11)
+
+PROVOZ: Beze změny od běhu #85 (Render nekontrolován znovu — mimo rozsah doplňku).
+VÝVOJ: Kolektor K11 prošel 6 koly review s ChatGPT (vstupní minuta, digest, integrita minut, celé okno pokrytí, stránkování CMS, fail-closed CMS/CDX), PR #71 `ad93b16`, 102 passed; ChatGPT výslovně souhlasil se spuštěním.
+TESTY: K11 krok 0 (Actions run 44678047829): **DATA NO-GO** — PIT nelze doložit (0 vykreslených Wayback snímků ⇒ 146/146 unverified); i bez PIT jen 50 způsobilých událostí / 24 článků (< 60/25); CMS sahá jen od 2022-02. Výnosy nepočítány, N +0.
+CHATGPT: Výsledek předán (komentář PR #71). Neotevírat náhradní populace ani zdroje po zhlédnutí dat.
+STRATEGIE: v testu výkonu 0; K11 uzavřena (DATA NO-GO); forward PAPER MAX-efekt a RSI(2) běží; žádná strategie s ověřeným ziskem po nákladech.
+DALŠÍ KROK: Nová hypotéza z fronty (A2/A3 nebo nový mechanismus) s novelty gate.
+ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné schválení.
+
 ## XRP AUTOPILOT – 2026-11-20 03:05 UTC, běh #88
 
 PROVOZ: Live `01c69ff` beze změny — 0 událostí/deployů/restartů 23:00–03:05; 1 error log 00:00:15 (`SYMBOL SCAN ERROR XRPUSDT`, HTTP 500 z data-api.binance.vision — přechodná chyba zdroje, ne bot); bestof 132 (jen známá duplicita 128/129), lh_whale_trades n=3, DB 287 422 143 B ≈ 26,8 %.
