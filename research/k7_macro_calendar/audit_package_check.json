@@ -1,0 +1,36 @@
+{
+ "rows": 72,
+ "problems": [],
+ "eligible": 69,
+ "lead_days_min": 29.6,
+ "lead_days_median": 207.5,
+ "scheduled_time_ET": {
+  "14:00": 69
+ },
+ "excluded": [
+  "FOMC-2020-03-18",
+  "FOMC-2023-03-22",
+  "FOMC-2026-12-09"
+ ],
+ "segments": {
+  "ladeni": [
+   "FOMC-2018-01-31",
+   "FOMC-2022-06-15",
+   35
+  ],
+  "validace": [
+   "FOMC-2022-07-27",
+   "FOMC-2024-07-31",
+   16
+  ],
+  "zaverecny": [
+   "FOMC-2024-09-18",
+   "FOMC-2026-10-28",
+   18
+  ]
+ },
+ "dates_with_cpi_note": [],
+ "sha256_step0_events_csv": "2d5fc1db86a195dd87f38246829eb1a2f64130c8b0eff2264579133bd99faf8f",
+ "sha256_events_frozen_69_csv": "00fe989d0ceed9c483bc624f3f1f4a14e03b16e12438e36c9140ced998c1b45b",
+ "verdict": "OK"
+}
