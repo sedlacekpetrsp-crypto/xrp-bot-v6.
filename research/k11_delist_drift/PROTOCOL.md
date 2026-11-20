@@ -135,3 +135,7 @@ Kolektor `research/k11_step0_collector.py` (testy `tests/test_k11_step0_collecto
     stránky, konfliktní metadata stejného `code`, `releaseDate` jiné než kladné int ms ⇒ DATA NO-GO s důvodem. Identický článek
     na další stránce (posun stránkování při zveřejnění nového článku během výčtu) se počítá **jednou** a vykazuje
     (`identical_cross_page_duplicates`).
+12. **Transportní vrstva (review ChatGPT `04affcf`/`d67183c`, před daty):** nevalidní CMS JSON/schéma ⇒ DATA NO-GO s důvodem;
+    CDX prefix s HTTP ≠ 200 nebo nevalidním JSON ⇒ DATA NO-GO (ztráta prefixu by mohla skrýt rozporný snímek); CDX 200 s prázdným
+    tělem = 0 snímků (legitimní). Neúspěšná stažení jednotlivých snímků (po 3 pokusech) se vykazují v
+    `archive_snapshot_fetch_failures` a v RESULTS se uvede, zda mohla změnit `pit_status` (ok ↔ contradicted).

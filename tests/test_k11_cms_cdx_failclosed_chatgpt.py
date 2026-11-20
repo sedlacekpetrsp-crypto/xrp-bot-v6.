@@ -40,6 +40,15 @@ class K11MalformedInputTests(unittest.TestCase):
         self.assertEqual(manifest["verdict"], "DATA_NO_GO")
         self.assertIn("CDX malformed", manifest["enumeration_error"])
 
+    def test_cdx_empty_200_is_zero_captures_not_no_go(self):  # review Claude: prázdný prefix = 0 snímků
+        def fetch(url):
+            if url.startswith("https://www.binance.com/bapi"):
+                return 200, b'{"data":{"articles":[]}}'
+            return 200, b""
+        rows, manifest = collect(fetch)
+        self.assertNotIn("enumeration_error", manifest)
+        self.assertEqual(manifest["archive_captures"], 0)
+
 
 if __name__ == "__main__":
     unittest.main()

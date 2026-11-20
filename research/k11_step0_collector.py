@@ -345,22 +345,26 @@ def collect(fetch, pause=0.0):
     captures = []
     for prefix in ARCHIVE_PREFIXES:
         st, body = get(CDX.format(url=prefix))
-        if st != 200 or not body.strip():
+        if st != 200:  # výpadek prefixu by mohl skrýt rozporný snímek (contradicted) ⇒ fail closed
             manifest.update(enumeration_error=f"CDX unavailable HTTP {st}: {prefix}",
                             verdict="DATA_NO_GO", http_log=get.log)
             return [], manifest
+        if not body.strip():
+            continue  # CDX s 200 a prázdným tělem = 0 snímků (legitimní stav, review Claude k 04affcf)
         try:
             captures += parse_cdx(json.loads(body))
         except (ValueError, TypeError, KeyError, IndexError) as exc:
             manifest.update(enumeration_error=f"CDX malformed: {prefix}: {exc}",
                             verdict="DATA_NO_GO", http_log=get.log)
             return [], manifest
-    snaps = []
+    snaps, snap_failures = [], []
     for (t, original, _), times in needed_captures(sorted(set(captures)), [a["release"] for a in spot]).values():
         st, body = get(f"https://web.archive.org/web/{t:%Y%m%d%H%M%S}id_/{original}")
         if st == 200:
             codes = extract_codes(body)
             snaps += [(ti, codes) for ti in times]
+        else:  # vykázáno; ztracený snímek může skrýt rozpor ⇒ viz manifest archive_snapshot_fetch_failures
+            snap_failures.append({"capture_utc": t.isoformat(), "status": st, "times": len(times)})
 
     rows, files = [], []
     for a in arts:
@@ -407,6 +411,7 @@ def collect(fetch, pause=0.0):
     unparsed_share = len(unparsed) / len(spot) if spot else 1.0
     verdict = gate["verdict"] if unparsed_share <= MAX_UNPARSED_SHARE else "DATA_NO_GO"
     manifest["cms_pagination_audit"] = dict(ENUM_AUDIT)
+    manifest["archive_snapshot_fetch_failures"] = snap_failures
     manifest.update(articles_in_window=len(arts), spot_articles=len(spot), spot_articles_unparsed=unparsed,
                     unparsed_share=round(unparsed_share, 6), archive_captures=len(captures),
                     archive_snapshots_fetched=len(snaps),
