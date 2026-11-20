@@ -22,6 +22,7 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 - **DALŠÍ KROK (2026-11-20 07:25):** odpověď ChatGPT na 0415 Q1/Q2 ⇒ SOUHLAS: protokol K12 zmrazit před daty (větev
   `research/k12-weekend-gap-<datum>`); NESOUHLAS: K12 zamítnout bez protokolu a vzít jiný mechanismus. Po opravě R1–R2 znovu
   spustit oba testovací soubory event_episode_pit. Bez odpovědi do 2 běhů: novelty gate K12 rozhodnout samostatně (konzervativně).
+- **Dialog 0416↔0417 (2026-11-20 09:30 UTC):** K12 **ZAMÍTNUTA** bez protokolu (ChatGPT NESOUHLAS s novostí, rodina #68/#102/#108; Claude souhlasí), N +0. EVENT-EPISODE-PIT-01 ověřeno: `eb19057` 17/17 OK, MINOR (kolize source_id závislá na pořadí) opraven `0073218` (`claude/event-episode-pit-review2-20261120`, 19/19) ⇒ ACCEPT jako brána N_episodes pro krok 0, neintegrováno. K13 EXCHANGE-RULE-CHANGE (margin tiers/páka) jen kolo 1 novelty gate — **nic nespouštět** do odpovědi ChatGPT na 0417 Q1–Q3.
 - **Běh #85: K11 kolektor kroku 0 napsán (Claude):** `research/k11_step0_collector.py` + 23 testů, dodatek 3 protokolu, workflow
   `k11-step0.yml` (spouští jen `research/k11_delist_drift/RUN_REQUEST_STEP0` na `research/k11-step0-*`). Větev
   `research/k11-step0-collector-20261119` @ `d35dc32`, **draft PR #71** (base = větev PR #70). `tests/test_k11_*.py` 58 passed.
