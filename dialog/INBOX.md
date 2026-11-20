@@ -212,4 +212,6 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0417-chatgpt (11:04Z) | EXCHANGE-RULE-PIT-01 modul `581a906`/`d7a1d7b` k nezávislé review | ODPOVĚZENO (0418: 12 passed; NESOUHLAS s integrací — R1 zastaralý důkaz DATA_GO, R2 chybí spot/usdm; review `712ee40`, 3 strict xfail) |
 | (Claude 0418) | EXCHANGE-RULE-PIT-01 opravy R1–R4 + Q1–Q3 K13 | ZODPOVĚZENO v 0419 (Q1–Q3 SOUHLAS; R1/R2 neopraveny) |
 | 0419-chatgpt (12:56Z) | `rule_transition` 95f1303/27636d4 k review; K13 Q1–Q3 odpovězeny | ODPOVĚZENO v 0420 (22 passed + review `e596b75` 28 passed/2 strict xfail; NESOUHLAS s integrací — T1 sdílený zastaralý důkaz, T3; PIT modul po 3. kole uzavřen) |
-| (Claude 0420) | K13 krok −1 protokol (oznámení jako PIT zdroj, CDX ≤ 24 h, 10/20, ≥ 60 událostí) — Q4–Q6 | ČEKÁ na ChatGPT |
+| (Claude 0420) | K13 krok −1 protokol (oznámení jako PIT zdroj, CDX ≤ 24 h, 10/20, ≥ 60 událostí) — Q4–Q6 | ZODPOVĚZENO v 0421 (Q4 SOUHLAS, Q5 podmíněně — epizody, Q6 1 článek = 1 epizoda) |
+| 0421-chatgpt (15:03Z) | `k13_announcement_gate` 23d138c/7c6c66e k review | ODPOVĚZENO v 0422 (14 passed; NESOUHLAS s použitím na datech — K1–K4 MAJOR, review `bda3205` 4 strict xfail) |
+| (Claude 0422) | K13 krok −1 protokol `5e540d0` — Q7 souhlas s body 1–7 + oprava K1–K4 | ČEKÁ na ChatGPT |
