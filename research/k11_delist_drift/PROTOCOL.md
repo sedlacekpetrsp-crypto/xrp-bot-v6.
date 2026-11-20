@@ -91,3 +91,51 @@ povýšení jen forward PAPER).
   z Wayback (pokud existují). Žádná další náhradní zdrojová cesta po zhlédnutí dat.
 - Riziko předem: pokud archivované HTML neobsahuje vykreslený seznam, většina událostí bude `unverified` ⇒ brána §4 (c)
   vrátí DATA NO-GO. To je legitimní výsledek, ne důvod měnit pravidla.
+
+## Dodatek 3 (2026-11-19, před daty; kolektor Claude, k review ChatGPT dialog 0408) — implementační volby kolektoru
+Kolektor `research/k11_step0_collector.py` (testy `tests/test_k11_step0_collector.py`), workflow `.github/workflows/k11-step0.yml`
+(spouští jen soubor `RUN_REQUEST_STEP0`, který se **nevytvoří před review**). Volby zmrazené před daty:
+1. **Výčet:** CMS katalog 161 (Delisting), okno §3.1. Typ události z titulku pevnými pravidly (`classify_title`): monitoring_tag,
+   vote_to_delist, margin_delist, futures_delist (futures/perpetual/contract), pair_removal (Removal of Spot Trading Pairs),
+   spot_delist (= „Binance Will Delist <tokeny>“), jinak other. Tokeny jen z titulku (`parse_tokens`); nejednoznačný titulek ⇒
+   `spot_delist_unparsed` (do populace nevstupuje, vykazuje se). **Úplnost:** podíl nečitelných spotových článků > 5 % ⇒ DATA NO-GO
+   (žádné ruční doplňování po zhlédnutí). CMS nedostupné (403/451/…) ⇒ DATA NO-GO s důvodem v manifestu (záložní výčet z archivu
+   by byl nová předregistrace).
+2. **PIT:** CDX pro 3 pevné URL prefixy (stránka c-161, /delisting, archivované odpovědi list API), jen status 200, čas = CDX timestamp.
+   Stahují se snímky v sjednocení oken `[release − 7 d, release + 24 h]` přes všechny spotové články, deduplikace přes CDX `digest`.
+   Rozpor (`contradicted`) se tedy hledá jen v `[release − 7 d, release − 24 h)` — omezení kapacity Wayback; uvádí se jako omezení.
+   Snímek bez jediného CMS kódu = nevykreslený, nevstupuje.
+3. **Perp:** aliasy v pevném pořadí `<T>USDT`, `1000<T>USDT`, `1000000<T>USDT`, `1M<T>USDT`; vítězí první s denním 1m souborem
+   v den `t_ann`. `perp_ok` = všech 60 minut hodiny obsahující `t_ann + 60 min` a poslední minuta v okně ≥ `t_ann + 60 min + 24 h`.
+4. **Pokrytí:** denní UM 1m soubory `[t_ann − 7 d, t_ann + 14 d]`, každý ověřen `.CHECKSUM` (SHA-256); čte se jen `open_time`.
+   `coverage_ok` = pokrytí minut ≥ 95 % (do poslední obchodované minuty) ∧ 0 chyb CHECKSUM ∧ měsíční `fundingRate` soubory
+   (s CHECKSUM) pro všechny měsíce okna.
+5. **Diagnostika (0407), nefiltruje:** `book_ticker_available`, `book_depth_available` = existuje Vision denní soubor v den `t_ann`.
+6. Manifest zapisuje URL, HTTP status a SHA-256 každé odpovědi a SHA-256 `events.csv`. `returns_computed = false`.
+7. **Upřesnění po review ChatGPT (PR #71, před daty):** `perp_ok` = 60 souvislých minut **od minuty vstupu** `t_ann + 60 min`
+   (ne od začátku UTC hodiny; ChatGPT `396910b`/`e3c0de5`). Deduplikace snímků přes `digest` jen pro stažení — **všechny** časy
+   snímků se stejným obsahem vstupují do pozorování. Nečíselný `open_time` mimo hlavičku ⇒ soubor neplatný (fail closed).
+8. **Jmenovatel pokrytí (review ChatGPT `aa88f6a`, před daty):** §3.4 „do `perp_last_trade`“ platí jen s doloženým koncem
+   obchodování = poslední minuta uprostřed UTC dne (≠ 23:59) a před koncem okna. Jinak jmenovatel = celé okno [−7 d, +14 d]
+   (fail closed). Manifest navíc vykazuje citlivost `gate_sensitivity_full_window` (vždy celé okno) a počet zkrácených událostí;
+   verdikt určuje primární pravidlo, rozdíl verdiktů se v RESULTS výslovně uvede. Úplné nahrazení jmenovatelem celého okna
+   (návrh ChatGPT) NEPŘIJATO: vyřadilo by každou událost, kde Binance delistuje perp do 14 dnů — to je běžný průběh
+   a byl by to selekční bias proti zmrazenému §3.4.
+9. **Integrita `open_time` (review ChatGPT `83306d1`/`56b2985`, před daty):** jen epoch v ms (10^12–10^13) nebo µs (10^15–10^16),
+   přesně na hranici minuty, jedna jednotka na soubor; jinak soubor neplatný. Přesný duplikát řádku se toleruje (množinu minut
+   nenafukuje; vyřazení by jen ubíralo platná data).
+10. **Revize bodu 8 (review ChatGPT `ee681b6`/`28568ee`, před daty; konzervativnější varianta):** konec 1m dat uprostřed dne
+    `perp_last_trade` NEDOKLÁDÁ (stejný obraz dá výpadek archivu). **Primární `coverage_ok` = celé okno [−7 d, +14 d]**
+    (odchylka od textu §3.4 „do `perp_last_trade`“ směrem k přísnosti). Zkrácené pokrytí jen jako citlivost
+    `gate_sensitivity_truncated_intraday_end`. Důsledek předem: události s delistingem perpu do +14 d z populace vypadnou;
+    vrátit je smí jen nový dodatek před daty s PIT zdrojem ukončení obchodování (oficiální futures oznámení s časem,
+    SHA-256), např. přes modul ChatGPT `research/k11_end_evidence.py` (zatím NEINTEGROVÁN — chybí zdroj, který by ho plnil).
+11. **Integrita výčtu CMS (review ChatGPT `93d3ede`/`dc6b352`, před daty):** `enumerate_cms` ověří stránky přes
+    `research/k11_cms_pagination_audit.py`: chybějící/opakovaná koncová stránka, celá opakovaná stránka, duplicita v rámci
+    stránky, konfliktní metadata stejného `code`, `releaseDate` jiné než kladné int ms ⇒ DATA NO-GO s důvodem. Identický článek
+    na další stránce (posun stránkování při zveřejnění nového článku během výčtu) se počítá **jednou** a vykazuje
+    (`identical_cross_page_duplicates`).
+12. **Transportní vrstva (review ChatGPT `04affcf`/`d67183c`, před daty):** nevalidní CMS JSON/schéma ⇒ DATA NO-GO s důvodem;
+    CDX prefix s HTTP ≠ 200 nebo nevalidním JSON ⇒ DATA NO-GO (ztráta prefixu by mohla skrýt rozporný snímek); CDX 200 s prázdným
+    tělem = 0 snímků (legitimní). Neúspěšná stažení jednotlivých snímků (po 3 pokusech) se vykazují v
+    `archive_snapshot_fetch_failures` a v RESULTS se uvede, zda mohla změnit `pit_status` (ok ↔ contradicted).
