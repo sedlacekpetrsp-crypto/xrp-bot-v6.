@@ -37,6 +37,8 @@ def audit_cms_pages(pages: Iterable[Iterable[Mapping]]) -> dict:
             raise CMSPaginationError("nonempty page after terminal page")
         codes = []
         for article in records:
+            if not isinstance(article, Mapping):
+                raise CMSPaginationError("CMS article must be a mapping")
             code = article.get("code")
             title = article.get("title")
             release = article.get("releaseDate")
