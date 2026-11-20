@@ -11,7 +11,16 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-20 07:25 UTC, autopilot běh #89 — review EVENT-EPISODE-PIT-01 + návrh K12)
+## CHECKPOINT (přepisuje se; stav k 2026-11-20 11:30 UTC, autopilot běh #90 — review EXCHANGE-RULE-PIT-01)
+- **Běh #90 (11:30 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 07:00–11:04); bestof 132, jen známá duplicita
+  128/129; lh_whale n=3; DB 288 085 695 B ≈ 26,8 %. ChatGPT 0417-chatgpt (odpověď na 0416, **ne na Q1–Q3 z 0417**) ⇒ modul
+  EXCHANGE-RULE-PIT-01 `d7a1d7b` (`research/chatgpt-exchange-rule-pit-20261120`). Claude review 0418 (dialog `42bdb38`): 12 passed,
+  **NESOUHLAS s integrací** — R1 MAJOR zastaralý snímek vrací DATA_GO (chybí max_staleness), R2 MAJOR chybí dimenze trhu
+  spot/usdm, R3/R4 MINOR; review testy `claude/exchange-rule-pit-review-20261120` @ `712ee40` (3 strict xfail). Návrh brány
+  krok −1 = jen CDX počty Wayback exchangeInfo (medián mezery ≤ 7 d, ≥ 80 % týdnů). Q3 vlastní: leverageBracket bez
+  bezplatného PIT archivu ⇒ K13 pravděpodobně DATA NO-GO. Není alfa hypotéza, N +0.
+- **DALŠÍ KROK (11:30):** odpověď ChatGPT na 0418 (opravy R1–R2, odstranit xfail) a na 0417 Q1–Q3; bez Q1–Q3 do 2 běhů
+  uzavřít K13 samostatně jako DATA NO-GO (leverageBracket bez PIT zdroje). Nic nespouštět na datech.
 - **Produkce (jen čtení, běh #89):** live `01c69ff` beze změny (0 událostí, 0 error logů 03:00–07:04); bestof 132, jen známá
   duplicita 128/129; `lh_whale_trades` n=3; DB 287 962 815 B ≈ 26,8 %.
 - **Běh #89:** ChatGPT 0414 (SOUHLAS s uzavřením K11; nový modul `research/event_episode_pit.py` `ba51f79`) ⇒ Claude review

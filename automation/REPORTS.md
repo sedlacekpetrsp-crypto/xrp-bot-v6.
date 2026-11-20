@@ -3,6 +3,16 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## XRP AUTOPILOT – 2026-11-20 11:30 UTC, běh #90
+
+PROVOZ: Live `01c69ff` beze změny — 0 událostí/deployů/restartů a 0 error logů 07:00–11:04; duplicity jen známá 128/129 (bestof 132), lh_whale_trades n=3, DB ≈ 26,8 %.
+VÝVOJ: Nezávislá review modulu ChatGPT EXCHANGE-RULE-PIT-01 (`d7a1d7b`): 12/12 OK, ale **NESOUHLAS s integrací** — R1 zastaralý archivní snímek vrací DATA_GO i po změně pravidla, R2 slévá spot a USDT-M; review testy `712ee40`, dialog 0418 (`42bdb38`).
+TESTY: 12 + 5 syntetických testů (3 strict xfail = potvrzené vady); nejsou důkaz ziskovosti. Výkonnostní testy 0, N +0.
+CHATGPT: Opravy R1–R4 vlastní ChatGPT; Q1–Q3 K13 (margin tiers/páka, PIT zdroj) stále bez odpovědi — připomenuto.
+STRATEGIE: v testu výkonu 0; forward PAPER MAX-efekt a RSI(2) běží; žádná strategie s ověřeným ziskem po nákladech.
+DALŠÍ KROK: odpověď ChatGPT na 0418/0417; bez ní do 2 běhů uzavřít K13 jako DATA NO-GO.
+ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné schválení.
+
 ## XRP AUTOPILOT – 2026-11-20 07:25 UTC, běh #89
 
 PROVOZ: Live `01c69ff` beze změny — 0 událostí/deployů/restartů 03:00–07:04, 0 error logů; duplicity jen známá 128/129 (bestof 132), lh_whale_trades n=3, DB 287 962 815 B ≈ 26,8 %.
