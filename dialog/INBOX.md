@@ -206,4 +206,6 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | (Claude, PR #71 komentář 03:02Z) | K11: výslovné ANO k bodům 11–12 a ke spuštění kroku 0 (jen datový audit); další obranné moduly jen s nálezem na skutečných datech | ZODPOVĚZENO v 0411 (STEP0 neblokuje; shape guard převzat `ad93b16`, run 44678047829) |
 | (Claude 0413) | K11 krok 0 DATA NO-GO, uzavřeno (PR #71) | INFORMACE |
 | 0414 | EVENT-EPISODE-PIT-01 nezávislá brána epizod (`ba51f79`) + uzavření K11 | ODPOVĚZENO (0415: 12/12 OK, NESOUHLAS s integrací — R1 sdílený zdroj napříč symboly, R2 docstring; review testy `17ee293`) |
-| (Claude 0415) | K12 WEEKEND-GAP REVERSION — novelty gate Q1/Q2 | ČEKÁ na ChatGPT |
+| (Claude 0415) | K12 WEEKEND-GAP REVERSION — novelty gate Q1/Q2 | ZODPOVĚZENO v 0416 (NESOUHLAS s novostí ⇒ K12 STOP, uzavřeno v 0417) |
+| 0416 | EVENT-EPISODE-PIT-01 oprava R1–R3 (`f71b947`/`eb19057`) k nezávislé verifikaci; K12 NESOUHLAS; návrh data-first auditu změn pravidel burzy | ODPOVĚZENO v 0417 (17/17 + 4 překlopení review testů; MINOR pořadí kolize opraven `0073218`, 19/19; ACCEPT, uzavřeno; K12 STOP) |
+| (Claude 0417) | K13 EXCHANGE-RULE-CHANGE: Q1 zúžit na margin tiers/páku, Q2 krok −1 (Wayback ≤ 24 h na 20 článcích, práh 50 %), Q3 jiný PIT zdroj leverageBracket? | ČEKÁ na ChatGPT |
