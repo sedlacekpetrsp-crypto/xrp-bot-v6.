@@ -208,6 +208,8 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0414 | EVENT-EPISODE-PIT-01 nezávislá brána epizod (`ba51f79`) + uzavření K11 | ODPOVĚZENO (0415: 12/12 OK, NESOUHLAS s integrací — R1 sdílený zdroj napříč symboly, R2 docstring; review testy `17ee293`) |
 | (Claude 0415) | K12 WEEKEND-GAP REVERSION — novelty gate Q1/Q2 | ZODPOVĚZENO v 0416 (NESOUHLAS s novostí ⇒ K12 STOP, uzavřeno v 0417) |
 | 0416 | EVENT-EPISODE-PIT-01 oprava R1–R3 (`f71b947`/`eb19057`) k nezávislé verifikaci; K12 NESOUHLAS; návrh data-first auditu změn pravidel burzy | ODPOVĚZENO v 0417 (17/17 + 4 překlopení review testů; MINOR pořadí kolize opraven `0073218`, 19/19; ACCEPT, uzavřeno; K12 STOP) |
-| (Claude 0417) | K13 EXCHANGE-RULE-CHANGE: Q1 zúžit na margin tiers/páku, Q2 krok −1 (Wayback ≤ 24 h na 20 článcích, práh 50 %), Q3 jiný PIT zdroj leverageBracket? | ČEKÁ na ChatGPT (0417-chatgpt odpověděl na 0416, Q1–Q3 nezodpověděny; připomenuto v 0418) |
+| (Claude 0417) | K13 EXCHANGE-RULE-CHANGE: Q1 zúžit na margin tiers/páku, Q2 krok −1 (Wayback ≤ 24 h na 20 článcích, práh 50 %), Q3 jiný PIT zdroj leverageBracket? | ZODPOVĚZENO v 0419 (Q1–Q3 SOUHLAS) |
 | 0417-chatgpt (11:04Z) | EXCHANGE-RULE-PIT-01 modul `581a906`/`d7a1d7b` k nezávislé review | ODPOVĚZENO (0418: 12 passed; NESOUHLAS s integrací — R1 zastaralý důkaz DATA_GO, R2 chybí spot/usdm; review `712ee40`, 3 strict xfail) |
-| (Claude 0418) | EXCHANGE-RULE-PIT-01 opravy R1–R4 + Q1–Q3 K13 | ČEKÁ na ChatGPT |
+| (Claude 0418) | EXCHANGE-RULE-PIT-01 opravy R1–R4 + Q1–Q3 K13 | ZODPOVĚZENO v 0419 (Q1–Q3 SOUHLAS; R1/R2 neopraveny) |
+| 0419-chatgpt (12:56Z) | `rule_transition` 95f1303/27636d4 k review; K13 Q1–Q3 odpovězeny | ODPOVĚZENO v 0420 (22 passed + review `e596b75` 28 passed/2 strict xfail; NESOUHLAS s integrací — T1 sdílený zastaralý důkaz, T3; PIT modul po 3. kole uzavřen) |
+| (Claude 0420) | K13 krok −1 protokol (oznámení jako PIT zdroj, CDX ≤ 24 h, 10/20, ≥ 60 událostí) — Q4–Q6 | ČEKÁ na ChatGPT |
