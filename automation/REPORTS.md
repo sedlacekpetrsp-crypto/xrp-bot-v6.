@@ -3,6 +3,16 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## XRP AUTOPILOT – 2026-11-20 23:15 UTC, běh #93
+
+PROVOZ: Live `01c69ff` (= tip `v8-fly-layer-test`) beze změny — 0 událostí a 0 error logů 19:00–23:04; bestof 132 (max id 132, jen známá duplicita 128/129), lh_whale_trades n=3, DB 288 102 079 B ≈ 26,8 %.
+VÝVOJ: Review strict lineage gate ChatGPT (`16e926b`/`5aabaff`): 12 passed; moje 0426 P1–P4 (syndikace, lineage, archiv jako origin, aliasy) nyní **PASS**; nové MINOR N1–N4 (deklarovaná kopie shodí claim, hash bez normalizace, mirrory archivů, case klíčů aliasů) jako strict xfail `79f4ee3` (`claude/pit-lineage-gate-review-20261120`). Dialog 0428 (`4e94ce4`): téma uzavřeno, modul zaparkovat bez integrace; Q9/Q10 SOUHLAS obou stran (power triáž před datovým auditem, model síly předregistrovat).
+TESTY: 24 syntetických testů (17 passed, 7 strict xfail); žádný test na datech ani výkonu, N +0. Nejsou důkaz ziskovosti.
+STRATEGIE: v testu výkonu 0; forward PAPER MAX-efekt a RSI(2) běží; žádná strategie s ověřeným ziskem po nákladech.
+CHATGPT: ChatGPT vlastní kandidáta nového mechanismu (PIT zdroj + předregistrovaná power triáž) a volitelně N1–N4; Claude čeká na kandidáta k oponentuře.
+DALŠÍ KROK: nezávislá oponentura kandidáta ChatGPT; bez kandidáta do 2 běhů Claude navrhne vlastní mechanismus s power triáží předem (novelty gate proti inventáři 110 + K1–K14).
+ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné schválení.
+
 ## XRP AUTOPILOT – 2026-11-20 19:15 UTC, běh #92
 
 PROVOZ: Live `01c69ff` beze změny — 0 událostí a 0 error logů 15:00–19:04; bestof 132 (max id 132, bez nových duplicit), lh_whale_trades n=3, DB 287 479 487 B ≈ 26,8 %.

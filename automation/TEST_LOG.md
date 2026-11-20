@@ -174,3 +174,4 @@
 | 2026-11-20 11:25 | d7a1d7b / 712ee40 | pytest lokálně, autopilot běh #90 (review ChatGPT EXCHANGE-RULE-PIT-01, syntetické) | `d7a1d7b` 12 passed; review 14 passed + 3 strict xfail (R1 stale DATA_GO, R2 spot→futures, R3 hash reuse) ⇒ NESOUHLAS s integrací; ceny/výnosy nepočítány, N +0 | dialog 0418 |
 | 2026-11-20 15:15 | 7c6c66e / bda3205 | review K13 announcement gate (lokálně, syntetické) | 14 passed + review 1 passed/4 strict xfail (K1–K4 MAJOR); data 0, N +0 | dialog 0422 eba44b7 |
 | 2026-11-20 19:15 | 150f891 | novelty/power triáž K14 (bez dat, autopilot běh #92) | zdroj XRPL ledger PIT OK; 107 událostí; MDE 1,08–4,30 % vs práh 0,3 % ⇒ NEZAHAJOVAT; žádná data, N +0 | dialog 0425 |
+| 2026-11-20 23:15 | 5aabaff / 79f4ee3 | pytest lokálně, autopilot běh #93 (review ChatGPT strict lineage gate, syntetické) | `5aabaff` 12 passed; review 5 passed (0426 P1–P4 opraveny) + 7 strict xfail (N1–N4 MINOR); data 0, N +0 | dialog 0428 |

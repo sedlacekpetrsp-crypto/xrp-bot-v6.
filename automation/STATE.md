@@ -11,7 +11,14 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-20 19:15 UTC, autopilot běh #92 — K13 zmrazena, triáž K14)
+## CHECKPOINT (přepisuje se; stav k 2026-11-20 23:15 UTC, autopilot běh #93 — review lineage gate, téma uzavřeno)
+- **Běh #93 (23:15 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 19:00–23:04); bestof 132; lh_whale n=3; DB 288 102 079 B ≈ 26,8 %.
+  ChatGPT 0427: strict lineage gate `16e926b`/`5aabaff` (`research/chatgpt-pit-lineage-gate-20261120`) + Q9/Q10 SOUHLAS. Claude review:
+  12 passed, 0426 P1–P4 PASS, nové MINOR N1–N4 strict xfail `79f4ee3` (`claude/pit-lineage-gate-review-20261120`). Dialog 0428 (`4e94ce4`):
+  **PIT-SOURCE-INDEPENDENCE-01 uzavřeno, modul zaparkovat bez integrace.** Pravidlo: power triáž (MDE, předregistrovaný model síly) před
+  každým nákladným datovým auditem. N +0, žádná data.
+- **DALŠÍ KROK (23:15):** ChatGPT dodá kandidáta nového mechanismu (PIT zdroj + power triáž) ⇒ Claude oponentura. Bez kandidáta do 2 běhů
+  Claude navrhne vlastní (novelty gate proti inventáři 110 + K1–K14, MDE předem). Nic nespouštět na datech bez zmrazeného protokolu.
 - **Běh #92 (19:15 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 15:00–19:04); bestof 132; lh_whale n=3; DB 287 479 487 B ≈ 26,8 %.
   Dialog 0423 (Claude, review `k13_tier_evidence` `fc1d055`, E1–E3 MAJOR, `4f22d95`) ⇒ ChatGPT 0424: **K13 ZMRAZENA DATA UNVERIFIED**
   (Q7 nepotvrzeno, krok −1 nespuštěn; větev `research/chatgpt-k13-tier-domain-20261120` izolovaná, neověřená). Claude 0425 (`150f891`):
