@@ -11,7 +11,15 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-20 11:30 UTC, autopilot běh #90 — review EXCHANGE-RULE-PIT-01)
+## CHECKPOINT (přepisuje se; stav k 2026-11-20 15:15 UTC, autopilot běh #91 — review K13 announcement gate)
+- **Běh #91 (15:15 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 11:00–15:05); bestof 132; lh_whale n=3; DB ≈ 26,7 %.
+  ChatGPT 0421: Q4–Q6 SOUHLAS (oznámení = jediný PIT zdroj; 60 = epizody po shlukování; multi-symbol článek = 1 epizoda) +
+  modul `research/k13_announcement_gate.py` `23d138c`/`7c6c66e` (`research/chatgpt-k13-announcement-gate-20261120`).
+  Claude review 0422 (dialog `eba44b7`): 14 passed, **NESOUHLAS s použitím na datech** — K1 NUMBER matchuje číslo tieru,
+  K2 necílové titulky ve vzorku, K3 chybí ≥ 60 epizod, K4 chybí provenance; review `claude/k13-announcement-gate-review-20261120`
+  @ `bda3205` (4 strict xfail), návrh protokolu kroku −1 `5e540d0` (NEZMRAZEN). N +0, žádná data.
+- **DALŠÍ KROK (15:15):** ChatGPT Q7 (body 1–7) + oprava K1–K4 ⇒ RUN_REQUEST `research/k13-step-1-*` (jen datový audit, bez cen).
+  Bez odpovědi do 2 běhů ⇒ K13 uzavřít jako DATA NO-GO. Nic nespouštět na datech.
 - **Běh #90 (11:30 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 07:00–11:04); bestof 132, jen známá duplicita
   128/129; lh_whale n=3; DB 288 085 695 B ≈ 26,8 %. ChatGPT 0417-chatgpt (odpověď na 0416, **ne na Q1–Q3 z 0417**) ⇒ modul
   EXCHANGE-RULE-PIT-01 `d7a1d7b` (`research/chatgpt-exchange-rule-pit-20261120`). Claude review 0418 (dialog `42bdb38`): 12 passed,

@@ -3,6 +3,15 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## XRP AUTOPILOT – 2026-11-20 15:15 UTC, běh #91
+
+PROVOZ: Live `01c69ff` beze změny — 0 událostí a 0 error logů 11:00–15:05; bestof 132 (max id 132), lh_whale_trades n=3, DB 286 938 815 B ≈ 26,7 %.
+VÝVOJ: Review modulu ChatGPT `k13_announcement_gate` (`7c6c66e`): 14 passed, **NESOUHLAS s použitím na datech** — K1 vacuózní kontrola hodnoty tieru, K2 necílové články zabírají vzorek, K3 chybí práh ≥ 60 epizod, K4 chybí provenance (URL/SHA-256 capture); review `bda3205` (4 strict xfail). Návrh protokolu K13 kroku −1 `5e540d0` (nezmrazen). Dialog 0422 (`eba44b7`).
+TESTY: 14 + 5 syntetických testů; žádný test na datech ani výkonový test, N +0. Nejsou důkaz ziskovosti.
+CHATGPT: Q4–Q6 zodpovězeny (0421, souhlas). Opravy K1–K4 a Q7 (souhlas s body 1–7 protokolu) vlastní ChatGPT; čeká.
+DALŠÍ KROK: po SOUHLASU Q7 + opravě K1–K4 připravit RUN_REQUEST K13 krok −1 (jen datový audit); bez odpovědi do 2 běhů K13 uzavřít jako DATA NO-GO.
+ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné schválení.
+
 ## XRP AUTOPILOT – 2026-11-20 11:30 UTC, běh #90
 
 PROVOZ: Live `01c69ff` beze změny — 0 událostí/deployů/restartů a 0 error logů 07:00–11:04; duplicity jen známá 128/129 (bestof 132), lh_whale_trades n=3, DB ≈ 26,8 %.
