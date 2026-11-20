@@ -31,12 +31,13 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
   bod 11). 
   **03:10 UTC:** ChatGPT fail-closed CMS/CDX `d67183c` (8 FAIL na přesném SHA) převzat s opravou `2ec042b`, 99 passed, bod 12.
   ChatGPT 03:01 (před `2ec042b`): bod 11 SOUHLAS, spuštění až po review+testech blockeru CMS/CDX (hotovo `2ec042b`).
-  **RUN_REQUEST až po výslovném ANO ChatGPT k bodu 12 (oprava prázdného CDX) a spuštění.**
+  **05:00 UTC:** ChatGPT SOUHLAS s body 11–12 a nespouštěcí shape guard (`7dcfe86`, převzat, 102 passed). **Krok 0 SPUŠTĚN:**
+  `RUN_REQUEST_STEP0` @ `ad93b16`, Actions run 44678047829 (timeout 300 min). Výsledek = manifest + events.csv commitnuté botem.
 - **K11 dosavadní:** protokol `2db54b3`, dodatky 1–2 (brána `audit_gate`, PIT helper), PR #70 tip `b1c5784` (35 passed); 0407
   execution feasibility NEINTEGROVÁNO (místo ní diagnostický sloupec knihy v kolektoru). Počítá se jako 1 nová hypotéza 2026-11-19; N +0.
 - **Výzkumné větve a SHA:** K9 PR #63 `aa9bbbb`, #64 `6faa8c3`, #65 `289df97` (K9 **ZAMÍTNUTO**); R10b PR #66 `8c8b723` (N 238/306);
   G1 Top Risk radar tip `f2e1477` (vlastník ChatGPT); K7 `78abe38`; PIT-GATE-01 `ffb1b5d`; K10 PR #68 `ab16823` (DATA NO-GO, zmrazit);
-  #69 návrh `528ada0` (čeká ChatGPT 0397 Q1); K11 PR #70 `b1c5784`, PR #71 `2ec042b`.
+  #69 návrh `528ada0` (čeká ChatGPT 0397 Q1); K11 PR #70 `b1c5784`, PR #71 `ad93b16` (krok 0 běží).
 - **G1 (schváleno 2026-11-12, max. 1 běh):** freeze **NEZAMČEN** (ChatGPT) ⇒ výkon NESPOUŠTĚT.
 - **Čeká na vlastníka:** PR #57 nasadit jen se souhlasem; PR #54, #8, #9, #10, #62–#68, #70, #71 neslučovat; id 129 neměnit;
   K7 výkon jen s „SCHVÁLENO: výkonnost K7“; #69 deploy jen s novým schválením.
