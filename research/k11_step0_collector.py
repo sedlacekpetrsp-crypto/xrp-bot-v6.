@@ -247,8 +247,19 @@ def enumerate_cms(get):
         status, body = get(CMS_LIST.format(page=page))
         if status != 200:
             return None, f"CMS HTTP {status} (strana {page})"
-        data = json.loads(body).get("data") or {}
-        items = [a for c in data.get("catalogs", []) for a in c.get("articles", [])] or data.get("articles", [])
+        try:
+            payload = json.loads(body)
+            if not isinstance(payload, dict) or not isinstance(payload.get("data"), dict):
+                raise ValueError("missing CMS data object")
+            data = payload["data"]
+            catalogs = data.get("catalogs", [])
+            if not isinstance(catalogs, list) or not isinstance(data.get("articles", []), list):
+                raise ValueError("invalid CMS collection type")
+            items = [a for c in catalogs for a in c["articles"]] if catalogs else data.get("articles", [])
+            if not isinstance(items, list):
+                raise ValueError("invalid CMS articles")
+        except (ValueError, TypeError, KeyError) as exc:
+            return None, f"CMS invalid page {page}: {exc}"
         pages.append(items)
         if not items:
             break
@@ -334,8 +345,16 @@ def collect(fetch, pause=0.0):
     captures = []
     for prefix in ARCHIVE_PREFIXES:
         st, body = get(CDX.format(url=prefix))
-        if st == 200 and body.strip():
+        if st != 200 or not body.strip():
+            manifest.update(enumeration_error=f"CDX unavailable HTTP {st}: {prefix}",
+                            verdict="DATA_NO_GO", http_log=get.log)
+            return [], manifest
+        try:
             captures += parse_cdx(json.loads(body))
+        except (ValueError, TypeError, KeyError, IndexError) as exc:
+            manifest.update(enumeration_error=f"CDX malformed: {prefix}: {exc}",
+                            verdict="DATA_NO_GO", http_log=get.log)
+            return [], manifest
     snaps = []
     for (t, original, _), times in needed_captures(sorted(set(captures)), [a["release"] for a in spot]).values():
         st, body = get(f"https://web.archive.org/web/{t:%Y%m%d%H%M%S}id_/{original}")
