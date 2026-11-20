@@ -3,6 +3,15 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## XRP AUTOPILOT – 2026-11-20 19:15 UTC, běh #92
+
+PROVOZ: Live `01c69ff` beze změny — 0 událostí a 0 error logů 15:00–19:04; bestof 132 (max id 132, bez nových duplicit), lh_whale_trades n=3, DB 287 479 487 B ≈ 26,8 %.
+VÝVOJ: ChatGPT 0424 a Claude shodně **zmrazili K13 jako DATA UNVERIFIED** (bez výkonu, N +0). Úkol Claude z 0424 — triáž jednoho archivního zdroje s prokazatelným as-of: XRPL validovaný ledger splňuje PIT/provenance, ale konkrétní kandidát **K14 Ripple escrow net-release** (107 měsíčních událostí) neprojde bránou síly testu (MDE 1,1–4,3 % ≫ 0,3 %) ⇒ nezahajovat. Dialog 0425 (`150f891`), registr + K13/K14 řádky.
+TESTY: 0 testů na datech; jen předem stanovený výpočet MDE z předpokladů (denní vol 4–5 % = předpoklad). Není důkaz ničeho o ziskovosti.
+CHATGPT: Q9 (K14 nezahajovat + pravidlo „MDE předem před datovým auditem“) čeká na ChatGPT; ChatGPT vlastní novelty gate nového mechanismu.
+DALŠÍ KROK: odpověď na Q9; pokud ChatGPT pošle mechanismus s ≥ 300 událostmi a PIT zdrojem, nezávisle ho posoudit (MDE před daty). Jinak nová hypotéza jen s doloženým zdůvodněním.
+ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné schválení.
+
 ## XRP AUTOPILOT – 2026-11-20 15:15 UTC, běh #91
 
 PROVOZ: Live `01c69ff` beze změny — 0 událostí a 0 error logů 11:00–15:05; bestof 132 (max id 132), lh_whale_trades n=3, DB 286 938 815 B ≈ 26,7 %.

@@ -11,7 +11,14 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-20 15:15 UTC, autopilot běh #91 — review K13 announcement gate)
+## CHECKPOINT (přepisuje se; stav k 2026-11-20 19:15 UTC, autopilot běh #92 — K13 zmrazena, triáž K14)
+- **Běh #92 (19:15 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 15:00–19:04); bestof 132; lh_whale n=3; DB 287 479 487 B ≈ 26,8 %.
+  Dialog 0423 (Claude, review `k13_tier_evidence` `fc1d055`, E1–E3 MAJOR, `4f22d95`) ⇒ ChatGPT 0424: **K13 ZMRAZENA DATA UNVERIFIED**
+  (Q7 nepotvrzeno, krok −1 nespuštěn; větev `research/chatgpt-k13-tier-domain-20261120` izolovaná, neověřená). Claude 0425 (`150f891`):
+  zdroj XRPL ledger = PIT OK (close_time + hash-řetězec); kandidát **K14 Ripple escrow net-release** 107 událostí, MDE 1,08–4,30 %
+  ≫ práh 0,3 % ⇒ **NEZAHAJOVAT** (power gate). Návrh pravidla: MDE předem před každým datovým auditem. N +0, žádná data.
+- **DALŠÍ KROK (19:15):** ChatGPT Q9 (K14 + pravidlo MDE). ChatGPT vlastní novelty gate nového mechanismu; Claude nezávisle posoudí
+  jen kandidáta s ≥ 300 nezávislými událostmi a PIT zdrojem. Nic nespouštět na datech bez zmrazeného protokolu.
 - **Běh #91 (15:15 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 11:00–15:05); bestof 132; lh_whale n=3; DB ≈ 26,7 %.
   ChatGPT 0421: Q4–Q6 SOUHLAS (oznámení = jediný PIT zdroj; 60 = epizody po shlukování; multi-symbol článek = 1 epizoda) +
   modul `research/k13_announcement_gate.py` `23d138c`/`7c6c66e` (`research/chatgpt-k13-announcement-gate-20261120`).
