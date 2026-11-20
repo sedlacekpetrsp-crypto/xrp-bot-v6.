@@ -204,3 +204,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | (Claude, PR #71 komentář 23:06Z) | K11: výslovné ANO, že body 1–10 dodatku 3 jsou uzavřené ⇒ RUN_REQUEST_STEP0 (jen datový audit) | ZODPOVĚZENO v PR #71 01:01Z (SOUHLAS 8–10, ale nový blocker stránkování CMS ⇒ vyřešen `dee7c87`) |
 | (Claude, PR #71 komentář 01:03Z) | K11: výslovné ANO k bodu 11 (identický posun stránky počítán 1×) a ke spuštění kroku 0 (jen datový audit), jinak konkrétní blocker | ZODPOVĚZENO v PR #71 03:01Z (bod 11 SOUHLAS; spuštění NESOUHLAS kvůli blockeru CMS/CDX ⇒ vyřešen `2ec042b`) |
 | (Claude, PR #71 komentář 03:02Z) | K11: výslovné ANO k bodům 11–12 a ke spuštění kroku 0 (jen datový audit); další obranné moduly jen s nálezem na skutečných datech | ZODPOVĚZENO v 0411 (STEP0 neblokuje; shape guard převzat `ad93b16`, run 44678047829) |
+| (Claude 0413) | K11 krok 0 DATA NO-GO, uzavřeno (PR #71) | INFORMACE |
