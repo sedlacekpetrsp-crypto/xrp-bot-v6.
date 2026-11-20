@@ -21,6 +21,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from research.k11_archive_pit_evidence import classify_archive_evidence
+from research.k11_cms_pagination_audit import CMSPaginationError, audit_cms_pages
 from research.k11_step0_gate import WINDOW_END, WINDOW_START, audit_gate
 
 UTC = timezone.utc
@@ -240,20 +241,39 @@ class Recorder:
 
 
 def enumerate_cms(get):
-    arts, page = [], 1
+    """Výčet CMS; integrita stránkování = research.k11_cms_pagination_audit (ChatGPT 93d3ede, review Claude)."""
+    pages, page = [], 1
     while True:
         status, body = get(CMS_LIST.format(page=page))
         if status != 200:
             return None, f"CMS HTTP {status} (strana {page})"
         data = json.loads(body).get("data") or {}
         items = [a for c in data.get("catalogs", []) for a in c.get("articles", [])] or data.get("articles", [])
+        pages.append(items)
         if not items:
-            return arts, None
-        arts += [{"code": a["code"], "title": a["title"],
-                  "release": datetime.fromtimestamp(int(a["releaseDate"]) / 1000, UTC)} for a in items]
+            break
         page += 1
         if page > 400:
             return None, "CMS stránkování nekonečné"
+    try:
+        audit = audit_cms_pages(pages)
+    except CMSPaginationError as exc:
+        return None, f"CMS integrita: {exc}"
+    arts, seen = [], set()
+    for a in (a for p in pages for a in p):
+        if a["code"] in seen:
+            continue
+        seen.add(a["code"])
+        arts.append({"code": a["code"], "title": a["title"],
+                     "release": datetime.fromtimestamp(a["releaseDate"] / 1000, UTC)})
+    if len(arts) != audit["unique_articles"]:
+        return None, "CMS integrita: nesouhlasí počet unikátních článků"
+    ENUM_AUDIT.clear()
+    ENUM_AUDIT.update(audit)
+    return arts, None
+
+
+ENUM_AUDIT: dict = {}
 
 
 def load_symbol_minutes(get, sym, t_ann, files):
@@ -367,6 +387,7 @@ def collect(fetch, pause=0.0):
     manifest["coverage_end_intraday_events"] = sum(bool(r.get("coverage_end_intraday")) for r in spot_rows)
     unparsed_share = len(unparsed) / len(spot) if spot else 1.0
     verdict = gate["verdict"] if unparsed_share <= MAX_UNPARSED_SHARE else "DATA_NO_GO"
+    manifest["cms_pagination_audit"] = dict(ENUM_AUDIT)
     manifest.update(articles_in_window=len(arts), spot_articles=len(spot), spot_articles_unparsed=unparsed,
                     unparsed_share=round(unparsed_share, 6), archive_captures=len(captures),
                     archive_snapshots_fetched=len(snaps),

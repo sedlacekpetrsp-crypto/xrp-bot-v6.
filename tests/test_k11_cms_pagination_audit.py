@@ -27,6 +27,11 @@ class TestCMSPaginationAudit(unittest.TestCase):
         with self.assertRaises(CMSPaginationError):
             audit_cms_pages([[article("a"), article("a")], []])
 
+    def test_identical_cross_page_duplicate_counted_once(self):  # review Claude: posun stránkování
+        out = audit_cms_pages([[article("a"), article("b")], [article("b"), article("c")], []])
+        self.assertEqual(out["unique_articles"], 3)
+        self.assertEqual(out["identical_cross_page_duplicates"], 1)
+
     def test_missing_terminal_page(self):
         with self.assertRaisesRegex(CMSPaginationError, "terminal"):
             audit_cms_pages([[article("a")]])

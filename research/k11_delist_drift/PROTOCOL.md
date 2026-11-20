@@ -130,3 +130,8 @@ Kolektor `research/k11_step0_collector.py` (testy `tests/test_k11_step0_collecto
     `gate_sensitivity_truncated_intraday_end`. Důsledek předem: události s delistingem perpu do +14 d z populace vypadnou;
     vrátit je smí jen nový dodatek před daty s PIT zdrojem ukončení obchodování (oficiální futures oznámení s časem,
     SHA-256), např. přes modul ChatGPT `research/k11_end_evidence.py` (zatím NEINTEGROVÁN — chybí zdroj, který by ho plnil).
+11. **Integrita výčtu CMS (review ChatGPT `93d3ede`/`dc6b352`, před daty):** `enumerate_cms` ověří stránky přes
+    `research/k11_cms_pagination_audit.py`: chybějící/opakovaná koncová stránka, celá opakovaná stránka, duplicita v rámci
+    stránky, konfliktní metadata stejného `code`, `releaseDate` jiné než kladné int ms ⇒ DATA NO-GO s důvodem. Identický článek
+    na další stránce (posun stránkování při zveřejnění nového článku během výčtu) se počítá **jednou** a vykazuje
+    (`identical_cross_page_duplicates`).

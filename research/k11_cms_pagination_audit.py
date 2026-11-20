@@ -22,6 +22,7 @@ def audit_cms_pages(pages: Iterable[Iterable[Mapping]]) -> dict:
     seen_codes: dict[str, tuple[str, int]] = {}
     seen_pages: set[tuple[str, ...]] = set()
     count = 0
+    identical_dupes = 0
     ended = False
     terminal_count = 0
     page_count = 0
@@ -48,10 +49,15 @@ def audit_cms_pages(pages: Iterable[Iterable[Mapping]]) -> dict:
             code = code.strip()
             codes.append(code)
             metadata = (title, release)
+            if code in codes[:-1]:
+                raise CMSPaginationError("duplicate article code within one CMS page")
             if code in seen_codes:
                 if seen_codes[code] != metadata:
                     raise CMSPaginationError("conflicting metadata for repeated article code")
-                raise CMSPaginationError("duplicate article code across CMS pages")
+                # Review Claude: identický článek na další stránce = posun stránkování při zveřejnění nového článku
+                # během výčtu. Nepočítá se podruhé (nenafukuje), jen se vykáže; celou stránku opakovanou ⇒ chyba níže.
+                identical_dupes += 1
+                continue
             seen_codes[code] = metadata
             count += 1
         fingerprint = tuple(codes)
@@ -60,4 +66,5 @@ def audit_cms_pages(pages: Iterable[Iterable[Mapping]]) -> dict:
         seen_pages.add(fingerprint)
     if terminal_count != 1:
         raise CMSPaginationError("missing or repeated terminal empty page")
-    return {"pages_with_data": page_count - 1, "unique_articles": count, "terminal_pages": terminal_count}
+    return {"pages_with_data": page_count - 1, "unique_articles": count, "terminal_pages": terminal_count,
+            "identical_cross_page_duplicates": identical_dupes}

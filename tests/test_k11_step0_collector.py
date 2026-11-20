@@ -267,3 +267,26 @@ def test_manifest_reports_full_window_sensitivity():
     _, man = c.collect(FakeNet())
     assert man["gate_sensitivity_truncated_intraday_end"]["eligible_events"] == 2
     assert man["coverage_end_intraday_events"] == 0
+
+
+def test_collect_cms_pagination_shift_counted_once_and_conflict_no_go():
+    class Shift(FakeNet):
+        def __init__(self, conflict=False, **kw):
+            super().__init__(**kw)
+            self.conflict = conflict
+
+        def __call__(self, url):
+            if url.startswith("https://www.binance.com/bapi"):
+                page = int(url.split("pageNo=")[1].split("&")[0])
+                a = {"code": CODE, "title": "Binance Will Delist AAA, BBB on 2025-03-20",
+                     "releaseDate": int(T.timestamp() * 1000)}
+                b = {"code": "c" * 32, "title": "Binance Margin Will Delist AAA/BTC", "releaseDate": int(T.timestamp() * 1000)}
+                a2 = dict(a, releaseDate=a["releaseDate"] + 1000) if self.conflict else a
+                arts = {1: [a, b], 2: [a2, {"code": "e" * 32, "title": "Other", "releaseDate": a["releaseDate"]}]}.get(page, [])
+                return 200, json.dumps({"data": {"catalogs": [{"articles": arts}]}}).encode()
+            return super().__call__(url)
+    rows, man = c.collect(Shift())
+    assert man["gate"]["eligible_events"] == 2 and man["cms_pagination_audit"]["identical_cross_page_duplicates"] == 1
+    rows, man = c.collect(Shift(conflict=True))
+    assert rows == [] and man["verdict"] == "DATA_NO_GO" and "conflicting" in man["enumeration_error"]
+
