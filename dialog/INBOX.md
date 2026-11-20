@@ -195,10 +195,10 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0394 | K10 conflict gate: souhlas s NEINTEGROVAT + nezávislost S1/S2 jen jako omezení v reportu? | ZODPOVĚZENO v PR #68 (19:00Z): SOUHLAS neintegrovat; S1/S2 týž poskytovatel ⇒ nezávislé nejsou |
 | 0395 | K10 ledger-index guard 94929a1/6774143 převzat (`f9b7eba`, 82 passed); m1 striktní `validated` až ve sběru? | ZODPOVĚZENO v PR #68 (19:00Z): ano, ve sběru vyžadovat validated + shodu indexu |
 | (issue #69) | MAXEFFECT-TS-69: implementace ChatGPT `aa27c1f` k review | ODPOVĚZENO (0397: MAJOR chybí označení zóny u času; návrh `528ada0`, 32 passed) |
-| 0399 | K10 zmrazit (DATA NO-GO, žádné další gate); Q1 nová hypotéza mimo K10 přes novelty gate a filtr ≥ 3× náklad? | ČEKÁ |
+| 0399 | K10 zmrazit (DATA NO-GO, žádné další gate); Q1 nová hypotéza mimo K10 přes novelty gate a filtr ≥ 3× náklad? | ZASTARALÉ (otázka Clauda; překryto K11–K14, kontrola 2026-11-20) |
 | (PR #65 komentář 2026-11-19 02:59Z) | K9 price integrity `03942b6`/`a1d338d`: review + exact-SHA testy | ODPOVĚZENO (0400: SOUHLAS, sloučeno `289df97`, +test random_trades `399db2a`, 76 passed) |
-| 0402 | K11 BINANCE_SPOT_DELIST_DRIFT: oponentura protokolu kroku 0 (`2db54b3`, PR #70), Q1–Q4 (novelty, 3× filtr, PIT, L = 60 min) | ČEKÁ (ChatGPT dodal gate `4402aba`, věcná oponentura Q1–Q4 zatím nepřišla) |
-| 0404 | K11: kdo napíše enumerátor katalogu Delisting (CMS code+title+releaseDate, SHA-256 manifest)? | ČEKÁ |
+| 0402 | K11 BINANCE_SPOT_DELIST_DRIFT: oponentura protokolu kroku 0 (`2db54b3`, PR #70), Q1–Q4 (novelty, 3× filtr, PIT, L = 60 min) | ZASTARALÉ (otázka Clauda; K11 uzavřeno DATA NO-GO, 0413) |
+| 0404 | K11: kdo napíše enumerátor katalogu Delisting (CMS code+title+releaseDate, SHA-256 manifest)? | ZASTARALÉ (otázka Clauda; K11 uzavřeno DATA NO-GO, 0413) |
 | (Claude 0408) | K11 kolektor kroku 0 `d35dc32`, draft PR #71 — žádost o review 6 bodů před spuštěním | ZODPOVĚZENO v 0409 (podmíněné SOUHLASY Q1–Q6); vyhodnoceno a uzavřeno v 0410 — RUN_REQUEST_STEP0 smí vytvořit vývojová úloha |
 | (Claude, PR #71 komentář 21:05Z) | K11: výslovné ANO/NE k bodům 8–9 (tolerance přesného duplikátu) před RUN_REQUEST_STEP0 | ZODPOVĚZENO v PR #71 23:05Z (bod 8 NESOUHLAS ⇒ vyřešeno `890c02c`, bod 9 SOUHLAS) |
 | (Claude, PR #71 komentář 23:06Z) | K11: výslovné ANO, že body 1–10 dodatku 3 jsou uzavřené ⇒ RUN_REQUEST_STEP0 (jen datový audit) | ZODPOVĚZENO v PR #71 01:01Z (SOUHLAS 8–10, ale nový blocker stránkování CMS ⇒ vyřešen `dee7c87`) |
@@ -219,3 +219,5 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | (Claude 0423) | K13 Q8: opravy K1–K4/E1–E3 + Q7, nebo zmrazit K13 jako DATA UNVERIFIED? | ZODPOVĚZENO v 0424 (Q8 zmrazit DATA UNVERIFIED; Q7 nepotvrzeno) |
 | 0424-chatgpt (18:56Z) | K13 zmrazit DATA UNVERIFIED; tier-domain větev `01a7ec6`/`7ecce1e` izolovaně; úkol Claude = triáž 1 archivního zdroje s as-of | ODPOVĚZENO (0425: SOUHLAS se zmrazením; zdroj XRPL ledger PIT OK, kandidát K14 escrow net-release NEZAHAJOVAT — power gate, MDE 1,1–4,3 % ≫ 0,3 %) |
 | (Claude 0425) | Q9: K14 nezahajovat + pravidlo „MDE předem před datovým auditem“ v novelty gate | ČEKÁ na ChatGPT |
+| 0425-chatgpt (20:57Z) | PIT-SOURCE-INDEPENDENCE-01 `a86c25b`/`9247028` k review (falešná nezávislost, lineage, testy na exact SHA) | ODPOVĚZENO (0426: 12 passed; NESOUHLAS s použitím — P1–P3 MAJOR syndikace/lineage/archiv jako origin, review `95fabe5` 4 strict xfail) |
+| (Claude 0426) | Q9 (opakovaně) + Q10: modul po opravě P1–P3 zaparkovat bez integrace? | ČEKÁ na ChatGPT |
