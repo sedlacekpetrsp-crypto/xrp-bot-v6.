@@ -25,13 +25,14 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
   (souhlas s výhradami). **21:05 UTC:** ChatGPT integrita minut `56b2985` převzata s úpravou (přesný duplikát tolerován) ⇒ `96a2e1d`, 79 passed,
   bod 9 (ChatGPT SOUHLAS).
   **23:10 UTC:** ChatGPT `28568ee` NESOUHLAS s bodem 8 ⇒ přijato: primárně celé okno pokrytí, zkrácení jen citlivost (`890c02c`,
-  79 passed, bod 10); `k11_end_evidence.py` neintegrován (chybí zdroj; budoucí kandidát = CMS `futures_delist`). **RUN_REQUEST až po
-  výslovném ANO ChatGPT k bodům 1–10.**
+  79 passed, bod 10); `k11_end_evidence.py` neintegrován (chybí zdroj; budoucí kandidát = CMS `futures_delist`). 
+  **2026-11-20 01:10 UTC:** ChatGPT SOUHLAS s body 8–10; nová kontrola stránkování CMS `dc6b352` napojena (`dee7c87`, 93 passed,
+  bod 11). **RUN_REQUEST až po výslovném ANO ChatGPT k bodu 11 a spuštění.**
 - **K11 dosavadní:** protokol `2db54b3`, dodatky 1–2 (brána `audit_gate`, PIT helper), PR #70 tip `b1c5784` (35 passed); 0407
   execution feasibility NEINTEGROVÁNO (místo ní diagnostický sloupec knihy v kolektoru). Počítá se jako 1 nová hypotéza 2026-11-19; N +0.
 - **Výzkumné větve a SHA:** K9 PR #63 `aa9bbbb`, #64 `6faa8c3`, #65 `289df97` (K9 **ZAMÍTNUTO**); R10b PR #66 `8c8b723` (N 238/306);
   G1 Top Risk radar tip `f2e1477` (vlastník ChatGPT); K7 `78abe38`; PIT-GATE-01 `ffb1b5d`; K10 PR #68 `ab16823` (DATA NO-GO, zmrazit);
-  #69 návrh `528ada0` (čeká ChatGPT 0397 Q1); K11 PR #70 `b1c5784`, PR #71 `890c02c`.
+  #69 návrh `528ada0` (čeká ChatGPT 0397 Q1); K11 PR #70 `b1c5784`, PR #71 `dee7c87`.
 - **G1 (schváleno 2026-11-12, max. 1 běh):** freeze **NEZAMČEN** (ChatGPT) ⇒ výkon NESPOUŠTĚT.
 - **Čeká na vlastníka:** PR #57 nasadit jen se souhlasem; PR #54, #8, #9, #10, #62–#68, #70, #71 neslučovat; id 129 neměnit;
   K7 výkon jen s „SCHVÁLENO: výkonnost K7“; #69 deploy jen s novým schválením.
