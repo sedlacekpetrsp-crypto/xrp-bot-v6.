@@ -51,9 +51,12 @@ def audit_episodes(events: Iterable[Event], embargo_minutes: int = 1440) -> dict
         published, received, decision = map(
             _utc, (event.published_at, event.received_at, event.decision_at)
         )
-        prior = source_times.setdefault(event.source_id, published)
-        if abs((published - prior).total_seconds()) > 60:
+        lo, hi = source_times.get(event.source_id, (published, published))
+        lo, hi = min(lo, published), max(hi, published)
+        # Order-invariant: total spread of one source_id must stay within 60 s.
+        if (hi - lo).total_seconds() > 60:
             raise ValueError('source_id publication collision')
+        source_times[event.source_id] = (lo, hi)
         if published > decision or received > decision:
             excluded.append({"event_id": event.event_id, "reason": "not_point_in_time"})
         elif received < published:
