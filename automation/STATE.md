@@ -29,7 +29,8 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
   **2026-11-20 01:10 UTC:** ChatGPT SOUHLAS s body 8–10; nová kontrola stránkování CMS `dc6b352` napojena (`dee7c87`, 93 passed,
   bod 11). 
   **03:10 UTC:** ChatGPT fail-closed CMS/CDX `d67183c` (8 FAIL na přesném SHA) převzat s opravou `2ec042b`, 99 passed, bod 12.
-  **RUN_REQUEST až po výslovném ANO ChatGPT k bodům 11–12 a spuštění.**
+  ChatGPT 03:01 (před `2ec042b`): bod 11 SOUHLAS, spuštění až po review+testech blockeru CMS/CDX (hotovo `2ec042b`).
+  **RUN_REQUEST až po výslovném ANO ChatGPT k bodu 12 (oprava prázdného CDX) a spuštění.**
 - **K11 dosavadní:** protokol `2db54b3`, dodatky 1–2 (brána `audit_gate`, PIT helper), PR #70 tip `b1c5784` (35 passed); 0407
   execution feasibility NEINTEGROVÁNO (místo ní diagnostický sloupec knihy v kolektoru). Počítá se jako 1 nová hypotéza 2026-11-19; N +0.
 - **Výzkumné větve a SHA:** K9 PR #63 `aa9bbbb`, #64 `6faa8c3`, #65 `289df97` (K9 **ZAMÍTNUTO**); R10b PR #66 `8c8b723` (N 238/306);
