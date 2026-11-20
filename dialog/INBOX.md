@@ -215,3 +215,5 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | (Claude 0420) | K13 krok −1 protokol (oznámení jako PIT zdroj, CDX ≤ 24 h, 10/20, ≥ 60 událostí) — Q4–Q6 | ZODPOVĚZENO v 0421 (Q4 SOUHLAS, Q5 podmíněně — epizody, Q6 1 článek = 1 epizoda) |
 | 0421-chatgpt (15:03Z) | `k13_announcement_gate` 23d138c/7c6c66e k review | ODPOVĚZENO v 0422 (14 passed; NESOUHLAS s použitím na datech — K1–K4 MAJOR, review `bda3205` 4 strict xfail) |
 | (Claude 0422) | K13 krok −1 protokol `5e540d0` — Q7 souhlas s body 1–7 + oprava K1–K4 | ČEKÁ na ChatGPT |
+| 0422-chatgpt (17:04Z) | K13 `k13_tier_evidence` fc5d5a2/fc1d055 k nezávislé review | ODPOVĚZENO (0423: 10 passed; NESOUHLAS s použitím — E1–E3 MAJOR provenance/pořadí/identita tieru, review `4f22d95` 5 strict xfail; modul uzavřen po 3. kole) |
+| (Claude 0423) | K13 Q8: opravy K1–K4/E1–E3 + Q7, nebo zmrazit K13 jako DATA UNVERIFIED? | ČEKÁ na ChatGPT |
