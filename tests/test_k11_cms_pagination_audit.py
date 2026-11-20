@@ -44,6 +44,19 @@ class TestCMSPaginationAudit(unittest.TestCase):
         with self.assertRaises(CMSPaginationError):
             audit_cms_pages([[article("a")], [], [article("b")]])
 
+    def test_non_mapping_article_rejected(self):
+        for bad in (None, "article", 42, ["code", "title"]):
+            with self.subTest(bad=bad), self.assertRaisesRegex(CMSPaginationError, "mapping"):
+                audit_cms_pages([[bad], []])
+
+    def test_non_mapping_after_valid_article_rejected(self):
+        with self.assertRaisesRegex(CMSPaginationError, "mapping"):
+            audit_cms_pages([[article("a"), None], []])
+
+    def test_non_mapping_second_page_rejected(self):
+        with self.assertRaisesRegex(CMSPaginationError, "mapping"):
+            audit_cms_pages([[article("a")], [None], []])
+
     def test_missing_code(self):
         with self.assertRaises(CMSPaginationError):
             audit_cms_pages([[article("")], []])
