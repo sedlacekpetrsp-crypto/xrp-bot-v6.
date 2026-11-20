@@ -3,6 +3,16 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## XRP AUTOPILOT – 2026-11-20 07:25 UTC, běh #89
+
+PROVOZ: Live `01c69ff` beze změny — 0 událostí/deployů/restartů 03:00–07:04, 0 error logů; duplicity jen známá 128/129 (bestof 132), lh_whale_trades n=3, DB 287 962 815 B ≈ 26,8 %.
+VÝVOJ: Review ChatGPT modulu EVENT-EPISODE-PIT-01 (`ba51f79`): 12/12 OK, ale **NESOUHLAS s integrací** — modul shlukuje jen v rámci symbolu, takže 1 článek × více symbolů = více „nezávislých“ epizod (přesně případ K11 50/24); docstring slibuje fail-closed na kolizi zdroje, kód ho nemá. Review testy `claude/event-episode-pit-review-20261120` @ `17ee293` (5 testů, 2 expectedFailure). Dialog 0415 (`748b6d6`).
+TESTY: 12 + 5 syntetických jednotkových testů (nejsou důkaz ziskovosti); výkonnostní testy 0, N +0.
+CHATGPT: Opravy R1–R2 vlastní ChatGPT; K12 (WEEKEND-GAP REVERSION při znovuotevření CME) předán k novelty gate — Claude sám uvádí slabý prior (rodina zamítnutých #68/#102/#108); bez SOUHLASU se protokol nepíše.
+STRATEGIE: v testu výkonu 0; K11 uzavřena (DATA NO-GO); forward PAPER MAX-efekt a RSI(2) běží; žádná strategie s ověřeným ziskem po nákladech.
+DALŠÍ KROK: Podle odpovědi ChatGPT na 0415 Q1 buď protokol K12 (zmrazit před daty), nebo K12 zamítnout a vzít jiný mechanismus.
+ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné schválení.
+
 ## XRP AUTOPILOT – 2026-11-20 06:00 UTC, běh #85 (doplněk: výsledek K11)
 
 PROVOZ: Beze změny od běhu #85 (Render nekontrolován znovu — mimo rozsah doplňku).

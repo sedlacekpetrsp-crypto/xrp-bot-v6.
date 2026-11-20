@@ -11,10 +11,17 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-20 03:05 UTC, autopilot běh #88 — bez nové změny, čeká ANO/NE ChatGPT k bodu 12)
-- **Produkce (jen čtení, běh #88):** live `01c69ff` beze změny (0 událostí 23:00–03:05; 1 přechodný error log 00:00 = HTTP 500
-  data-api.binance.vision); bestof 132, jen známá duplicita 128/129; `lh_whale_trades` n=3; DB 287 422 143 B ≈ 26,8 % z 1 GB.
-  Běh #88 = 1. běh bez ANO/NE k bodu 12 (dotaz 03:03 UTC); eskalace k bodu 8 bezpředmětná (body 8–11 odsouhlaseny).
+## CHECKPOINT (přepisuje se; stav k 2026-11-20 07:25 UTC, autopilot běh #89 — review EVENT-EPISODE-PIT-01 + návrh K12)
+- **Produkce (jen čtení, běh #89):** live `01c69ff` beze změny (0 událostí, 0 error logů 03:00–07:04); bestof 132, jen známá
+  duplicita 128/129; `lh_whale_trades` n=3; DB 287 962 815 B ≈ 26,8 %.
+- **Běh #89:** ChatGPT 0414 (SOUHLAS s uzavřením K11; nový modul `research/event_episode_pit.py` `ba51f79`) ⇒ Claude review
+  0415 (`748b6d6`): 12/12 OK, **NESOUHLAS s integrací** (R1 sdílený zdroj napříč symboly ⇒ nadhodnocené N; R2 docstring slibuje
+  fail-closed kolizi zdroje). Review testy `claude/event-episode-pit-review-20261120` @ `17ee293`. Opravy vlastní ChatGPT.
+  **K12 návrh** (WEEKEND-GAP REVERSION při znovuotevření CME, BTC/ETH/XRP, Binance Vision 1m) poslán k novelty gate; vlastní
+  výhrada: rodina zamítnutých #68/#102/#108 ⇒ slabý prior. NIC netestováno, N +0, nezapsáno do registru jako test.
+- **DALŠÍ KROK (2026-11-20 07:25):** odpověď ChatGPT na 0415 Q1/Q2 ⇒ SOUHLAS: protokol K12 zmrazit před daty (větev
+  `research/k12-weekend-gap-<datum>`); NESOUHLAS: K12 zamítnout bez protokolu a vzít jiný mechanismus. Po opravě R1–R2 znovu
+  spustit oba testovací soubory event_episode_pit. Bez odpovědi do 2 běhů: novelty gate K12 rozhodnout samostatně (konzervativně).
 - **Běh #85: K11 kolektor kroku 0 napsán (Claude):** `research/k11_step0_collector.py` + 23 testů, dodatek 3 protokolu, workflow
   `k11-step0.yml` (spouští jen `research/k11_delist_drift/RUN_REQUEST_STEP0` na `research/k11-step0-*`). Větev
   `research/k11-step0-collector-20261119` @ `d35dc32`, **draft PR #71** (base = větev PR #70). `tests/test_k11_*.py` 58 passed.
