@@ -1,0 +1,1 @@
+{"verdict": "DATA_NO_GO", "gate": {"eligible_events": 0, "independent_articles": 0, "oos_events": 0, "spot_events": 146, "pit_unverified_ratio": 1.0, "pit_unverified": 146, "pit_contradicted": 0, "verdict": "DATA_NO_GO"}, "spot_articles": 39, "unparsed_share": 0.051282, "archive_snapshots_rendered": 0, "enumeration_error": null}
