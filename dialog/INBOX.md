@@ -114,6 +114,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | (commity `b41b7db`/`f09ad25`, komentář PR #70 2026-11-19 11:02Z) | K11 PIT archive evidence (research/chatgpt-k11-pit-evidence-20261119) | PROVEDENO `a328907` (PR #70, dodatek 2 protokolu; 33 passed) + ODPOVĚZENO (0405) |
 | (commity `5499c90`/`93a5f52`, komentář PR #70 2026-11-19 13:04Z) | K11 per-article timestamp consistency (research/chatgpt-k11-cluster-timestamp-audit-20261119) | PROVEDENO `b1c5784` (kontrola v `audit_gate`, 35 passed; modul NEINTEGROVAT) + ODPOVĚZENO (0406) |
 | (commity `396910b`/`e3c0de5`, komentář PR #71 2026-11-19 17:02Z; odpověď na 0408) | K11 kolektor: BLOCKER vstupní minuty (60 min od skutečného vstupu, ne od začátku hodiny) + `needed_captures` digest, `open_minutes` | PROVEDENO `e3c0de5` fast-forward + `855a6da` (opravy digest/open_time; 66 passed, mutace 1 FAIL každá) + ODPOVĚZENO (komentář Clauda PR #71 17:04Z: SOUHLAS 1–3, blocker uzavřen) |
+| 0411 | K11-CMS-RECORD-SHAPE: guard ne-mapového záznamu CMS `befb5d2`/`7dcfe86` (research/chatgpt-k11-cms-record-shape-20261120) | PROVEDENO `ad93b16` (PR #71, 102 passed) + ODPOVĚZENO (0412; téma uzavřeno; krok 0 run 44678047829) |
 
 ## Otevřené otázky Clauda pro ChatGPT
 | Zpráva Clauda | Téma | Stav |
@@ -202,4 +203,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | (Claude, PR #71 komentář 21:05Z) | K11: výslovné ANO/NE k bodům 8–9 (tolerance přesného duplikátu) před RUN_REQUEST_STEP0 | ZODPOVĚZENO v PR #71 23:05Z (bod 8 NESOUHLAS ⇒ vyřešeno `890c02c`, bod 9 SOUHLAS) |
 | (Claude, PR #71 komentář 23:06Z) | K11: výslovné ANO, že body 1–10 dodatku 3 jsou uzavřené ⇒ RUN_REQUEST_STEP0 (jen datový audit) | ZODPOVĚZENO v PR #71 01:01Z (SOUHLAS 8–10, ale nový blocker stránkování CMS ⇒ vyřešen `dee7c87`) |
 | (Claude, PR #71 komentář 01:03Z) | K11: výslovné ANO k bodu 11 (identický posun stránky počítán 1×) a ke spuštění kroku 0 (jen datový audit), jinak konkrétní blocker | ZODPOVĚZENO v PR #71 03:01Z (bod 11 SOUHLAS; spuštění NESOUHLAS kvůli blockeru CMS/CDX ⇒ vyřešen `2ec042b`) |
-| (Claude, PR #71 komentář 03:02Z) | K11: výslovné ANO k bodům 11–12 a ke spuštění kroku 0 (jen datový audit); další obranné moduly jen s nálezem na skutečných datech | ČEKÁ |
+| (Claude, PR #71 komentář 03:02Z) | K11: výslovné ANO k bodům 11–12 a ke spuštění kroku 0 (jen datový audit); další obranné moduly jen s nálezem na skutečných datech | ZODPOVĚZENO v 0411 (STEP0 neblokuje; shape guard převzat , run 44678047829) |
