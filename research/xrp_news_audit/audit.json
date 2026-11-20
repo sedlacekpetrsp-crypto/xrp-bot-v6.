@@ -1,0 +1,284 @@
+{
+ "z1": {
+  "by_year": {
+   "2020": {
+    "slots": 36,
+    "ok": 35,
+    "records": 60139,
+    "titled": 60139,
+    "s2": 1,
+    "missing_share": 0.028,
+    "title_share": 1.0,
+    "est_s2": 1001,
+    "est_lo": 13,
+    "est_hi": 5570
+   },
+   "2021": {
+    "slots": 36,
+    "ok": 36,
+    "records": 54486,
+    "titled": 54486,
+    "s2": 0,
+    "missing_share": 0.0,
+    "title_share": 1.0,
+    "est_s2": 0,
+    "est_lo": 0,
+    "est_hi": 3570
+   },
+   "2022": {
+    "slots": 36,
+    "ok": 36,
+    "records": 46801,
+    "titled": 46801,
+    "s2": 0,
+    "missing_share": 0.0,
+    "title_share": 1.0,
+    "est_s2": 0,
+    "est_lo": 0,
+    "est_hi": 3570
+   },
+   "2023": {
+    "slots": 36,
+    "ok": 36,
+    "records": 60049,
+    "titled": 60049,
+    "s2": 1,
+    "missing_share": 0.0,
+    "title_share": 1.0,
+    "est_s2": 973,
+    "est_lo": 13,
+    "est_hi": 5415
+   },
+   "2024": {
+    "slots": 36,
+    "ok": 36,
+    "records": 57453,
+    "titled": 57453,
+    "s2": 0,
+    "missing_share": 0.0,
+    "title_share": 1.0,
+    "est_s2": 0,
+    "est_lo": 0,
+    "est_hi": 3570
+   },
+   "2025": {
+    "slots": 36,
+    "ok": 34,
+    "records": 48183,
+    "titled": 48183,
+    "s2": 3,
+    "missing_share": 0.056,
+    "title_share": 1.0,
+    "est_s2": 3092,
+    "est_lo": 621,
+    "est_hi": 9034
+   },
+   "2026": {
+    "slots": 30,
+    "ok": 30,
+    "records": 36482,
+    "titled": 36482,
+    "s2": 0,
+    "missing_share": 0.0,
+    "title_share": 1.0,
+    "est_s2": 0,
+    "est_lo": 0,
+    "est_hi": 3570
+   }
+  },
+  "est_is": 1974,
+  "est_is_lo": 26,
+  "est_oos": 3092,
+  "g1": true,
+  "g2": true,
+  "g3": true,
+  "verdict": "GO",
+  "recount_mismatch_files": 0,
+  "n_titles": 77,
+  "top_domains": [
+   [
+    "biztoc.com",
+    10
+   ],
+   [
+    "manilatimes.net",
+    6
+   ],
+   [
+    "fool.com",
+    5
+   ],
+   [
+    "yahoo.com",
+    4
+   ],
+   [
+    "fxstreet.com",
+    3
+   ],
+   [
+    "coinspeaker.com",
+    3
+   ],
+   [
+    "newsbtc.com",
+    3
+   ],
+   [
+    "indiatimes.com",
+    3
+   ],
+   [
+    "finanznachrichten.de",
+    3
+   ],
+   [
+    "forbes.com",
+    2
+   ],
+   [
+    "benzinga.com",
+    2
+   ],
+   [
+    "aol.com",
+    2
+   ],
+   [
+    "theartnewspaper.com",
+    1
+   ],
+   [
+    "sramanamitra.com",
+    1
+   ],
+   [
+    "timesnownews.com",
+    1
+   ]
+  ]
+ },
+ "z2": {
+  "coindesk.com": {
+   "n_xrp": 152,
+   "by_year": {
+    "2024": 98,
+    "2025": 45,
+    "2026": 9
+   },
+   "s2_by_year": {
+    "2024": 8,
+    "2025": 3
+   },
+   "s2_is": 8,
+   "s2_oos": 3,
+   "precision": {
+    "pub_minute": 152
+   },
+   "missing_quarters": [
+    "2020Q1",
+    "2020Q2",
+    "2020Q3",
+    "2020Q4",
+    "2021Q1",
+    "2021Q2",
+    "2021Q3",
+    "2021Q4",
+    "2022Q1",
+    "2022Q2",
+    "2022Q3",
+    "2022Q4",
+    "2023Q1",
+    "2023Q2",
+    "2023Q3",
+    "2023Q4",
+    "2024Q1",
+    "2024Q2",
+    "2024Q3"
+   ],
+   "g1": false,
+   "g3": false,
+   "g2": false,
+   "verdict": "NO-GO"
+  },
+  "cointelegraph.com": {
+   "n_xrp": 2679,
+   "by_year": {
+    "2023": 1,
+    "2024": 12,
+    "2025": 7,
+    "2026": 2659
+   },
+   "s2_by_year": {
+    "2026": 134
+   },
+   "s2_is": 0,
+   "s2_oos": 134,
+   "precision": {
+    "no_pub": 2679
+   },
+   "missing_quarters": [
+    "2020Q1",
+    "2020Q2",
+    "2020Q3",
+    "2020Q4",
+    "2021Q1",
+    "2021Q2",
+    "2021Q3",
+    "2021Q4",
+    "2022Q1",
+    "2022Q2",
+    "2022Q3",
+    "2022Q4",
+    "2023Q1",
+    "2023Q2",
+    "2023Q3",
+    "2025Q2",
+    "2025Q4",
+    "2026Q1"
+   ],
+   "g1": false,
+   "g3": false,
+   "g2": false,
+   "verdict": "NO-GO"
+  },
+  "decrypt.co": {
+   "n_xrp": 2408,
+   "by_year": {
+    "2018": 6,
+    "2019": 309,
+    "2020": 339,
+    "2021": 210,
+    "2022": 60,
+    "2023": 207,
+    "2024": 231,
+    "2025": 799,
+    "2026": 247
+   },
+   "s2_by_year": {
+    "2019": 12,
+    "2020": 24,
+    "2021": 36,
+    "2022": 3,
+    "2023": 12,
+    "2024": 6,
+    "2025": 31,
+    "2026": 15
+   },
+   "s2_is": 81,
+   "s2_oos": 46,
+   "precision": {
+    "no_pub": 2408
+   },
+   "missing_quarters": [],
+   "g1": false,
+   "g3": true,
+   "g2": false,
+   "verdict": "NO-GO"
+  }
+ },
+ "z3": {
+  "n": 0
+ },
+ "verdict": "GO"
+}
