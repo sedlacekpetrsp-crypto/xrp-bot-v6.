@@ -1,0 +1,33 @@
+name: K3 step 0b hourly data gate (PAPER research, timestamps only)
+# Jen výzkumná větev. Žádné secrets, žádný Render, žádné objednávky, žádné hodnoty cen/fundingu.
+on:
+  push:
+    branches: ["research/k3-funding-audit-*"]
+    paths:
+      - "research/k3_funding_audit/RUN_REQUEST_0B"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install pytest && python -m pytest -q -p no:cacheprovider tests/test_k3_step0b.py tests/test_k3_funding_audit.py
+      - name: Hourly coverage gate (public endpoints, timestamps only)
+        run: |
+          set -o pipefail
+          python -m research.k3_funding_audit.step0b run --outdir research/k3_funding_audit | tee research/k3_funding_audit/step0b_summary.txt
+      - name: Commit metadata results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          git add research/k3_funding_audit/step0b_*
+          git diff --cached --quiet && exit 0
+          git commit -m "K3 krok 0b: výsledky hodinové brány (run ${GITHUB_RUN_ID}) [skip ci]"
+          git pull --rebase origin ${GITHUB_REF_NAME}
+          git push origin HEAD:${GITHUB_REF_NAME}

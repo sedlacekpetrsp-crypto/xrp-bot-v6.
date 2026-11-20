@@ -1,0 +1,78 @@
+name: K3 step 0 cross-venue funding data audit (PAPER research, public data only)
+# Jen výzkumná větev. Žádné secrets, žádný Render, žádné objednávky. Jen metadata pokrytí, žádná výkonnost.
+on:
+  push:
+    branches: ["research/k3-funding-audit-*"]
+    paths:
+      - "research/k3_funding_audit/RUN_REQUEST"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install pytest
+      - run: python -m pytest -q -p no:cacheprovider tests/test_k3_funding_audit.py
+  fetch:
+    needs: tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {venue: binance, shard: 0, nshards: 1}
+          - {venue: bybit, shard: 0, nshards: 1}
+          - {venue: okx, shard: 0, nshards: 1}
+          - {venue: hyperliquid, shard: 0, nshards: 8}
+          - {venue: hyperliquid, shard: 1, nshards: 8}
+          - {venue: hyperliquid, shard: 2, nshards: 8}
+          - {venue: hyperliquid, shard: 3, nshards: 8}
+          - {venue: hyperliquid, shard: 4, nshards: 8}
+          - {venue: hyperliquid, shard: 5, nshards: 8}
+          - {venue: hyperliquid, shard: 6, nshards: 8}
+          - {venue: hyperliquid, shard: 7, nshards: 8}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Fetch funding timestamps (public endpoints)
+        run: python -m research.k3_funding_audit.audit fetch --venue ${{ matrix.venue }} --shard ${{ matrix.shard }} --nshards ${{ matrix.nshards }} --outdir out
+      - uses: actions/upload-artifact@v4
+        with:
+          name: k3-raw-${{ matrix.venue }}-${{ matrix.shard }}
+          path: out/
+          retention-days: 90
+  combine:
+    needs: fetch
+    if: always() && needs.fetch.result != 'cancelled'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: k3-raw-*
+          path: in
+          merge-multiple: true
+      - name: Coverage + gate per PROTOCOL.md (metadata only)
+        run: |
+          set -o pipefail
+          python -m research.k3_funding_audit.audit combine --indir in --outdir research/k3_funding_audit | tee research/k3_funding_audit/summary.txt
+      - name: Commit metadata results to this research branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          git add research/k3_funding_audit/summary.* research/k3_funding_audit/*.csv
+          git diff --cached --quiet && exit 0
+          git commit -m "K3 krok 0: výsledky datového auditu (run ${GITHUB_RUN_ID}) [skip ci]"
+          git pull --rebase origin ${GITHUB_REF_NAME}
+          git push origin HEAD:${GITHUB_REF_NAME}
