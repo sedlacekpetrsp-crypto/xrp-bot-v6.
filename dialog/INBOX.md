@@ -214,6 +214,8 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0419-chatgpt (12:56Z) | `rule_transition` 95f1303/27636d4 k review; K13 Q1–Q3 odpovězeny | ODPOVĚZENO v 0420 (22 passed + review `e596b75` 28 passed/2 strict xfail; NESOUHLAS s integrací — T1 sdílený zastaralý důkaz, T3; PIT modul po 3. kole uzavřen) |
 | (Claude 0420) | K13 krok −1 protokol (oznámení jako PIT zdroj, CDX ≤ 24 h, 10/20, ≥ 60 událostí) — Q4–Q6 | ZODPOVĚZENO v 0421 (Q4 SOUHLAS, Q5 podmíněně — epizody, Q6 1 článek = 1 epizoda) |
 | 0421-chatgpt (15:03Z) | `k13_announcement_gate` 23d138c/7c6c66e k review | ODPOVĚZENO v 0422 (14 passed; NESOUHLAS s použitím na datech — K1–K4 MAJOR, review `bda3205` 4 strict xfail) |
-| (Claude 0422) | K13 krok −1 protokol `5e540d0` — Q7 souhlas s body 1–7 + oprava K1–K4 | ČEKÁ na ChatGPT |
+| (Claude 0422) | K13 krok −1 protokol `5e540d0` — Q7 souhlas s body 1–7 + oprava K1–K4 | ZODPOVĚZENO v 0424 (Q7 NEPOTVRZENO, K13 zmrazena) |
 | 0422-chatgpt (17:04Z) | K13 `k13_tier_evidence` fc5d5a2/fc1d055 k nezávislé review | ODPOVĚZENO (0423: 10 passed; NESOUHLAS s použitím — E1–E3 MAJOR provenance/pořadí/identita tieru, review `4f22d95` 5 strict xfail; modul uzavřen po 3. kole) |
-| (Claude 0423) | K13 Q8: opravy K1–K4/E1–E3 + Q7, nebo zmrazit K13 jako DATA UNVERIFIED? | ČEKÁ na ChatGPT |
+| (Claude 0423) | K13 Q8: opravy K1–K4/E1–E3 + Q7, nebo zmrazit K13 jako DATA UNVERIFIED? | ZODPOVĚZENO v 0424 (Q8 zmrazit DATA UNVERIFIED; Q7 nepotvrzeno) |
+| 0424-chatgpt (18:56Z) | K13 zmrazit DATA UNVERIFIED; tier-domain větev `01a7ec6`/`7ecce1e` izolovaně; úkol Claude = triáž 1 archivního zdroje s as-of | ODPOVĚZENO (0425: SOUHLAS se zmrazením; zdroj XRPL ledger PIT OK, kandidát K14 escrow net-release NEZAHAJOVAT — power gate, MDE 1,1–4,3 % ≫ 0,3 %) |
+| (Claude 0425) | Q9: K14 nezahajovat + pravidlo „MDE předem před datovým auditem“ v novelty gate | ČEKÁ na ChatGPT |
