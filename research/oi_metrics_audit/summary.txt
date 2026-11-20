@@ -1,0 +1,262 @@
+universe 81 symbols, in window 79
+[1/81] BCHUSDT cov=0.9993 worstQ=0.99523
+[2/81] BTCUSDT cov=0.9988 worstQ=0.988489
+[3/81] ETHUSDT cov=0.9993 worstQ=0.99523
+[4/81] XRPUSDT cov=0.9993 worstQ=0.99523
+[5/81] EOSUSDT cov=0.9979 worstQ=0.987064
+[6/81] LTCUSDT cov=0.9993 worstQ=0.99523
+[7/81] TRXUSDT cov=0.9994 worstQ=0.99523
+[8/81] ETCUSDT cov=0.9991 worstQ=0.99523
+[9/81] LINKUSDT cov=0.9993 worstQ=0.99523
+[10/81] XLMUSDT cov=0.9988 worstQ=0.988715
+[11/81] ADAUSDT cov=0.9993 worstQ=0.99523
+[12/81] XMRUSDT cov=0.9983 worstQ=0.977808
+[13/81] DASHUSDT cov=0.9994 worstQ=0.99523
+[14/81] ZECUSDT cov=0.9988 worstQ=0.988678
+[15/81] XTZUSDT cov=0.9987 worstQ=0.988715
+[16/81] ATOMUSDT cov=0.9994 worstQ=0.99523
+[17/81] BNBUSDT cov=0.9993 worstQ=0.99523
+[18/81] ONTUSDT cov=0.9993 worstQ=0.99523
+[19/81] IOTAUSDT cov=0.9993 worstQ=0.99523
+[20/81] BATUSDT cov=0.9993 worstQ=0.99523
+[21/81] VETUSDT cov=0.9992 worstQ=0.99523
+[22/81] NEOUSDT cov=0.9993 worstQ=0.99523
+[23/81] QTUMUSDT cov=0.9992 worstQ=0.99523
+[24/81] IOSTUSDT cov=0.9992 worstQ=0.99523
+[25/81] THETAUSDT cov=0.9988 worstQ=0.988678
+[26/81] ALGOUSDT cov=0.9994 worstQ=0.99523
+[27/81] ZILUSDT cov=0.9993 worstQ=0.99523
+[28/81] KNCUSDT cov=0.9992 worstQ=0.99523
+[29/81] ZRXUSDT cov=0.9993 worstQ=0.99523
+[30/81] COMPUSDT cov=0.9991 worstQ=0.99523
+[31/81] OMGUSDT cov=0.9977 worstQ=0.948893
+[32/81] DOGEUSDT cov=0.9993 worstQ=0.99523
+[33/81] SXPUSDT cov=0.9949 worstQ=0.974185
+[34/81] LENDUSDT cov=0.0000 worstQ=None
+[35/81] KAVAUSDT cov=0.9993 worstQ=0.99523
+[36/81] BANDUSDT cov=0.9994 worstQ=0.99523
+[37/81] RLCUSDT cov=0.9993 worstQ=0.99523
+[38/81] WAVESUSDT cov=0.9972 worstQ=0.97774
+[39/81] MKRUSDT cov=0.9980 worstQ=0.976477
+[40/81] SNXUSDT cov=0.9988 worstQ=0.988715
+[41/81] DOTUSDT cov=0.9994 worstQ=0.99523
+[42/81] DEFIUSDT cov=0.9977 worstQ=0.961563
+[43/81] YFIUSDT cov=0.9993 worstQ=0.99523
+[44/81] BALUSDT cov=0.9978 worstQ=0.99523
+[45/81] CRVUSDT cov=0.9994 worstQ=0.99523
+[46/81] TRBUSDT cov=0.9991 worstQ=0.99523
+[47/81] YFIIUSDT cov=0.9899 worstQ=0.995486
+[48/81] RUNEUSDT cov=0.9986 worstQ=0.988678
+[49/81] SUSHIUSDT cov=0.9990 worstQ=0.994301
+[50/81] BZRXUSDT cov=0.0000 worstQ=None
+[51/81] SRMUSDT cov=0.9962 worstQ=0.982488
+[52/81] EGLDUSDT cov=0.9994 worstQ=0.99523
+[53/81] SOLUSDT cov=0.9993 worstQ=0.99523
+[54/81] ICXUSDT cov=0.9982 worstQ=0.971983
+[55/81] STORJUSDT cov=0.9984 worstQ=0.971983
+[56/81] BLZUSDT cov=0.9976 worstQ=0.980229
+[57/81] UNIUSDT cov=0.9993 worstQ=0.99523
+[58/81] AVAXUSDT cov=0.9993 worstQ=0.99523
+[59/81] FTMUSDT cov=0.9977 worstQ=0.99523
+[60/81] HNTUSDT cov=0.9977 worstQ=0.992133
+[61/81] ENJUSDT cov=0.9993 worstQ=0.99523
+[62/81] FLMUSDT cov=0.9981 worstQ=0.969405
+[63/81] TOMOUSDT cov=0.9984 worstQ=0.986111
+[64/81] RENUSDT cov=0.9967 worstQ=0.974893
+[65/81] KSMUSDT cov=0.9987 worstQ=0.988715
+[66/81] NEARUSDT cov=0.9988 worstQ=0.988678
+[67/81] AAVEUSDT cov=0.9993 worstQ=0.99523
+[68/81] FILUSDT cov=0.9994 worstQ=0.99523
+[69/81] LRCUSDT cov=0.9981 worstQ=0.980655
+[70/81] RSRUSDT cov=0.9993 worstQ=0.99523
+[71/81] MATICUSDT cov=0.9984 worstQ=0.990109
+[72/81] OCEANUSDT cov=0.9961 worstQ=0.981362
+[73/81] CVCUSDT cov=0.4905 worstQ=0.0
+[74/81] BELUSDT cov=0.9992 worstQ=0.99523
+[75/81] CTKUSDT cov=0.7762 worstQ=0.0
+[76/81] AXSUSDT cov=0.9994 worstQ=0.99523
+[77/81] ALPHAUSDT cov=0.9979 worstQ=0.98058
+[78/81] ZENUSDT cov=0.9982 worstQ=0.977808
+[79/81] SKLUSDT cov=0.9994 worstQ=0.99523
+[80/81] GRTUSDT cov=0.9986 worstQ=0.988678
+[81/81] 1INCHUSDT cov=0.9993 worstQ=0.99523
+{
+ "protocol": "PROTOCOL.md",
+ "window": [
+  "2022-01-01",
+  "2026-10-31"
+ ],
+ "gate": {
+  "assets_in_window": 79,
+  "assets_passing": 77,
+  "passing_symbols": [
+   "1INCHUSDT",
+   "AAVEUSDT",
+   "ADAUSDT",
+   "ALGOUSDT",
+   "ALPHAUSDT",
+   "ATOMUSDT",
+   "AVAXUSDT",
+   "AXSUSDT",
+   "BALUSDT",
+   "BANDUSDT",
+   "BATUSDT",
+   "BCHUSDT",
+   "BELUSDT",
+   "BLZUSDT",
+   "BNBUSDT",
+   "BTCUSDT",
+   "COMPUSDT",
+   "CRVUSDT",
+   "DASHUSDT",
+   "DEFIUSDT",
+   "DOGEUSDT",
+   "DOTUSDT",
+   "EGLDUSDT",
+   "ENJUSDT",
+   "EOSUSDT",
+   "ETCUSDT",
+   "ETHUSDT",
+   "FILUSDT",
+   "FLMUSDT",
+   "FTMUSDT",
+   "GRTUSDT",
+   "HNTUSDT",
+   "ICXUSDT",
+   "IOSTUSDT",
+   "IOTAUSDT",
+   "KAVAUSDT",
+   "KNCUSDT",
+   "KSMUSDT",
+   "LINKUSDT",
+   "LRCUSDT",
+   "LTCUSDT",
+   "MATICUSDT",
+   "MKRUSDT",
+   "NEARUSDT",
+   "NEOUSDT",
+   "OCEANUSDT",
+   "OMGUSDT",
+   "ONTUSDT",
+   "QTUMUSDT",
+   "RENUSDT",
+   "RLCUSDT",
+   "RSRUSDT",
+   "RUNEUSDT",
+   "SKLUSDT",
+   "SNXUSDT",
+   "SOLUSDT",
+   "SRMUSDT",
+   "STORJUSDT",
+   "SUSHIUSDT",
+   "SXPUSDT",
+   "THETAUSDT",
+   "TOMOUSDT",
+   "TRBUSDT",
+   "TRXUSDT",
+   "UNIUSDT",
+   "VETUSDT",
+   "WAVESUSDT",
+   "XLMUSDT",
+   "XMRUSDT",
+   "XRPUSDT",
+   "XTZUSDT",
+   "YFIIUSDT",
+   "YFIUSDT",
+   "ZECUSDT",
+   "ZENUSDT",
+   "ZILUSDT",
+   "ZRXUSDT"
+  ],
+  "assets_per_quarter_ge90": {
+   "2022Q1": 79,
+   "2022Q2": 78,
+   "2022Q3": 78,
+   "2022Q4": 77,
+   "2023Q1": 76,
+   "2023Q2": 75,
+   "2023Q3": 75,
+   "2023Q4": 75,
+   "2024Q1": 74,
+   "2024Q2": 73,
+   "2024Q3": 71,
+   "2024Q4": 70,
+   "2025Q1": 67,
+   "2025Q2": 65,
+   "2025Q3": 66,
+   "2025Q4": 63,
+   "2026Q1": 61,
+   "2026Q2": 60,
+   "2026Q3": 60
+  },
+  "worst_quarter": "2026Q2",
+  "worst_quarter_assets": 60,
+  "delisted_share_universe_pct": 26.58,
+  "delisted_share_passing_pct": 27.27,
+  "G1_min_assets": true,
+  "G2_every_quarter": true,
+  "G3_selection_bias": true,
+  "verdict": "GO (jen návrh protokolu A3, denní dostupnost)"
+ },
+ "worst_asset": {
+  "symbol": "CVCUSDT",
+  "coverage": 0.490475,
+  "delisted": false
+ },
+ "files": 124178,
+ "checksum_not_ok": 0,
+ "publication_delay": [
+  {
+   "year": 2022,
+   "n": 28502,
+   "min_h": 4275.19,
+   "median_h": 8606.39,
+   "p90_h": 11960.95,
+   "p99_h": 12730.42,
+   "max_h": 36083.51,
+   "share_le_1h": 0.0
+  },
+  {
+   "year": 2023,
+   "n": 27411,
+   "min_h": 5.45,
+   "median_h": 298.96,
+   "p90_h": 3502.26,
+   "p99_h": 20431.41,
+   "max_h": 27105.36,
+   "share_le_1h": 0.0
+  },
+  {
+   "year": 2024,
+   "n": 26367,
+   "min_h": 5.51,
+   "median_h": 16502.88,
+   "p90_h": 20837.35,
+   "p99_h": 22671.61,
+   "max_h": 22743.58,
+   "share_le_1h": 0.0
+  },
+  {
+   "year": 2025,
+   "n": 23704,
+   "min_h": 6.44,
+   "median_h": 9541.57,
+   "p90_h": 12878.25,
+   "p99_h": 13574.43,
+   "max_h": 13645.05,
+   "share_le_1h": 0.0
+  },
+  {
+   "year": 2026,
+   "n": 18194,
+   "min_h": 6.54,
+   "median_h": 2038.44,
+   "p90_h": 4701.76,
+   "p99_h": 5315.93,
+   "max_h": 5362.64,
+   "share_le_1h": 0.0
+  }
+ ],
+ "missing_last_modified": 0
+}
+VERIFY {"assets_passing": 77, "G1": true, "G2": true, "G3": true, "min_quarter": "2026Q2", "verdict": "GO"} MATCH
