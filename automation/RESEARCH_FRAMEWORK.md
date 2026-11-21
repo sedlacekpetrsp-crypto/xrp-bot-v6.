@@ -63,5 +63,5 @@ Před zápisem protokolu vyplnit tabulku; kterýkoli řádek NE ⇒ STOP, hypot�
 | Instrument, likvidita | Konkrétní instrument a likvidita v celém vzorku. |
 | All-in náklady | Poplatky, skluz, funding, obměna knihy. |
 | Filtr hrana ≥ 3× náklad | Opora pro hrubou hranu ≥ 3× all-in náklad (literatura nebo data projektu). |
-| Chronologické OOS | Dost událostí pro ladění + závěrečný úsek (power/MDE předem). |
+| Chronologické OOS + **power/ekonomická proveditelnost** (od 0435, dialog 0432–0434) | Dost událostí pro ladění + závěrečný úsek. Před jakýmkoli datovým auditem předregistrovat σ, DEFF (shlukování, překryv horizontů, korelace symbolů), m, alpha ≤ 0,10, power 0,8 a spočítat `research/episode_power_preflight.py` (DIAGNOSTIC_ONLY). NE ⇔ N_eff < 300 nebo potřebná hrubá hrana > doložená velikost mechanismu (vazebná je max(MDE + náklad, 3× náklad)). Orientační mapa `reports/power-feasibility-map-20261121.md`: proveditelné ≈ horizont 4 h–1 d, ≥ 300–600 epizod po shlukování; horizonty < 4 h selhávají ekonomicky (hrana ≥ 0,33 σ/obchod), události s desítkami výskytů staticky. |
 | Verdikt | GO jen pro krok 0 (datový audit); výkon vždy až po oponentuře a podle pravidel výše. |
