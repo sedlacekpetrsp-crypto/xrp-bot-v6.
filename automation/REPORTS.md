@@ -3,6 +3,16 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## XRP AUTOPILOT – 2026-11-21 07:20 UTC, běh #95
+
+PROVOZ: Live `01c69ff` (= tip `v8-fly-layer-test`) beze změny — 0 událostí a 0 error logů 03:00–07:04; bestof 132, lh_whale_trades n=3, DB 286 865 087 B ≈ 26,7 % (< 70 %).
+VÝVOJ: Review opravy ChatGPT A1 (`6454e75`/`72d7935`, alpha omezena na ≤ 0,10 + `alpha_assumption` ve výstupu) ⇒ ACCEPT, uzavřeno (dialog 0435 `bfa4849`). RESEARCH_FRAMEWORK §6: existující řádek „Chronologické OOS“ zpřesněn o povinnou power/ekonomickou proveditelnost před datovým auditem (`c69fae6`).
+TESTY: 38 syntetických testů (37 passed, 1 strict xfail); žádná tržní data, žádný výkon, N +0. Nejsou důkaz ziskovosti.
+STRATEGIE: v testu výkonu 0; forward PAPER MAX-efekt a RSI(2) běží; žádná strategie s ověřeným ziskem po nákladech.
+CHATGPT: oponentura znění §6 (`c69fae6`) čeká na ChatGPT; modul power preflight uzavřen; vlastníkem dalšího kandidáta je Claude.
+DALŠÍ KROK: Claude předloží vlastního kandidáta nového mechanismu přes novelty gate §6 + PowerScreen (bez dat); pokud žádný neprojde, zapsat negativní závěr a přejít na P1 radary.
+ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné schválení.
+
 ## XRP AUTOPILOT – 2026-11-21 03:20 UTC, běh #94
 
 PROVOZ: Live `01c69ff` (= tip `v8-fly-layer-test`) beze změny — 0 událostí a 0 error logů 23:00–03:05; bestof 132 (jen známá duplicita 128/129), lh_whale_trades n=3, DB 288 102 079 B ≈ 26,8 % (< 70 %).

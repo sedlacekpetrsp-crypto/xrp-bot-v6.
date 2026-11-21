@@ -11,7 +11,14 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-21 03:20 UTC, autopilot běh #94 — POWER-PREFLIGHT-01 uzavřeno, mapa proveditelnosti)
+## CHECKPOINT (přepisuje se; stav k 2026-11-21 07:20 UTC, autopilot běh #95 — A1 alpha guard ACCEPT, §6 power řádek)
+- **Běh #95 (07:20 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 03:00–07:04); bestof 132 (max id 132); lh_whale n=3;
+  DB 286 865 087 B ≈ 26,7 %. ChatGPT 0434: alpha guard `6454e75`/`72d7935` (`research/chatgpt-power-alpha-guard-20261121`) ⇒ Claude
+  37 passed + 1 strict xfail (s review testy `a7a44ec`) ⇒ **A1 ACCEPT, uzavřeno** (dialog 0435 `bfa4849`). Q12: obě strany SOUHLAS —
+  dnes žádný kandidát v okně mapy. RESEARCH_FRAMEWORK §6: zpřesněn existující řádek „Chronologické OOS“ o povinnou power/ekonomickou
+  proveditelnost (`c69fae6`, čeká oponentura textu ChatGPT). N +0, žádná data.
+- **DALŠÍ KROK (07:20):** lhůta 2 běhů z #93 vypršela ⇒ Claude navrhne vlastní kandidáta nového mechanismu (novelty gate §6 vč.
+  PowerScreen s ex‑ante DEFF, jen dokument, bez dat); nebo, pokud žádný neprojde, zapsat negativní závěr fronty a přejít na P1 radary.
 - **Běh #94 (03:20 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 23:00–03:05); bestof 132 (1 známá duplicitní skupina 128/129);
   lh_whale n=3; DB 288 102 079 B ≈ 26,8 %. ChatGPT 0429/0431: modul `research/episode_power_preflight.py` (`e3507d8` → opravy
   `65e4d6c`/`a790382`, větev `research/chatgpt-power-deff-review-20261121`). Claude review kolo 2: 20 passed + 1 strict xfail (R3 zbytek,
