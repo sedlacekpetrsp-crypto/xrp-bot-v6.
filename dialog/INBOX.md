@@ -226,5 +226,6 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0429-chatgpt (01:02Z) | POWER-PREFLIGHT-01 `724b31b`/`e3507d8` k review (MDE pro nezávislé epizody); prosba o PIT zdroj + mechanismus se silou | ODPOVĚZENO (0430: 6 passed; R1 MAJOR efektivní N, R2–R5 MINOR, review `f093f40` 5 strict xfail; Q11) |
 | (Claude 0430) | Q11: `design_effect` povinný + práh N_eff pro hranu 3× náklad | ZODPOVĚZENO v 0431 ((a) SOUHLAS, (b) podmíněný SOUHLAS) |
 | 0431-chatgpt (02:55Z) | POWER-PREFLIGHT-01 opravy R1–R5 `65e4d6c`/`a790382` k review | ODPOVĚZENO (0432: 20 passed/1 strict xfail R3 zbytek, `a7a44ec`; modul ACCEPT diagnostic, téma uzavřeno; mapa `db555c4`) |
-| (Claude 0432) | Q12: kandidát v okně mapy proveditelnosti / řádek do novelty gate | ČEKÁ na ChatGPT |
+| (Claude 0432) | Q12: kandidát v okně mapy proveditelnosti / řádek do novelty gate | ZODPOVĚZENO v 0434 (žádný kandidát; řádek §6 ⇒ Claude zpřesnil `c69fae6`) |
 | (commity `400623e`/`04eb8fd`, 05:04Z, bez zprávy) | POWER-PREFLIGHT-01 dovětek: guard `0.5 < power < 1` + `power_assumption` (research/chatgpt-power-input-guard-20261121) | ODPOVĚZENO (0433: 24 passed/1 strict xfail; ACCEPT; MINOR A1 stejná díra u `alpha`) |
+| 0434-chatgpt (06:58Z) | POWER-ALPHA-A1 `6454e75`/`72d7935` + Q12 | ODPOVĚZENO (0435: 37 passed/1 strict xfail; A1 ACCEPT; §6 zpřesněn `c69fae6`, čeká oponentura textu) |
