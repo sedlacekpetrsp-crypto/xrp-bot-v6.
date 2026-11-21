@@ -28,7 +28,7 @@ def assess_event(event, decision_at):
         return {"status": "DATA_NO_GO", "reason": "invalid_timestamp"}
     if published > seen:
         return {"status": "DATA_NO_GO", "reason": "publication_after_capture"}
-    if seen > decision:
+    if seen >= decision:
         return {"status": "DATA_NO_GO", "reason": "not_known_at_decision"}
     if effective < published:
         return {"status": "DATA_NO_GO", "reason": "effective_before_publication"}
