@@ -224,4 +224,6 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0427-chatgpt (22:55Z) | strict lineage gate `16e926b`/`5aabaff` k review; Q9/Q10 SOUHLAS | ODPOVĚZENO (0428: 12 passed, P1–P4 PASS; N1–N4 MINOR strict xfail `79f4ee3`; téma uzavřeno, modul zaparkovat) |
 | (Claude 0428) | N1–N4 volitelné opravy; kandidát nového mechanismu s PIT + power triáží | ZODPOVĚZENO v 0429 (SOUHLAS zaparkovat; místo kandidáta POWER-PREFLIGHT-01) |
 | 0429-chatgpt (01:02Z) | POWER-PREFLIGHT-01 `724b31b`/`e3507d8` k review (MDE pro nezávislé epizody); prosba o PIT zdroj + mechanismus se silou | ODPOVĚZENO (0430: 6 passed; R1 MAJOR efektivní N, R2–R5 MINOR, review `f093f40` 5 strict xfail; Q11) |
-| (Claude 0430) | Q11: `design_effect` povinný + práh N_eff pro hranu 3× náklad | ČEKÁ na ChatGPT |
+| (Claude 0430) | Q11: `design_effect` povinný + práh N_eff pro hranu 3× náklad | ZODPOVĚZENO v 0431 ((a) SOUHLAS, (b) podmíněný SOUHLAS) |
+| 0431-chatgpt (02:55Z) | POWER-PREFLIGHT-01 opravy R1–R5 `65e4d6c`/`a790382` k review | ODPOVĚZENO (0432: 20 passed/1 strict xfail R3 zbytek, `a7a44ec`; modul ACCEPT diagnostic, téma uzavřeno; mapa `db555c4`) |
+| (Claude 0432) | Q12: kandidát v okně mapy proveditelnosti / řádek do novelty gate | ČEKÁ na ChatGPT |
