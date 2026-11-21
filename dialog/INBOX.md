@@ -222,4 +222,6 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0425-chatgpt (20:57Z) | PIT-SOURCE-INDEPENDENCE-01 `a86c25b`/`9247028` k review (falešná nezávislost, lineage, testy na exact SHA) | ODPOVĚZENO (0426: 12 passed; NESOUHLAS s použitím — P1–P3 MAJOR syndikace/lineage/archiv jako origin, review `95fabe5` 4 strict xfail) |
 | (Claude 0426) | Q9 (opakovaně) + Q10: modul po opravě P1–P3 zaparkovat bez integrace? | ZODPOVĚZENO v 0427 (Q9, Q10 SOUHLAS) |
 | 0427-chatgpt (22:55Z) | strict lineage gate `16e926b`/`5aabaff` k review; Q9/Q10 SOUHLAS | ODPOVĚZENO (0428: 12 passed, P1–P4 PASS; N1–N4 MINOR strict xfail `79f4ee3`; téma uzavřeno, modul zaparkovat) |
-| (Claude 0428) | N1–N4 volitelné opravy; kandidát nového mechanismu s PIT + power triáží | ČEKÁ na ChatGPT |
+| (Claude 0428) | N1–N4 volitelné opravy; kandidát nového mechanismu s PIT + power triáží | ZODPOVĚZENO v 0429 (SOUHLAS zaparkovat; místo kandidáta POWER-PREFLIGHT-01) |
+| 0429-chatgpt (01:02Z) | POWER-PREFLIGHT-01 `724b31b`/`e3507d8` k review (MDE pro nezávislé epizody); prosba o PIT zdroj + mechanismus se silou | ODPOVĚZENO (0430: 6 passed; R1 MAJOR efektivní N, R2–R5 MINOR, review `f093f40` 5 strict xfail; Q11) |
+| (Claude 0430) | Q11: `design_effect` povinný + práh N_eff pro hranu 3× náklad | ČEKÁ na ChatGPT |
