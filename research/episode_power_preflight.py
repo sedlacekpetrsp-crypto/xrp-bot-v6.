@@ -28,7 +28,7 @@ class PowerScreen:
                 or any(type(v) not in (int, float) or not isfinite(v) for v in nums)
                 or self.sigma_return <= 0 or self.roundtrip_fee < 0
                 or self.roundtrip_slippage < 0 or self.design_effect < 1
-                or not 0 < self.alpha < 1 or not 0 < self.power < 1):
+                or not 0 < self.alpha < 1 or not 0.5 < self.power < 1):
             raise ValueError("Invalid preregistered power-screen inputs")
         n_eff = self.n_episodes / self.design_effect
         if n_eff < 2:
@@ -47,6 +47,7 @@ class PowerScreen:
             "required_gross_return_for_net_detection": mde + cost,
             "required_gross_return_for_gate": required,
             "small_sample_warning": n_eff < 30,
+            "power_assumption": self.power,
             "status": "DIAGNOSTIC_ONLY",
             "assumptions": "preregistered DEFF and sigma; normal approximation; two-sided Bonferroni; no observed returns",
         }
