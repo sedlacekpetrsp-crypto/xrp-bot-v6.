@@ -39,6 +39,18 @@ class PitEvidenceTests(unittest.TestCase):
     def test_retrieval_before_first_seen_fails(self):
         self.assertEqual(audit_evidence({**BASE, "retrieved_at": "2026-11-20T08:00:00Z"}, DECISION)["status"], "DATA_NO_GO")
 
+    def test_wayback_capture_after_first_seen_fails(self):
+        row = {**BASE, "archive_url": "https://web.archive.org/web/20261120113000/https://example.org/event"}
+        self.assertEqual(audit_evidence(row, DECISION)["reason"], "capture_after_claimed_first_seen")
+
+    def test_wayback_invalid_capture_date_fails(self):
+        row = {**BASE, "archive_url": "https://web.archive.org/web/20261320100000/https://example.org/event"}
+        self.assertEqual(audit_evidence(row, DECISION)["reason"], "invalid_wayback_capture_timestamp")
+
+    def test_wayback_missing_capture_fails(self):
+        row = {**BASE, "archive_url": "https://web.archive.org/web/https://example.org/event"}
+        self.assertEqual(audit_evidence(row, DECISION)["reason"], "invalid_wayback_capture_path")
+
     def test_bad_record_fails(self):
         self.assertEqual(audit_evidence(None, DECISION)["status"], "DATA_NO_GO")
 
