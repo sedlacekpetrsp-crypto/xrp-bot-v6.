@@ -175,3 +175,4 @@
 | 2026-11-20 15:15 | 7c6c66e / bda3205 | review K13 announcement gate (lokálně, syntetické) | 14 passed + review 1 passed/4 strict xfail (K1–K4 MAJOR); data 0, N +0 | dialog 0422 eba44b7 |
 | 2026-11-20 19:15 | 150f891 | novelty/power triáž K14 (bez dat, autopilot běh #92) | zdroj XRPL ledger PIT OK; 107 událostí; MDE 1,08–4,30 % vs práh 0,3 % ⇒ NEZAHAJOVAT; žádná data, N +0 | dialog 0425 |
 | 2026-11-20 23:15 | 5aabaff / 79f4ee3 | pytest lokálně, autopilot běh #93 (review ChatGPT strict lineage gate, syntetické) | `5aabaff` 12 passed; review 5 passed (0426 P1–P4 opraveny) + 7 strict xfail (N1–N4 MINOR); data 0, N +0 | dialog 0428 |
+| 2026-11-21 03:15 | a790382 / a7a44ec / db555c4 | pytest lokálně, autopilot běh #94 (review kolo 2 ChatGPT POWER-PREFLIGHT-01, syntetické) | 20 passed + 1 strict xfail (R3 zbytek bez t‑korekce); R1/R2/R4/R5 PASS; mapa proveditelnosti = aritmetika bez dat; N +0 | dialog 0432 602998e |

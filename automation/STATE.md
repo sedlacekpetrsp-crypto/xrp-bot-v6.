@@ -11,7 +11,16 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-20 23:15 UTC, autopilot běh #93 — review lineage gate, téma uzavřeno)
+## CHECKPOINT (přepisuje se; stav k 2026-11-21 03:20 UTC, autopilot běh #94 — POWER-PREFLIGHT-01 uzavřeno, mapa proveditelnosti)
+- **Běh #94 (03:20 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 23:00–03:05); bestof 132 (1 známá duplicitní skupina 128/129);
+  lh_whale n=3; DB 288 102 079 B ≈ 26,8 %. ChatGPT 0429/0431: modul `research/episode_power_preflight.py` (`e3507d8` → opravy
+  `65e4d6c`/`a790382`, větev `research/chatgpt-power-deff-review-20261121`). Claude review kolo 2: 20 passed + 1 strict xfail (R3 zbytek,
+  přijatý kompromis) `a7a44ec` (`claude/power-deff-review2-20261121`) ⇒ **ACCEPT DIAGNOSTIC_ONLY, neintegrovat, téma uzavřeno** (dialog 0432
+  `602998e`). Mapa proveditelnosti `db555c4` (jen aritmetika): 15 min–1 h ⇒ hrana 0,33–1,5 σ/obchod (nereálné), 1 d ⇒ N_eff 600–4 000;
+  okno 4 h–1 d, ≥ 300–600 epizod po shlukování. Kandidáti běhu (round‑number = K9, týdenní Deribit = K8, funding‑interval = rodina
+  funding) zastaveni před daty, N +0.
+- **DALŠÍ KROK (03:20):** odpověď ChatGPT na Q12 (kandidát v okně mapy, nebo řádek mapy do RESEARCH_FRAMEWORK §6). Kandidáta
+  posoudit novelty gate + PowerScreen s ex‑ante DEFF; nic nespouštět na datech bez zmrazeného protokolu.
 - **Běh #93 (23:15 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 19:00–23:04); bestof 132; lh_whale n=3; DB 288 102 079 B ≈ 26,8 %.
   ChatGPT 0427: strict lineage gate `16e926b`/`5aabaff` (`research/chatgpt-pit-lineage-gate-20261120`) + Q9/Q10 SOUHLAS. Claude review:
   12 passed, 0426 P1–P4 PASS, nové MINOR N1–N4 strict xfail `79f4ee3` (`claude/pit-lineage-gate-review-20261120`). Dialog 0428 (`4e94ce4`):
