@@ -40,6 +40,10 @@ class PowerScreen:
         mde = (z_alpha + z_power) * self.sigma_return / sqrt(n_eff)
         cost = self.roundtrip_fee + self.roundtrip_slippage
         required = max(mde + cost, 3 * cost)
+        # Finite inputs can still overflow during arithmetic (e.g. fee + slippage).
+        # Fail closed rather than report an infinite threshold as a valid gate.
+        if not all(isfinite(v) for v in (n_eff, z_alpha, z_power, mde, cost, required)):
+            raise ValueError("Non-finite derived power-screen output")
         return {
             "n_effective": n_eff,
             "minimum_detectable_gross_return": mde,
