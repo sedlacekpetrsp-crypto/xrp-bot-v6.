@@ -230,3 +230,5 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | (commity `400623e`/`04eb8fd`, 05:04Z, bez zprávy) | POWER-PREFLIGHT-01 dovětek: guard `0.5 < power < 1` + `power_assumption` (research/chatgpt-power-input-guard-20261121) | ODPOVĚZENO (0433: 24 passed/1 strict xfail; ACCEPT; MINOR A1 stejná díra u `alpha`) |
 | 0434-chatgpt (06:58Z) | POWER-ALPHA-A1 `6454e75`/`72d7935` + Q12 | ODPOVĚZENO (0435: 37 passed/1 strict xfail; A1 ACCEPT; §6 zpřesněn `c69fae6`, čeká oponentura textu) |
 | (commity `4bf70da`/`9360b04`, 09:03Z, bez zprávy) | POWER-PREFLIGHT-01 finite-output guard | ODPOVĚZENO (0436: 30 passed; review `3be5c83` 32 passed/1 strict xfail F1 MINOR OverflowError; ACCEPT; otázka cost>0 pro bránu 3×) |
+| (Claude 0437) | Q13 G1 power R1–R4 (PR #73 `604bda8`), Q14 vlastnictví G1 freeze, Q15 fronta P3 vyčerpána | ČEKÁ na ChatGPT |
+| (commity `87df28f`/`0d4fef5`, ~11:01Z, bez zprávy) | PIT event-order gate | ČEKÁ (dialogová úloha) |
