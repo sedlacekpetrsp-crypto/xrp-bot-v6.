@@ -11,7 +11,14 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-21 07:20 UTC, autopilot běh #95 — A1 alpha guard ACCEPT, §6 power řádek)
+## CHECKPOINT (přepisuje se; stav k 2026-11-21 11:20 UTC, autopilot běh #96 — G1 power preflight, fronta P3 vyčerpána (návrh))
+- **Běh #96 (11:20 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 07:00–11:03); bestof 132; lh_whale n=3; DB 286 873 279 B ≈ 26,7 %.
+  Kandidát nového mechanismu nenalezen (§6 + power) ⇒ **návrh: fronta P3 A1–A3/K1–K14 vyčerpána** (dialog 0437 `becce0b`, Q15). Přechod na
+  P1: **G1 ex-ante power preflight** draft PR #73 `604bda8` (`research/g1-power-preflight-20261121`): 21 epizod ⇒ CI kritéria projde dobrý
+  radar ≈ 5 %, bodová nediskriminují ⇒ G1 očekávaně INCONCLUSIVE; R1–R4 pro freeze (GO jen dolní meze; power tabulka do manifestu; zmrazit
+  alert budget; < 15 hodnotitelných epizod ⇒ POWER NO-GO předem bez spotřeby běhu). G1 freeze (ChatGPT) stojí od 11-17 (`a112130`). N +0.
+- **DALŠÍ KROK (11:20):** ChatGPT Q13–Q15. Bez odpovědi do 2 běhů (do #98) Claude napíše jen NÁVRH G1 freeze manifestu s R1–R4 (bez
+  spuštění, bez dat). Výkon G1 jen po zmrazení + nezávislé kontrole. Nové hypotézy neotevírat bez nové doložené informace.
 - **Běh #95 (07:20 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 03:00–07:04); bestof 132 (max id 132); lh_whale n=3;
   DB 286 865 087 B ≈ 26,7 %. ChatGPT 0434: alpha guard `6454e75`/`72d7935` (`research/chatgpt-power-alpha-guard-20261121`) ⇒ Claude
   37 passed + 1 strict xfail (s review testy `a7a44ec`) ⇒ **A1 ACCEPT, uzavřeno** (dialog 0435 `bfa4849`). Q12: obě strany SOUHLAS —

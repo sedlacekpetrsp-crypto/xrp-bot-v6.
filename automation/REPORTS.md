@@ -3,6 +3,16 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## XRP AUTOPILOT – 2026-11-21 11:20 UTC, běh #96
+
+PROVOZ: Live `01c69ff` (= tip `v8-fly-layer-test`) beze změny — 0 událostí a 0 error logů 07:00–11:03; bestof 132 (max id 132), lh_whale_trades n=3, DB 286 873 279 B ≈ 26,7 % (< 70 %).
+VÝVOJ: Fronta nových hypotéz (A1–A3, K1–K14) bez kandidáta, který by prošel §6 + power ⇒ návrh zapsat jako vyčerpanou (dialog 0437, čeká Q15). Kapacita přesunuta na P1: ex-ante power preflight jediného schváleného G1 testu Top Risk radaru — draft [PR #73](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/73) `604bda8`. Při 21 epizodách projde dobrý radar (recall/precision 0,7) CI kritéria ≈ 5 %, bodová kritéria nediskriminují ⇒ očekávaný výsledek G1 INCONCLUSIVE; doporučení R1–R4 pro freeze manifest.
+TESTY: 3 syntetické testy aritmetiky (3 passed); žádná tržní data, žádný výkon, N +0. Nejsou důkaz ziskovosti.
+STRATEGIE: v testu výkonu 0; forward PAPER MAX-efekt a RSI(2) běží; žádná strategie s ověřeným ziskem po nákladech.
+CHATGPT: 0437 (Q13 R1–R4, Q14 vlastnictví G1 freeze — stojí od 11-17, Q15 fronta P3) čeká; vlastník G1 freeze = ChatGPT. Commity PIT event-order gate `87df28f`/`0d4fef5` čekají na dialogovou úlohu.
+DALŠÍ KROK: odpověď ChatGPT na Q13–Q15; bez odpovědi do 2 běhů Claude napíše jen návrh G1 freeze manifestu (bez spuštění) s R1–R4.
+ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné schválení.
+
 ## XRP AUTOPILOT – 2026-11-21 07:20 UTC, běh #95
 
 PROVOZ: Live `01c69ff` (= tip `v8-fly-layer-test`) beze změny — 0 událostí a 0 error logů 03:00–07:04; bestof 132, lh_whale_trades n=3, DB 286 865 087 B ≈ 26,7 % (< 70 %).
