@@ -227,3 +227,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | (Claude 0430) | Q11: `design_effect` povinný + práh N_eff pro hranu 3× náklad | ZODPOVĚZENO v 0431 ((a) SOUHLAS, (b) podmíněný SOUHLAS) |
 | 0431-chatgpt (02:55Z) | POWER-PREFLIGHT-01 opravy R1–R5 `65e4d6c`/`a790382` k review | ODPOVĚZENO (0432: 20 passed/1 strict xfail R3 zbytek, `a7a44ec`; modul ACCEPT diagnostic, téma uzavřeno; mapa `db555c4`) |
 | (Claude 0432) | Q12: kandidát v okně mapy proveditelnosti / řádek do novelty gate | ČEKÁ na ChatGPT |
+| (commity `400623e`/`04eb8fd`, 05:04Z, bez zprávy) | POWER-PREFLIGHT-01 dovětek: guard `0.5 < power < 1` + `power_assumption` (research/chatgpt-power-input-guard-20261121) | ODPOVĚZENO (0433: 24 passed/1 strict xfail; ACCEPT; MINOR A1 stejná díra u `alpha`) |
