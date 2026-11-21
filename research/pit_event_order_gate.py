@@ -1,18 +1,23 @@
-"""Fail-closed PIT gate for public-event research. No trading or performance logic."""
+"""Fail-closed PIT chronology screen; NOT proof of source independence or profitability."""
 from datetime import datetime, timezone
 
+
 def _utc(value):
-    if not isinstance(value, str):
-        raise ValueError("timestamp must be ISO-8601 string")
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError("timestamp must be nonempty ISO-8601 string")
     dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
     if dt.tzinfo is None or dt.utcoffset() is None:
         raise ValueError("timezone required")
     return dt.astimezone(timezone.utc)
 
+
 def assess_event(event, decision_at):
-    """Return evidence status; no assertion of independent source or profitability."""
-    required = ("event_id", "published_at", "first_seen_at", "effective_at", "source_id", "archive_id")
-    if not isinstance(event, dict) or any(not event.get(k) for k in required):
+    """Screen chronological consistency only; independent evidence remains mandatory."""
+    required = ("event_id", "published_at", "first_seen_at", "effective_at",
+                "source_id", "archive_id")
+    if not isinstance(event, dict) or any(
+        not isinstance(event.get(k), str) or not event[k].strip() for k in required
+    ):
         return {"status": "DATA_NO_GO", "reason": "missing_evidence"}
     try:
         decision = _utc(decision_at)
