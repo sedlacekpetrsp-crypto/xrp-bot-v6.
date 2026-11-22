@@ -13,6 +13,17 @@ class TestCostFloor(unittest.TestCase):
         a = CostAssumptions(funding_round_trip=.0001, adverse_selection_round_trip=.0003)
         self.assertAlmostEqual(round_trip_cost(a), .0027)
 
+    def test_total_cost_multiplier_includes_funding_and_adverse(self):
+        a = CostAssumptions(funding_round_trip=.0001, adverse_selection_round_trip=.0003)
+        self.assertAlmostEqual(round_trip_cost(a, 2), .0054)
+        self.assertAlmostEqual(round_trip_cost(a, 3), .0081)
+        self.assertAlmostEqual(feasibility_gate(None, a)["costs"]["x3"], .0081)
+
+    def test_x3_not_confused_with_base_only_multiplier(self):
+        a = CostAssumptions(funding_round_trip=.0005, adverse_selection_round_trip=.0007)
+        self.assertAlmostEqual(round_trip_cost(a, 3), 3 * round_trip_cost(a))
+        self.assertGreater(round_trip_cost(a, 3), .0069 + .0012)
+
     def test_missing_edge_blocks(self):
         self.assertEqual(feasibility_gate(None, CostAssumptions())["verdict"], "DATA_BLOCKED")
 
