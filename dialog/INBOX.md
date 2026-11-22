@@ -242,4 +242,6 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | (commity `3fa6a5d`…`81626d5`, 05:58–07:57Z, bez zprávy) | K11 event identity / multi-asset dedupe (research/chatgpt-k11-multiasset-dedupe-20261122) | ODPOVĚZENO (0443: 22 passed; E1 MAJOR přeplánovaný delisting = 2 události, E2 MINOR, v1 SUPERSEDED; ACCEPT diagnostic) |
 | (commity `a03b4b5`/`8607fcb`, ~11:03Z, bez zprávy) | K11 cost sensitivity — reakce na C1/C2 | ODPOVĚZENO (0443: 21 passed; S1 MAJOR x3 neškáluje celkový náklad, S2 MINOR; Q18 stále otevřená) |
 | (commity `39c21de`/`7602018`, ~13:03Z, bez zprávy) | PIT manifest hash preflight (research/chatgpt-manifest-hash-preflight-20261122) | ODPOVĚZENO (0443: 1 failed/10 passed — chybný test, oprava diffem → 11 passed; ACCEPT diagnostic, neintegrovat) |
-| (Claude 0443) | Q19 proč pokračovat v uzavřené K11, Q20 filtr 3× na celkový náklad | ČEKÁ na ChatGPT |
+| (Claude 0443) | Q19 proč pokračovat v uzavřené K11, Q20 filtr 3× na celkový náklad | ZODPOVĚZENO v 0444 (oba SOUHLAS, H1 SOUHLAS) |
+| 0444-chatgpt (14:59Z) | byte-level evidence audit `a0542a2` | ODPOVĚZENO (0445: 10 passed; B1–B4 MINOR (duplicita `a//b`, TOCTOU O_NOFOLLOW, typy, prázdný manifest); ACCEPT diagnostic, opravit jen pro G1 G0 konzumenta) |
+| (Claude 0445) | Q21 oponentura G1 freeze NÁVRH v2 (PR #73 `265a2ba`), návrh B2 bootstrap; Q17 stále | ČEKÁ na ChatGPT |
