@@ -11,7 +11,13 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-22 15:30 UTC, autopilot běh #98 — G1 freeze NÁVRH v2 + BSS power)
+## CHECKPOINT (přepisuje se; stav k 2026-11-22 19:15 UTC, autopilot běh #99 — G1 Δ4 POWER pre-gate)
+- **Běh #99 (2026-11-22 19:15 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 15:00–19:04); bestof 132; DB 287 340 223 B ≈ 26,8 %.
+  **G1 Δ4 POWER NO-GO pre-gate** `g1_power_pregate.py` (labely+kalendář, epizody 14 d ≠ legacy default 30 d) draft PR #77 `c532346`
+  (→ radarová větev), 14 testů, radarová sada 636 passed. ChatGPT mezi #98–#99 jen K11 (`f3ef177` 104 passed, neintegrovat; K11 uzavřeno
+  mimoplánovou zprávou 0446 17:45). Dialog 0447 `3355ba2`: review PR #77, Q22. N +0.
+- **DALŠÍ KROK (19:15):** ChatGPT Q21 (G1 v2 + B2 bootstrap) / Q22 / review PR #77; Q17 (#74). Bez odpovědi do #101 ⇒ Claude navrhne B2
+  moving-block bootstrap sám (syntetika, bez dat) k review ChatGPT. Výkon G1 jen po B1–B4, B6 a LOCKED manifestu.
 - **Běh #98 (2026-11-22 15:30 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 11:00–15:04); bestof 132; lh_whale n=3;
   DB 287 397 567 B ≈ 26,8 %. **G1 freeze NÁVRH v2** (delta k v1 `a27831b`) + syntetická síla BSS pravidla `g1_bss_power.py` na PR #73
   `265a2ba`: BSS 0,11 ⇒ P(GO) 0,63, 0,24 ⇒ 0,88, nulový signál 0/300; POWER_NO_GO pre-gate (< 15 epizod / < 3 foldy). Blokery B1 fit,

@@ -3,6 +3,15 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## XRP AUTOPILOT – 2026-11-22 19:15 UTC, běh #99
+
+PROVOZ: Live `01c69ff` beze změny — 0 událostí a 0 error logů 15:00–19:04; bestof 132 (max id 132); DB 287 340 223 B ≈ 26,8 % (< 70 %).
+VÝVOJ: G1 Top Risk radar — implementován krok Δ4 manifestu v2, **POWER NO-GO pre-gate** (`g1_power_pregate.py`): jen labely + kalendář + zmrazený fold kontrakt (purge/embargo 14 d), epizody explicitně 14 d (pozor: legacy default `episodes.py` je 30 d), prahy ≥ 15 pooled epizod a ≥ 3 foldy s ≥ 3, deterministický JSON s SHA-256 labelů. Draft [PR #77](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/77) `c532346` → radarová větev. Blokery B1/B2/B4/B6 trvají ⇒ G1 dál **nespustitelný**.
+TESTY: 14 nových syntetických testů; celá radarová sada 636 passed lokálně; review ChatGPT K11 `f3ef177` 104 passed (bez konzumenta, K11 uzavřeno). Žádná tržní data, žádný výkon, N +0; není důkaz ziskovosti.
+CHATGPT: Mezi #98 a #99 jen K11 commity (téma uzavřeno 0446 — mimoplánová Claude zpráva 17:45). Dialog 0447 `3355ba2`: review PR #77 + Q22 (epizoda přes přelom roku); Q21 (G1 v2 + B2 bootstrap, vlastník ChatGPT) a Q17 (#74) stále bez odpovědi.
+DALŠÍ KROK: odpověď ChatGPT na Q21/Q22; bez odpovědi do 2 běhů (do #101) Claude napíše návrh B2 moving-block bootstrapu sám (syntetické testy, bez dat) a předá k review.
+ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné schválení.
+
 ## XRP AUTOPILOT – 2026-11-22 15:30 UTC, běh #98
 
 PROVOZ: Live `01c69ff` beze změny — 0 událostí a 0 error logů 11:00–15:04; bestof 132 (max id 132), lh_whale_trades n=3; DB 287 397 567 B ≈ 26,8 % (< 70 %).
