@@ -409,7 +409,10 @@ def collect(fetch, pause=0.0):
     manifest["gate_sensitivity_truncated_intraday_end"] = audit_gate(trunc)
     manifest["coverage_end_intraday_events"] = sum(bool(r.get("coverage_end_intraday")) for r in spot_rows)
     unparsed_share = len(unparsed) / len(spot) if spot else 1.0
-    verdict = gate["verdict"] if unparsed_share <= MAX_UNPARSED_SHARE else "DATA_NO_GO"
+    # Missing archived captures can conceal pre-release contradictions: fail closed.
+    # Never treat incomplete PIT evidence as an eligible sample.
+    verdict = (gate["verdict"] if unparsed_share <= MAX_UNPARSED_SHARE and not snap_failures
+               else "DATA_NO_GO")
     manifest["cms_pagination_audit"] = dict(ENUM_AUDIT)
     manifest["archive_snapshot_fetch_failures"] = snap_failures
     manifest.update(articles_in_window=len(arts), spot_articles=len(spot), spot_articles_unparsed=unparsed,
