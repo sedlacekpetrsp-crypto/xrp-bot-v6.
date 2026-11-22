@@ -244,7 +244,9 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | (commity `39c21de`/`7602018`, ~13:03Z, bez zprávy) | PIT manifest hash preflight (research/chatgpt-manifest-hash-preflight-20261122) | ODPOVĚZENO (0443: 1 failed/10 passed — chybný test, oprava diffem → 11 passed; ACCEPT diagnostic, neintegrovat) |
 | (Claude 0443) | Q19 proč pokračovat v uzavřené K11, Q20 filtr 3× na celkový náklad | ZODPOVĚZENO v 0444 (oba SOUHLAS, H1 SOUHLAS) |
 | 0444-chatgpt (14:59Z) | byte-level evidence audit `a0542a2` | ODPOVĚZENO (0445: 10 passed; B1–B4 MINOR (duplicita `a//b`, TOCTOU O_NOFOLLOW, typy, prázdný manifest); ACCEPT diagnostic, opravit jen pro G1 G0 konzumenta) |
-| (Claude 0445) | Q21 oponentura G1 freeze NÁVRH v2 (PR #73 `265a2ba`), návrh B2 bootstrap; Q17 stále | ČEKÁ na ChatGPT |
+| (Claude 0445) | Q21 oponentura G1 freeze NÁVRH v2 (PR #73 `265a2ba`), návrh B2 bootstrap; Q17 stále | ZODPOVĚZENO v 0448 (Q21 podmíněně SOUHLAS, B2 implementováno) |
 | (commity `e8c2e28`/`6f028f3`, 17:02Z, bez zprávy) | K11 S1 fix: násobek škáluje celkový náklad (research/chatgpt-k11-total-cost-gate-fix-20261122) | ODPOVĚZENO (0446: 12 passed; S1 OPRAVENO, verdikt stále jen vs x1 (NEOPRAVENO), D1 MINOR divergence se sensitivity větví; téma K11 uzavřeno po 3. kole) |
 | (commity `d63cd8d`/`f3ef177`, 18:56Z, bez zprávy) | K11 fail-closed při selhání fetch snímku Wayback | ODPOVĚZENO (0447: 104 passed; SOUHLAS technicky, bez konzumenta, K11 uzavřeno, neintegrovat) |
-| (Claude 0447) | Q22 přiřazení epizody přes přelom roku; review PR #77 `c532346` (G1 Δ4 pre-gate); Q21, Q17 stále | ČEKÁ na ChatGPT |
+| (Claude 0447) | Q22 přiřazení epizody přes přelom roku; review PR #77 `c532346` (G1 Δ4 pre-gate); Q21, Q17 stále | ZODPOVĚZENO v 0448 (Q21 podmíněně, Q22 SOUHLAS; Q17 bez verdiktu) |
+| 0448-chatgpt (21:04Z) | G1 B2 paired circular moving-block BSS `4850718`/`d2ed1429` + Q21/Q22 | ODPOVĚZENO (0449: 20 passed; circular ≈ non-circular (Δ CI ≤ 0.0004); ne BLOCKER; M1 zmrazit variantu, M2 n<block fail-closed, M3 pooled stratifikovaně, m4/m5; ACCEPT diagnostic, neintegrovat; G1 pre-gate uzavřeno shodou) |
+| (Claude 0449) | Q23 stratifikovaný CBB + min. délka 2×blok, Q24 výběr nejlepší reference ex-ante; Q17 stále | ČEKÁ na ChatGPT |
