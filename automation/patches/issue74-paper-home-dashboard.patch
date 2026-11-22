@@ -1,0 +1,207 @@
+diff --git a/app_v8_fly.py b/app_v8_fly.py
+index 356e6f2..46dcd80 100644
+--- a/app_v8_fly.py
++++ b/app_v8_fly.py
+@@ -726,6 +726,8 @@ document.addEventListener('DOMContentLoaded',()=>{
+         banner = ''
+         html = html.replace('<div class="wrap">', '<div class="wrap">' + banner, 1)
+         html = html.replace("w.status||'—'", "w.status==='paused'?'⏸ POZASTAVENO':(w.status||'—')")
++    # Issue #74: legacy FLY metriky (287 obchodů) nesmí vypadat jako MAX-efekt; přidat forward kartu.
++    html = __import__('paper_home_dashboard').enhance(html)
+     return HTMLResponse(html, headers={"Cache-Control": "no-store"})
+ 
+ 
+diff --git a/paper_home_dashboard.py b/paper_home_dashboard.py
+new file mode 100644
+index 0000000..1227ec4
+--- /dev/null
++++ b/paper_home_dashboard.py
+@@ -0,0 +1,89 @@
++"""Hlavní stránka PAPER: oddělení legacy FLY metrik od forward MAX-efekt modelu (issue #74).
++
++Diagnóza 2026-11-22 (read-only DB): karta „Balance 9178.20 / Obchody 287 / PnL -821.80“ na `/` je
++legacy FLY (V8 breakout, tabulka `v8fixed_trades`, 287 kanonických obchodů, poslední 2026-10-11,
++FLY v PAUSED_BOTS od 2026-10-07). Nadpis stránky přitom zmiňuje MAX-EFEKT a skrývání karty závisí
++na závodu (DOMContentLoaded proběhne dřív, než `refresh()` naplní statistiky), takže karta
++zůstávala viditelná a vypadala jako výsledek MAX-efektu.
++
++Oprava je jen prezentační: legacy karta je skrytá už na serveru a explicitně označená, a
++přidává se samostatná karta MAX_EFFECT_L14_H28_FORWARD_V1 čtená výhradně z `/max-effect/status`.
++Žádná obchodní logika, žádné zápisy, metriky se nikdy neslučují.
++"""
++
++LEGACY_STATS_ORIGINAL = '<div class="card"><div id="stats" class="grid"></div></div>'
++
++LEGACY_STATS_CARD = (
++    '<div class="card" id="flyLegacyStatsCard" data-bot="FLY" data-legacy="1" style="display:none">'
++    '<h2>✈️ FLY · legacy V8 breakout · ⏸ POZASTAVENO</h2>'
++    '<div class="muted">Historické metriky pozastaveného bota (od 2026-10-07). Nejde o MAX-efekt ani o aktuální aktivitu.</div>'
++    '<div id="stats" class="grid"></div></div>'
++)
++
++MAX_EFFECT_CARD = '''<div class="card" id="maxEffectHomeCard" data-bot="MAX_EFFECT_FORWARD" style="border:2px solid #f59e0b;background:rgba(245,158,11,.04)">
++<h2>🎲 MAX-EFEKT FORWARD · L14 H28 · PAPER</h2>
++<div class="muted">Samostatný 28denní forward model (MAX_EFFECT_L14_H28_FORWARD_V1). Nesouvisí s legacy FLY. <a href="/max-effect" style="color:#f59e0b">Detail →</a></div>
++<div id="maxEffectHomeStatus" style="margin-top:12px">Načítám MAX-efekt…</div></div>'''
++
++# Čistá funkce (testovaná v Node): stav z /max-effect/status -> zobrazitelné hodnoty.
++VIEW_JS = r'''
++function maxEffectHomeView(d, nowMs, httpOk){
++ var STALE_MS=45*60*1000;
++ var day=function(ms){return ms==null||!isFinite(Number(ms))?null:new Date(Number(ms)).toISOString().slice(0,10);};
++ if(!httpOk||!d||d.status==='DATABASE_UNAVAILABLE'){
++  return {ok:false,status_label:'Stav MAX-efekt nedostupný',execution_mode:'—',open_positions:null,closed_trades:null,
++   equity:null,last_trade_at:null,last_scan_at:null,data_freshness:'neznámá',next_rebalance_at:null,
++   wait_reason:'Status endpoint nedostupný – neznamená to, že model neobchoduje.'};
++ }
++ var p=d.paper_portfolio||{};
++ var trades=Array.isArray(p.trades)?p.trades:[];
++ var last=null;
++ for(var i=0;i<trades.length;i++){var t=trades[i]&&trades[i].exit_at;if(t&&(last===null||String(t)>String(last)))last=String(t);}
++ var scan=d.generated_at_utc||null,age=null;
++ if(scan){var ms=Date.parse(scan);if(isFinite(ms))age=nowMs-ms;}
++ var fresh=age===null?'neznámá':(age<=STALE_MS?'aktuální':'ZASTARALÁ');
++ var next=day(p.next_rebalance_day);
++ var open=p.open_count==null?null:Number(p.open_count);
++ var mode=d.execution_enabled===false?'PAPER (simulace, bez objednávek)':'⚠ NEOČEKÁVANÝ REŽIM – zkontrolovat';
++ var reason;
++ if(open>0)reason='Drží '+open+' pozic – čeká na rebalance'+(next?' '+next:'')+' (28denní držení, ne nečinnost).';
++ else if(open===0)reason='Bez pozic – čeká na vstup při rebalance'+(next?' '+next:'')+'.';
++ else reason='Počet pozic neznámý.';
++ var w=Array.isArray(d.warnings)?d.warnings:[];
++ if(w.length)reason+=' Upozornění: '+w.join(', ');
++ if(fresh==='ZASTARALÁ')reason+=' Poslední sken je starší než 45 min.';
++ return {ok:true,status_label:(fresh==='aktuální'?'🟢 Běží':'🟠 Data zastaralá'),execution_mode:mode,
++  open_positions:open,closed_trades:p.trade_count==null?null:Number(p.trade_count),equity:p.equity==null?null:Number(p.equity),
++  last_trade_at:last,last_scan_at:scan,data_freshness:fresh,next_rebalance_at:next,wait_reason:reason};
++}
++'''
++
++SCRIPT = '<script>' + VIEW_JS + r'''
++async function refreshMaxEffectHome(){
++ const root=document.getElementById('maxEffectHomeStatus');if(!root)return;
++ const esc=v=>String(v??'—').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
++ const when=v=>v?new Date(v).toLocaleString('cs-CZ',{timeZone:'Europe/Prague'}):null;
++ let d=null,ok=false;
++ try{const r=await fetch('/max-effect/status',{cache:'no-store',signal:AbortSignal.timeout(10000)});ok=r.ok;d=await r.json();}catch(e){ok=false;}
++ const v=maxEffectHomeView(d,Date.now(),ok);
++ const num=x=>x==null?'—':Number(x).toLocaleString('cs-CZ',{minimumFractionDigits:2,maximumFractionDigits:2});
++ root.innerHTML='<b>'+esc(v.status_label)+'</b><div class="grid" style="margin-top:12px">'+
++  [['Režim',v.execution_mode],['Equity',v.equity==null?'—':num(v.equity)+' USDT'],['Otevřené pozice',v.open_positions],
++   ['Uzavřené obchody',v.closed_trades],['Poslední obchod',when(v.last_trade_at)||'zatím žádný uzavřený'],
++   ['Další rebalance',v.next_rebalance_at],['Poslední sken',when(v.last_scan_at)],['Čerstvost dat',v.data_freshness]]
++  .map(x=>'<div class="coin">'+esc(x[0])+'<br><b>'+esc(x[1])+'</b></div>').join('')+'</div>'+
++  '<div class="coin" style="margin-top:10px">⏳ '+esc(v.wait_reason)+'</div>';
++}
++refreshMaxEffectHome();setInterval(refreshMaxEffectHome,30000);
++</script>'''
++
++
++def enhance(html):
++    """Idempotentně nahradí legacy statistiky FLY skrytou označenou kartou a přidá kartu MAX-efekt."""
++    if 'id="maxEffectHomeCard"' in html:
++        return html
++    if LEGACY_STATS_ORIGINAL in html:
++        html = html.replace(LEGACY_STATS_ORIGINAL, MAX_EFFECT_CARD + LEGACY_STATS_CARD, 1)
++    else:  # fallback: karta MAX-efekt vždy viditelná i při změně šablony
++        html = html.replace('<div class="card muted" id="health">', MAX_EFFECT_CARD + '<div class="card muted" id="health">', 1)
++    return html.replace('</body>', SCRIPT + '</body>', 1)
+diff --git a/test_paper_home_dashboard.py b/test_paper_home_dashboard.py
+new file mode 100644
+index 0000000..b569be6
+--- /dev/null
++++ b/test_paper_home_dashboard.py
+@@ -0,0 +1,93 @@
++"""Issue #74: legacy FLY metriky oddělené od MAX-efekt forward karty (jen prezentace)."""
++import json
++import re
++import shutil
++import subprocess
++import unittest
++from pathlib import Path
++
++import paper_home_dashboard as phd
++
++BASE_SRC = Path(__file__).with_name("app_v8.py").read_text(encoding="utf-8")
++NOW = 1795342800000  # 2026-11-22T10:20:00Z
++SNAPSHOT = {  # tvar dle produkční DB max_effect_paper_state 2026-11-22 (read-only)
++    "status": None, "execution_enabled": False, "mode": "PAPER_RESEARCH_ONLY",
++    "strategy": "MAX_EFFECT_L14_H28_FORWARD_V1", "generated_at_utc": "2026-11-22T10:10:00+00:00",
++    "warnings": [], "unavailable_assets": [],
++    "paper_portfolio": {"equity": 10052.33, "open_count": 6, "trade_count": 0, "trades": [],
++                        "next_rebalance_day": 1797206400000, "realized_pnl": 0},
++}
++
++
++def run_view(payload, now=NOW, ok=True):
++    node = shutil.which("node")
++    if not node:
++        raise unittest.SkipTest("node není k dispozici")
++    js = phd.VIEW_JS + "\nprocess.stdout.write(JSON.stringify(maxEffectHomeView(%s,%d,%s)));" % (
++        json.dumps(payload), now, "true" if ok else "false")
++    out = subprocess.run([node, "-e", js], capture_output=True, text=True, check=True)
++    return json.loads(out.stdout)
++
++
++class HtmlTests(unittest.TestCase):
++    def test_base_template_contains_legacy_stats_marker(self):
++        self.assertIn(phd.LEGACY_STATS_ORIGINAL, BASE_SRC)
++
++    def test_legacy_card_hidden_server_side_and_labelled(self):
++        html = phd.enhance('<div class="wrap">' + phd.LEGACY_STATS_ORIGINAL + '<div class="card muted" id="health"></div></div></body>')
++        card = re.search(r'<div class="card" id="flyLegacyStatsCard"[^>]*>', html).group(0)
++        self.assertIn("display:none", card)
++        self.assertIn("FLY · legacy", html)
++        self.assertIn("Nejde o MAX-efekt", html)
++        self.assertEqual(html.count('id="stats"'), 1)  # base refresh() nadále najde element
++
++    def test_max_effect_card_reads_only_its_endpoint_and_precedes_legacy(self):
++        html = phd.enhance(phd.LEGACY_STATS_ORIGINAL + '</body>')
++        self.assertLess(html.index('maxEffectHomeCard'), html.index('flyLegacyStatsCard'))
++        self.assertIn("fetch('/max-effect/status'", html)
++        script = html[html.index('<script>'):]
++        self.assertNotIn('/analyze', script)
++        self.assertNotIn('/fly/status', script)
++
++    def test_idempotent_and_fallback(self):
++        once = phd.enhance(phd.LEGACY_STATS_ORIGINAL + '</body>')
++        self.assertEqual(phd.enhance(once), once)
++        fb = phd.enhance('<div class="card muted" id="health"></div></body>')
++        self.assertIn('maxEffectHomeCard', fb)
++        self.assertEqual(fb.count('<script>'), 1)
++
++
++class ViewTests(unittest.TestCase):
++    def test_holding_positions_is_waiting_for_rebalance_not_idle(self):
++        v = run_view(SNAPSHOT)
++        self.assertTrue(v["ok"])
++        self.assertEqual(v["open_positions"], 6)
++        self.assertEqual(v["closed_trades"], 0)
++        self.assertIsNone(v["last_trade_at"])
++        self.assertEqual(v["next_rebalance_at"], "2026-12-14")
++        self.assertIn("čeká na rebalance 2026-12-14", v["wait_reason"])
++        self.assertEqual(v["data_freshness"], "aktuální")
++        self.assertIn("PAPER", v["execution_mode"])
++
++    def test_stale_scan_and_last_trade(self):
++        p = json.loads(json.dumps(SNAPSHOT))
++        p["generated_at_utc"] = "2026-11-22T08:00:00+00:00"
++        p["paper_portfolio"]["trades"] = [{"exit_at": "2026-12-14T00:00:00+00:00"}, {"exit_at": "2026-12-13T00:00:00+00:00"}]
++        v = run_view(p)
++        self.assertEqual(v["data_freshness"], "ZASTARALÁ")
++        self.assertEqual(v["last_trade_at"], "2026-12-14T00:00:00+00:00")
++        self.assertIn("starší než 45 min", v["wait_reason"])
++
++    def test_execution_enabled_flagged(self):
++        p = dict(SNAPSHOT, execution_enabled=True)
++        self.assertIn("NEOČEKÁVANÝ", run_view(p)["execution_mode"])
++
++    def test_unavailable_endpoint_is_not_reported_as_idle(self):
++        for payload, ok in ((None, False), ({"status": "DATABASE_UNAVAILABLE"}, True)):
++            v = run_view(payload, ok=ok)
++            self.assertFalse(v["ok"])
++            self.assertIn("neznamená", v["wait_reason"])
++
++
++if __name__ == "__main__":
++    unittest.main()

@@ -3,6 +3,16 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## XRP AUTOPILOT – 2026-11-22 11:30 UTC, běh #97
+
+PROVOZ: Live `01c69ff` (= tip `v8-fly-layer-test`) beze změny — 0 událostí a 0 error logů 11-21 11:00 → 11-22 11:04; bestof 132 (max id 132), lh_whale_trades n=3, LIQUIDITY V2 45 obchodů (poslední 02:38 UTC), MAX-efekt forward sken 10:56 UTC čerstvý; DB 287 340 223 B ≈ 26,8 % (< 70 %). Pozn.: mezi #96 a #97 ~24 h bez běhu autopilotu.
+VÝVOJ: Issue #74 (priorita od vlastníka přes ChatGPT): „MAX-EFEKT 287 obchodů / −821,80“ je ve skutečnosti legacy **FLY** (`v8fixed_trades`, pozastaven 2026-10-07, poslední obchod 2026-10-11); záměnu způsobuje nadpis „… + MAX-EFEKT“ a závod v JS skrývání karty. `WAIT postgres` = signál WAIT + druh persistence, ne výpadek DB. Oprava (jen UI, bez obchodní logiky) připravena jako patch `automation/patches/issue74-paper-home-dashboard.patch`; push větve z produkční báze zablokován oprávněním ⇒ PR nevytvořen. Dialog 0442 `629554e`.
+TESTY: 8 nových testů opravy UI OK (Node 22 + stdlib), Playwright render s mock daty OK; exact-SHA review ChatGPT: `e344063a` 4 passed, `290e0d74` 10 passed, `53daa006` 10 passed. Žádná tržní data, žádný výkon, N +0. Nejsou důkaz ziskovosti.
+STRATEGIE: v testu výkonu 0; forward PAPER MAX-efekt (6 pozic, rebalance 2026-12-14) a RSI(2) běží; žádná strategie s ověřeným ziskem po nákladech.
+CHATGPT: Q17 review patche #74 (+ případný draft PR), Q18 archivace K11 cost floor (C3 duplicita s `cost_feasibility_gate.py`, K11 bez konzumenta). PIT okruh uzavřen (3. kolo). Q13–Q15 SOUHLAS ⇒ návrh G1 freeze manifestu vlastní Claude, review ChatGPT.
+DALŠÍ KROK: Claude napíše NÁVRH G1 freeze manifestu s R1–R4 (bez dat, bez spuštění) na větvi PR #73.
+ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné schválení nyní. Nasazení opravy #74 do `v8-fly-layer-test` bude vyžadovat výslovné schválení.
+
 ## XRP AUTOPILOT – 2026-11-21 11:20 UTC, běh #96
 
 PROVOZ: Live `01c69ff` (= tip `v8-fly-layer-test`) beze změny — 0 událostí a 0 error logů 07:00–11:03; bestof 132 (max id 132), lh_whale_trades n=3, DB 286 873 279 B ≈ 26,7 % (< 70 %).

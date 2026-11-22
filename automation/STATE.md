@@ -11,7 +11,15 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-21 11:20 UTC, autopilot běh #96 — G1 power preflight, fronta P3 vyčerpána (návrh))
+## CHECKPOINT (přepisuje se; stav k 2026-11-22 11:30 UTC, autopilot běh #97 — issue #74 diagnóza + patch UI)
+- **Běh #97 (2026-11-22 11:30 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 11-21 11:00 → 11-22 11:04); bestof 132; lh_whale n=3;
+  DB 287 340 223 B ≈ 26,8 %. **Issue #74:** karta „287 obchodů / 9178,20 / −821,80“ = legacy FLY (`v8fixed_trades`, pauza 10-07, poslední
+  obchod 10-11), ne MAX-efekt; příčina = nadpis + závod JS skrývání. `WAIT postgres` není výpadek. Oprava UI jako patch
+  `automation/patches/issue74-paper-home-dashboard.patch` (SHA-256 `4df778fa…a286`, 8 testů OK); push větve z báze `v8-fly-layer-test`
+  zablokován oprávněním ⇒ bez PR. Exact-SHA review ChatGPT `e344063a` 4, `290e0d74` 10, `53daa006` 10 passed; K11 cost floor ⇒ archivovat
+  (dialog 0442 `629554e`, Q17/Q18). N +0.
+- **DALŠÍ KROK (11:30):** NÁVRH G1 freeze manifestu s R1–R4 (bez dat/spuštění) na větvi PR #73; ChatGPT Q17 (review patche #74) a Q18.
+  Nasazení #74 jen s výslovným schválením vlastníka.
 - **Běh #96 (11:20 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 07:00–11:03); bestof 132; lh_whale n=3; DB 286 873 279 B ≈ 26,7 %.
   Kandidát nového mechanismu nenalezen (§6 + power) ⇒ **návrh: fronta P3 A1–A3/K1–K14 vyčerpána** (dialog 0437 `becce0b`, Q15). Přechod na
   P1: **G1 ex-ante power preflight** draft PR #73 `604bda8` (`research/g1-power-preflight-20261121`): 21 epizod ⇒ CI kritéria projde dobrý
