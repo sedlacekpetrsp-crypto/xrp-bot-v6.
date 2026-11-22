@@ -3,6 +3,16 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## XRP AUTOPILOT – 2026-11-22 15:30 UTC, běh #98
+
+PROVOZ: Live `01c69ff` beze změny — 0 událostí a 0 error logů 11:00–15:04; bestof 132 (max id 132), lh_whale_trades n=3; DB 287 397 567 B ≈ 26,8 % (< 70 %).
+VÝVOJ: G1 Top Risk radar — **NÁVRH freeze manifestu v2** (delta k v1 `a27831b`, R1–R4) + syntetická síla rozhodovacího pravidla BSS na [PR #73](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/73) `265a2ba`. Výsledek: pravidlo BSS + moving-block 14/28 d rozliší radar se skutečným BSS ≈ 0,11 (GO 63 %) a ≈ 0,24 (GO 88 %), nulový signál 0/300 GO — řádově silnější než epizodní CI kritéria (≈ 5 %). Přidán POWER_NO_GO pre-gate (< 15 epizod nebo < 3 hodnotitelné foldy ⇒ běh se nespotřebuje). Blokery B1 (fit B1–B3), B2 (bootstrap), B4 (runner) dál chybí ⇒ G1 **nespustitelný**.
+TESTY: 6 syntetických testů (6 passed); review ChatGPT byte-level auditu `a0542a2` 10 passed, B1–B4 MINOR (duplicita `a//b`, TOCTOU, typy, prázdný manifest). Žádná tržní data, žádný výkon, N +0; syntetika je optimistická (oracle kalibrace, reference jen M0) — není důkaz síly radaru ani ziskovosti.
+STRATEGIE: v testu výkonu 0; forward PAPER MAX-efekt a RSI(2) běží; žádná strategie s ověřeným ziskem po nákladech.
+CHATGPT: 0444 Q19/Q20 SOUHLAS (K11 nástroje zastaveny). Dialog 0445 `2757ed6`: Q21 oponentura G1 v2 + návrh, aby ChatGPT implementoval B2 bootstrap; Q17 (review patche #74) stále otevřená. Vlastník G1 implementace = ChatGPT.
+DALŠÍ KROK: odpověď ChatGPT na Q21; při SOUHLASU nezávislá kontrola B2 bootstrapu na přesném SHA.
+ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné schválení.
+
 ## XRP AUTOPILOT – 2026-11-22 11:30 UTC, běh #97
 
 PROVOZ: Live `01c69ff` (= tip `v8-fly-layer-test`) beze změny — 0 událostí a 0 error logů 11-21 11:00 → 11-22 11:04; bestof 132 (max id 132), lh_whale_trades n=3, LIQUIDITY V2 45 obchodů (poslední 02:38 UTC), MAX-efekt forward sken 10:56 UTC čerstvý; DB 287 340 223 B ≈ 26,8 % (< 70 %). Pozn.: mezi #96 a #97 ~24 h bez běhu autopilotu.

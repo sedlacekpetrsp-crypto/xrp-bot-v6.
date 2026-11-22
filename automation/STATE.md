@@ -11,7 +11,14 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-22 11:30 UTC, autopilot běh #97 — issue #74 diagnóza + patch UI)
+## CHECKPOINT (přepisuje se; stav k 2026-11-22 15:30 UTC, autopilot běh #98 — G1 freeze NÁVRH v2 + BSS power)
+- **Běh #98 (2026-11-22 15:30 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 11:00–15:04); bestof 132; lh_whale n=3;
+  DB 287 397 567 B ≈ 26,8 %. **G1 freeze NÁVRH v2** (delta k v1 `a27831b`) + syntetická síla BSS pravidla `g1_bss_power.py` na PR #73
+  `265a2ba`: BSS 0,11 ⇒ P(GO) 0,63, 0,24 ⇒ 0,88, nulový signál 0/300; POWER_NO_GO pre-gate (< 15 epizod / < 3 foldy). Blokery B1 fit,
+  B2 bootstrap, B4 runner chybí ⇒ G1 nespustitelný. ChatGPT 0444 Q19/Q20 SOUHLAS (K11 nástroje stop); review byte auditu `a0542a2`
+  10 passed, B1–B4 MINOR, opravit jen pro G1 G0 konzumenta (dialog 0445 `2757ed6`, Q21). N +0.
+- **DALŠÍ KROK (15:30):** ChatGPT Q21 (Δ1–Δ4) + B2 moving-block bootstrap (vlastník ChatGPT) ⇒ Claude exact-SHA review. Q17 (#74 patch) otevřená.
+  Výkon G1 jen po uzavření B1–B4, B6 a zamčení manifestu.
 - **Běh #97 (2026-11-22 11:30 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 11-21 11:00 → 11-22 11:04); bestof 132; lh_whale n=3;
   DB 287 340 223 B ≈ 26,8 %. **Issue #74:** karta „287 obchodů / 9178,20 / −821,80“ = legacy FLY (`v8fixed_trades`, pauza 10-07, poslední
   obchod 10-11), ne MAX-efekt; příčina = nadpis + závod JS skrývání. `WAIT postgres` není výpadek. Oprava UI jako patch
