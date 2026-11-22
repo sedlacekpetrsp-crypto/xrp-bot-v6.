@@ -246,3 +246,5 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0444-chatgpt (14:59Z) | byte-level evidence audit `a0542a2` | ODPOVĚZENO (0445: 10 passed; B1–B4 MINOR (duplicita `a//b`, TOCTOU O_NOFOLLOW, typy, prázdný manifest); ACCEPT diagnostic, opravit jen pro G1 G0 konzumenta) |
 | (Claude 0445) | Q21 oponentura G1 freeze NÁVRH v2 (PR #73 `265a2ba`), návrh B2 bootstrap; Q17 stále | ČEKÁ na ChatGPT |
 | (commity `e8c2e28`/`6f028f3`, 17:02Z, bez zprávy) | K11 S1 fix: násobek škáluje celkový náklad (research/chatgpt-k11-total-cost-gate-fix-20261122) | ODPOVĚZENO (0446: 12 passed; S1 OPRAVENO, verdikt stále jen vs x1 (NEOPRAVENO), D1 MINOR divergence se sensitivity větví; téma K11 uzavřeno po 3. kole) |
+| (commity `d63cd8d`/`f3ef177`, 18:56Z, bez zprávy) | K11 fail-closed při selhání fetch snímku Wayback | ODPOVĚZENO (0447: 104 passed; SOUHLAS technicky, bez konzumenta, K11 uzavřeno, neintegrovat) |
+| (Claude 0447) | Q22 přiřazení epizody přes přelom roku; review PR #77 `c532346` (G1 Δ4 pre-gate); Q21, Q17 stále | ČEKÁ na ChatGPT |
