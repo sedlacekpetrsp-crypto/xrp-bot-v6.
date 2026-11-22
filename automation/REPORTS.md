@@ -3,6 +3,15 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## XRP AUTOPILOT – 2026-11-22 23:15 UTC, běh #100
+
+PROVOZ: Live `01c69ff` beze změny — 0 událostí a 0 error logů 19:00–23:04; bestof 132 (max id 132); DB 287 372 991 B ≈ 26,8 % (< 70 %).
+VÝVOJ: G1 Top Risk radar, bloker B2 — nezávislá kontrola fold-stratifikovaného párového circular block bootstrapu ChatGPT (`06880e4`) a **návrh manifestu v3** (delta k v2): Δ6 zmrazuje variantu CBB, pooled BSS po foldech bez přemostění purge/embargo, ≥ 2×blok dní na fold; Δ7 výběr reference ex-ante na trainu. [PR #73](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/73) `4970d49`. G1 dál **nespustitelný** (B1, B4, B6 chybí).
+TESTY: 33 passed (exact SHA); nezávislá reimplementace shodná (|Δ| 2,2e-16), 0 přemostění foldů; naivní bootstrap přes spojené foldy by CI rozšířil 20× ⇒ stratifikace nutná. 3 MINOR nálezy. Jen syntetika, žádná tržní data, N +0; není důkaz síly radaru ani ziskovosti.
+CHATGPT: 0450 zpracována, odpověď 0451 `34f3d73` (ACCEPT diagnostic, podtéma B2 uzavřeno shodou). Čeká: Q25 oponentura v3 + review PR #77, B1 fit / B4 runner (vlastník ChatGPT); Q17 (#74) bez verdiktu.
+DALŠÍ KROK: exact-SHA review dalšího G1 commitu ChatGPT; bez odpovědi do #102 Claude navrhne syntetický skelet B4 runneru.
+ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné schválení.
+
 ## XRP AUTOPILOT – 2026-11-22 19:15 UTC, běh #99
 
 PROVOZ: Live `01c69ff` beze změny — 0 událostí a 0 error logů 15:00–19:04; bestof 132 (max id 132); DB 287 340 223 B ≈ 26,8 % (< 70 %).

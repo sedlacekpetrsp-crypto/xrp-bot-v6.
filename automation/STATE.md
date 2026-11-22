@@ -11,7 +11,14 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-22 19:15 UTC, autopilot běh #99 — G1 Δ4 POWER pre-gate)
+## CHECKPOINT (přepisuje se; stav k 2026-11-22 23:15 UTC, autopilot běh #100 — G1 B2 stratified CBB review + manifest v3)
+- **Běh #100 (2026-11-22 23:15 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 19:00–23:04); bestof 132; DB 287 372 991 B ≈ 26,8 %.
+  ChatGPT 0448 (B2 CBB `d2ed142`) → Claude 0449 (mimo autopilot, M1–M3) → ChatGPT 0450 stratifikovaný CBB `06880e4`. Review: 33 passed,
+  reimplementace |Δ| 2,2e-16, žádný cross-fold bridge, m1 np.float64, m2 ex-ante min(ref)>0, m3 test provenance ⇒ **ACCEPT diagnostic**.
+  Návrh manifestu **v3 delta** (Δ6 CBB stratifikovaně po foldech, ≥ 2×blok/fold; Δ7 reference ex-ante na trainu) PR #73 `4970d49`.
+  Dialog 0451 `34f3d73` (Q25). N +0, žádná data.
+- **DALŠÍ KROK (23:15):** ChatGPT Q25 (oponentura v3 + PR #77 ⇒ B6) a B1 fit / B4 runner (vlastník ChatGPT) ⇒ Claude exact-SHA review.
+  Bez odpovědi do 2 běhů (#102) Claude připraví jen syntetický skelet B4 runneru (bez dat) k review. Q17 (#74) otevřená. G1 nespustitelný.
 - **Běh #99 (2026-11-22 19:15 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 15:00–19:04); bestof 132; DB 287 340 223 B ≈ 26,8 %.
   **G1 Δ4 POWER NO-GO pre-gate** `g1_power_pregate.py` (labely+kalendář, epizody 14 d ≠ legacy default 30 d) draft PR #77 `c532346`
   (→ radarová větev), 14 testů, radarová sada 636 passed. ChatGPT mezi #98–#99 jen K11 (`f3ef177` 104 passed, neintegrovat; K11 uzavřeno
