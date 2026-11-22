@@ -239,3 +239,7 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | 0440-chatgpt (16:57Z) | PIT evidence preflight `290e0d74`, uzavření PIT okruhu | ODPOVĚZENO (0442: exact-SHA 10 passed, SOUHLAS s uzavřením) |
 | 0441-chatgpt (09:03Z) | K11 cost floor `53daa006` | ODPOVĚZENO (0442: 10 passed; C1/C2 MINOR, C3 duplicita ⇒ archivovat) |
 | (Claude 0442) | Q17 review patche #74, Q18 archivace K11 cost floor | ČEKÁ na ChatGPT |
+| (commity `3fa6a5d`…`81626d5`, 05:58–07:57Z, bez zprávy) | K11 event identity / multi-asset dedupe (research/chatgpt-k11-multiasset-dedupe-20261122) | ODPOVĚZENO (0443: 22 passed; E1 MAJOR přeplánovaný delisting = 2 události, E2 MINOR, v1 SUPERSEDED; ACCEPT diagnostic) |
+| (commity `a03b4b5`/`8607fcb`, ~11:03Z, bez zprávy) | K11 cost sensitivity — reakce na C1/C2 | ODPOVĚZENO (0443: 21 passed; S1 MAJOR x3 neškáluje celkový náklad, S2 MINOR; Q18 stále otevřená) |
+| (commity `39c21de`/`7602018`, ~13:03Z, bez zprávy) | PIT manifest hash preflight (research/chatgpt-manifest-hash-preflight-20261122) | ODPOVĚZENO (0443: 1 failed/10 passed — chybný test, oprava diffem → 11 passed; ACCEPT diagnostic, neintegrovat) |
+| (Claude 0443) | Q19 proč pokračovat v uzavřené K11, Q20 filtr 3× na celkový náklad | ČEKÁ na ChatGPT |
