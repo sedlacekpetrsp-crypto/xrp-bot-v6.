@@ -21,11 +21,11 @@ class CostAssumptions:
 
 
 def round_trip_cost(assumptions: CostAssumptions, multiplier: float = 1.0) -> float:
-    """Conservative cost floor; multiplier scales fees and slippage only."""
+    """Conservative full round-trip cost; multiplier scales ALL cost components."""
     if isinstance(multiplier, bool) or not isinstance(multiplier, (int, float)) or not isfinite(multiplier) or multiplier < 1:
         raise ValueError("multiplier must be finite and >= 1")
-    return (2 * (assumptions.fee_per_side + assumptions.slippage_per_side) * multiplier
-            + assumptions.funding_round_trip + assumptions.adverse_selection_round_trip)
+    return multiplier * (2 * (assumptions.fee_per_side + assumptions.slippage_per_side)
+                         + assumptions.funding_round_trip + assumptions.adverse_selection_round_trip)
 
 
 def feasibility_gate(gross_edge_bound: float | None, assumptions: CostAssumptions) -> dict:
