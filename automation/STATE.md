@@ -11,16 +11,19 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-23 19:15 UTC, autopilot běh #105 — koordinace kritické cesty G1)
-- **Běh #105 (19:15 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 15:00–19:05, MARKET_DATA_OK); bestof 132 (max id 132,
-  1 známá dup. skupina); DB 287 356 607 B ≈ 26,8 %. Výzkum: jediná nová práce ChatGPT od 0462 — `c4168ac` (PIT coverage gap) — už zkontrolována souběžnou Claude session (TEST_LOG `ef6fb90`, NEINTEGROVAT). Příčina 2 běhů bez vlastní práce
-  (#103, #105): celá kritická cesta G1 (B1 fit, B3 integrace loaderu, G0, workflow, B6) přidělena ChatGPT (v2 Δ5), ChatGPT za 2 dny
-  vytvořil 23 obvodových modulů a 0 commitů na B1–B4. Dialog 0463 `80dca97`, Q35 (ChatGPT B1 fit; Claude B3 loader jen po SOUHLASU).
-  Testy 0, N +0, žádná data. Nová hypotéza nezahájena: P1 G1 rozpracovaná, fronta A1–A3/K1–K14 vyčerpána, K4/K5 zamítnuty (0258).
-- **DALŠÍ KROK:** odpověď ChatGPT na Q35 — při SOUHLASU Claude začne B3 integraci loaderu (`claude/g1-b3-loader-*`, syntetika);
-  jinak review B1 fitu na přesném SHA. Q17, Q25–Q27, Q30, Q31, Q33, Q34 otevřené. Před prací `git ls-remote` větve `claude/*`.
-- **G1 Top Risk Radar (schváleno 2026-11-12, max. 1 běh):** NESPUSTITELNÝ — chybí B1 fit, B3, G0, workflow, B6 a LOCKED manifest (v3 delta
-  PR #73 `4970d49`, pre-gate PR #77 `eb5584a`, integrace `a71744d`, runner skelet `3af349a`). Fronta P3 A1–A3/K1–K14 vyčerpána (0437).
+## CHECKPOINT (přepisuje se; stav k 2026-11-23 23:20 UTC, autopilot běh #106 — G1 bloker B3)
+- **Běh #106 (23:20 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 19:00–23:04); bestof 132 (max id 132,
+  1 známá dup. skupina); DB 287 987 391 B ≈ 26,8 %. ChatGPT dal SOUHLAS s Q35–Q37 (PR #77 kom. 7116379756): B3 loader = Claude,
+  ChatGPT vzal „B1“, ale dodal G0 byte provenance `a98099c` (review 7116398159: 2 failed, C0–C5, B1 fit stále chybí).
+- **B3 hotov ke kontrole:** `claude/g1-b3-loader-20261124` `8470a1a`, draft PR #78 (base PR #77 `eb5584a`):
+  `g1_b3_loader.py` (SHA-256 `056b856e…6ba72`) 1m klines→denní close (bar 23:59, available close+60 s), 9 B3 featur přes
+  `build_feature_bundle` + BTC rv30, P(t)=CLOSE 00:05 trades>0, label [00:06,+336 h), 4 explicitní výjimky, per-row provenance.
+  33 syntetických testů + mutační kontrola; lokálně 680 passed; CI run 45286067653 success na přesném SHA. Data 0, N +0.
+- **DALŠÍ KROK:** oponentura ChatGPT na `8470a1a` + odpovědi Q38a–c (dialog 0466 `27a0f6d`); ChatGPT B1 fit (LogReg M0/B1/B2/B3,
+  vnitřní validace) nad `B3_FEATURES`. Pak Claude: G0 datový běh (stažení + .CHECKSUM → `MinuteSeries`) jako workflow_dispatch
+  BEZ modelu — teprve po zamčení definic (Q38). Q17, Q25–Q27, Q30, Q31, Q33, Q34 otevřené. Před prací `git ls-remote` větve `claude/*`.
+- **G1 Top Risk Radar (schváleno 2026-11-12, max. 1 běh):** NESPUSTITELNÝ — chybí B1 fit, G0 manifest, workflow §9, B6 a LOCKED
+  manifest; B2 (CBB) a B3 (loader, PR #78) existují jako kód ke kontrole. Fronta P3 A1–A3/K1–K14 vyčerpána (0437).
 - **Čeká na vlastníka:** PR #57 nasadit jen se souhlasem; #74 patch UI jen se schválením; PR #54, #8, #9, #10, #62–#68, #70, #71 neslučovat;
   id 129 neměnit; K7 výkon jen s „SCHVÁLENO: výkonnost K7“; #69 deploy jen s novým schválením.
 - **Bezpečnostní brány:** výhradně PAPER; žádný LIVE/Render zápis/deploy/merge/force push; `FUNDING_SEMANTICS.json` neměnit;
@@ -29,7 +32,7 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 - **Další plánované:** 2026-12-01 Combined replay s `--end 2026-12-01`.
 - **Provoz:** sandbox bez data.binance.vision/PyPI ⇒ data jen přes Actions. Dialogová úloha a autopilot píší souběžně ⇒ před commitem
   `git fetch` a kontrola posledního čísla zprávy; ChatGPT odpovídá i v komentářích PR/issues.
-- **Historie:** běhy #85–#102 v archivu výše; dále `TEST_LOG.md`, `REPORTS.md`, `automation/archive/STATE-do-20261116.md`.
+- **Historie:** běhy #85–#105 v archivu/`TEST_LOG.md`, `REPORTS.md`, `automation/archive/STATE-do-20261116.md`.
 
 ## Aktivní body ze starších front (výtah; plné znění jen v archivu)
 - R3b forward PAPER RSI(2): parametry přesně jako PR #13, značit „(post-hoc, B6 nesplněno)“, žádný produkční bot (archiv ř. 190–211).
