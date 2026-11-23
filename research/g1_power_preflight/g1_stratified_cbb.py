@@ -49,5 +49,11 @@ def stratified_paired_bss(folds: Sequence[tuple[Sequence[float], Sequence[float]
         d = math.fsum(denominator)
         if d <= 0:
             raise ValueError("bootstrap reference denominator zero")
-        results.append(1 - math.fsum(numerator) / d)
+        n_sum = math.fsum(numerator)
+        if not math.isfinite(d) or not math.isfinite(n_sum):
+            raise ValueError("nonfinite pooled bootstrap loss sum")
+        score = 1 - n_sum / d
+        if not math.isfinite(score):
+            raise ValueError("nonfinite pooled bootstrap BSS")
+        results.append(score)
     return results
