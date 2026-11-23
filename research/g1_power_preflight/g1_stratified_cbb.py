@@ -46,10 +46,13 @@ def stratified_paired_bss(folds: Sequence[tuple[Sequence[float], Sequence[float]
             indices = indices[:n]
             numerator.extend(model[i] for i in indices)
             denominator.extend(ref[i] for i in indices)
-        d = math.fsum(denominator)
+        try:
+            d = math.fsum(denominator)
+            n_sum = math.fsum(numerator)
+        except OverflowError as exc:
+            raise ValueError("overflow in pooled bootstrap loss sum") from exc
         if d <= 0:
             raise ValueError("bootstrap reference denominator zero")
-        n_sum = math.fsum(numerator)
         if not math.isfinite(d) or not math.isfinite(n_sum):
             raise ValueError("nonfinite pooled bootstrap loss sum")
         score = 1 - n_sum / d
