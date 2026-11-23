@@ -1,0 +1,101 @@
+{
+ "source": "Render MCP query_render_postgres (read-only transaction), db dpg-dabi7rou01pc73b3lt10-a, 2026-11-17 ~15:10 UTC",
+ "sql": [
+  "select table_name, row count from information_schema.tables where schema=public and (name like '%trade%' or '%position%')",
+  "select setup/strategy, count(*) group by for bestof_trades, swing_paper_trades, v81_trades, v8fixed_trades, v81breakout_trades, candle_v8_fixed_trades, v6_trades, v7_trades",
+  "select setup, count(*) group by for candle_v8_trades, v71_trades, v81fix_trades, v8_trades, v9_trades"
+ ],
+ "tables": {
+  "bestof_trades": 132,
+  "blue_whale_trades": 10,
+  "candle_v8_fixed_trades": 62,
+  "candle_v8_trades": 11,
+  "fast_scalp_trades": 104,
+  "fly_trade_exclusions": 3,
+  "leadlag_trades": 8,
+  "lh_whale_trades": 3,
+  "liquidity_v2_trades": 36,
+  "news_paper_trades": 0,
+  "swing_paper_trades": 10,
+  "trades": 17,
+  "tv_consensus_trades": 112,
+  "v10_precision_trades": 0,
+  "v11_evidence_trades": 0,
+  "v6_trades": 37,
+  "v71_trades": 2,
+  "v7_trades": 24,
+  "v81_trades": 282,
+  "v81breakout_trades": 76,
+  "v81fix_trades": 11,
+  "v8_trades": 8,
+  "v8fixed_trades": 290,
+  "v9_trades": 11
+ },
+ "setups": {
+  "bestof_trades": {
+   "BREAKOUT": 98,
+   "EMA_4H": 2,
+   "FIB_0618_0786": 32
+  },
+  "candle_v8_fixed_trades": {
+   "BEARISH_ENGULFING": 1,
+   "MOMENTUM": 8,
+   "MOMENTUM_BREAKOUT": 53
+  },
+  "swing_paper_trades": {
+   "aroon_1h_4h": 2,
+   "supertrend_4h": 8
+  },
+  "v6_trades": {
+   "MOMENTUM": 1,
+   "PULLBACK": 36
+  },
+  "v7_trades": {
+   "BREAKOUT": 3,
+   "FAILED_BREAKOUT": 2,
+   "MOMENTUM": 3,
+   "TRANSITION_8_OF_8": 6,
+   "TREND_PULLBACK": 10
+  },
+  "v81_trades": {
+   "BEAR ENGULFING": 37,
+   "BEAR PIN BAR": 16,
+   "BREAKOUT": 163,
+   "BULL ENGULFING": 44,
+   "BULL PIN BAR": 22
+  },
+  "v81breakout_trades": {
+   "BREAKOUT": 56,
+   "FIB_0618_0786": 20
+  },
+  "v8fixed_trades": {
+   "BREAKOUT": 21,
+   "RAPID_MOMENTUM": 269
+  },
+  "candle_v8_trades": {
+   "BEARISH_ENGULFING": 4,
+   "BEARISH_PINBAR": 2,
+   "BULLISH_PINBAR": 1,
+   "INSIDE_BAR_BREAKOUT_LONG": 1,
+   "INSIDE_BAR_BREAKOUT_SHORT": 3
+  },
+  "v71_trades": {
+   "PULLBACK": 2
+  },
+  "v81fix_trades": {
+   "BEAR ENGULFING": 6,
+   "BEAR PIN BAR": 1,
+   "BREAKOUT": 3,
+   "BULL ENGULFING": 1
+  },
+  "v8_trades": {
+   "BREAKOUT": 1,
+   "LIQUIDITY_SWEEP": 3,
+   "TREND_PULLBACK": 4
+  },
+  "v9_trades": {
+   "BREAKOUT": 2,
+   "TREND_PULLBACK": 9
+  }
+ }
+}

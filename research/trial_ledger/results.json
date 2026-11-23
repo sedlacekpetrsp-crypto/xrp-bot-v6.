@@ -1,0 +1,504 @@
+{
+ "protocol": "research/trial_ledger/PROTOCOL.md",
+ "r10_summary_keys": [
+  "N_documented_lower",
+  "N_documented_upper",
+  "hist_by_rule",
+  "hist_documented_hypotheses",
+  "hist_hypotheses",
+  "hist_n_lower",
+  "hist_n_upper",
+  "hist_undocumented",
+  "r_n",
+  "r_tests",
+  "vsr"
+ ],
+ "A": {
+  "lo": 190,
+  "hi": 209
+ },
+ "B": {
+  "n": 29,
+  "items": [
+   {
+    "dir": "broad_trend",
+    "branch": "origin/research/broad-trend-20261109",
+    "file": "research/broad_trend/trades.csv.gz",
+    "rule": "trades.variant",
+    "n": 4,
+    "detail": [
+     "W100_LO",
+     "W100_LS",
+     "W50_LO",
+     "W50_LS"
+    ]
+   },
+   {
+    "dir": "btc_miner_revenue_recovery_xrp_validation_20261105",
+    "branch": "origin/autocorr-regime-research-20261024",
+    "file": "research/btc_miner_revenue_recovery_xrp_validation_20261105/results.json",
+    "rule": "results.json",
+    "n": 1,
+    "detail": "1 pravidlo"
+   },
+   {
+    "dir": "max_effect",
+    "branch": "origin/research/max-effect-20261107",
+    "file": "research/max_effect/trades.csv",
+    "rule": "trades.variant",
+    "n": 4,
+    "detail": [
+     "L14_H14",
+     "L14_H28",
+     "L28_H14",
+     "L28_H28"
+    ]
+   },
+   {
+    "dir": "new_listing_drift",
+    "branch": "origin/research/new-listing-drift-20261108",
+    "file": "research/new_listing_drift/trades.csv",
+    "rule": "trades.variant",
+    "n": 4,
+    "detail": [
+     "K30_T180",
+     "K30_T90",
+     "K60_T180",
+     "K60_T90"
+    ]
+   },
+   {
+    "dir": "spot_listing_drift",
+    "branch": "origin/research/spot-listing-drift-20261109",
+    "file": "research/spot_listing_drift/results.json",
+    "rule": "results.json",
+    "n": 1,
+    "detail": "1 pravidlo"
+   },
+   {
+    "dir": "vortex_chop",
+    "branch": "origin/research/vortex-chop-20261109",
+    "file": "research/vortex_chop/trades.csv.gz",
+    "rule": "trades.variant+cells(dodatek 1)",
+    "n": 8,
+    "detail": [
+     "(jediná)"
+    ],
+    "n_before_amendment1": 1
+   },
+   {
+    "dir": "xrp_bank_credit_expansion_validation_20261105",
+    "branch": "origin/autocorr-regime-research-20261024",
+    "file": "research/xrp_bank_credit_expansion_validation_20261105/results.json",
+    "rule": "results.json",
+    "n": 1,
+    "detail": "1 pravidlo"
+   },
+   {
+    "dir": "xrp_labor_resilience_validation_20261105",
+    "branch": "origin/autocorr-regime-research-20261024",
+    "file": "research/xrp_labor_resilience_validation_20261105/results.json",
+    "rule": "results.json",
+    "n": 1,
+    "detail": "1 pravidlo"
+   },
+   {
+    "dir": "xrp_policy_uncertainty_easing_validation_20261105",
+    "branch": "origin/autocorr-regime-research-20261024",
+    "file": "research/xrp_policy_uncertainty_easing_validation_20261105/results.json",
+    "rule": "results.json",
+    "n": 1,
+    "detail": "1 pravidlo"
+   },
+   {
+    "dir": "xs_momentum",
+    "branch": "origin/research/xs-momentum-20261107",
+    "file": "research/xs_momentum/trades.csv",
+    "rule": "trades.variant",
+    "n": 4,
+    "detail": [
+     "LB28_S0",
+     "LB28_S7",
+     "LB56_S0",
+     "LB56_S7"
+    ]
+   }
+  ]
+ },
+ "C": {
+  "lo": 3,
+  "hi": 19,
+  "items": [
+   {
+    "id": "R8 FUNDING_DISPERSION",
+    "pr": 29,
+    "n": 4,
+    "in_lo": false,
+    "source": "registr ř. 'N +4 (průběžně 155)'"
+   },
+   {
+    "id": "R9 SPOT_LED",
+    "pr": 30,
+    "n": 4,
+    "in_lo": false,
+    "source": "registr ř. 'N +4 (průběžně 159)'"
+   },
+   {
+    "id": "A5 SPOT_LISTING_DRIFT",
+    "pr": 43,
+    "n": 4,
+    "in_lo": false,
+    "source": "registr: K∈{1,3}×T∈{10,30}, DATA NO-GO, výnos nepočítán"
+   },
+   {
+    "id": "K7 FOMC",
+    "pr": 48,
+    "n": 4,
+    "in_lo": false,
+    "source": "registr: 4 okna (návrh), dodatek 1 = 1 primární endpoint; výnos nepočítán"
+   },
+   {
+    "id": "K9 fáze A",
+    "pr": 63,
+    "n": 1,
+    "in_lo": true,
+    "source": "PROTOCOL K9 opr. 1 bod 1: fáze A +1"
+   },
+   {
+    "id": "K9 fáze B",
+    "pr": 65,
+    "n": 2,
+    "in_lo": true,
+    "source": "PROTOCOL K9 opr. 1 bod 1: 2 varianty H"
+   }
+  ]
+ },
+ "D": {
+  "lo": 16,
+  "hi": 49,
+  "lo_items": [
+   {
+    "table": "blue_whale_trades",
+    "trades": 10
+   },
+   {
+    "table": "fast_scalp_trades",
+    "trades": 104
+   },
+   {
+    "table": "leadlag_trades",
+    "trades": 8
+   },
+   {
+    "table": "lh_whale_trades",
+    "trades": 3
+   },
+   {
+    "table": "liquidity_v2_trades",
+    "trades": 36
+   },
+   {
+    "table": "swing_paper_trades",
+    "trades": 10
+   },
+   {
+    "table": "trades",
+    "trades": 17
+   },
+   {
+    "table": "v6_trades",
+    "trades": 37
+   },
+   {
+    "table": "v71_trades",
+    "trades": 2
+   },
+   {
+    "table": "v7_trades",
+    "trades": 24
+   },
+   {
+    "table": "v81_trades",
+    "trades": 282
+   },
+   {
+    "table": "v81breakout_trades",
+    "trades": 76
+   },
+   {
+    "table": "v81fix_trades",
+    "trades": 11
+   },
+   {
+    "table": "v8_trades",
+    "trades": 8
+   },
+   {
+    "table": "v8fixed_trades",
+    "trades": 290
+   },
+   {
+    "table": "v9_trades",
+    "trades": 11
+   }
+  ],
+  "hi_items": [
+   {
+    "table": "bestof_trades",
+    "setup": "BREAKOUT",
+    "trades": 98
+   },
+   {
+    "table": "bestof_trades",
+    "setup": "EMA_4H",
+    "trades": 2
+   },
+   {
+    "table": "bestof_trades",
+    "setup": "FIB_0618_0786",
+    "trades": 32
+   },
+   {
+    "table": "blue_whale_trades",
+    "setup": null,
+    "trades": 10
+   },
+   {
+    "table": "candle_v8_fixed_trades",
+    "setup": "BEARISH_ENGULFING",
+    "trades": 1
+   },
+   {
+    "table": "candle_v8_fixed_trades",
+    "setup": "MOMENTUM",
+    "trades": 8
+   },
+   {
+    "table": "candle_v8_fixed_trades",
+    "setup": "MOMENTUM_BREAKOUT",
+    "trades": 53
+   },
+   {
+    "table": "candle_v8_trades",
+    "setup": "BEARISH_ENGULFING",
+    "trades": 4
+   },
+   {
+    "table": "candle_v8_trades",
+    "setup": "BEARISH_PINBAR",
+    "trades": 2
+   },
+   {
+    "table": "candle_v8_trades",
+    "setup": "BULLISH_PINBAR",
+    "trades": 1
+   },
+   {
+    "table": "candle_v8_trades",
+    "setup": "INSIDE_BAR_BREAKOUT_LONG",
+    "trades": 1
+   },
+   {
+    "table": "candle_v8_trades",
+    "setup": "INSIDE_BAR_BREAKOUT_SHORT",
+    "trades": 3
+   },
+   {
+    "table": "fast_scalp_trades",
+    "setup": null,
+    "trades": 104
+   },
+   {
+    "table": "leadlag_trades",
+    "setup": null,
+    "trades": 8
+   },
+   {
+    "table": "lh_whale_trades",
+    "setup": null,
+    "trades": 3
+   },
+   {
+    "table": "liquidity_v2_trades",
+    "setup": null,
+    "trades": 36
+   },
+   {
+    "table": "news_paper_trades",
+    "setup": null,
+    "trades": 0
+   },
+   {
+    "table": "swing_paper_trades",
+    "setup": "aroon_1h_4h",
+    "trades": 2
+   },
+   {
+    "table": "swing_paper_trades",
+    "setup": "supertrend_4h",
+    "trades": 8
+   },
+   {
+    "table": "trades",
+    "setup": null,
+    "trades": 17
+   },
+   {
+    "table": "tv_consensus_trades",
+    "setup": null,
+    "trades": 112
+   },
+   {
+    "table": "v10_precision_trades",
+    "setup": null,
+    "trades": 0
+   },
+   {
+    "table": "v11_evidence_trades",
+    "setup": null,
+    "trades": 0
+   },
+   {
+    "table": "v6_trades",
+    "setup": "MOMENTUM",
+    "trades": 1
+   },
+   {
+    "table": "v6_trades",
+    "setup": "PULLBACK",
+    "trades": 36
+   },
+   {
+    "table": "v71_trades",
+    "setup": "PULLBACK",
+    "trades": 2
+   },
+   {
+    "table": "v7_trades",
+    "setup": "BREAKOUT",
+    "trades": 3
+   },
+   {
+    "table": "v7_trades",
+    "setup": "FAILED_BREAKOUT",
+    "trades": 2
+   },
+   {
+    "table": "v7_trades",
+    "setup": "MOMENTUM",
+    "trades": 3
+   },
+   {
+    "table": "v7_trades",
+    "setup": "TRANSITION_8_OF_8",
+    "trades": 6
+   },
+   {
+    "table": "v7_trades",
+    "setup": "TREND_PULLBACK",
+    "trades": 10
+   },
+   {
+    "table": "v81_trades",
+    "setup": "BEAR ENGULFING",
+    "trades": 37
+   },
+   {
+    "table": "v81_trades",
+    "setup": "BEAR PIN BAR",
+    "trades": 16
+   },
+   {
+    "table": "v81_trades",
+    "setup": "BREAKOUT",
+    "trades": 163
+   },
+   {
+    "table": "v81_trades",
+    "setup": "BULL ENGULFING",
+    "trades": 44
+   },
+   {
+    "table": "v81_trades",
+    "setup": "BULL PIN BAR",
+    "trades": 22
+   },
+   {
+    "table": "v81breakout_trades",
+    "setup": "BREAKOUT",
+    "trades": 56
+   },
+   {
+    "table": "v81breakout_trades",
+    "setup": "FIB_0618_0786",
+    "trades": 20
+   },
+   {
+    "table": "v81fix_trades",
+    "setup": "BEAR ENGULFING",
+    "trades": 6
+   },
+   {
+    "table": "v81fix_trades",
+    "setup": "BEAR PIN BAR",
+    "trades": 1
+   },
+   {
+    "table": "v81fix_trades",
+    "setup": "BREAKOUT",
+    "trades": 3
+   },
+   {
+    "table": "v81fix_trades",
+    "setup": "BULL ENGULFING",
+    "trades": 1
+   },
+   {
+    "table": "v8_trades",
+    "setup": "BREAKOUT",
+    "trades": 1
+   },
+   {
+    "table": "v8_trades",
+    "setup": "LIQUIDITY_SWEEP",
+    "trades": 3
+   },
+   {
+    "table": "v8_trades",
+    "setup": "TREND_PULLBACK",
+    "trades": 4
+   },
+   {
+    "table": "v8fixed_trades",
+    "setup": "BREAKOUT",
+    "trades": 21
+   },
+   {
+    "table": "v8fixed_trades",
+    "setup": "RAPID_MOMENTUM",
+    "trades": 269
+   },
+   {
+    "table": "v9_trades",
+    "setup": "BREAKOUT",
+    "trades": 2
+   },
+   {
+    "table": "v9_trades",
+    "setup": "TREND_PULLBACK",
+    "trades": 9
+   }
+  ],
+  "mapped_to_inventory": {
+   "tv_consensus_trades": "research/tv",
+   "bestof_trades": "research/best",
+   "candle_v8_trades": "research/candle",
+   "candle_v8_fixed_trades": "research/candle"
+  }
+ },
+ "N_doc_lo": 238,
+ "N_doc_hi": 306,
+ "N_gate_K9": 450,
+ "V_SR": 0.5,
+ "n_covered_dirs_r10": 76
+}
