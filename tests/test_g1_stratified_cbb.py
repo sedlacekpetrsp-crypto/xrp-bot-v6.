@@ -56,3 +56,11 @@ def test_finite_input_can_produce_nonfinite_bss_and_is_rejected():
     folds = [([1e300] * 56, [1e-300] * 56)]
     with pytest.raises(ValueError, match="nonfinite pooled bootstrap BSS"):
         stratified_paired_bss(folds, block_days=28, replicates=2, seed=7)
+
+
+def test_model_only_pooled_overflow_fails_closed():
+    # Fold sums finite (validation passes), pooled numerator over 2 folds overflows.
+    big = [1e308 / 56 * 1.0] * 56
+    folds = [(big, [1.0] * 56), (big, [1.0] * 56)]
+    with pytest.raises(ValueError, match="overflow|nonfinite"):
+        stratified_paired_bss(folds, block_days=28, replicates=2, seed=7)
