@@ -21,6 +21,7 @@ from datetime import datetime, timedelta
 from typing import Optional, Sequence
 
 from .episodes import group_positive_episodes
+from .g1_decision_input import validate_g1_decisions
 from .g1_fold_contract import g1_calendar_folds
 
 G1_EPISODE_SEPARATION = timedelta(days=14)
@@ -35,13 +36,10 @@ def _validate(decisions: Sequence[datetime], labels: Sequence[Optional[bool]]) -
         raise ValueError("decisions/labels length mismatch")
     if not decisions:
         raise ValueError("empty decision grid")
-    # Reject ambiguous grids before fold assignment or label hashing.
-    if any(not isinstance(d, datetime) for d in decisions):
-        raise ValueError("decision timestamps must be datetime objects")
-    if any((d.tzinfo is None or d.utcoffset() is None) for d in decisions):
-        raise ValueError("decision timestamps must be timezone-aware")
-    if any(a >= b for a, b in zip(decisions, decisions[1:])):
-        raise ValueError("decision timestamps must be strictly increasing")
+    # Reject ambiguous grids before fold assignment or label hashing. Reuse the
+    # canonical G1 grid validator (UTC offset 0, exactly 00:05:00, strictly
+    # increasing) so the fingerprint is identical for identical instants.
+    validate_g1_decisions(decisions)
     for lab in labels:
         # bool is a subclass of int; reject 0/1, numpy bools, strings etc.
         if lab is not None and type(lab) is not bool:
