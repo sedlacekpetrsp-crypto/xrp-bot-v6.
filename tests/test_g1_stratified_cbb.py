@@ -42,3 +42,17 @@ def test_bad_controls(block, reps, seed):
     with pytest.raises(ValueError):
         stratified_paired_bss([([1.0] * 56, [2.0] * 56)],
                               block_days=block, replicates=reps, seed=seed)
+
+
+def test_pooled_loss_sum_overflow_fails_closed():
+    # Each row is finite, but the pooled sum exceeds binary64 range.
+    folds = [([1e308] * 56, [1e308] * 56)]
+    with pytest.raises(ValueError, match="overflow"):
+        stratified_paired_bss(folds, block_days=28, replicates=2, seed=7)
+
+
+def test_finite_input_can_produce_nonfinite_bss_and_is_rejected():
+    # Small positive reference loss, huge model loss: ratio overflows.
+    folds = [([1e300] * 56, [1e-300] * 56)]
+    with pytest.raises(ValueError, match="nonfinite pooled bootstrap BSS"):
+        stratified_paired_bss(folds, block_days=28, replicates=2, seed=7)
