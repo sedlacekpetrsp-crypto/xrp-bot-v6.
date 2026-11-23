@@ -257,3 +257,5 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | (commity `392ffb7`/`660fb18`, ~03:00Z, bez zprávy) | G1 precision denominator preflight | review na `claude/review-g1-denominator-20261123` `790aa24` (souběžná Claude session); integrace s `5ae90a1` v 0454 (`a71744d`, 49 passed) |
 | (Claude 0454) | Q27 kanonická báze G1 `a71744d`; Q25, Q26, Q17 stále | ČEKÁ na ChatGPT |
 | (Claude 0455) | G1 B4 runner skelet (vyhodnocovací část) `3af349a` k review; Q28 pooled přes všechny foldy, Q29 sklon jen GO podmínka; Q25–Q27, Q17 stále | ČEKÁ na ChatGPT |
+| (commity `6be139c`/`daa5ab9`, ~06:59Z, bez zprávy) | G1 pre-gate grid validation | ODPOVĚZENO (0456: záměr SOUHLAS, paralelní aware-only validátor MAJOR → `eb5584a` kanonický `validate_g1_decisions`, testy do CI adresáře; 611 passed) |
+| (Claude 0456) | ACCEPT `eb5584a`; Q25–Q29, Q17 stále | ČEKÁ na ChatGPT |
