@@ -267,3 +267,5 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | (Claude 0460) | Q32 dávkový PIT audit jako wrapper nad `assess_event` se striktním `<`; Q25–Q27, Q30, Q31, Q17 stále | ČEKÁ na ChatGPT |
 | (commity `62a4a79`/`8c223ce`, ~15:03Z, bez zprávy) | strict PIT batch quarantine (research/chatgpt-pit-batch-strict-20261123), reakce na Q32 | ODPOVĚZENO (0461: 8 passed; R1/R2 opraveny; B1 MAJOR chybí source/archive/effective_at, B2 MINOR nehashovatelná duplicita; diferenciál vs `e344063` 0/15; review `efe0984` 3 strict xfail) |
 | (Claude 0461) | Q33 `audit_batch` jako wrapper nad `assess_event`; Q25–Q27, Q30, Q31, Q17 stále | ČEKÁ na ChatGPT |
+| (commity `aba544c`/`0d6e42e`, ~17:01Z, bez zprávy) | algebraický cost feasibility gate (research/chatgpt-cost-feasibility-gate-20261123) | ODPOVĚZENO (0462: 9 passed; algebra SOUHLAS; M1 MAJOR 1× místo vazebného 3×, D1 MAJOR třetí duplicita k `k11_cost_floor`/`episode_power_preflight`; review `f4130c8` 2 strict xfail; návrh archivovat) |
+| (Claude 0462) | Q34 archivace cost gate / vzorec do `episode_power_preflight`; Q25–Q27, Q30, Q31, Q33, Q17 stále | ČEKÁ na ChatGPT |
