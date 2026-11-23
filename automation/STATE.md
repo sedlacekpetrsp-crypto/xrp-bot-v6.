@@ -11,157 +11,26 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-23 07:15 UTC, autopilot běh #102 — G1 B4 runner skelet, vyhodnocovací část)
-- **Běh #102 (2026-11-23 07:15 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 03:00–07:04); bestof 132 (max id 132); lh_whale n=3;
-  DB 286 766 783 B ≈ 26,7 %. ChatGPT po 0454 bez zprávy; jen grid validace `6be139c`/`daa5ab9` — zkontrolovala a opravila souběžná Claude
-  session (`eb5584a`, PR #77, CI success; neduplikováno). Termín B4 vypršel ⇒ **B4 runner skelet (jen vyhodnocovací část)**
-  `claude/g1-runner-skeleton-20261123` @ `3af349a` (báze `a71744d`): one-shot guard §9, pořadí verdiktů v1 §6 + Δ4 vstup + Δ6 CBB + Δ7
-  audit reference; 21 testů, `tests/` 83 passed (syntetika). Dialog 0455 `85d4510` (Q28 pooled přes všechny foldy, Q29 sklon jen GO). N +0.
-- **DALŠÍ KROK (07:15):** ChatGPT review `3af349a` + Q25–Q29; B1 fit (vlastník ChatGPT) s výstupním kontraktem z 0455. Claude neimplementuje
-  B1 ani loader bez odpovědi; G1 nespustitelný (B1, B3, G0, workflow, B6, LOCKED). Před prací `git ls-remote` větve `claude/*` daného dne.
-- **Běh #101 (2026-11-23 03:15 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 23:00–03:05); bestof 132 (1 známá dup. skupina 128/129,
-  ostatní tabulky 0); lh_whale n=3; DB 286 619 327 B ≈ 26,7 %. ChatGPT po 0453: denominator preflight `392ffb7`/`660fb18` (bez zprávy) —
-  review provedla souběžná Claude session (`790aa24`, neduplikováno). Nalezeny **2 paralelní Claude opravy** téhož overflow (`5ae90a1` vs `790aa24`,
-  konflikt ř. 33) ⇒ integrační větev `claude/g1-integration-20261123` @ `a71744d` (politika `_finite_fsum`), G1 sada 49 passed, obě verze
-  ekvivalentní. Dialog 0454 `6e298f6` (Q27 kanonická báze). N +0, žádná data.
-- **DALŠÍ KROK (03:15):** ChatGPT Q25/Q26/Q27, B1 fit / B4 runner. Bez B4 do #102 ⇒ Claude syntetický skelet B4 na `a71744d` (bez dat).
-  Pozor na souběh Claude sessions: před review ověřit `git ls-remote` větve `claude/*` daného dne. G1 nespustitelný. Q17 (#74) otevřená.
-- **Běh #100 (2026-11-22 23:15 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 19:00–23:04); bestof 132; DB 287 372 991 B ≈ 26,8 %.
-  ChatGPT 0448 (B2 CBB `d2ed142`) → Claude 0449 (mimo autopilot, M1–M3) → ChatGPT 0450 stratifikovaný CBB `06880e4`. Review: 33 passed,
-  reimplementace |Δ| 2,2e-16, žádný cross-fold bridge, m1 np.float64, m2 ex-ante min(ref)>0, m3 test provenance ⇒ **ACCEPT diagnostic**.
-  Návrh manifestu **v3 delta** (Δ6 CBB stratifikovaně po foldech, ≥ 2×blok/fold; Δ7 reference ex-ante na trainu) PR #73 `4970d49`.
-  Dialog 0451 `34f3d73` (Q25). N +0, žádná data.
-- **DALŠÍ KROK (23:15):** ChatGPT Q25 (oponentura v3 + PR #77 ⇒ B6) a B1 fit / B4 runner (vlastník ChatGPT) ⇒ Claude exact-SHA review.
-  Bez odpovědi do 2 běhů (#102) Claude připraví jen syntetický skelet B4 runneru (bez dat) k review. Q17 (#74) otevřená. G1 nespustitelný.
-- **Běh #99 (2026-11-22 19:15 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 15:00–19:04); bestof 132; DB 287 340 223 B ≈ 26,8 %.
-  **G1 Δ4 POWER NO-GO pre-gate** `g1_power_pregate.py` (labely+kalendář, epizody 14 d ≠ legacy default 30 d) draft PR #77 `c532346`
-  (→ radarová větev), 14 testů, radarová sada 636 passed. ChatGPT mezi #98–#99 jen K11 (`f3ef177` 104 passed, neintegrovat; K11 uzavřeno
-  mimoplánovou zprávou 0446 17:45). Dialog 0447 `3355ba2`: review PR #77, Q22. N +0.
-- **DALŠÍ KROK (19:15):** ChatGPT Q21 (G1 v2 + B2 bootstrap) / Q22 / review PR #77; Q17 (#74). Bez odpovědi do #101 ⇒ Claude navrhne B2
-  moving-block bootstrap sám (syntetika, bez dat) k review ChatGPT. Výkon G1 jen po B1–B4, B6 a LOCKED manifestu.
-- **Běh #98 (2026-11-22 15:30 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 11:00–15:04); bestof 132; lh_whale n=3;
-  DB 287 397 567 B ≈ 26,8 %. **G1 freeze NÁVRH v2** (delta k v1 `a27831b`) + syntetická síla BSS pravidla `g1_bss_power.py` na PR #73
-  `265a2ba`: BSS 0,11 ⇒ P(GO) 0,63, 0,24 ⇒ 0,88, nulový signál 0/300; POWER_NO_GO pre-gate (< 15 epizod / < 3 foldy). Blokery B1 fit,
-  B2 bootstrap, B4 runner chybí ⇒ G1 nespustitelný. ChatGPT 0444 Q19/Q20 SOUHLAS (K11 nástroje stop); review byte auditu `a0542a2`
-  10 passed, B1–B4 MINOR, opravit jen pro G1 G0 konzumenta (dialog 0445 `2757ed6`, Q21). N +0.
-- **DALŠÍ KROK (15:30):** ChatGPT Q21 (Δ1–Δ4) + B2 moving-block bootstrap (vlastník ChatGPT) ⇒ Claude exact-SHA review. Q17 (#74 patch) otevřená.
-  Výkon G1 jen po uzavření B1–B4, B6 a zamčení manifestu.
-- **Běh #97 (2026-11-22 11:30 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 11-21 11:00 → 11-22 11:04); bestof 132; lh_whale n=3;
-  DB 287 340 223 B ≈ 26,8 %. **Issue #74:** karta „287 obchodů / 9178,20 / −821,80“ = legacy FLY (`v8fixed_trades`, pauza 10-07, poslední
-  obchod 10-11), ne MAX-efekt; příčina = nadpis + závod JS skrývání. `WAIT postgres` není výpadek. Oprava UI jako patch
-  `automation/patches/issue74-paper-home-dashboard.patch` (SHA-256 `4df778fa…a286`, 8 testů OK); push větve z báze `v8-fly-layer-test`
-  zablokován oprávněním ⇒ bez PR. Exact-SHA review ChatGPT `e344063a` 4, `290e0d74` 10, `53daa006` 10 passed; K11 cost floor ⇒ archivovat
-  (dialog 0442 `629554e`, Q17/Q18). N +0.
-- **DALŠÍ KROK (11:30):** NÁVRH G1 freeze manifestu s R1–R4 (bez dat/spuštění) na větvi PR #73; ChatGPT Q17 (review patche #74) a Q18.
-  Nasazení #74 jen s výslovným schválením vlastníka.
-- **Běh #96 (11:20 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 07:00–11:03); bestof 132; lh_whale n=3; DB 286 873 279 B ≈ 26,7 %.
-  Kandidát nového mechanismu nenalezen (§6 + power) ⇒ **návrh: fronta P3 A1–A3/K1–K14 vyčerpána** (dialog 0437 `becce0b`, Q15). Přechod na
-  P1: **G1 ex-ante power preflight** draft PR #73 `604bda8` (`research/g1-power-preflight-20261121`): 21 epizod ⇒ CI kritéria projde dobrý
-  radar ≈ 5 %, bodová nediskriminují ⇒ G1 očekávaně INCONCLUSIVE; R1–R4 pro freeze (GO jen dolní meze; power tabulka do manifestu; zmrazit
-  alert budget; < 15 hodnotitelných epizod ⇒ POWER NO-GO předem bez spotřeby běhu). G1 freeze (ChatGPT) stojí od 11-17 (`a112130`). N +0.
-- **DALŠÍ KROK (11:20):** ChatGPT Q13–Q15. Bez odpovědi do 2 běhů (do #98) Claude napíše jen NÁVRH G1 freeze manifestu s R1–R4 (bez
-  spuštění, bez dat). Výkon G1 jen po zmrazení + nezávislé kontrole. Nové hypotézy neotevírat bez nové doložené informace.
-- **Běh #95 (07:20 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 03:00–07:04); bestof 132 (max id 132); lh_whale n=3;
-  DB 286 865 087 B ≈ 26,7 %. ChatGPT 0434: alpha guard `6454e75`/`72d7935` (`research/chatgpt-power-alpha-guard-20261121`) ⇒ Claude
-  37 passed + 1 strict xfail (s review testy `a7a44ec`) ⇒ **A1 ACCEPT, uzavřeno** (dialog 0435 `bfa4849`). Q12: obě strany SOUHLAS —
-  dnes žádný kandidát v okně mapy. RESEARCH_FRAMEWORK §6: zpřesněn existující řádek „Chronologické OOS“ o povinnou power/ekonomickou
-  proveditelnost (`c69fae6`, čeká oponentura textu ChatGPT). N +0, žádná data.
-- **DALŠÍ KROK (07:20):** lhůta 2 běhů z #93 vypršela ⇒ Claude navrhne vlastní kandidáta nového mechanismu (novelty gate §6 vč.
-  PowerScreen s ex‑ante DEFF, jen dokument, bez dat); nebo, pokud žádný neprojde, zapsat negativní závěr fronty a přejít na P1 radary.
-- **Běh #94 (03:20 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 23:00–03:05); bestof 132 (1 známá duplicitní skupina 128/129);
-  lh_whale n=3; DB 288 102 079 B ≈ 26,8 %. ChatGPT 0429/0431: modul `research/episode_power_preflight.py` (`e3507d8` → opravy
-  `65e4d6c`/`a790382`, větev `research/chatgpt-power-deff-review-20261121`). Claude review kolo 2: 20 passed + 1 strict xfail (R3 zbytek,
-  přijatý kompromis) `a7a44ec` (`claude/power-deff-review2-20261121`) ⇒ **ACCEPT DIAGNOSTIC_ONLY, neintegrovat, téma uzavřeno** (dialog 0432
-  `602998e`). Mapa proveditelnosti `db555c4` (jen aritmetika): 15 min–1 h ⇒ hrana 0,33–1,5 σ/obchod (nereálné), 1 d ⇒ N_eff 600–4 000;
-  okno 4 h–1 d, ≥ 300–600 epizod po shlukování. Kandidáti běhu (round‑number = K9, týdenní Deribit = K8, funding‑interval = rodina
-  funding) zastaveni před daty, N +0.
-- **DALŠÍ KROK (03:20):** odpověď ChatGPT na Q12 (kandidát v okně mapy, nebo řádek mapy do RESEARCH_FRAMEWORK §6). Kandidáta
-  posoudit novelty gate + PowerScreen s ex‑ante DEFF; nic nespouštět na datech bez zmrazeného protokolu.
-- **Běh #93 (23:15 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 19:00–23:04); bestof 132; lh_whale n=3; DB 288 102 079 B ≈ 26,8 %.
-  ChatGPT 0427: strict lineage gate `16e926b`/`5aabaff` (`research/chatgpt-pit-lineage-gate-20261120`) + Q9/Q10 SOUHLAS. Claude review:
-  12 passed, 0426 P1–P4 PASS, nové MINOR N1–N4 strict xfail `79f4ee3` (`claude/pit-lineage-gate-review-20261120`). Dialog 0428 (`4e94ce4`):
-  **PIT-SOURCE-INDEPENDENCE-01 uzavřeno, modul zaparkovat bez integrace.** Pravidlo: power triáž (MDE, předregistrovaný model síly) před
-  každým nákladným datovým auditem. N +0, žádná data.
-- **DALŠÍ KROK (23:15):** ChatGPT dodá kandidáta nového mechanismu (PIT zdroj + power triáž) ⇒ Claude oponentura. Bez kandidáta do 2 běhů
-  Claude navrhne vlastní (novelty gate proti inventáři 110 + K1–K14, MDE předem). Nic nespouštět na datech bez zmrazeného protokolu.
-- **Běh #92 (19:15 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 15:00–19:04); bestof 132; lh_whale n=3; DB 287 479 487 B ≈ 26,8 %.
-  Dialog 0423 (Claude, review `k13_tier_evidence` `fc1d055`, E1–E3 MAJOR, `4f22d95`) ⇒ ChatGPT 0424: **K13 ZMRAZENA DATA UNVERIFIED**
-  (Q7 nepotvrzeno, krok −1 nespuštěn; větev `research/chatgpt-k13-tier-domain-20261120` izolovaná, neověřená). Claude 0425 (`150f891`):
-  zdroj XRPL ledger = PIT OK (close_time + hash-řetězec); kandidát **K14 Ripple escrow net-release** 107 událostí, MDE 1,08–4,30 %
-  ≫ práh 0,3 % ⇒ **NEZAHAJOVAT** (power gate). Návrh pravidla: MDE předem před každým datovým auditem. N +0, žádná data.
-- **DALŠÍ KROK (19:15):** ChatGPT Q9 (K14 + pravidlo MDE). ChatGPT vlastní novelty gate nového mechanismu; Claude nezávisle posoudí
-  jen kandidáta s ≥ 300 nezávislými událostmi a PIT zdrojem. Nic nespouštět na datech bez zmrazeného protokolu.
-- **Běh #91 (15:15 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 11:00–15:05); bestof 132; lh_whale n=3; DB ≈ 26,7 %.
-  ChatGPT 0421: Q4–Q6 SOUHLAS (oznámení = jediný PIT zdroj; 60 = epizody po shlukování; multi-symbol článek = 1 epizoda) +
-  modul `research/k13_announcement_gate.py` `23d138c`/`7c6c66e` (`research/chatgpt-k13-announcement-gate-20261120`).
-  Claude review 0422 (dialog `eba44b7`): 14 passed, **NESOUHLAS s použitím na datech** — K1 NUMBER matchuje číslo tieru,
-  K2 necílové titulky ve vzorku, K3 chybí ≥ 60 epizod, K4 chybí provenance; review `claude/k13-announcement-gate-review-20261120`
-  @ `bda3205` (4 strict xfail), návrh protokolu kroku −1 `5e540d0` (NEZMRAZEN). N +0, žádná data.
-- **DALŠÍ KROK (15:15):** ChatGPT Q7 (body 1–7) + oprava K1–K4 ⇒ RUN_REQUEST `research/k13-step-1-*` (jen datový audit, bez cen).
-  Bez odpovědi do 2 běhů ⇒ K13 uzavřít jako DATA NO-GO. Nic nespouštět na datech.
-- **Běh #90 (11:30 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 07:00–11:04); bestof 132, jen známá duplicita
-  128/129; lh_whale n=3; DB 288 085 695 B ≈ 26,8 %. ChatGPT 0417-chatgpt (odpověď na 0416, **ne na Q1–Q3 z 0417**) ⇒ modul
-  EXCHANGE-RULE-PIT-01 `d7a1d7b` (`research/chatgpt-exchange-rule-pit-20261120`). Claude review 0418 (dialog `42bdb38`): 12 passed,
-  **NESOUHLAS s integrací** — R1 MAJOR zastaralý snímek vrací DATA_GO (chybí max_staleness), R2 MAJOR chybí dimenze trhu
-  spot/usdm, R3/R4 MINOR; review testy `claude/exchange-rule-pit-review-20261120` @ `712ee40` (3 strict xfail). Návrh brány
-  krok −1 = jen CDX počty Wayback exchangeInfo (medián mezery ≤ 7 d, ≥ 80 % týdnů). Q3 vlastní: leverageBracket bez
-  bezplatného PIT archivu ⇒ K13 pravděpodobně DATA NO-GO. Není alfa hypotéza, N +0.
-- **DALŠÍ KROK (11:30):** odpověď ChatGPT na 0418 (opravy R1–R2, odstranit xfail) a na 0417 Q1–Q3; bez Q1–Q3 do 2 běhů
-  uzavřít K13 samostatně jako DATA NO-GO (leverageBracket bez PIT zdroje). Nic nespouštět na datech.
-- **Produkce (jen čtení, běh #89):** live `01c69ff` beze změny (0 událostí, 0 error logů 03:00–07:04); bestof 132, jen známá
-  duplicita 128/129; `lh_whale_trades` n=3; DB 287 962 815 B ≈ 26,8 %.
-- **Běh #89:** ChatGPT 0414 (SOUHLAS s uzavřením K11; nový modul `research/event_episode_pit.py` `ba51f79`) ⇒ Claude review
-  0415 (`748b6d6`): 12/12 OK, **NESOUHLAS s integrací** (R1 sdílený zdroj napříč symboly ⇒ nadhodnocené N; R2 docstring slibuje
-  fail-closed kolizi zdroje). Review testy `claude/event-episode-pit-review-20261120` @ `17ee293`. Opravy vlastní ChatGPT.
-  **K12 návrh** (WEEKEND-GAP REVERSION při znovuotevření CME, BTC/ETH/XRP, Binance Vision 1m) poslán k novelty gate; vlastní
-  výhrada: rodina zamítnutých #68/#102/#108 ⇒ slabý prior. NIC netestováno, N +0, nezapsáno do registru jako test.
-- **DALŠÍ KROK (2026-11-20 07:25):** odpověď ChatGPT na 0415 Q1/Q2 ⇒ SOUHLAS: protokol K12 zmrazit před daty (větev
-  `research/k12-weekend-gap-<datum>`); NESOUHLAS: K12 zamítnout bez protokolu a vzít jiný mechanismus. Po opravě R1–R2 znovu
-  spustit oba testovací soubory event_episode_pit. Bez odpovědi do 2 běhů: novelty gate K12 rozhodnout samostatně (konzervativně).
-- **Dialog 0419↔0420 (2026-11-20 13:35 UTC):** ChatGPT `rule_transition` `27636d4` ⇒ Claude 22 passed + review `e596b75` (`claude/rule-transition-review-20261120`, 28 passed/2 strict xfail): **NESOUHLAS s integrací** (T1 MAJOR jeden zastaralý snímek obslouží obě nohy ⇒ falešné changed=False; R1/R2 neopraveny). PIT modul po 3. kole uzavřen, neintegrován. K13 Q1–Q3 SOUHLAS (margin tiers/páka, data-only krok −1). **Fronta K13 krok −1 (NAVRŽENO, čeká Q4–Q6 ChatGPT, nic nespouštět):** PIT zdroj = text oznámení (exchangeInfo tiery neobsahuje), CDX snímek ≤ 24 h od releaseDate, GO ⇔ ≥ 10/20 PIT_OK a ≥ 60 událostí; kolektor = úprava K11 `2ec042b`, běh jen RUN_REQUEST na `research/k13-step-1-*`. Bez cen/výnosů, N +0.
-- **Dialog 0416↔0417 (2026-11-20 09:30 UTC):** K12 **ZAMÍTNUTA** bez protokolu (ChatGPT NESOUHLAS s novostí, rodina #68/#102/#108; Claude souhlasí), N +0. EVENT-EPISODE-PIT-01 ověřeno: `eb19057` 17/17 OK, MINOR (kolize source_id závislá na pořadí) opraven `0073218` (`claude/event-episode-pit-review2-20261120`, 19/19) ⇒ ACCEPT jako brána N_episodes pro krok 0, neintegrováno. K13 EXCHANGE-RULE-CHANGE (margin tiers/páka) jen kolo 1 novelty gate — **nic nespouštět** do odpovědi ChatGPT na 0417 Q1–Q3.
-- **Běh #85: K11 kolektor kroku 0 napsán (Claude):** `research/k11_step0_collector.py` + 23 testů, dodatek 3 protokolu, workflow
-  `k11-step0.yml` (spouští jen `research/k11_delist_drift/RUN_REQUEST_STEP0` na `research/k11-step0-*`). Větev
-  `research/k11-step0-collector-20261119` @ `d35dc32`, **draft PR #71** (base = větev PR #70). `tests/test_k11_*.py` 58 passed.
-  **RUN_REQUEST NEVYTVOŘEN** — čeká review ChatGPT dialog **0408** (6 bodů). Výnosy ani ceny se nečtou.
-  **17:05 UTC:** ChatGPT blocker (vstup od skutečné minuty, `396910b`/`e3c0de5`) převzat + Claude opravy digest/open_time ⇒ tip PR #71
-  `855a6da`, 66 passed, blocker uzavřen.
-  **19:05 UTC:** ChatGPT pokrytí `aa88f6a` — mezera uznána, plné okno NEPŘIJATO (rozpor §3.4); kompromis `481bd67` (zkrácení jen
-  při konci uprostřed dne + citlivost full-window v manifestu), 70 passed, dodatek 3 bod 8. ChatGPT odpověděl na 0408 body 1–6
-  (souhlas s výhradami). **21:05 UTC:** ChatGPT integrita minut `56b2985` převzata s úpravou (přesný duplikát tolerován) ⇒ `96a2e1d`, 79 passed,
-  bod 9 (ChatGPT SOUHLAS).
-  **23:10 UTC:** ChatGPT `28568ee` NESOUHLAS s bodem 8 ⇒ přijato: primárně celé okno pokrytí, zkrácení jen citlivost (`890c02c`,
-  79 passed, bod 10); `k11_end_evidence.py` neintegrován (chybí zdroj; budoucí kandidát = CMS `futures_delist`). 
-  **2026-11-20 01:10 UTC:** ChatGPT SOUHLAS s body 8–10; nová kontrola stránkování CMS `dc6b352` napojena (`dee7c87`, 93 passed,
-  bod 11). 
-  **03:10 UTC:** ChatGPT fail-closed CMS/CDX `d67183c` (8 FAIL na přesném SHA) převzat s opravou `2ec042b`, 99 passed, bod 12.
-  ChatGPT 03:01 (před `2ec042b`): bod 11 SOUHLAS, spuštění až po review+testech blockeru CMS/CDX (hotovo `2ec042b`).
-  **05:00 UTC:** ChatGPT SOUHLAS s body 11–12 a nespouštěcí shape guard (`7dcfe86`, převzat, 102 passed). **Krok 0 SPUŠTĚN:**
-  `RUN_REQUEST_STEP0` @ `ad93b16`, Actions run 44678047829 (timeout 300 min). Výsledek = manifest + events.csv commitnuté botem.
-  **05:55 UTC: K11 krok 0 = DATA NO-GO** (`12a5a19`, RESULTS `f696441`): PIT 146/146 unverified (0 vykreslených Wayback snímků),
-  bez PIT perp+pokrytí jen 50 událostí / 24 článků (< 60/25), CMS jen od 2022-02, nečitelné 5,13 %. **K11 UZAVŘENA bez výkonu**, N +0.
-- **K11 dosavadní:** protokol `2db54b3`, dodatky 1–2 (brána `audit_gate`, PIT helper), PR #70 tip `b1c5784` (35 passed); 0407
-  execution feasibility NEINTEGROVÁNO (místo ní diagnostický sloupec knihy v kolektoru). Počítá se jako 1 nová hypotéza 2026-11-19; N +0.
-- **Výzkumné větve a SHA:** K9 PR #63 `aa9bbbb`, #64 `6faa8c3`, #65 `289df97` (K9 **ZAMÍTNUTO**); R10b PR #66 `8c8b723` (N 238/306);
-  G1 Top Risk radar tip `f2e1477` (vlastník ChatGPT); K7 `78abe38`; PIT-GATE-01 `ffb1b5d`; K10 PR #68 `ab16823` (DATA NO-GO, zmrazit);
-  #69 návrh `528ada0` (čeká ChatGPT 0397 Q1); K11 PR #70 `b1c5784`, PR #71 `ad93b16` (krok 0 běží).
-- **G1 (schváleno 2026-11-12, max. 1 běh):** freeze **NEZAMČEN** (ChatGPT) ⇒ výkon NESPOUŠTĚT.
-- **Čeká na vlastníka:** PR #57 nasadit jen se souhlasem; PR #54, #8, #9, #10, #62–#68, #70, #71 neslučovat; id 129 neměnit;
-  K7 výkon jen s „SCHVÁLENO: výkonnost K7“; #69 deploy jen s novým schválením.
-- **Bezpečnostní brány:** výhradně PAPER; žádný LIVE/Render zápis/deploy/merge/force push; `FUNDING_SEMANTICS.json`
-  (performance_hold, R8/R9) neměnit; výkon jen s řádkem SCHVÁLENO; `OWNER_DECISIONS.md` nikdy neupravovat ani nezkracovat.
+## CHECKPOINT (přepisuje se; stav k 2026-11-23 11:15 UTC, autopilot běh #103 — bez nové výzkumné změny, kompakce CHECKPOINT)
+- **Běh #103 (11:15 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 07:00–11:04); bestof 132 (max id 132); lh_whale n=3;
+  DB 286 766 783 B ≈ 26,7 %. Od #102: ChatGPT 0457 (exclusion-gap `e5bd468`, Q28 podmíněně/Q29 SOUHLAS, runner `3af349a` bez auditu) a
+  label maturity preflight `a9f6fd0` — obojí již zkontrolovala souběžná Claude session (0458 `7283d33` + `bd8ab56`; TEST_LOG `2221278`) ⇒
+  neduplikováno. Výzkum: **bez nové změny** (vše otevřené vlastní ChatGPT nebo čeká Q30). Údržba: blok CHECKPOINT (152 ř.) přesunut doslovně
+  do `automation/archive/STATE-checkpoint-history-20261123.md` (SHA-256 `7554cc9f…c94b`). N +0, žádná data.
+- **DALŠÍ KROK:** ChatGPT Q30 (None ≡ False + docstring + pole `excluded_rows_within_separation_of_positive`), exact-SHA audit runneru
+  `3af349a`, B1 fit/loader (vlastník ChatGPT). Po SOUHLASU Q30 Claude implementuje docstring + diagnostické pole (jen diagnostika, freeze beze
+  změny). Q25–Q27, Q17 (#74) otevřené. Před prací `git ls-remote` větve `claude/*` daného dne (souběh Claude sessions).
+- **G1 Top Risk Radar (schváleno 2026-11-12, max. 1 běh):** NESPUSTITELNÝ — chybí B1 fit, B3, G0, workflow, B6 a LOCKED manifest (v3 delta
+  PR #73 `4970d49`, pre-gate PR #77 `eb5584a`, integrace `a71744d`, runner skelet `3af349a`). Fronta P3 A1–A3/K1–K14 vyčerpána (0437).
+- **Čeká na vlastníka:** PR #57 nasadit jen se souhlasem; #74 patch UI jen se schválením; PR #54, #8, #9, #10, #62–#68, #70, #71 neslučovat;
+  id 129 neměnit; K7 výkon jen s „SCHVÁLENO: výkonnost K7“; #69 deploy jen s novým schválením.
+- **Bezpečnostní brány:** výhradně PAPER; žádný LIVE/Render zápis/deploy/merge/force push; `FUNDING_SEMANTICS.json` neměnit;
+  výkon jen s řádkem SCHVÁLENO; `OWNER_DECISIONS.md` nikdy neupravovat ani nezkracovat.
 - **Forward RSI(2) (post-hoc výjimka vlastníka):** 0 obchodů; kontrola 2026-12-16, hlavní vyhodnocení ≥ 30 obchodů a nejdřív 2027-01-05.
 - **Další plánované:** 2026-12-01 Combined replay s `--end 2026-12-01`.
-- **Provozní/autopilot blokery:** žádné. Sandbox nemá přístup na data.binance.vision ani PyPI ⇒ data jen přes Actions.
-- **Pozn. kolize čísel:** dialogová úloha a autopilot píší souběžně ⇒ před commitem zprávy vždy `git fetch` a kontrola posledního čísla.
-  ChatGPT odpovídá i komentáři v PR/issues ⇒ INBOX kontrolovat i proti komentářům.
-- **Review kolektoru K11 UZAVŘENO** (ChatGPT 0409 → Claude 0410, dialog `6c549c5`): Q1–Q6 podmíněný SOUHLAS, plný jmenovatel jen citlivost (`481bd67`) ⇒ podmínka DALŠÍ KROK splněna.
-- **Čeká na ChatGPT:** 0402 Q2/Q4, 0397 Q1 (#69, `528ada0`), G1 freeze, 0374 (PR #66), 0375, 0357.
-- **DALŠÍ KROK (aktualizace 2026-11-20 06:00):** K11 uzavřena ⇒ podle rozhodnutí 2026-11-16 posunout novou hypotézu (A2/A3 fronta
-  nebo nový mechanismus; novelty gate proti registru, inventáři a K1–K11), max. 3/den. Původní text níže je zastaralý.
-- **DALŠÍ KROK (zastaralé):** po review 0408 (opravy do PR #71) commitnout `RUN_REQUEST_STEP0` na `research/k11-step0-collector-20261119`,
-  vyhodnotit manifest proti bráně §4 (DATA GO/NO-GO) a zapsat RESULTS. Bez review ChatGPT do 2 běhů: eskalovat v dialogu, nespouštět
-  bez ní (implementační volby dodatku 3 jsou nové). Výkon (výnosy) NEPOČÍTAT.
+- **Provoz:** sandbox bez data.binance.vision/PyPI ⇒ data jen přes Actions. Dialogová úloha a autopilot píší souběžně ⇒ před commitem
+  `git fetch` a kontrola posledního čísla zprávy; ChatGPT odpovídá i v komentářích PR/issues.
+- **Historie:** běhy #85–#102 v archivu výše; dále `TEST_LOG.md`, `REPORTS.md`, `automation/archive/STATE-do-20261116.md`.
 
 ## Aktivní body ze starších front (výtah; plné znění jen v archivu)
 - R3b forward PAPER RSI(2): parametry přesně jako PR #13, značit „(post-hoc, B6 nesplněno)“, žádný produkční bot (archiv ř. 190–211).
