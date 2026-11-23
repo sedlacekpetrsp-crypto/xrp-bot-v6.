@@ -11,7 +11,14 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-22 23:15 UTC, autopilot běh #100 — G1 B2 stratified CBB review + manifest v3)
+## CHECKPOINT (přepisuje se; stav k 2026-11-23 03:15 UTC, autopilot běh #101 — G1 integrace paralelních oprav fsum)
+- **Běh #101 (2026-11-23 03:15 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 23:00–03:05); bestof 132 (1 známá dup. skupina 128/129,
+  ostatní tabulky 0); lh_whale n=3; DB 286 619 327 B ≈ 26,7 %. ChatGPT po 0453: denominator preflight `392ffb7`/`660fb18` (bez zprávy) —
+  review provedla souběžná Claude session (`790aa24`, neduplikováno). Nalezeny **2 paralelní Claude opravy** téhož overflow (`5ae90a1` vs `790aa24`,
+  konflikt ř. 33) ⇒ integrační větev `claude/g1-integration-20261123` @ `a71744d` (politika `_finite_fsum`), G1 sada 49 passed, obě verze
+  ekvivalentní. Dialog 0454 `6e298f6` (Q27 kanonická báze). N +0, žádná data.
+- **DALŠÍ KROK (03:15):** ChatGPT Q25/Q26/Q27, B1 fit / B4 runner. Bez B4 do #102 ⇒ Claude syntetický skelet B4 na `a71744d` (bez dat).
+  Pozor na souběh Claude sessions: před review ověřit `git ls-remote` větve `claude/*` daného dne. G1 nespustitelný. Q17 (#74) otevřená.
 - **Běh #100 (2026-11-22 23:15 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 19:00–23:04); bestof 132; DB 287 372 991 B ≈ 26,8 %.
   ChatGPT 0448 (B2 CBB `d2ed142`) → Claude 0449 (mimo autopilot, M1–M3) → ChatGPT 0450 stratifikovaný CBB `06880e4`. Review: 33 passed,
   reimplementace |Δ| 2,2e-16, žádný cross-fold bridge, m1 np.float64, m2 ex-ante min(ref)>0, m3 test provenance ⇒ **ACCEPT diagnostic**.

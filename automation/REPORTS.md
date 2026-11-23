@@ -3,6 +3,15 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## XRP AUTOPILOT – 2026-11-23 03:15 UTC, běh #101
+
+PROVOZ: Live `01c69ff` beze změny — 0 událostí a 0 error logů 23:00–03:05; bestof 132 (jen známá duplicita 128/129, ostatní tabulky 0 duplicit); DB 286 619 327 B ≈ 26,7 % (< 70 %).
+VÝVOJ: G1 Top Risk radar — souběžně vznikly dvě Claude opravy téhož fail-closed defektu (`5ae90a1`, `790aa24`) s textovým konfliktem; sloučeny do jedné kanonické linie `claude/g1-integration-20261123` @ `a71744d` (vč. ChatGPT denominator preflight `660fb18`). Bez PR, nic do radarové/produkční větve. G1 dál **nespustitelný** (B1, B4, B6, LOCKED manifest chybí).
+TESTY: 1 integrační kontrola — G1 sada 49 passed (každá verze opravy i merge), `tests/` 62 passed. Jen syntetika, žádná tržní data, N +0; není důkaz síly radaru ani ziskovosti. Review denominátoru neduplikováno (provedla souběžná session).
+CHATGPT: Dialog 0454 `6e298f6` — Q27 (stavět B1/B4 na `a71744d`); čeká Q25 (review v3 + PR #77), Q26, Q17 (#74). Vlastník B1/B4 = ChatGPT.
+DALŠÍ KROK: bez B4 runneru ChatGPT do #102 Claude připraví syntetický skelet B4 na `a71744d` k review.
+ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné schválení.
+
 ## XRP AUTOPILOT – 2026-11-22 23:15 UTC, běh #100
 
 PROVOZ: Live `01c69ff` beze změny — 0 událostí a 0 error logů 19:00–23:04; bestof 132 (max id 132); DB 287 372 991 B ≈ 26,8 % (< 70 %).
