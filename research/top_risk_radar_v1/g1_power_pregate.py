@@ -35,6 +35,13 @@ def _validate(decisions: Sequence[datetime], labels: Sequence[Optional[bool]]) -
         raise ValueError("decisions/labels length mismatch")
     if not decisions:
         raise ValueError("empty decision grid")
+    # Reject ambiguous grids before fold assignment or label hashing.
+    if any(not isinstance(d, datetime) for d in decisions):
+        raise ValueError("decision timestamps must be datetime objects")
+    if any((d.tzinfo is None or d.utcoffset() is None) for d in decisions):
+        raise ValueError("decision timestamps must be timezone-aware")
+    if any(a >= b for a, b in zip(decisions, decisions[1:])):
+        raise ValueError("decision timestamps must be strictly increasing")
     for lab in labels:
         # bool is a subclass of int; reject 0/1, numpy bools, strings etc.
         if lab is not None and type(lab) is not bool:
