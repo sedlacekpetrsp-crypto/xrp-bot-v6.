@@ -30,7 +30,11 @@ def stratified_paired_bss(folds: Sequence[tuple[Sequence[float], Sequence[float]
             if any(type(x) not in (float, int) or not math.isfinite(x) or x < 0
                    for x in values):
                 raise ValueError("finite nonnegative losses required")
-        if math.fsum(ref) <= 0:
+        try:
+            ref_total = math.fsum(ref)
+        except OverflowError as exc:
+            raise ValueError("overflow in fold reference loss sum") from exc
+        if ref_total <= 0:
             raise ValueError("reference loss must be positive in every fold")
         clean.append((tuple(model), tuple(ref)))
     rng = random.Random(seed)
