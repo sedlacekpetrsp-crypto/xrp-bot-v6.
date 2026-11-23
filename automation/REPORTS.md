@@ -3,6 +3,15 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## XRP AUTOPILOT – 2026-11-23 15:15 UTC, běh #104
+
+PROVOZ: Live `01c69ff` beze změny — 0 událostí a 0 error logů 11:00–15:05; bestof 132 (max id 132, jen známá duplicita 128/129); DB 287 241 919 B ≈ 26,8 % (< 70 %).
+VÝVOJ: Exact-SHA review nové práce ChatGPT `62a4a79`/`8c223ce` (strict PIT batch, reakce na Q32): striktní `<` a karanténa po řádcích opraveny; nalezen **B1 MAJOR** — dávka nevyžaduje `source_id/archive_id/effective_at`, tj. propustí řádek, který kanonický `assess_event` odmítne; B2 MINOR. Review testy `efe0984` (`claude/review-pit-batch-strict-20261123`). Nic neintegrováno.
+TESTY: 1 review sada — 8 passed (ChatGPT), 3 passed + 3 strict xfail (review), diferenciál časového pravidla vs `e344063` 0/15 neshod. Jen syntetika, N +0, žádná tržní data; není důkaz ziskovosti.
+CHATGPT: Dialog 0461 `39a1696`, Q33 (wrapper nad `assess_event`). Čeká Q30, Q31, Q25–Q27, Q17; B1 fit a audit runneru `3af349a` vlastní ChatGPT.
+DALŠÍ KROK: review odpovědi ChatGPT na Q33/Q30; po SOUHLASU Q30 diagnostické pole v pre-gate.
+ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné schválení.
+
 ## XRP AUTOPILOT – 2026-11-23 11:15 UTC, běh #103
 
 PROVOZ: Live `01c69ff` beze změny — 0 událostí a 0 error logů 07:00–11:04; bestof 132 (max id 132); lh_whale 3; DB 286 766 783 B ≈ 26,7 % (< 70 %).

@@ -11,15 +11,14 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-23 11:15 UTC, autopilot běh #103 — bez nové výzkumné změny, kompakce CHECKPOINT)
-- **Běh #103 (11:15 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 07:00–11:04); bestof 132 (max id 132); lh_whale n=3;
-  DB 286 766 783 B ≈ 26,7 %. Od #102: ChatGPT 0457 (exclusion-gap `e5bd468`, Q28 podmíněně/Q29 SOUHLAS, runner `3af349a` bez auditu) a
-  label maturity preflight `a9f6fd0` — obojí již zkontrolovala souběžná Claude session (0458 `7283d33` + `bd8ab56`; TEST_LOG `2221278`) ⇒
-  neduplikováno. Výzkum: **bez nové změny** (vše otevřené vlastní ChatGPT nebo čeká Q30). Údržba: blok CHECKPOINT (152 ř.) přesunut doslovně
-  do `automation/archive/STATE-checkpoint-history-20261123.md` (SHA-256 `7554cc9f…c94b`). N +0, žádná data.
-- **DALŠÍ KROK:** ChatGPT Q30 (None ≡ False + docstring + pole `excluded_rows_within_separation_of_positive`), exact-SHA audit runneru
-  `3af349a`, B1 fit/loader (vlastník ChatGPT). Po SOUHLASU Q30 Claude implementuje docstring + diagnostické pole (jen diagnostika, freeze beze
-  změny). Q25–Q27, Q17 (#74) otevřené. Před prací `git ls-remote` větve `claude/*` daného dne (souběh Claude sessions).
+## CHECKPOINT (přepisuje se; stav k 2026-11-23 15:15 UTC, autopilot běh #104 — review strict PIT batch ChatGPT)
+- **Běh #104 (15:15 UTC):** live `01c69ff` beze změny (0 událostí/0 error logů 11:00–15:05); bestof 132 (max id 132, 1 známá dup. skupina);
+  DB 287 241 919 B ≈ 26,8 %. Výzkum: exact-SHA review ChatGPT `62a4a79`/`8c223ce` (strict PIT batch, reakce na Q32): 8 passed; R1/R2 z 0460
+  opraveny; **B1 MAJOR** chybí `source_id/archive_id/effective_at` (fail-open vůči `assess_event` `e344063`), B2 MINOR nehashovatelná duplicita;
+  diferenciál časového pravidla vs `e344063` 0/15 neshod. Review `efe0984` (`claude/review-pit-batch-strict-20261123`, 3 strict xfail),
+  dialog 0461 `39a1696`, Q33. N +0, žádná data, nic neintegrováno.
+- **DALŠÍ KROK:** ChatGPT Q33 (wrapper nad `assess_event`) a Q30/Q31; exact-SHA audit runneru `3af349a`, B1 fit (vlastník ChatGPT).
+  Po SOUHLASU Q30 Claude implementuje docstring + diagnostické pole. Q25–Q27, Q17 (#74) otevřené. Před prací `git ls-remote` větve `claude/*`.
 - **G1 Top Risk Radar (schváleno 2026-11-12, max. 1 běh):** NESPUSTITELNÝ — chybí B1 fit, B3, G0, workflow, B6 a LOCKED manifest (v3 delta
   PR #73 `4970d49`, pre-gate PR #77 `eb5584a`, integrace `a71744d`, runner skelet `3af349a`). Fronta P3 A1–A3/K1–K14 vyčerpána (0437).
 - **Čeká na vlastníka:** PR #57 nasadit jen se souhlasem; #74 patch UI jen se schválením; PR #54, #8, #9, #10, #62–#68, #70, #71 neslučovat;
