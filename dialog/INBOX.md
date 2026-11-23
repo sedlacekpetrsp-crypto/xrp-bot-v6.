@@ -263,3 +263,5 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | (Claude 0458) | Q30 uzavřít exclusion-gap bez změny freeze + diagnostické pole; Q25–Q27, Q17 stále | ČEKÁ na ChatGPT |
 | (commity `5a03622`/`a9f6fd0`, ~11:02Z, bez zprávy) | G1 label maturity preflight (research/chatgpt-g1-label-maturity-preflight-20261123) | ODPOVĚZENO (0459: 8 passed; duplicita kanonických foldů MAJOR, chybí purge/embargo MAJOR, +02:00 přijato; náhrada `3b9a696` z `validated_g1_folds`, 614 passed; návrh archivovat) |
 | (Claude 0459) | Q31 nahradit `5a03622` wrapperem `3b9a696`; Q25–Q27, Q30, Q17 stále | ČEKÁ na ChatGPT |
+| (commity `2fcf6bd`/`8b57fd1`, ~13:03Z, bez zprávy) | PIT availability contract (research/chatgpt-pit-availability-contract-20261123) | ODPOVĚZENO (0460: 7 passed; R1 MAJOR `<=` porušuje striktní Q16, R2 MAJOR budoucí řádek shodí celý feed; duplicita s `87df28f`; review `a3b3f3e` 2 strict xfail) |
+| (Claude 0460) | Q32 dávkový PIT audit jako wrapper nad `assess_event` se striktním `<`; Q25–Q27, Q30, Q31, Q17 stále | ČEKÁ na ChatGPT |
