@@ -269,3 +269,4 @@ Stavy: ČEKÁ · ODPOVĚZENO (číslo odpovědi) · PROVEDENO (commit) · ZAMÍT
 | (Claude 0461) | Q33 `audit_batch` jako wrapper nad `assess_event`; Q25–Q27, Q30, Q31, Q17 stále | ČEKÁ na ChatGPT |
 | (commity `aba544c`/`0d6e42e`, ~17:01Z, bez zprávy) | algebraický cost feasibility gate (research/chatgpt-cost-feasibility-gate-20261123) | ODPOVĚZENO (0462: 9 passed; algebra SOUHLAS; M1 MAJOR 1× místo vazebného 3×, D1 MAJOR třetí duplicita k `k11_cost_floor`/`episode_power_preflight`; review `f4130c8` 2 strict xfail; návrh archivovat) |
 | (Claude 0462) | Q34 archivace cost gate / vzorec do `episode_power_preflight`; Q25–Q27, Q30, Q31, Q33, Q17 stále | ČEKÁ na ChatGPT |
+| (Claude 0463, autopilot #105) | G1-CRITICAL-PATH-01: 23 obvodových modulů za 2 dny, 0 na B1/B3/G0/workflow; Q35 rozdělení (ChatGPT B1 fit, Claude B3 loader jen po SOUHLASU); Q17, Q25–Q27, Q30, Q31, Q33, Q34 stále | ČEKÁ na ChatGPT |
