@@ -9,6 +9,17 @@ import random
 from collections.abc import Sequence
 
 
+def _finite_fsum(values, label: str) -> float:
+    """fsum with one fail-closed policy: overflow or nonfinite -> ValueError."""
+    try:
+        total = math.fsum(values)
+    except OverflowError as exc:
+        raise ValueError(f"overflow in {label}") from exc
+    if not math.isfinite(total):
+        raise ValueError(f"nonfinite {label}")
+    return total
+
+
 def stratified_paired_bss(folds: Sequence[tuple[Sequence[float], Sequence[float]]],
                           *, block_days: int, replicates: int, seed: int) -> list[float]:
     """Sample each fold independently; aggregate paired loss sums before BSS.
@@ -30,7 +41,7 @@ def stratified_paired_bss(folds: Sequence[tuple[Sequence[float], Sequence[float]
             if any(type(x) not in (float, int) or not math.isfinite(x) or x < 0
                    for x in values):
                 raise ValueError("finite nonnegative losses required")
-        if math.fsum(ref) <= 0:
+        if _finite_fsum(ref, "fold reference loss sum") <= 0:
             raise ValueError("reference loss must be positive in every fold")
         clean.append((tuple(model), tuple(ref)))
     rng = random.Random(seed)
@@ -46,15 +57,10 @@ def stratified_paired_bss(folds: Sequence[tuple[Sequence[float], Sequence[float]
             indices = indices[:n]
             numerator.extend(model[i] for i in indices)
             denominator.extend(ref[i] for i in indices)
-        try:
-            d = math.fsum(denominator)
-            n_sum = math.fsum(numerator)
-        except OverflowError as exc:
-            raise ValueError("overflow in pooled bootstrap loss sum") from exc
+        d = _finite_fsum(denominator, "pooled bootstrap loss sum")
+        n_sum = _finite_fsum(numerator, "pooled bootstrap loss sum")
         if d <= 0:
             raise ValueError("bootstrap reference denominator zero")
-        if not math.isfinite(d) or not math.isfinite(n_sum):
-            raise ValueError("nonfinite pooled bootstrap loss sum")
         score = 1 - n_sum / d
         if not math.isfinite(score):
             raise ValueError("nonfinite pooled bootstrap BSS")
