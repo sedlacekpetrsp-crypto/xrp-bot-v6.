@@ -1,0 +1,34 @@
+name: K9 step 0 Binance Vision data audit (PAPER research, data only)
+# Jen výzkumná větev. Žádné secrets, žádný Render, žádné objednávky, žádné výnosy, žádná fáze A.
+on:
+  push:
+    branches: ["research/k9-step0-*"]
+    paths:
+      - "research/k9_round_number/RUN_REQUEST_STEP0"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install pytest pandas numpy && python -m pytest -q -p no:cacheprovider tests/test_k9_round_number.py tests/test_k9_step0_phase_a.py
+      - name: Step 0 data audit (Binance Vision UM klines 1m, SHA-256 + coverage)
+        run: |
+          set -o pipefail
+          python -m research.k9_round_number.step0 --outdir research/k9_round_number | tee research/k9_round_number/step0_summary.txt
+      - name: Commit audit metadata
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          git add research/k9_round_number/step0_* || true
+          git diff --cached --quiet && exit 0
+          git commit -m "K9 krok 0: výsledky datového auditu (run ${GITHUB_RUN_ID}) [skip ci]"
+          git pull --rebase origin ${GITHUB_REF_NAME}
+          git push origin HEAD:${GITHUB_REF_NAME}

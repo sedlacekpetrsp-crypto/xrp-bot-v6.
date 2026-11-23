@@ -1,0 +1,34 @@
+name: K9 phase A microstructure (PAPER research, no returns)
+# Jen výzkumná větev. Žádné secrets, žádný Render, žádné objednávky, žádné výnosy, žádná fáze B.
+on:
+  push:
+    branches: ["research/k9-step0-*"]
+    paths:
+      - "research/k9_round_number/RUN_REQUEST_PHASEA"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install pytest pandas numpy && python -m pytest -q -p no:cacheprovider tests/test_k9_round_number.py tests/test_k9_step0_phase_a.py
+      - name: Phase A (SHA-256 vs step0 manifest, D1/D2, power, exposure)
+        run: |
+          set -o pipefail
+          python -m research.k9_round_number.phase_a_run | tee research/k9_round_number/phaseA_summary.txt
+      - name: Commit audit metadata
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          git add research/k9_round_number/phaseA_* || true
+          git diff --cached --quiet && exit 0
+          git commit -m "K9 fáze A: výsledky mikrostruktury (run ${GITHUB_RUN_ID}) [skip ci]"
+          git pull --rebase origin ${GITHUB_REF_NAME}
+          git push origin HEAD:${GITHUB_REF_NAME}
