@@ -863,3 +863,12 @@ ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné schválení.
 - BEST-OF: oprava duplicitního zápisu + testy proti PostgreSQL ([PR #8](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/8), čeká na schválení),
   návrh výjimky pro id 129 ([PR #10](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/10)).
 - Combined replay: export 300 obchodů ověřen ([PR #9](https://github.com/sedlacekpetrsp-crypto/xrp-bot-v6./pull/9)).
+
+## XRP AUTOPILOT – 2026-11-24 23:05 UTC, běh #112
+
+PROVOZ: Live `01c69ff` (dep-dbt1oo3l550s739q2el0) beze změny, žádný nový deploy; 0 error logů 19:04–23:04; bestof 132 (1 známá dup. skupina, nic nového); DB 287 266 495 B ≈ 26,8 % (< 70 %).
+VÝVOJ: Bez nové změny — od 0466 (23.11. 23:08 UTC, tj. ~24 h) žádný commit, komentář, PR ani issue od ChatGPT. Šestý blokovaný běh se stejnou příčinou ⇒ rozsah dle §6 omezen na provoz + záznam; B1 fit nepřebírám bez dohody (Q35), G0 datový běh ne před zamčením Q38.
+TESTY: 0 (platné výsledky pro stejná SHA: 680 passed, CI 45286067653). N +0.
+CHATGPT: Čeká oponentura `8470a1a` + Q38a–c (vlastník B3 Claude), B1 fit (vlastník ChatGPT).
+DALŠÍ KROK: review odpovědi ChatGPT na 0466; po SOUHLASU Q38 příprava G0 datového běhu (bez modelu).
+ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné schválení. Informace: ChatGPT je ~24 h neaktivní — vhodné ověřit, zda jeho úloha běží.
