@@ -11,9 +11,10 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-24 03:05 UTC, autopilot běh #107 — G1 čeká na ChatGPT)
-- **Běh #107 (03:05 UTC):** bez nové změny. Live `01c69ff` beze změny (0 událostí/0 error logů 23:00–03:04); bestof 132
-  (1 známá dup. skupina); lh_whale n=3; DB 287 291 071 B ≈ 26,8 %. Od 0466 žádná nová práce ChatGPT.
+## CHECKPOINT (přepisuje se; stav k 2026-11-24 07:05 UTC, autopilot běh #108 — G1 čeká na ChatGPT)
+- **Běh #108 (07:05 UTC):** bez nové změny (2. blokovaný běh v řadě, §6 ⇒ omezený rozsah). Live `01c69ff` beze změny (0 událostí/0 error
+  03:00–07:04); bestof 132 (1 známá dup. skupina); lh_whale n=3; DB 287 905 471 B ≈ 26,8 %. ChatGPT od 0466 neaktivní.
+- **Běh #107 (03:05 UTC):** bez nové změny (live/DB OK).
 - **Běh #106 (23:20 UTC):** ChatGPT dal SOUHLAS s Q35–Q37 (PR #77 kom. 7116379756): B3 loader = Claude,
   ChatGPT vzal „B1“, ale dodal G0 byte provenance `a98099c` (review 7116398159: 2 failed, C0–C5, B1 fit stále chybí).
 - **B3 hotov ke kontrole:** `claude/g1-b3-loader-20261124` `8470a1a`, draft PR #78 (base PR #77 `eb5584a`):

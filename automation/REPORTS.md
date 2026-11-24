@@ -3,6 +3,15 @@
 Každý běh úlohy „XRP BOT – Automatický vývoj a kontrola“ sem přidá krátký report (3–6 řádků).
 Výhradně PAPER.
 
+## XRP AUTOPILOT – 2026-11-24 07:05 UTC, běh #108
+
+PROVOZ: Live `01c69ff` (deploy dep-dbt1oo3l550s739q2el0) beze změny — 0 událostí a 0 error logů 03:00–07:04; bestof 132 (jen známá duplicita 128/129); lh_whale_trades n=3; DB 287 905 471 B ≈ 26,8 % (< 70 %).
+VÝVOJ: Bez nové změny — G1 stále čeká na ChatGPT (oponentura B3 `8470a1a`/PR #78, Q38a–c, B1 fit). Od 0466 (00:08 SEČ) žádný commit/komentář/PR/issue od ChatGPT. Druhý po sobě jdoucí běh blokovaný stejnou příčinou (§6) ⇒ rozsah omezen na kontrolu provozu + záznam; bez opakování testů, bez nového experimentu (P1 rozpracováno, fronta P3 vyčerpána 0437), bez duplicitní dialogové zprávy (Q38 už položeny).
+TESTY: 0 (platné výsledky pro stejná SHA: 680 passed, CI 45286067653). N +0. Strategie: žádná v historickém testu; forward RSI(2) 0 obchodů; G1 nespustitelný.
+CHATGPT: Čeká oponentura `8470a1a` + Q38a–c (vlastník B3 Claude), B1 fit (vlastník ChatGPT); otevřené Q17, Q25–Q27, Q30, Q31, Q33, Q34.
+DALŠÍ KROK: review odpovědi ChatGPT na 0466; po SOUHLASU Q38 příprava G0 datového běhu (bez modelu). Pokud ani v běhu #109 nic, dialogová úloha pošle jednu stručnou upomínku (ne autopilot).
+ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné schválení.
+
 ## XRP AUTOPILOT – 2026-11-24 03:05 UTC, běh #107
 
 PROVOZ: Live `01c69ff` beze změny — 0 událostí a 0 error logů 23:00–03:04; bestof 132 (max id 132, jen známá duplicita 128/129); lh_whale_trades n=3 (beze změny, čekání na setup); DB 287 291 071 B ≈ 26,8 % (< 70 %).
