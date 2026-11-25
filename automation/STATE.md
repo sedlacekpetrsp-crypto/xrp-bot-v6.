@@ -11,8 +11,11 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-25 07:05 UTC, autopilot běh #114 — G1 čeká na ChatGPT)
-- **Běh #114 (07:05 UTC):** bez nové změny (8. blokovaný běh, ChatGPT ~32 h neaktivní). Live `01c69ff`, 0 error 03:04–07:04;
+## CHECKPOINT (přepisuje se; stav k 2026-11-25 11:05 UTC, autopilot běh #115 — B3 kolo 2 + B1 čekají na ChatGPT)
+- **Běh #115 (11:05 UTC):** bez nové změny. ChatGPT znovu aktivní: review PR #78 kolo 1 (6053223820, 07:04Z, 2 blokery,
+  Q38a–c podmíněný SOUHLAS) ⇒ opraveno souběžnou session v `668022a` (38 passed, CI run 45565526103 success). Čeká kolo 2
+  `668022a` + B1 fit (ChatGPT). Live `01c69ff`, 0 error 07:04–11:04; bestof 132; DB 286 103 231 B ≈ 26,6 %. PR #79 dál čeká na vlastníka.
+- **Běh #114 (07:05 UTC):** bez nové změny (8. blokovaný běh; ChatGPT pak odpověděl v 07:04Z). Live `01c69ff`, 0 error 03:04–07:04;
   bestof 132; DB 287 233 727 B ≈ 26,8 %. Nový PR #79 (jiná session, UI skrytí FLY) čeká na „Nasaď“ vlastníka — autopilot nesahá.
 - **Běh #113 (03:05 UTC):** bez nové změny (7. blokovaný běh, ChatGPT ~28 h neaktivní; vlastník upozorněn notifikací). Live `01c69ff`,
   0 error 23:04–03:04; bestof 132; DB 287 823 551 B ≈ 26,8 %.
@@ -23,7 +26,7 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
   `g1_b3_loader.py` (SHA-256 `056b856e…6ba72`) 1m klines→denní close (bar 23:59, available close+60 s), 9 B3 featur přes
   `build_feature_bundle` + BTC rv30, P(t)=CLOSE 00:05 trades>0, label [00:06,+336 h), 4 explicitní výjimky, per-row provenance.
   33 syntetických testů + mutační kontrola; lokálně 680 passed; CI run 45286067653 success na přesném SHA. Data 0, N +0.
-- **DALŠÍ KROK:** oponentura ChatGPT na `8470a1a` + odpovědi Q38a–c (dialog 0466 `27a0f6d`); ChatGPT B1 fit (LogReg M0/B1/B2/B3,
+- **DALŠÍ KROK:** kolo 2 oponentury ChatGPT na `668022a` (0467; Q38a–c podmíněně SOUHLAS); ChatGPT B1 fit (LogReg M0/B1/B2/B3,
   vnitřní validace) nad `B3_FEATURES`. Pak Claude: G0 datový běh (stažení + .CHECKSUM → `MinuteSeries`) jako workflow_dispatch
   BEZ modelu — teprve po zamčení definic (Q38). Q17, Q25–Q27, Q30, Q31, Q33, Q34 otevřené. Před prací `git ls-remote` větve `claude/*`.
 - **G1 Top Risk Radar (schváleno 2026-11-12, max. 1 běh):** NESPUSTITELNÝ — chybí B1 fit, G0 manifest, workflow §9, B6 a LOCKED
