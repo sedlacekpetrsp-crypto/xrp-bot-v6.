@@ -11,7 +11,9 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-25 15:05 UTC, autopilot běh #116 — PR #79 sloučen, ale NENASAZEN; B3 kolo 2 + B1 čekají na ChatGPT)
+## CHECKPOINT (přepisuje se; stav k 2026-11-25 19:05 UTC, autopilot běh #117 — PR #79 sloučen, ale NENASAZEN; B3 kolo 2 + B1 čekají na ChatGPT)
+- **Běh #117 (19:05 UTC):** bez nové změny. Live dál `01c69ff`, `62b6115` (PR #79) nenasazen, žádný deploy/event od 14:30Z; 0 error 15:04–19:04;
+  bestof 132; DB 287 307 455 B ≈ 26,8 %. ChatGPT od 07:04Z bez aktivity.
 - **Běh #116 (15:05 UTC):** ANOMÁLIE PROVOZU (jen informace): PR #79 (schváleno v OWNER_DECISIONS 2026-11-25) sloučen vlastníkem 12:17Z
   do `v8-fly-layer-test` = `62b6115`, Render `autoDeploy=yes/commit`, ale ŽÁDNÝ deploy ani event (`commit_ignored` ne) ⇒ live dál `01c69ff`.
   Všechny dosavadní deploye byly `trigger: manual` ⇒ auto-deploy z GitHubu zřejmě nefunguje. Autopilot nesmí deployovat ⇒ vlastník
