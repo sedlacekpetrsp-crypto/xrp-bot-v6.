@@ -54,6 +54,12 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 - R10: N = 159 je pracovní odhad, V[SR] = 0,5 předpoklad ⇒ DSR uvádět jako podmíněné (archiv ř. 256–258).
 - Inventář 110 hypotéz `reports/hypothesis-inventory-20261105.md` (103 NEPROŠLO) — nic neopakovat (archiv ř. 262–267).
 
+## ROZHODNUTÍ 2026-11-25 — HUNT-DAILY (vlastník v chatu: „Potřebujeme, abyste pokud možno vyvíjeli každý den novou strategii. Hledejte a navrhujte strategie z různých databází a testů od různých traderů a cokoliv vás napadne“)
+- Cíl: každý den ≥ 1 nová hypotéza (max. 3/den dle frameworku) s mechanismem + zdrojem (paper, databáze, veřejný test tradera); kontrola duplicit, filtr hrana ≥ 3× celkový náklad, krok 0 PIT data, protokol zmrazen před daty. Výhradně PAPER.
+- G1 lov NEBLOKUJE — běží paralelně. Žádné obvodové moduly bez konzumenta.
+- Fronta (dialog 0468 `d473d0e`, čeká oponentura ChatGPT Q39–Q41): H-A CME_WEEKEND_GAP_FILL (Binance Vision 1m, krok 0 data-only může začít i bez odpovědi), H-B TOKEN_UNLOCK_PRE_DRIFT (krok 0: PIT zdroj plánů odemčení).
+- Hlášení vlastníkovi: 1 řádek stav strategií (co je v testu, výsledek po nákladech).
+
 ## ROZHODNUTÍ 2026-11-16 ~14:10 UTC — TRVALÝ LOV STRATEGIÍ (vlastník v chatu: „chci, abyste sháněli anebo vyvíjeli pořád nové strategie pro boty“)
 - Hledání a vývoj nových strategií se **nepozastavuje**. Má přednost před stavem „0 kandidátů / lov pozastaven“ (0246/0247, HUNT-11 0292–0293).
 - Každý autopilot běh bez rozpracované P1/P2 práce posune alespoň jednu novou hypotézu (návrh s mechanismem → kontrola duplicit v inventáři a registru → protokol → datový audit → test). Pokud nikdo nemá kandidáta, Claude ho vymyslí (jiný mechanismus, trh, zdroj dat nebo horizont).
