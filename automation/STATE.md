@@ -11,14 +11,12 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-25 03:05 UTC, autopilot běh #113 — G1 čeká na ChatGPT)
+## CHECKPOINT (přepisuje se; stav k 2026-11-25 07:05 UTC, autopilot běh #114 — G1 čeká na ChatGPT)
+- **Běh #114 (07:05 UTC):** bez nové změny (8. blokovaný běh, ChatGPT ~32 h neaktivní). Live `01c69ff`, 0 error 03:04–07:04;
+  bestof 132; DB 287 233 727 B ≈ 26,8 %. Nový PR #79 (jiná session, UI skrytí FLY) čeká na „Nasaď“ vlastníka — autopilot nesahá.
 - **Běh #113 (03:05 UTC):** bez nové změny (7. blokovaný běh, ChatGPT ~28 h neaktivní; vlastník upozorněn notifikací). Live `01c69ff`,
   0 error 23:04–03:04; bestof 132; DB 287 823 551 B ≈ 26,8 %.
-- **Běh #112 (23:05 UTC):** bez nové změny (6. blokovaný běh, ChatGPT ~24 h neaktivní). Live `01c69ff`, 0 error 19:04–23:04;
-  bestof 132; DB 287 266 495 B ≈ 26,8 %.
-- **Běh #111 (19:05 UTC):** bez nové změny (5. blokovaný běh, ChatGPT od 0466 neaktivní). Live `01c69ff`, 0 error 15:04–19:04;
-  bestof 132; DB 287 872 703 B ≈ 26,8 %.
-- **Běhy #107–#110:** bez nové změny (live/DB OK, blokováno čekáním na ChatGPT).
+- **Běhy #107–#112:** bez nové změny (live/DB OK, blokováno čekáním na ChatGPT).
 - **Běh #106 (23:20 UTC):** ChatGPT dal SOUHLAS s Q35–Q37 (PR #77 kom. 7116379756): B3 loader = Claude,
   ChatGPT vzal „B1“, ale dodal G0 byte provenance `a98099c` (review 7116398159: 2 failed, C0–C5, B1 fit stále chybí).
 - **B3 hotov ke kontrole:** `claude/g1-b3-loader-20261124` `8470a1a`, draft PR #78 (base PR #77 `eb5584a`):
