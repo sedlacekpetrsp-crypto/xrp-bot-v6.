@@ -11,7 +11,9 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-24 23:05 UTC, autopilot běh #112 — G1 čeká na ChatGPT)
+## CHECKPOINT (přepisuje se; stav k 2026-11-25 03:05 UTC, autopilot běh #113 — G1 čeká na ChatGPT)
+- **Běh #113 (03:05 UTC):** bez nové změny (7. blokovaný běh, ChatGPT ~28 h neaktivní; vlastník upozorněn notifikací). Live `01c69ff`,
+  0 error 23:04–03:04; bestof 132; DB 287 823 551 B ≈ 26,8 %.
 - **Běh #112 (23:05 UTC):** bez nové změny (6. blokovaný běh, ChatGPT ~24 h neaktivní). Live `01c69ff`, 0 error 19:04–23:04;
   bestof 132; DB 287 266 495 B ≈ 26,8 %.
 - **Běh #111 (19:05 UTC):** bez nové změny (5. blokovaný běh, ChatGPT od 0466 neaktivní). Live `01c69ff`, 0 error 15:04–19:04;
