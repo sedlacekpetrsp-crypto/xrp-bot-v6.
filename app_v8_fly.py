@@ -237,6 +237,31 @@ async def analyze_with_pnl_breakdown():
     return JSONResponse(data, headers={"Cache-Control": "no-store"})
 
 
+FLY_DASHBOARD_CARDS = (
+    '<div class="card"><div id="stats" class="grid"></div></div>',
+    '<div class="card"><h2>📌 Otevřená pozice</h2><div id="position" class="muted">—</div></div>',
+    '<div class="card" id="flyTradesCard" style="display:none">',
+)
+
+
+def _hide_paused_fly_cards(html, paused):
+    """Owner 2026-11-25: paused FLY must not appear in the bot list.
+
+    The client-side check (DOMContentLoaded) ran before /analyze filled #stats,
+    so the legacy FLY balance/trades/PnL card stayed visible. Hide the three FLY
+    cards server-side (elements stay in the DOM so the existing JS keeps working)
+    plus a CSS :has() fallback. Data and JSON endpoints are untouched.
+    """
+    if "FLY" not in paused:
+        return html
+    stats, position, trades = FLY_DASHBOARD_CARDS
+    html = html.replace(stats, stats.replace('<div class="card">', '<div class="card" data-paused-bot="FLY" style="display:none">', 1), 1)
+    html = html.replace(position, position.replace('<div class="card">', '<div class="card" data-paused-bot="FLY" style="display:none">', 1), 1)
+    html = html.replace(trades, '<div class="card" id="flyTradesCard" data-paused-bot="FLY" style="display:none!important">', 1)
+    css = ".card:has(> #stats),.card:has(> #position),#flyTradesCard{display:none!important}"
+    return html.replace("</head>", "<style>" + css + "</style></head>", 1)
+
+
 @app.get("/", response_class=HTMLResponse)
 async def dashboard_with_pnl_breakdown():
     html = await _original_dashboard()
@@ -726,6 +751,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         banner = ''
         html = html.replace('<div class="wrap">', '<div class="wrap">' + banner, 1)
         html = html.replace("w.status||'—'", "w.status==='paused'?'⏸ POZASTAVENO':(w.status||'—')")
+    html = _hide_paused_fly_cards(html, PAUSED_BOTS)
     return HTMLResponse(html, headers={"Cache-Control": "no-store"})
 
 
