@@ -66,7 +66,7 @@ B1_FEATURES = ("xrp_realized_vol_30d",)
 B2_FEATURES = ("xrp_log_return_7d", "xrp_log_return_30d", "xrp_drawdown_30d")
 
 EXCLUSION_REASONS = (
-    "incomplete_daily_bar", "no_trade_in_minute_0005", "missing_minutes_in_horizon", "unmatured",
+    "decision_after_as_of", "incomplete_daily_bar", "no_trade_in_minute_0005", "missing_minutes_in_horizon", "unmatured",
 )
 
 
@@ -194,22 +194,34 @@ def _features(xrp: MinuteSeries, btc: MinuteSeries, key: datetime):
 
 
 def _label(xrp: MinuteSeries, key: datetime, as_of: datetime):
+    """-> (reference_price, y, reason, reference_provenance, label_provenance).
+
+    Caller guarantees decision_at (key + 1 min) <= as_of, so the reference bar is
+    observable. Maturity is checked before any horizon bar is read; label
+    provenance covers the FULL window (also after an early hit) and is kept
+    apart from feature provenance so label metadata never enters a fit.
+    """
     ref_bar = xrp.get(key)
     if ref_bar is None or ref_bar.trades == 0:
-        return None, None, "no_trade_in_minute_0005"
+        return None, None, "no_trade_in_minute_0005", None, None
+    ref_prov = {"archive_sha256": ref_bar.archive_sha256, "bar_open_utc": key.isoformat()}
     start = key + MINUTE
     end = start + HORIZON
     if end > as_of:
-        return ref_bar.close, None, "unmatured"
+        return ref_bar.close, None, "unmatured", ref_prov, None
     if xrp.count_missing(start, end):
-        return ref_bar.close, None, "missing_minutes_in_horizon"
+        return ref_bar.close, None, "missing_minutes_in_horizon", ref_prov, None
     barrier = RISK_RATIO * ref_bar.close
-    t = start
+    y, shas, t = 0, set(), start
     while t < end:
-        if xrp.get(t).low <= barrier:
-            return ref_bar.close, 1, None
+        bar = xrp.get(t)
+        shas.add(bar.archive_sha256)
+        if bar.low <= barrier:
+            y = 1
         t += MINUTE
-    return ref_bar.close, 0, None
+    label_prov = {"archive_sha256": sorted(shas), "first_bar_utc": start.isoformat(),
+                  "last_bar_utc": (end - MINUTE).isoformat()}
+    return ref_bar.close, y, None, ref_prov, label_prov
 
 
 def build_g1_rows(xrp: MinuteSeries, btc: MinuteSeries, decisions: Sequence[datetime],
@@ -230,13 +242,19 @@ def build_g1_rows(xrp: MinuteSeries, btc: MinuteSeries, decisions: Sequence[date
     for key in decisions:
         row = {"decision_key_utc": key.isoformat(), "decision_at_utc": (key + MINUTE).isoformat(),
                "loader_version": LOADER_VERSION}
+        if key + MINUTE > as_of:
+            # Review 6053223820 (1): nothing observed after as_of may be emitted.
+            row.update(status="excluded", reason="decision_after_as_of")
+            out.append(row)
+            continue
         feats, prov = _features(xrp, btc, key)
         if feats is None:
             row.update(status="excluded", reason="incomplete_daily_bar")
             out.append(row)
             continue
-        ref, y, reason = _label(xrp, key, as_of)
-        row.update({"features": {k: feats[k] for k in B3_FEATURES}, "provenance": prov,
+        ref, y, reason, ref_prov, label_prov = _label(xrp, key, as_of)
+        row.update({"features": {k: feats[k] for k in B3_FEATURES},
+                    "provenance": {"features": prov, "reference": ref_prov, "label": label_prov},
                     "reference_price": ref})
         if reason:
             row.update(status="excluded", reason=reason)

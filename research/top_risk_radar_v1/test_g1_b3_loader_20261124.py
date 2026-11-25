@@ -92,8 +92,8 @@ def test_usable_row_has_frozen_b3_features_and_provenance():
     assert tuple(r["features"]) == L.B3_FEATURES
     assert all(math.isfinite(v) for v in r["features"].values())
     assert r["decision_at_utc"] == "2025-01-02T00:06:00+00:00"
-    assert r["provenance"]["source_archive_sha256"] == [SHA_X, SHA_B]
-    assert r["provenance"]["max_available_at_utc"] == "2025-01-02T00:01:00+00:00"   # close + 60 s < 00:05
+    assert r["provenance"]["features"]["source_archive_sha256"] == [SHA_X, SHA_B]
+    assert r["provenance"]["features"]["max_available_at_utc"] == "2025-01-02T00:01:00+00:00"   # close + 60 s < 00:05
     assert r["reference_price"] == pytest.approx(price("X", KEY))
 
 
@@ -188,7 +188,7 @@ def test_future_minutes_from_0000_do_not_change_features():
     ov = {t: v for t, v in _perturb(day0, 3.0).items() if t != KEY}
     pert = row(series("X", override=ov))
     assert pert["features"] == base["features"]
-    assert pert["provenance"] == base["provenance"]
+    assert pert["provenance"]["features"] == base["provenance"]["features"]
 
 
 def test_minutes_after_0006_do_not_change_features_or_reference():
@@ -226,3 +226,39 @@ def test_perturbation_test_is_sensitive_to_last_available_bar():
     t = KEY.replace(minute=0) - M
     p = price("X", t)
     assert row(series("X", override={t: (p, 2 * p, p, 2 * p, 5)}))["features"] != row()["features"]
+
+
+# --- review 6053223820 (ChatGPT, PR #78) -------------------------------------------
+@pytest.mark.parametrize("as_of", [KEY, KEY - L.DAY, KEY + M - timedelta(microseconds=1)])
+def test_decision_after_as_of_emits_no_payload(as_of):
+    r = row(as_of=as_of)
+    assert (r["status"], r["reason"]) == ("excluded", "decision_after_as_of")
+    assert not {"features", "reference_price", "provenance", "y"} & set(r)
+
+
+def test_decision_exactly_at_as_of_is_unmatured_with_reference_only():
+    r = row(as_of=KEY + M)
+    assert r["reason"] == "unmatured" and r["provenance"]["label"] is None
+    assert r["provenance"]["reference"]["bar_open_utc"] == KEY.isoformat()
+
+
+def test_feature_reference_label_provenance_separated_full_horizon():
+    sha_ref, sha_last = "c" * 64, "d" * 64
+    p = price("X", KEY)
+    q = price("X", KEY + M)
+    last = KEY + M + L.HORIZON - M
+    xb = []
+    for b in bars("X", override={KEY + M: (q, q, 0.5 * p, q, 9)}):   # early hit at 00:06
+        if b.open_time == KEY:
+            b = L.Bar(b.open_time, b.open, b.high, b.low, b.close, b.trades, sha_ref)
+        elif b.open_time == last:
+            b = L.Bar(b.open_time, b.open, b.high, b.low, b.close, b.trades, sha_last)
+        xb.append(b)
+    r = row(L.MinuteSeries("XRPUSDT", xb))
+    assert r["y"] == 1
+    prov = r["provenance"]
+    assert prov["reference"]["archive_sha256"] == sha_ref
+    assert sha_last in prov["label"]["archive_sha256"] and SHA_X in prov["label"]["archive_sha256"]
+    assert prov["label"]["last_bar_utc"] == last.isoformat()
+    assert sha_ref not in prov["features"]["source_archive_sha256"]
+    assert sha_last not in prov["features"]["source_archive_sha256"]
