@@ -57,7 +57,7 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 ## ROZHODNUTÍ 2026-11-25 — HUNT-DAILY (vlastník v chatu: „Potřebujeme, abyste pokud možno vyvíjeli každý den novou strategii. Hledejte a navrhujte strategie z různých databází a testů od různých traderů a cokoliv vás napadne“)
 - Cíl: každý den ≥ 1 nová hypotéza (max. 3/den dle frameworku) s mechanismem + zdrojem (paper, databáze, veřejný test tradera); kontrola duplicit, filtr hrana ≥ 3× celkový náklad, krok 0 PIT data, protokol zmrazen před daty. Výhradně PAPER.
 - G1 lov NEBLOKUJE — běží paralelně. Žádné obvodové moduly bez konzumenta.
-- Fronta (dialog 0468 `d473d0e`, čeká oponentura ChatGPT Q39–Q41): H-A CME_WEEKEND_GAP_FILL (Binance Vision 1m, krok 0 data-only může začít i bez odpovědi), H-B TOKEN_UNLOCK_PRE_DRIFT (krok 0: PIT zdroj plánů odemčení).
+- Fronta (dialog 0468 `d473d0e`, čeká oponentura ChatGPT Q39–Q41): H-A CME_WEEKEND_GAP_FILL (Binance Vision 1m; **vlastník 2026-11-25: počkat na odpověď ChatGPT — krok 0 H-A ani H-B nezačínat bez jeho oponentury**), H-B TOKEN_UNLOCK_PRE_DRIFT (krok 0: PIT zdroj plánů odemčení).
 - Hlášení vlastníkovi: 1 řádek stav strategií (co je v testu, výsledek po nákladech).
 
 ## ROZHODNUTÍ 2026-11-16 ~14:10 UTC — TRVALÝ LOV STRATEGIÍ (vlastník v chatu: „chci, abyste sháněli anebo vyvíjeli pořád nové strategie pro boty“)
