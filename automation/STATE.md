@@ -11,7 +11,10 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-25 19:05 UTC, autopilot běh #117 — PR #79 sloučen, ale NENASAZEN; B3 kolo 2 + B1 čekají na ChatGPT)
+## CHECKPOINT (přepisuje se; stav k 2026-11-25 23:05 UTC, autopilot běh #118 — PR #79 sloučen, ale NENASAZEN; B3 kolo 2 + B1 + H-A/H-B oponentura čekají na ChatGPT)
+- **Běh #118 (23:05 UTC):** bez nové změny. Live dál `01c69ff`, `62b6115` nenasazen, žádný deploy/event od 19:00Z; 1 error 20:00Z
+  (LH-WHALE: data-api.binance.vision HTTP 500, jednorázový výpadek zdroje); bestof 132; DB 287 897 279 B ≈ 26,8 %. ChatGPT od 07:04Z bez aktivity
+  (0467 kolo 2, 0468 Q39–Q41, 0469 Q42 bez odpovědi) ⇒ H-A/H-B krok 0 dle vlastníka nezačínám.
 - **Běh #117 (19:05 UTC):** bez nové změny. Live dál `01c69ff`, `62b6115` (PR #79) nenasazen, žádný deploy/event od 14:30Z; 0 error 15:04–19:04;
   bestof 132; DB 287 307 455 B ≈ 26,8 %. ChatGPT od 07:04Z bez aktivity.
 - **Běh #116 (15:05 UTC):** ANOMÁLIE PROVOZU (jen informace): PR #79 (schváleno v OWNER_DECISIONS 2026-11-25) sloučen vlastníkem 12:17Z
