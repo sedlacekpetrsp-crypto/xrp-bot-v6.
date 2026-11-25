@@ -899,3 +899,12 @@ TESTY: 0 nových (platné pro `668022a`: 38 passed, CI run 45565526103 success).
 CHATGPT: Čeká kolo 2 review `668022a` (B3, vlastník Claude) a B1 fit + oprava C0–C5 (vlastník ChatGPT).
 DALŠÍ KROK: zpracovat kolo 2 review B3; po ACCEPT B3 + B1 skeletu příprava G0 datového běhu (bez modelu).
 ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné schválení (PR #79 viz dialog 0468 – jen pokud ho chceš nasadit).
+
+## XRP AUTOPILOT – 2026-11-25 15:05 UTC, běh #116
+
+PROVOZ: ⚠️ PR #79 (skrytí FLY, schválen vlastníkem) sloučen 12:17Z do `v8-fly-layer-test` jako `62b6115`, ale Render ho NENASADIL: autoDeploy=yes (commit), přesto od 00:00 UTC žádný deploy ani event. Live stále `01c69ff` (dep-dbt1oo3l550s739q2el0). Všechny předchozí deploye byly ruční ⇒ auto-deploy zřejmě nefunguje. 0 error logů 11:04–15:04; bestof 132 (nic nového); DB 286 717 631 B ≈ 26,7 % (< 70 %).
+VÝVOJ: Bez nové změny ve výzkumu — od review 6053223820 (07:04Z) žádná aktivita ChatGPT; oprava B3 `668022a` čeká na kolo 2. B1 fit vlastní ChatGPT; G0 ne před ACCEPT B3 + B1 (Q35/Q38).
+TESTY: 0 nových (platné pro `668022a`: 38 passed, CI 45565526103). N +0.
+CHATGPT: Čeká kolo 2 review `668022a` (B3, vlastník Claude) a B1 fit + C0–C5 (vlastník ChatGPT).
+DALŠÍ KROK: zpracovat kolo 2 review B3; po nasazení PR #79 ověřit live commit `62b6115` a přehled (FLY skrytý, ostatní boty OK).
+ROZHODNUTÍ VLASTNÍKA: Není potřeba nové schválení (PR #79 už schválen). Akce vlastníka: v Render dashboardu služby xrp-fly-whale-24-7 spustit „Manual Deploy → Deploy latest commit“ (autopilot deploy dělat nesmí). Riziko: restart = krátký překryv instancí (dřívější duplicity 128/129) ⇒ ideálně bez otevřené BEST-OF pozice.

@@ -11,10 +11,15 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-25 11:05 UTC, autopilot běh #115 — B3 kolo 2 + B1 čekají na ChatGPT)
+## CHECKPOINT (přepisuje se; stav k 2026-11-25 15:05 UTC, autopilot běh #116 — PR #79 sloučen, ale NENASAZEN; B3 kolo 2 + B1 čekají na ChatGPT)
+- **Běh #116 (15:05 UTC):** ANOMÁLIE PROVOZU (jen informace): PR #79 (schváleno v OWNER_DECISIONS 2026-11-25) sloučen vlastníkem 12:17Z
+  do `v8-fly-layer-test` = `62b6115`, Render `autoDeploy=yes/commit`, ale ŽÁDNÝ deploy ani event (`commit_ignored` ne) ⇒ live dál `01c69ff`.
+  Všechny dosavadní deploye byly `trigger: manual` ⇒ auto-deploy z GitHubu zřejmě nefunguje. Autopilot nesmí deployovat ⇒ vlastník
+  musí spustit „Manual Deploy“ sám (notifikace odeslána). Očekávaný live po deployi: `62b6115`. 0 error 11:04–15:04; bestof 132; DB 286 717 631 B ≈ 26,7 %.
+  ChatGPT od 07:04Z bez nové aktivity (kolo 2 B3 `668022a` + B1 čekají).
 - **Běh #115 (11:05 UTC):** bez nové změny. ChatGPT znovu aktivní: review PR #78 kolo 1 (6053223820, 07:04Z, 2 blokery,
   Q38a–c podmíněný SOUHLAS) ⇒ opraveno souběžnou session v `668022a` (38 passed, CI run 45565526103 success). Čeká kolo 2
-  `668022a` + B1 fit (ChatGPT). Live `01c69ff`, 0 error 07:04–11:04; bestof 132; DB 286 103 231 B ≈ 26,6 %. PR #79 dál čeká na vlastníka.
+  `668022a` + B1 fit (ChatGPT). Live `01c69ff`, 0 error 07:04–11:04; bestof 132; DB 286 103 231 B ≈ 26,6 %. PR #79 tehdy čekal na vlastníka.
 - **Běh #114 (07:05 UTC):** bez nové změny (8. blokovaný běh; ChatGPT pak odpověděl v 07:04Z). Live `01c69ff`, 0 error 03:04–07:04;
   bestof 132; DB 287 233 727 B ≈ 26,8 %. Nový PR #79 (jiná session, UI skrytí FLY) čeká na „Nasaď“ vlastníka — autopilot nesahá.
 - **Běh #113 (03:05 UTC):** bez nové změny (7. blokovaný běh, ChatGPT ~28 h neaktivní; vlastník upozorněn notifikací). Live `01c69ff`,
