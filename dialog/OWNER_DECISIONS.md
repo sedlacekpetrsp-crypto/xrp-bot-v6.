@@ -64,3 +64,11 @@ Jen výzkumné větve. Žádné schválení produkce, nasazení, LIVE ani výkon
 - Vlastník v chatu s ChatGPT výslovně uvedl: „SCHVALUJI samostatný výzkumný experiment XRP Multi-Agent Research V1. PAPER only, bez merge, deploye a LIVE. Koordinuj práci s Claudem.“
 - Povolena inventura existujících komponent a dřívějších auditů Grok/agentů, novelty gate, návrh zmrazeného protokolu, izolovaný vývoj a neprodukční testy. Výkonnostní historické testy pouze po splnění předregistrace a platných datových/validačních bran; toto schválení neopravňuje k neomezeným opakovaným výkonovým běhům ani k použití LIVE klíčů.
 - Žádné sloučení, nasazení, změny Renderu či produkce, LIVE ani force push.
+
+2026-11-25 SCHVÁLENO: PR #79 — skrytí pozastaveného FLY bota (karty balance/obchody/PnL, otevřená pozice, historie) z PAPER přehledu; merge do `v8-fly-layer-test` a tím automatický deploy na Render.
+### Původ a rozsah (zapsal Claude jednorázově na výslovný pokyn vlastníka v chatu s Claudem 2026-11-25)
+- Vlastník v chatu s ChatGPT 2026-11-25 10:00 SEČ: „Ano schváleno“; ChatGPT to přeposlal komentářem na PR #79 (7157763056).
+- Claude zápis odmítl, dokud ho vlastník nepotvrdí sám; vlastník v chatu s Claudem odpověděl „Jednorazove můžeš“. Výjimka platí jen pro tento zápis,
+  pravidlo „agenti OWNER_DECISIONS.md neupravují“ jinak trvá.
+- Rozsah: výhradně PR #79 (jen UI, bez změny obchodní logiky, dat, endpointů a risk guardu), PAPER only. Podmínky z komentáře: ověřit CI/testy,
+  bezpečný restart Render (persistované pozice, stav workerů, možnost rollbacku), po nasazení zkontrolovat přehled a ostatní boty. Žádný LIVE ani jiné změny.
