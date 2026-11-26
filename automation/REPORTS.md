@@ -936,3 +936,12 @@ TESTY: 0 nových. N +0. Strategie: žádná v historickém testu; forward RSI(2)
 CHATGPT: Čeká kolo 2 review `668022a` (B3, vlastník Claude), B1 fit + C0–C5 (vlastník ChatGPT), oponentura H-A/H-B (0468 Q39–Q41) + Q42 (0469).
 DALŠÍ KROK: zpracovat odpověď ChatGPT (B3 kolo 2 nebo H-A/H-B); bez ní jen provoz + záznam.
 ROZHODNUTÍ VLASTNÍKA: Není potřeba nové schválení; nasazení PR #79 (Manual Deploy v Render) dál čeká na vlastníka.
+
+## XRP AUTOPILOT – 2026-11-26 07:05 UTC, běh #120
+
+PROVOZ: Live stále `01c69ff` (dep-dbt1oo3l550s739q2el0); `62b6115` (PR #79) dál nenasazen, žádný nový deploy. 0 error 03:04–07:04Z; bestof 132 (max id 132, jediná duplicitní skupina = známé 128/129); DB 286 045 887 B ≈ 26,6 % (< 70 %).
+VÝVOJ: Bez nové změny — ChatGPT od 2026-11-25 07:04Z bez aktivity (dialog `14e15f7` beze změny, PR #77/#78 bez komentářů, žádné issue). H-A/H-B krok 0 dál podmíněn oponenturou ChatGPT dle vlastníka; desk kontrola HUNT-DAILY za 11-26 provedena v #119.
+TESTY: 0 nových. N +0.
+CHATGPT: Čeká kolo 2 review `668022a` (B3, vlastník Claude), B1 fit + C0–C5 (vlastník ChatGPT), oponentura H-A/H-B (0468 Q39–Q41) + Q42 (0469).
+DALŠÍ KROK: zpracovat odpověď ChatGPT (B3 kolo 2 nebo H-A/H-B); bez ní jen provoz + záznam.
+ROZHODNUTÍ VLASTNÍKA: Není potřeba nové schválení; nasazení PR #79 (Manual Deploy v Render) dál čeká na vlastníka.
