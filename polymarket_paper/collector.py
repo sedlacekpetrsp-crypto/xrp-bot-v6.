@@ -69,10 +69,13 @@ def winner_from_market(m: dict) -> int | None:
 
 
 class Runner:
-    def __init__(self, data_dir: Path, fetch=http_json):
+    def __init__(self, data_dir: Path | None, fetch=http_json, sink=None):
         self.fetch = fetch
         self.dir = data_dir
-        self.dir.mkdir(parents=True, exist_ok=True)
+        self.sink = sink  # volitelně sink(kind, row), např. Postgres
+        self.snap_stats = {"n": 0, "below_1": 0, "below_098": 0, "min_sum": None}
+        if self.dir:
+            self.dir.mkdir(parents=True, exist_ok=True)
         self.strategies = [InstantPair(), LegIn()]
         self.markets: dict[str, dict] = {}   # slug -> market info
         self.ends: dict[str, int] = {}       # slug -> unix konec okna
@@ -81,8 +84,14 @@ class Runner:
 
     def log(self, name: str, row: dict) -> None:
         row["ts"] = round(time.time(), 3)
-        with open(self.dir / f"{name}.jsonl", "a") as f:
-            f.write(json.dumps(row) + "\n")
+        if self.sink and name != "snapshots":
+            try:
+                self.sink(name, row)
+            except Exception as e:  # výpadek DB nesmí zastavit simulaci
+                print("PM PAPER sink error", repr(e)[:200], flush=True)
+        if self.dir:
+            with open(self.dir / f"{name}.jsonl", "a") as f:
+                f.write(json.dumps(row) + "\n")
 
     def load_market(self, slug: str) -> dict | None:
         evs = self.fetch(GAMMA.format(slug=slug))
@@ -113,6 +122,12 @@ class Runner:
         asks_dn = parse_asks(self.fetch(BOOK.format(tid=m["tokens"][DOWN])))
         if not asks_up or not asks_dn:
             return
+        total = asks_up[0][0] + asks_dn[0][0]
+        st = self.snap_stats
+        st["n"] += 1
+        st["below_1"] += total < 1.0
+        st["below_098"] += total < 0.98
+        st["min_sum"] = total if st["min_sum"] is None else min(st["min_sum"], total)
         self.log("snapshots", {"slug": slug, "secs_left": round(secs_left, 1),
                                "ask_up": asks_up[0][0], "ask_dn": asks_dn[0][0],
                                "sum": round(asks_up[0][0] + asks_dn[0][0], 4)})

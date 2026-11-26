@@ -90,3 +90,17 @@ def test_full_cycle_buy_then_settle(tmp_path):
     out = summarize(tmp_path)
     assert out["instant_pair"]["markets"] == 1
     assert out["instant_pair"]["pnl"] > 0  # pár 0.95 + poplatky < 1
+
+
+def test_service_status_without_db(monkeypatch):
+    import polymarket_paper.service as svc
+    monkeypatch.delenv("DATABASE_URL", raising=False)
+    out = svc.status()
+    assert out["mode"].startswith("PAPER") and out["strategies"] == {}
+
+
+def test_sink_failure_does_not_stop_runner(tmp_path):
+    def bad_sink(kind, row):
+        raise RuntimeError("db down")
+    r = Runner(None, fetch=lambda u: [], sink=bad_sink)
+    r.log("fills", {"x": 1})  # nesmí vyhodit výjimku
