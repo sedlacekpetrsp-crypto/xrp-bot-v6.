@@ -781,6 +781,23 @@ async def start_whale_worker():
     if _bestof_task is None or _bestof_task.done():
         _bestof_task = __import__("asyncio").create_task(bestof.core.trading_loop())
 
+@app.on_event("startup")
+async def start_polymarket_paper():
+    # PAPER simulace Polymarket Up/Down (vlastní vlákno, žádné objednávky).
+    try:
+        import polymarket_paper.service as pm_paper
+        pm_paper.start()
+    except Exception as exc:
+        print("PM PAPER start failed", repr(exc)[:300], flush=True)
+
+
+@app.get("/polymarket-paper/status")
+async def polymarket_paper_status():
+    import polymarket_paper.service as pm_paper
+    data = await __import__("asyncio").to_thread(pm_paper.status)
+    return JSONResponse(data, headers={"Cache-Control": "no-store"})
+
+
 @app.get("/whale/status")
 async def whale_status():
     data={k:v for k,v in whale.state.items() if k not in {"signal_journal","candidate_journal"}}
