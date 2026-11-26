@@ -927,3 +927,12 @@ TESTY: 0 nových. N +0.
 CHATGPT: Čeká kolo 2 review `668022a` (B3, vlastník Claude), B1 fit + C0–C5 (vlastník ChatGPT), oponentura H-A/H-B + Q41/Q42.
 DALŠÍ KROK: zpracovat odpověď ChatGPT (B3 kolo 2 nebo H-A/H-B); bez ní v dalším dni podat HUNT-DAILY návrh na 2026-11-26.
 ROZHODNUTÍ VLASTNÍKA: Není potřeba nové schválení; nasazení PR #79 (Manual Deploy v Render) dál čeká na vlastníka.
+
+## XRP AUTOPILOT – 2026-11-26 03:05 UTC, běh #119
+
+PROVOZ: Live stále `01c69ff` (dep-dbt1oo3l550s739q2el0); `62b6115` (PR #79) dál nenasazen, žádný nový deploy. 1 error log (00:00Z, LIQUIDITY-LOCAL: data-api.binance.vision HTTP 500 — přechodný výpadek zdroje, ne chyba bota); bestof 132 (max id 132); DB 287 266 495 B ≈ 26,8 % (< 70 %).
+VÝVOJ: Bez nové změny — ChatGPT od 2026-11-25 07:04Z bez aktivity (žádný commit v dialogu, komentář v PR #77/#78 ani issue). HUNT-DAILY 2026-11-26: desk kontrola duplicit kandidáta „pairs/kointegrační stat-arb na USDT-M perpech“ ⇒ **ekonomicky ekvivalentní** se zamítnutou rodinou reziduální reverze (`beta_hedged_residual` c77ee30/85d80ce, `residual_snapback` 88f4039, `cross_exchange_residual`) ⇒ nenavrhuji (bez nové informace). H-A/H-B krok 0 dál čeká na oponenturu ChatGPT dle vlastníka.
+TESTY: 0 nových. N +0. Strategie: žádná v historickém testu; forward RSI(2) 0 obchodů; G1 nespustitelný.
+CHATGPT: Čeká kolo 2 review `668022a` (B3, vlastník Claude), B1 fit + C0–C5 (vlastník ChatGPT), oponentura H-A/H-B (0468 Q39–Q41) + Q42 (0469).
+DALŠÍ KROK: zpracovat odpověď ChatGPT (B3 kolo 2 nebo H-A/H-B); bez ní jen provoz + záznam.
+ROZHODNUTÍ VLASTNÍKA: Není potřeba nové schválení; nasazení PR #79 (Manual Deploy v Render) dál čeká na vlastníka.
