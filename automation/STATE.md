@@ -11,7 +11,9 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-26 15:05 UTC, autopilot běh #122 — live 75ee035 (PR #79 + #80/#81 nasazeny vlastníkem); B3 kolo 2 + B1 + H-A/H-B oponentura čekají na ChatGPT)
+## CHECKPOINT (přepisuje se; stav k 2026-11-26 19:05 UTC, autopilot běh #123 — live 75ee035 (PR #79 + #80/#81 nasazeny vlastníkem); B3 kolo 2 + B1 + H-A/H-B oponentura čekají na ChatGPT)
+- **Běh #123 (2026-11-26 19:05 UTC):** bez nové změny; live 75ee035; 0 error; DB 27,2 %; pm_paper_events 3,6 MB/7 h. ChatGPT ~36 h nečinný ⇒
+  vlastníkovi navrženo (volitelně) povolit krok 0 H-A bez oponentury; do rozhodnutí čekat.
 - **Běh #122 (2026-11-26 15:05 UTC):** vlastník ručně nasadil `9029b7c` (PR #80, PAPER Polymarket Up/Down) a `75ee035` (PR #81) 12:00–12:06Z ⇒
   live `75ee035` (obsahuje `62b6115`/PR #79). Polymarket kód jen čte veřejné API. 0 error 11:04–15:04; bestof 132; DB 290 322 111 B ≈ 27,0 %;
   `pm_paper_events` ≈ 13 MB/den ⇒ sledovat (70 % za ~5 týdnů při stejném tempu). PM-UPDOWN-PAIR zapsán v registru (vyhodnocení ≥ 2026-12-03).

@@ -963,3 +963,12 @@ TESTY: 0 nových. N +0.
 CHATGPT: Čeká kolo 2 review `668022a` (B3, vlastník Claude), B1 fit + C0–C5 (vlastník ChatGPT), oponentura H-A/H-B (0468 Q39–Q41) + Q42 (0469).
 DALŠÍ KROK: zpracovat odpověď ChatGPT (B3 kolo 2 nebo H-A/H-B); bez ní provoz + růst `pm_paper_events`.
 ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné schválení.
+
+## XRP AUTOPILOT – 2026-11-26 19:05 UTC, běh #123
+
+PROVOZ: Live `75ee035` (dep-dc4218mi0phs738u0slg), žádný nový deploy. 0 error/critical 15:00–19:04Z; bestof 132 (1 duplicitní skupina = známé id 128/129); DB 292 419 263 B ≈ 27,2 % (< 70 %). `pm_paper_events` 12 703 řádků (12 136 fills, 568 settlements) / 3,6 MB za 7 h ≈ 12 MB/den ⇒ 70 % za ~5 týdnů (beze změny odhadu).
+VÝVOJ: Bez nové změny — ChatGPT bez aktivity od 2026-11-25 07:04Z (~36 h; dialog `14e15f7`, PR #77/#78 bez komentářů, žádné issue). H-A/H-B krok 0 blokuje pokyn vlastníka čekat na oponenturu; denní limit nových hypotéz (desk 11-26: pairs, hour-of-day, stablecoin) vyčerpán.
+TESTY: 0 nových. N +0.
+CHATGPT: Čeká kolo 2 review `668022a` (B3, vlastník Claude), B1 fit + C0–C5 (vlastník ChatGPT), oponentura H-A/H-B (0468 Q39–Q41) + Q42 (0469).
+DALŠÍ KROK: zpracovat odpověď ChatGPT; bez ní a bez nového pokynu vlastníka jen provoz.
+ROZHODNUTÍ VLASTNÍKA: 🔴 VYŽADUJE SCHVÁLENÍ (volitelné) — ChatGPT ~36 h nečinný blokuje celou výzkumnou frontu. Akce: povolit Claudovi krok 0 H-A CME_WEEKEND_GAP_FILL (jen datový audit Binance Vision, bez výkonu) bez oponentury ChatGPT; oponentura se doplní dodatečně před výkonnostním testem. Riziko: nižší nezávislost kontroly protokolu. Bezpečná alternativa: dál čekat (nebo obnovit ChatGPT úlohu).
