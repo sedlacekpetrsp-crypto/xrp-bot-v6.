@@ -268,7 +268,7 @@ async def dashboard_with_pnl_breakdown():
     old = "const p=d.position; document.getElementById('position').innerHTML=p?`<b>${p.symbol} ${p.side}</b> • entry ${f(p.entry_price,6)} • SL ${f(p.stop_loss,6)} • TP ${f(p.take_profit,6)} • uPnL ${f(d.unrealized_pnl,2)}`:'Žádná otevřená pozice';"
     new = "const p=d.position; document.getElementById('position').innerHTML=p?`<b>${p.symbol} ${p.side}</b> • entry ${f(p.entry_price,6)} • SL ${f(p.stop_loss,6)} • TP ${f(p.take_profit,6)}<br>Hrubý P/L <b class=\"${Number(d.unrealized_gross_pnl)>=0?'green':'red'}\">${Number(d.unrealized_gross_pnl)>=0?'+':''}${f(d.unrealized_gross_pnl,2)} USDC</b> • Čistý P/L <b class=\"${Number(d.unrealized_pnl)>=0?'green':'red'}\">${Number(d.unrealized_pnl)>=0?'+':''}${f(d.unrealized_pnl,2)} USDC</b> • Náklady ${f(d.estimated_costs,2)} USDC`:'Žádná otevřená pozice';"
     html = html.replace(old, new)
-    html = html.replace("</body>", '<div style="position:fixed;bottom:16px;right:16px;background:#1c2a39;padding:12px;border:2px solid #7dd3fc;border-radius:10px;z-index:1000"><a href="/max-effect" style="color:#7dd3fc;font-weight:bold">🎲 MAX-efekt long/short · PAPER</a></div></body>')
+    html = html.replace("</body>", '<div style="position:fixed;bottom:16px;right:16px;background:#1c2a39;padding:12px;border:2px solid #7dd3fc;border-radius:10px;z-index:1000"><a href="/max-effect" style="color:#7dd3fc;font-weight:bold">🎲 MAX-efekt long/short · PAPER</a></div><div style="position:fixed;bottom:80px;right:16px;background:#1c2a39;padding:12px;border:2px solid #c084fc;border-radius:10px;z-index:1000"><a href="/polymarket-paper" style="color:#c084fc;font-weight:bold">🎰 Polymarket UP/DOWN · PAPER</a></div></body>')
     html = html.replace("⚡ BOT V8 ADAPTIVE BREAKOUT SCALPER", "🎯 LIQUIDITY HUNTER + 🐋 LH-WHALE + ELITE + 🎲 MAX-EFEKT — 24/7 PAPER")
     html = html.replace("PAPER • pouze BREAKOUT • čisté R:R 1:1,3", "Aktivní PAPER boti • zastavené strategie jsou skryté")
     fly_guard_card = """
@@ -789,6 +789,13 @@ async def start_polymarket_paper():
         pm_paper.start()
     except Exception as exc:
         print("PM PAPER start failed", repr(exc)[:300], flush=True)
+
+
+@app.get("/polymarket-paper", response_class=HTMLResponse)
+async def polymarket_paper_page():
+    import polymarket_paper.service as pm_paper
+    data = await __import__("asyncio").to_thread(pm_paper.status)
+    return HTMLResponse(pm_paper.page_html(data), headers={"Cache-Control": "no-store"})
 
 
 @app.get("/polymarket-paper/status")

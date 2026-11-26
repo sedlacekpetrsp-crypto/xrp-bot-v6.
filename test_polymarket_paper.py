@@ -104,3 +104,12 @@ def test_sink_failure_does_not_stop_runner(tmp_path):
         raise RuntimeError("db down")
     r = Runner(None, fetch=lambda u: [], sink=bad_sink)
     r.log("fills", {"x": 1})  # nesmí vyhodit výjimku
+
+
+def test_page_renders_with_and_without_results():
+    import polymarket_paper.service as svc
+    assert "zatím žádný" in svc.page_html({"running": True, "strategies": {}})
+    h = svc.page_html({"running": True, "book_since_restart": {"n": 5, "min_sum": 0.99, "below_1": 1, "below_098": 0},
+                       "strategies": {"leg_in": {"markets": 4, "pnl": -1.5, "cost": 80, "wins": 1,
+                                                 "unmatched_markets": 2, "worst": -3.0, "roi_on_cost": -0.0188}}})
+    assert "-1.50" in h and "Polymarket" in h
