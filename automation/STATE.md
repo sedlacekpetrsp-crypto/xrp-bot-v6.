@@ -11,32 +11,15 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-26 11:05 UTC, autopilot běh #121 — PR #79 sloučen, ale NENASAZEN; B3 kolo 2 + B1 + H-A/H-B oponentura čekají na ChatGPT)
-- **Běh #121 (2026-11-26 11:05 UTC):** bez nové změny. Live `01c69ff`, `62b6115` nenasazen (žádný nový deploy); 0 error 07:04–11:04;
-  bestof 132; DB 287 864 511 B ≈ 26,8 %. ChatGPT bez aktivity od 11-25 07:04Z (dialog `14e15f7`, PR #77/#78 bez komentářů, 0 issues).
-  HUNT-DAILY desk (bez dat): hour-of-day sezónnost spot = zamítnuto filtrem nákladů (hrana řádu bp/h ≪ 3× round-trip ~0,2–0,3 %);
-  stablecoin mint/issuance = duplicita zamítnuté `stablecoin_liquidity_impulse` (5a908b5) ⇒ nenavrhovat.
-- **Běh #120 (2026-11-26 07:05 UTC):** bez nové změny. Live `01c69ff`, `62b6115` nenasazen; 0 error 03:04–07:04; bestof 132; DB 286 045 887 B ≈ 26,6 %.
+## CHECKPOINT (přepisuje se; stav k 2026-11-26 15:05 UTC, autopilot běh #122 — live 75ee035 (PR #79 + #80/#81 nasazeny vlastníkem); B3 kolo 2 + B1 + H-A/H-B oponentura čekají na ChatGPT)
+- **Běh #122 (2026-11-26 15:05 UTC):** vlastník ručně nasadil `9029b7c` (PR #80, PAPER Polymarket Up/Down) a `75ee035` (PR #81) 12:00–12:06Z ⇒
+  live `75ee035` (obsahuje `62b6115`/PR #79). Polymarket kód jen čte veřejné API. 0 error 11:04–15:04; bestof 132; DB 290 322 111 B ≈ 27,0 %;
+  `pm_paper_events` ≈ 13 MB/den ⇒ sledovat (70 % za ~5 týdnů při stejném tempu). PM-UPDOWN-PAIR zapsán v registru (vyhodnocení ≥ 2026-12-03).
   ChatGPT bez aktivity od 11-25 07:04Z.
-- **Běh #119 (2026-11-26 03:05 UTC):** bez nové změny. Live `01c69ff`, `62b6115` nenasazen; 1 error 00:00Z (LIQUIDITY-LOCAL, Binance
-  data-api 500, přechodné); bestof 132; DB 287 266 495 B ≈ 26,8 %. ChatGPT bez aktivity od 11-25 07:04Z. HUNT-DAILY desk: pairs/kointegrační
-  stat-arb = ekvivalent zamítnuté reziduální reverze (beta_hedged_residual, residual_snapback) ⇒ nenavrhovat.
-- **Běh #118 (23:05 UTC):** bez nové změny. Live dál `01c69ff`, `62b6115` nenasazen, žádný deploy/event od 19:00Z; 1 error 20:00Z
-  (LH-WHALE: data-api.binance.vision HTTP 500, jednorázový výpadek zdroje); bestof 132; DB 287 897 279 B ≈ 26,8 %. ChatGPT od 07:04Z bez aktivity
-  (0467 kolo 2, 0468 Q39–Q41, 0469 Q42 bez odpovědi) ⇒ H-A/H-B krok 0 dle vlastníka nezačínám.
-- **Běh #116 (15:05 UTC):** ANOMÁLIE PROVOZU (jen informace): PR #79 (schváleno v OWNER_DECISIONS 2026-11-25) sloučen vlastníkem 12:17Z
-  do `v8-fly-layer-test` = `62b6115`, Render `autoDeploy=yes/commit`, ale ŽÁDNÝ deploy ani event (`commit_ignored` ne) ⇒ live dál `01c69ff`.
-  Všechny dosavadní deploye byly `trigger: manual` ⇒ auto-deploy z GitHubu zřejmě nefunguje. Autopilot nesmí deployovat ⇒ vlastník
-  musí spustit „Manual Deploy“ sám (notifikace odeslána). Očekávaný live po deployi: `62b6115`. 0 error 11:04–15:04; bestof 132; DB 286 717 631 B ≈ 26,7 %.
-  ChatGPT od 07:04Z bez nové aktivity (kolo 2 B3 `668022a` + B1 čekají).
-- **Běh #115 (11:05 UTC):** bez nové změny. ChatGPT znovu aktivní: review PR #78 kolo 1 (6053223820, 07:04Z, 2 blokery,
-  Q38a–c podmíněný SOUHLAS) ⇒ opraveno souběžnou session v `668022a` (38 passed, CI run 45565526103 success). Čeká kolo 2
-  `668022a` + B1 fit (ChatGPT). Live `01c69ff`, 0 error 07:04–11:04; bestof 132; DB 286 103 231 B ≈ 26,6 %. PR #79 tehdy čekal na vlastníka.
-- **Běh #114 (07:05 UTC):** bez nové změny (8. blokovaný běh; ChatGPT pak odpověděl v 07:04Z). Live `01c69ff`, 0 error 03:04–07:04;
-  bestof 132; DB 287 233 727 B ≈ 26,8 %. Nový PR #79 (jiná session, UI skrytí FLY) čeká na „Nasaď“ vlastníka — autopilot nesahá.
-- **Běh #113 (03:05 UTC):** bez nové změny (7. blokovaný běh, ChatGPT ~28 h neaktivní; vlastník upozorněn notifikací). Live `01c69ff`,
-  0 error 23:04–03:04; bestof 132; DB 287 823 551 B ≈ 26,8 %.
-- **Běhy #107–#112:** bez nové změny (live/DB OK, blokováno čekáním na ChatGPT).
+- **Běhy #117–#121 (11-25 19:05 – 11-26 11:05 UTC):** bez nové změny; live tehdy `01c69ff`; přechodné Binance data-api 500 (00:00Z, 20:00Z);
+  HUNT-DAILY desk zamítl bez dat: pairs stat-arb (duplicita reziduální reverze), hour-of-day (náklady), stablecoin issuance (duplicita 5a908b5).
+- **Běhy #107–#116:** blokováno čekáním na ChatGPT; ChatGPT 11-25 07:04Z review PR #78 kolo 1 (6053223820, 2 blokery, Q38a–c podmíněný
+  SOUHLAS) ⇒ opraveno v `668022a` (38 passed, CI 45565526103 success). PR #79 sloučen vlastníkem 12:17Z 11-25 (auto-deploy nefunguje, deploye jen manual).
 - **Běh #106 (23:20 UTC):** ChatGPT dal SOUHLAS s Q35–Q37 (PR #77 kom. 7116379756): B3 loader = Claude,
   ChatGPT vzal „B1“, ale dodal G0 byte provenance `a98099c` (review 7116398159: 2 failed, C0–C5, B1 fit stále chybí).
 - **B3 hotov ke kontrole:** `claude/g1-b3-loader-20261124` `8470a1a`, draft PR #78 (base PR #77 `eb5584a`):

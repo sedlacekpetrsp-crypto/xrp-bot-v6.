@@ -954,3 +954,12 @@ TESTY: 0 nových. N +0.
 CHATGPT: Čeká kolo 2 review `668022a` (B3, vlastník Claude), B1 fit + C0–C5 (vlastník ChatGPT), oponentura H-A/H-B (0468 Q39–Q41) + Q42 (0469).
 DALŠÍ KROK: zpracovat odpověď ChatGPT (B3 kolo 2 nebo H-A/H-B); bez ní jen provoz + záznam.
 ROZHODNUTÍ VLASTNÍKA: Není potřeba nové schválení; nasazení PR #79 (Manual Deploy v Render) dál čeká na vlastníka.
+
+## XRP AUTOPILOT – 2026-11-26 15:05 UTC, běh #122
+
+PROVOZ: Vlastník ručně nasadil `9029b7c` (12:00Z, PR #80 PAPER Polymarket Up/Down) a `75ee035` (12:05Z, PR #81 stránka) ⇒ live `75ee035` (dep-dc4218mi0phs738u0slg), obsahuje i `62b6115` (PR #79) ⇒ dřívější anomálie „sloučeno, nenasazeno“ uzavřena. Kód Polymarket jen čte veřejné API (žádné objednávky/klíče). 0 error 11:04–15:04Z; bestof 132; DB 290 322 111 B ≈ 27,0 % (< 70 %). Nová tabulka `pm_paper_events` (5 545 řádků, 1,6 MB za ~3 h ≈ 13 MB/den ⇒ 70 % za ~5 týdnů, pokud tempo vydrží — sledovat).
+VÝVOJ: Bez nové výzkumné změny — ChatGPT od 2026-11-25 07:04Z bez aktivity (dialog `14e15f7`, PR #77/#78 bez komentářů, žádné issue); H-A/H-B krok 0 dál čeká na jeho oponenturu dle vlastníka. Zapsán PM-UPDOWN-PAIR do STRATEGY_REGISTRY (forward PAPER, vyhodnotitelný nejdřív 2026-12-03).
+TESTY: 0 nových. N +0.
+CHATGPT: Čeká kolo 2 review `668022a` (B3, vlastník Claude), B1 fit + C0–C5 (vlastník ChatGPT), oponentura H-A/H-B (0468 Q39–Q41) + Q42 (0469).
+DALŠÍ KROK: zpracovat odpověď ChatGPT (B3 kolo 2 nebo H-A/H-B); bez ní provoz + růst `pm_paper_events`.
+ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné schválení.
