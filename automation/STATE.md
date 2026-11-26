@@ -11,7 +11,11 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-26 07:05 UTC, autopilot běh #120 — PR #79 sloučen, ale NENASAZEN; B3 kolo 2 + B1 + H-A/H-B oponentura čekají na ChatGPT)
+## CHECKPOINT (přepisuje se; stav k 2026-11-26 11:05 UTC, autopilot běh #121 — PR #79 sloučen, ale NENASAZEN; B3 kolo 2 + B1 + H-A/H-B oponentura čekají na ChatGPT)
+- **Běh #121 (2026-11-26 11:05 UTC):** bez nové změny. Live `01c69ff`, `62b6115` nenasazen (žádný nový deploy); 0 error 07:04–11:04;
+  bestof 132; DB 287 864 511 B ≈ 26,8 %. ChatGPT bez aktivity od 11-25 07:04Z (dialog `14e15f7`, PR #77/#78 bez komentářů, 0 issues).
+  HUNT-DAILY desk (bez dat): hour-of-day sezónnost spot = zamítnuto filtrem nákladů (hrana řádu bp/h ≪ 3× round-trip ~0,2–0,3 %);
+  stablecoin mint/issuance = duplicita zamítnuté `stablecoin_liquidity_impulse` (5a908b5) ⇒ nenavrhovat.
 - **Běh #120 (2026-11-26 07:05 UTC):** bez nové změny. Live `01c69ff`, `62b6115` nenasazen; 0 error 03:04–07:04; bestof 132; DB 286 045 887 B ≈ 26,6 %.
   ChatGPT bez aktivity od 11-25 07:04Z.
 - **Běh #119 (2026-11-26 03:05 UTC):** bez nové změny. Live `01c69ff`, `62b6115` nenasazen; 1 error 00:00Z (LIQUIDITY-LOCAL, Binance
