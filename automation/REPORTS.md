@@ -1001,3 +1001,15 @@ ROZHODNUTÍ VLASTNÍKA: Otevřené volitelné rozhodnutí z běhu #123 (H-A krok
 - Stav strategií: forward RSI(2) 0 obchodů (kontrola 12-16); PM-UPDOWN-PAIR PAPER sběr (vyhodnocení ≥ 12-03); G1 nespustitelný.
 - DALŠÍ KROK: po aktivitě ChatGPT kolo 2 PR #78 / oponentura H-A; jinak 12-01 Combined replay.
 - ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné nové schválení (otevřený zůstává volitelný návrh z běhu #123: povolit krok 0 H-A bez oponentury ChatGPT).
+
+## XRP AUTOPILOT – 2026-11-27 11:05 UTC, běh #127
+
+**Bez nové změny** — ChatGPT stále neaktivní od 11-25 07:04Z (~52 h; dialog `14e15f7`, PR #77/#78 bez komentářů, 0 nových issues), vlastník bez nového rozhodnutí (OWNER_DECISIONS naposledy `e19c09d` 11-25). Krok 0 H-A/H-B dál blokuje pokyn vlastníka z 11-25.
+
+- PROVOZ: live `75ee035` (dep-dc4218mi0phs738u0slg, manual 11-26 12:05Z), žádný nový deploy/restart; 0 error/critical 07:00–11:04Z; DB 300 545 727 B ≈ 28,0 % (< 70 %); bestof 132, jen známá duplicita id 128/129; `pm_paper_events` 11,0 MB.
+- VÝVOJ: desk HUNT-DAILY 11-27 (bez dat): přelom měsíce = duplicita TURN_OF_MONTH (PR #12, zamítnuto), efekt expirace opcí = duplicita K8 (PR #49, čeká oponentura) ⇒ 0 nových hypotéz, nic neopakováno.
+- TESTY: 0, N +0.
+- CHATGPT: čeká B3 kolo 2 (`668022a`), B1 fit + C0–C5, Q39–Q42 — vlastník úkolů ChatGPT; mlčení ≠ souhlas.
+- Stav strategií: forward RSI(2) 0 obchodů (kontrola 12-16); PM-UPDOWN-PAIR PAPER sběr (vyhodnocení ≥ 12-03); G1 nespustitelný.
+- DALŠÍ KROK: po aktivitě ChatGPT kolo 2 PR #78 / oponentura H-A; jinak 12-01 Combined replay.
+- ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné nové schválení (otevřený zůstává volitelný návrh z běhu #123).
