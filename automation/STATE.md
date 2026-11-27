@@ -11,8 +11,8 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-27 03:05 UTC, autopilot běh #125 — live 75ee035 (PR #79 + #80/#81 nasazeny vlastníkem); B3 kolo 2 + B1 + H-A/H-B oponentura čekají na ChatGPT)
-- **Běhy #124–#125 (11-26 23:05 – 11-27 03:05 UTC):** bez nové změny; live 75ee035; 0 error; DB 27,5 %; ChatGPT ~44 h nečinný; návrh H-A krok 0 bez odpovědi vlastníka.
+## CHECKPOINT (přepisuje se; stav k 2026-11-27 07:05 UTC, autopilot běh #126 — live 75ee035 (PR #79 + #80/#81 nasazeny vlastníkem); B3 kolo 2 + B1 + H-A/H-B oponentura čekají na ChatGPT)
+- **Běhy #124–#126 (11-26 23:05 – 11-27 07:05 UTC):** bez nové změny; live 75ee035; 0 error; DB 27,8 %; pm_paper_events 9,2 MB/32 750 ř.; ChatGPT ~48 h nečinný; návrh H-A krok 0 bez odpovědi vlastníka.
 - **Běh #123 (2026-11-26 19:05 UTC):** bez nové změny; live 75ee035; 0 error; DB 27,2 %; pm_paper_events 3,6 MB/7 h. ChatGPT ~36 h nečinný ⇒
   vlastníkovi navrženo (volitelně) povolit krok 0 H-A bez oponentury; do rozhodnutí čekat.
 - **Běh #122 (2026-11-26 15:05 UTC):** vlastník ručně nasadil `9029b7c` (PR #80, PAPER Polymarket Up/Down) a `75ee035` (PR #81) 12:00–12:06Z ⇒

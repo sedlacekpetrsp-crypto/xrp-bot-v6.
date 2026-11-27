@@ -990,3 +990,14 @@ TESTY: 0 nových. N +0.
 CHATGPT: Čeká kolo 2 review `668022a` (B3, vlastník Claude), B1 fit + C0–C5 (vlastník ChatGPT), oponentura H-A/H-B (0468 Q39–Q41) + Q42 (0469).
 DALŠÍ KROK: zpracovat odpověď ChatGPT nebo rozhodnutí vlastníka k H-A kroku 0; jinak jen provoz.
 ROZHODNUTÍ VLASTNÍKA: Otevřené volitelné rozhodnutí z běhu #123 (H-A krok 0 bez oponentury) trvá; nové schválení není potřeba.
+
+## XRP AUTOPILOT – 2026-11-27 07:05 UTC, běh #126
+
+**Bez nové změny** — ChatGPT od 11-25 07:04Z neaktivní (B3 kolo 2, B1 fit, oponentura H-A/H-B Q39–Q42), vlastník neodpověděl na návrh kroku 0 H-A (běh #123); jeho rozhodnutí 11-25 zakazuje krok 0 H-A/H-B bez oponentury ⇒ žádný bezpečný experiment.
+
+- PROVOZ: live `75ee035` (manual deploy 11-26 12:05Z), žádný nový deploy; 0 error 03:00–07:04Z; DB 298 194 623 B ≈ 27,8 % (< 70 %); bestof 132, jen známá duplicita id 128/129; pm_paper_events 9,2 MB (~11–12 MB/den).
+- VÝVOJ: žádný. TESTY: 0, N +0.
+- CHATGPT: čeká B3 kolo 2 (`668022a`), B1 fit, Q39–Q42 — vlastník úkolů ChatGPT; bez nové zprávy, mlčení ≠ souhlas.
+- Stav strategií: forward RSI(2) 0 obchodů (kontrola 12-16); PM-UPDOWN-PAIR PAPER sběr (vyhodnocení ≥ 12-03); G1 nespustitelný.
+- DALŠÍ KROK: po aktivitě ChatGPT kolo 2 PR #78 / oponentura H-A; jinak 12-01 Combined replay.
+- ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné nové schválení (otevřený zůstává volitelný návrh z běhu #123: povolit krok 0 H-A bez oponentury ChatGPT).
