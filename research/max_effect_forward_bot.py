@@ -216,7 +216,8 @@ a{color:#8bd3ff}h1{font-size:25px}h2{font-size:18px;margin-top:0}small{color:#a8
 strong{font-size:23px}table{width:100%;border-collapse:collapse;font-size:14px}
 td,th{padding:6px 4px;border-bottom:1px solid #33485d;text-align:right}
 td:first-child,th:first-child{text-align:left}.g{color:#7ee0a1}.r{color:#ff9a9a}
-.warn{border-color:#c79a3a}.scroll{overflow-x:auto}</style></head><body><main>
+.warn{border-color:#c79a3a}.scroll{overflow-x:auto}details{border-bottom:1px solid #33485d;padding:10px 0}summary{cursor:pointer}
+dl{display:grid;grid-template-columns:auto 1fr;gap:6px;margin:12px 0}dd{margin:0;text-align:right}</style></head><body><main>
 <a href="/">← Přehled všech botů</a><h1>🎲 MAX-efekt long/short</h1>
 <p>Pouze simulované PAPER obchody · žádné příkazy na burzu</p>
 <div class="card warn"><b>Výzkumná hypotéza R12 – v backtestu neprošla.</b> Běží jen kvůli sběru dat, není to ověřená zisková strategie.
@@ -229,13 +230,50 @@ td:first-child,th:first-child{text-align:left}.g{color:#7ee0a1}.r{color:#ff9a9a}
 <div class="card">Uzavřené obchody<br><strong id="count">—</strong></div>
 <div class="card">Příští rebalance<br><strong id="next">—</strong></div></div>
 <div class="card"><h2>Otevřené pozice</h2><div class="scroll"><table id="positions"></table></div></div>
-<div class="card"><h2>Historie simulovaných obchodů</h2><div class="scroll"><table id="trades"></table></div></div>
+<div class="card"><h2>Historie simulovaných obchodů</h2><div id="trades"></div></div>
 <small>Ceny a funding: veřejná data OKX (USDT swapy). Poplatek 0,095 % + skluz 0,02 % na stranu. Stav je uložen v PostgreSQL.</small>
 <script>
 const $=id=>document.getElementById(id),n=(v,d=2)=>v==null?'—':Number(v).toFixed(d);
 const col=v=>'<td class="'+(Number(v)>=0?'g':'r')+'">'+n(v)+'</td>';
 const day=ms=>ms==null?'—':new Date(ms).toISOString().slice(0,10);
 function px(v){v=Number(v);return v>=100?v.toFixed(2):v>=1?v.toFixed(4):v.toFixed(5)}
+const clock=new Intl.DateTimeFormat('cs-CZ',{dateStyle:'medium',timeStyle:'medium',timeZone:'Europe/Prague'});
+function stamp(value){
+ const ms=value==null?NaN:new Date(value).getTime();
+ return Number.isFinite(ms)?clock.format(ms):'—';
+}
+function renderHistory(positions,trades){
+ const list=$('trades');
+ const expanded=new Set(Array.from(list.querySelectorAll('details[open]'),el=>el.dataset.key));
+ const rows=positions.map(([symbol,t])=>({symbol,t,open:true}));
+ rows.push(...trades.map(t=>({symbol:t.symbol,t,open:false})));
+ rows.sort((a,b)=>Date.parse(b.t.exit_at||b.t.entry_at)-Date.parse(a.t.exit_at||a.t.entry_at));
+ const cards=rows.map(({symbol,t,open})=>{
+  const card=document.createElement('details'),summary=document.createElement('summary'),fields=document.createElement('dl');
+  card.dataset.key=JSON.stringify([symbol,t.entry_at]);
+  card.open=expanded.has(card.dataset.key);
+  const side=open?(t.side>0?'LONG':'SHORT'):t.side;
+  summary.textContent=symbol.replace('USDT','')+' '+side+' · '+(open?'Otevřeno':'Uzavřeno')+' · '+stamp(open?(t.entry_at||t.entry_ms):t.exit_at);
+  function field(label,value){
+   const dt=document.createElement('dt'),dd=document.createElement('dd');
+   dt.textContent=label;dd.textContent=value;fields.append(dt,dd);
+  }
+  field('Otevření (Praha)',stamp(t.entry_at||t.entry_ms));
+  field('Vstupní cena (USDT)',t.entry==null?'—':px(t.entry));
+  field('Velikost při vstupu (USDT)',n(t.notional));
+  field('Množství ('+symbol.replace('USDT','')+')',n(t.qty,8));
+  if(!open){
+   field('Uzavření (Praha)',stamp(t.exit_at));
+   field('Důvod uzavření',t.reason==='REBALANCE'?'Rebalance':t.reason==='LIQUIDATION'?'Likvidace':t.reason||'—');
+  }
+  const price=open?t.last_price:t.exit;
+  field(open?'Aktuální cena (USDT)':'Výstupní cena (USDT)',price==null?'—':px(price));
+  field(open?'Průběžný P/L (USDT)':'Realizovaný P/L (USDT)',n(open?t.unrealized_pnl:t.net_pnl));
+  card.append(summary,fields);return card;
+ });
+ list.replaceChildren(...cards);
+ if(!cards.length)list.textContent='Zatím žádný simulovaný obchod.';
+}
 async function refresh(){
 try{
 const r=await fetch('/max-effect/status',{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);
@@ -251,10 +289,7 @@ const pos=Object.entries(p.positions||{});
 $('positions').innerHTML=pos.length?'<tr><th>Coin</th><th>Směr</th><th>Vstup</th><th>Cena</th><th>Funding</th><th>P/L</th></tr>'+
  pos.map(([s,x])=>'<tr><td>'+s.replace('USDT','')+'</td><td>'+(x.side>0?'LONG':'SHORT')+'</td><td>'+px(x.entry)+'</td><td>'+px(x.last_price)+'</td>'+col(x.funding)+col(x.unrealized_pnl)+'</tr>').join('')
  :'<tr><td>Žádná otevřená pozice – první vstup proběhne '+day(p.next_rebalance_day)+'.</td></tr>';
-const tr=(p.trades||[]).slice(-30).reverse();
-$('trades').innerHTML=tr.length?'<tr><th>Coin</th><th>Směr</th><th>Výstup</th><th>Důvod</th><th>P/L</th></tr>'+
- tr.map(t=>'<tr><td>'+t.symbol.replace('USDT','')+'</td><td>'+t.side+'</td><td>'+String(t.exit_at).slice(0,10)+'</td><td>'+t.reason+'</td>'+col(t.net_pnl)+'</tr>').join('')
- :'<tr><td>Zatím žádný uzavřený obchod.</td></tr>';
+renderHistory(pos,p.trades||[]);
 }catch(e){$('health').textContent='Chyba načtení: '+e.message;}
 }refresh();setInterval(refresh,15000);
 </script></main></body></html>"""
