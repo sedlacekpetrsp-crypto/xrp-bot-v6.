@@ -113,3 +113,76 @@ def test_page_renders_with_and_without_results():
                        "strategies": {"leg_in": {"markets": 4, "pnl": -1.5, "cost": 80, "wins": 1,
                                                  "unmatched_markets": 2, "worst": -3.0, "roi_on_cost": -0.0188}}})
     assert "-1.50" in h and "Polymarket" in h
+
+
+def bbook(asks=(), bids=()):
+    return {"asks": [{"price": str(p), "size": str(s)} for p, s in asks],
+            "bids": [{"price": str(p), "size": str(s)} for p, s in bids]}
+
+
+def test_sell_reduces_position_and_realizes_pnl():
+    from polymarket_paper.core import parse_bids, sell_proceeds
+    pos = Position()
+    pos.add(UP, 10, 4.0)
+    sold, got = sell_proceeds(parse_bids(bbook(bids=[(0.30, 5), (0.35, 5)])), 10, 0.0)
+    assert sold == 10 and got == pytest.approx(3.25)
+    pos.add(UP, -sold, -got)
+    assert pos.shares[UP] == 0 and pos.realized == pytest.approx(-0.75)
+    assert pos.settle(DOWN) == pytest.approx(-0.75) and pos.gross_cost == 4.0
+
+
+def test_leg_in_v2_one_clip_then_pair():
+    from polymarket_paper.core import LegInV2
+    s = LegInV2(clip=10)
+    pos = Position()
+    o = s.on_book(pos, parse_asks(book((0.40, 50))), parse_asks(book((0.62, 50))), 0.0, secs_left=250)
+    assert o == [(UP, 10, pytest.approx(4.0))]
+    pos.add(*o[0])
+    # i když je UP pořád levné, v2 nepřikupuje (žádné průměrování dolů)
+    assert s.on_book(pos, parse_asks(book((0.30, 50))), parse_asks(book((0.70, 50))), 0.0, secs_left=240) == []
+    o = s.on_book(pos, parse_asks(book((0.44, 50))), parse_asks(book((0.55, 50))), 0.0, secs_left=230)
+    assert o and o[0][0] == DOWN and o[0][1] == 10
+    pos.add(*o[0])
+    assert pos.matched == 10 and pos.shares[UP] == pos.shares[DOWN]
+
+
+def test_leg_in_v2_sells_unpaired_leg_after_timeout():
+    from polymarket_paper.core import LegInV2, parse_bids
+    s = LegInV2(clip=10, max_wait_sec=60)
+    pos = Position()
+    pos.add(*s.on_book(pos, parse_asks(book((0.40, 50))), parse_asks(book((0.62, 50))), 0.0, secs_left=280)[0])
+    bids = parse_bids(bbook(bids=[(0.20, 100)]))
+    # po 30 s ještě čeká
+    assert s.on_book(pos, parse_asks(book((0.22, 50))), parse_asks(book((0.80, 50))), 0.0,
+                     secs_left=250, bids_up=bids) == []
+    # po 60 s prodá celou nespárovanou nohu
+    o = s.on_book(pos, parse_asks(book((0.22, 50))), parse_asks(book((0.80, 50))), 0.0,
+                  secs_left=220, bids_up=bids)
+    assert o[0][0] == UP and o[0][1] == -10
+    pos.add(*o[0])
+    assert pos.shares == [0.0, 0.0] and pos.settle(UP) == pytest.approx(-2.0)
+
+
+def test_leg_in_v2_no_new_legs_late_or_when_decided():
+    from polymarket_paper.core import LegInV2
+    s = LegInV2()
+    assert s.on_book(Position(), parse_asks(book((0.40, 50))), parse_asks(book((0.62, 50))), 0.0, secs_left=100) == []
+    assert s.on_book(Position(), parse_asks(book((0.10, 50))), parse_asks(book((0.91, 50))), 0.0, secs_left=250) == []
+
+
+def test_instant_pair_confirmed_needs_two_snapshots():
+    from polymarket_paper.core import InstantPairConfirmed
+    s = InstantPairConfirmed(clip=10, min_edge=0.01)
+    pos = Position()
+    up, dn = parse_asks(book((0.48, 50))), parse_asks(book((0.49, 50)))
+    assert s.on_book(pos, up, dn, 0.0) == []
+    assert len(s.on_book(pos, up, dn, 0.0)) == 2
+    # zmizí -> další výskyt zase čeká
+    assert s.on_book(pos, parse_asks(book((0.5, 50))), parse_asks(book((0.5, 50))), 0.0) == []
+    assert s.on_book(pos, up, dn, 0.0) == []
+
+
+def test_default_strategies_exclude_v1(monkeypatch):
+    monkeypatch.delenv("PM_STRATEGIES", raising=False)
+    names = [s.name for s in Runner(None, fetch=lambda u: []).strategies]
+    assert names == ["instant_pair", "instant_pair_confirmed", "leg_in_v2"]

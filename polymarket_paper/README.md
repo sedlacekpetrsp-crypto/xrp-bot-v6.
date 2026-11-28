@@ -35,3 +35,32 @@ python -m pytest -q test_polymarket_paper.py
 ## Kritérium úspěchu (stanoveno předem)
 Alespoň 7 dní dat a 300 vyhodnocených trhů na strategii, kladný PnL po poplatcích,
 a také kladný PnL v obou polovinách období zvlášť.
+
+## Vyhodnocení po 2 dnech (28. 11. 2026, 8:55, data z Postgresu `pm_paper_events`)
+| strategie | trhů | PnL USDC | výnos z nákladu | ziskových |
+|---|---|---|---|---|
+| instant_pair | 654 | +231,89 | +2,78 % | 100 % |
+| leg_in (v1) | 2 782 | −9 094,28 | −2,94 % | 39,7 % |
+
+Rozklad `leg_in` v1:
+- plně spárované trhy (869): **+8 097 USDC**,
+- trhy s nespárovanou nohou (1 917): **−17 204 USDC**,
+- nespárovaná (těžší) strana prohrála v **1 904 z 1 917** trhů (99,3 %), i když se kupovala
+  v průměru za 0,356.
+
+Příčina: adverzní výběr. Když první noha vyhrává, druhá strana zlevní a pár se dokončí.
+Když první noha prohrává, druhá strana podraží a pár se nedokončí, takže nespárované
+zůstanou skoro vždy jen prohrávající kusy. Přikupování „levné“ strany do 40 kusů ztrátu zvětšovalo.
+Parametry v1 to nespraví, problém je ve stavbě strategie.
+
+## Změny 28. 11. 2026
+- `leg_in` v1 **vypnuta** (historie zůstává v DB a na stránce).
+- `leg_in_v2`: nanejvýš 1 nespárovaná dávka (10 ks), žádné přikupování,
+  první noha jen za 0,25–0,45 a jen když zbývá ≥ 120 s. Nespárovanou nohu
+  po 60 s nebo 45 s před koncem **prodá do bidů** (s taker poplatkem), nedrží ji do vyhodnocení.
+- `instant_pair_confirmed`: arbitráž se počítá, jen když vydrží 2 snímky po sobě (~4 s).
+  Ukazuje, kolik zisku `instant_pair` zbude bez okamžitých příležitostí, které by reálně
+  sebral rychlejší bot.
+- výběr strategií proměnnou `PM_STRATEGIES` (výchozí `instant_pair,instant_pair_confirmed,leg_in_v2`).
+
+Kritérium úspěchu zůstává stejné (7 dní, ≥ 300 trhů, zisk v obou polovinách).

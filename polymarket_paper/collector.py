@@ -15,7 +15,13 @@ import time
 import urllib.request
 from pathlib import Path
 
-from .core import DOWN, UP, InstantPair, LegIn, Position, parse_asks
+from .core import (DOWN, UP, InstantPair, InstantPairConfirmed, LegIn,
+                   LegInV2, Position, parse_asks, parse_bids)
+
+STRATEGIES = {"instant_pair": InstantPair, "instant_pair_confirmed": InstantPairConfirmed,
+              "leg_in": LegIn, "leg_in_v2": LegInV2}
+# leg_in (v1) vypnuta 28. 11. 2026: −9 094 USDC, nespárované nohy téměř vždy prohrály.
+DEFAULT_STRATEGIES = "instant_pair,instant_pair_confirmed,leg_in_v2"
 
 GAMMA = "https://gamma-api.polymarket.com/events?slug={slug}"
 BOOK = "https://clob.polymarket.com/book?token_id={tid}"
@@ -76,7 +82,8 @@ class Runner:
         self.snap_stats = {"n": 0, "below_1": 0, "below_098": 0, "min_sum": None}
         if self.dir:
             self.dir.mkdir(parents=True, exist_ok=True)
-        self.strategies = [InstantPair(), LegIn()]
+        names = os.getenv("PM_STRATEGIES", DEFAULT_STRATEGIES).split(",")
+        self.strategies = [STRATEGIES[n.strip()]() for n in names if n.strip() in STRATEGIES]
         self.markets: dict[str, dict] = {}   # slug -> market info
         self.ends: dict[str, int] = {}       # slug -> unix konec okna
         self.pos: dict[tuple[str, str], Position] = {}
@@ -118,8 +125,9 @@ class Runner:
         m = self.markets[slug]
         if secs_left <= 2:
             return
-        asks_up = parse_asks(self.fetch(BOOK.format(tid=m["tokens"][UP])))
-        asks_dn = parse_asks(self.fetch(BOOK.format(tid=m["tokens"][DOWN])))
+        book_up = self.fetch(BOOK.format(tid=m["tokens"][UP]))
+        book_dn = self.fetch(BOOK.format(tid=m["tokens"][DOWN]))
+        asks_up, asks_dn = parse_asks(book_up), parse_asks(book_dn)
         if not asks_up or not asks_dn:
             return
         total = asks_up[0][0] + asks_dn[0][0]
@@ -133,7 +141,11 @@ class Runner:
                                "sum": round(asks_up[0][0] + asks_dn[0][0], 4)})
         for s in self.strategies:
             pos = self.pos.setdefault((s.name, slug), Position())
-            kw = {"secs_left": secs_left} if isinstance(s, LegIn) else {}
+            kw = {}
+            if isinstance(s, (LegIn, LegInV2)):
+                kw["secs_left"] = secs_left
+            if isinstance(s, LegInV2):
+                kw["bids_up"], kw["bids_dn"] = parse_bids(book_up), parse_bids(book_dn)
             for side, shares, cost in s.on_book(pos, asks_up, asks_dn, m["rate"], **kw):
                 pos.add(side, shares, cost)
                 self.log("fills", {"strategy": s.name, "slug": slug,
@@ -160,7 +172,8 @@ class Runner:
                         "strategy": s.name, "slug": slug, "status": "resolved",
                         "winner": "UP" if w == UP else "DOWN",
                         "shares_up": pos.shares[UP], "shares_dn": pos.shares[DOWN],
-                        "matched": pos.matched, "cost": round(sum(pos.cost), 4),
+                        "matched": pos.matched, "cost": round(pos.gross_cost, 4),
+                        "realized": round(pos.realized, 4),
                         "pnl": round(pos.settle(w), 4), "fills": pos.fills})
             self.pending.discard(slug)
             self.markets.pop(slug, None)
