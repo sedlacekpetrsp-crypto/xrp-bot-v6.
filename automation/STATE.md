@@ -11,7 +11,8 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-28 03:05 UTC, autopilot běh #131 — live 75ee035 (PR #79 + #80/#81 nasazeny vlastníkem); B3 kolo 2 + B1 + H-A/H-B oponentura čekají na ChatGPT)
+## CHECKPOINT (přepisuje se; stav k 2026-11-28 07:05 UTC, autopilot běh #132 — live 75ee035 (PR #79 + #80/#81 nasazeny vlastníkem); B3 kolo 2 + B1 + H-A/H-B oponentura čekají na ChatGPT)
+- **Běh #132 (11-28 07:05 UTC):** bez nové změny; live 75ee035; 0 error 03:04–07:04Z; DB 308 696 767 B ≈ 28,7 %; pm_paper_events 19,9 MB; bestof 132 (dup jen 128/129); ChatGPT ~72 h nečinný.
 - **Běh #131 (11-28 03:05 UTC):** bez nové změny; live 75ee035; 0 error 23:00–03:04Z; DB 307 181 247 B ≈ 28,6 %; pm_paper_events 18,1 MB; bestof 132, jediná duplicita = známé id 128/129; ChatGPT ~68 h nečinný. Desk HUNT-DAILY 11-28: 52-week-high/ATH anchoring (ekonomicky ≈ Donchian průraz PR #11 + MAX PR #33, rodina TS trend pozastavena) a basis/premium reverze (≈ spot_perp_carry) ⇒ 0 nových hypotéz, N +0.
 - **Běhy #124–#130 (11-26 23:05 – 11-27 23:05 UTC):** bez nové změny; live 75ee035; 0 error; DB 28,4 %; pm_paper_events 16,3 MB; ChatGPT ~64 h nečinný; návrh H-A krok 0 bez odpovědi vlastníka. #127 desk HUNT-DAILY 11-27: turn-of-month (duplicita PR #12, zamítnuto) a expirace opcí (duplicita K8, PR #49) ⇒ 0 nových hypotéz.
 - **Běh #123 (2026-11-26 19:05 UTC):** bez nové změny; live 75ee035; 0 error; DB 27,2 %; pm_paper_events 3,6 MB/7 h. ChatGPT ~36 h nečinný ⇒
