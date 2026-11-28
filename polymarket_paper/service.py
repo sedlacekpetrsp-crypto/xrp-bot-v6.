@@ -151,7 +151,10 @@ def page_html(d: dict) -> str:
     n = b.get("n", 0)
     book = (f"{n} snímků • nejnižší součet UP+DOWN <b>{b.get('min_sum') if b.get('min_sum') is not None else '–'}</b> • "
             f"pod 1,00: <b>{b.get('below_1', 0)}×</b> • pod 0,98: <b>{b.get('below_098', 0)}×</b>") if n else "zatím bez dat"
-    names = {"instant_pair": "Okamžitý pár (čistá arbitráž)", "leg_in": "Postupné skládání páru (styl z tweetu)"}
+    names = {"instant_pair": "Okamžitý pár (čistá arbitráž)",
+             "instant_pair_confirmed": "Okamžitý pár – potvrzený 2 snímky (realističtější)",
+             "leg_in_v2": "Skládání páru v2 (max 1 nespárovaná dávka, prodej do 60 s)",
+             "leg_in": "Skládání páru v1 – VYPNUTO 28. 11. (jen historie)"}
     rows = ""
     for key, label in names.items():
         s = (d.get("strategies") or {}).get(key)
@@ -182,6 +185,7 @@ td,th{{padding:8px 6px;border-bottom:1px solid #223;text-align:left}}
 <div class=card><h2 style="margin-top:0">Výsledky (USDC, po poplatcích)</h2><div class=wrap><table>
 <tr><th>Strategie</th><th>Trhů</th><th>PnL</th><th>Výnos z nákladu</th><th>Ziskových</th><th>Nespárované</th><th>Nejhorší trh</th></tr>
 {rows}</table></div>
+<p class=muted>Skládání páru v1 bylo 28. 11. vypnuto: nespárovaná strana prohrála v 1 904 z 1 917 trhů (pár se dokončí hlavně tehdy, když by první noha stejně vyhrála). Verze 2 drží nanejvýš 10 nespárovaných kusů a do 60 s je spáruje, nebo prodá.</p>
 <p class=muted>Na jeden trh max. 200 kusů na stranu, nákup po 10 kusech. Simulace je spíš optimistická: plnění za zobrazenou cenu bez zpoždění a bez konkurence.</p></div>
 <div class=card><h2 style="margin-top:0">Kniha objednávek od restartu</h2><p>{book}</p>
 <p class=muted>Okamžitá arbitráž vyžaduje součet pod 1,00 i po poplatcích.</p></div>
