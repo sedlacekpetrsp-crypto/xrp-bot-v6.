@@ -11,7 +11,8 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 > je od kompakce v archivu ř. 177–314 (FRONTA v2 + fronta 11-05); aktivní body níže. Před novou hypotézou prohledat celý
 > registr a inventář (ne jen tento soubor).
 
-## CHECKPOINT (přepisuje se; stav k 2026-11-28 07:05 UTC, autopilot běh #132 — live 75ee035 (PR #79 + #80/#81 nasazeny vlastníkem); B3 kolo 2 + B1 + H-A/H-B oponentura čekají na ChatGPT)
+## CHECKPOINT (přepisuje se; stav k 2026-11-28 11:15 UTC, autopilot běh #133 — live b35c991 (Polymarket leg_in_v2, ruční deploy vlastníka 08:17Z); ChatGPT znovu aktivní; B3 kolo 2 + B1 + H-A/H-B oponentura + Q43/Q44 čekají na ChatGPT)
+- **Běh #133 (11-28 11:15 UTC):** live **b35c991** = HEAD `v8-fly-layer-test` (ruční deploy 08:17Z, jiná session, vlastník „Ano“; jen `polymarket_paper/*`); 0 error 07:04–11:04Z; DB 309 769 919 B ≈ 28,8 %; `pm_paper_events` 20,9 MB, 0 duplicit fills/settlements (slug+strategie) po deployi. ChatGPT po ~72 h aktivní: INBOX HAWKES-EDGE-01 + HAR-T-EDGE-01 (pokyn vlastníka, Grok desk) ⇒ Claude **0470** (`8f7e559`, dialog): Hawkes **NO-GO nákladovou aritmetikou** (0,23 % RT, brána ≥ 0,69 %; krok 0 „horní mez OFI“ jen se SCHVÁLENO vlastníka, doporučeno neschvalovat); HAR-T jako filtr NESOUHLAS (0/15 XRP PAPER ledgerů s kladným očekáváním, nejlepší v81breakout t ≈ 0,83 ⇒ post-hoc; rodina PR #27/#99/#104); nový kandidát **H-C** do fronty. Data 0, N +0.
 - **Běh #132 (11-28 07:05 UTC):** bez nové změny; live 75ee035; 0 error 03:04–07:04Z; DB 308 696 767 B ≈ 28,7 %; pm_paper_events 19,9 MB; bestof 132 (dup jen 128/129); ChatGPT ~72 h nečinný.
 - **Běh #131 (11-28 03:05 UTC):** bez nové změny; live 75ee035; 0 error 23:00–03:04Z; DB 307 181 247 B ≈ 28,6 %; pm_paper_events 18,1 MB; bestof 132, jediná duplicita = známé id 128/129; ChatGPT ~68 h nečinný. Desk HUNT-DAILY 11-28: 52-week-high/ATH anchoring (ekonomicky ≈ Donchian průraz PR #11 + MAX PR #33, rodina TS trend pozastavena) a basis/premium reverze (≈ spot_perp_carry) ⇒ 0 nových hypotéz, N +0.
 - **Běhy #124–#130 (11-26 23:05 – 11-27 23:05 UTC):** bez nové změny; live 75ee035; 0 error; DB 28,4 %; pm_paper_events 16,3 MB; ChatGPT ~64 h nečinný; návrh H-A krok 0 bez odpovědi vlastníka. #127 desk HUNT-DAILY 11-27: turn-of-month (duplicita PR #12, zamítnuto) a expirace opcí (duplicita K8, PR #49) ⇒ 0 nových hypotéz.
@@ -31,7 +32,7 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
   `g1_b3_loader.py` (SHA-256 `056b856e…6ba72`) 1m klines→denní close (bar 23:59, available close+60 s), 9 B3 featur přes
   `build_feature_bundle` + BTC rv30, P(t)=CLOSE 00:05 trades>0, label [00:06,+336 h), 4 explicitní výjimky, per-row provenance.
   33 syntetických testů + mutační kontrola; lokálně 680 passed; CI run 45286067653 success na přesném SHA. Data 0, N +0.
-- **DALŠÍ KROK:** kolo 2 oponentury ChatGPT na `668022a` (0467; Q38a–c podmíněně SOUHLAS); ChatGPT B1 fit (LogReg M0/B1/B2/B3,
+- **DALŠÍ KROK:** zpracovat odpověď ChatGPT na 0470 (Q43/Q44) a 0468 (Q39–Q41); kolo 2 oponentury ChatGPT na `668022a` (0467; Q38a–c podmíněně SOUHLAS); ChatGPT B1 fit (LogReg M0/B1/B2/B3,
   vnitřní validace) nad `B3_FEATURES`. Pak Claude: G0 datový běh (stažení + .CHECKSUM → `MinuteSeries`) jako workflow_dispatch
   BEZ modelu — teprve po zamčení definic (Q38). Q17, Q25–Q27, Q30, Q31, Q33, Q34 otevřené. Před prací `git ls-remote` větve `claude/*`.
 - **G1 Top Risk Radar (schváleno 2026-11-12, max. 1 běh):** NESPUSTITELNÝ — chybí B1 fit, G0 manifest, workflow §9, B6 a LOCKED
@@ -55,7 +56,7 @@ Plánovaná úloha „XRP BOT – Automatický vývoj a kontrola“ (cca à 3–
 ## ROZHODNUTÍ 2026-11-25 — HUNT-DAILY (vlastník v chatu: „Potřebujeme, abyste pokud možno vyvíjeli každý den novou strategii. Hledejte a navrhujte strategie z různých databází a testů od různých traderů a cokoliv vás napadne“)
 - Cíl: každý den ≥ 1 nová hypotéza (max. 3/den dle frameworku) s mechanismem + zdrojem (paper, databáze, veřejný test tradera); kontrola duplicit, filtr hrana ≥ 3× celkový náklad, krok 0 PIT data, protokol zmrazen před daty. Výhradně PAPER.
 - G1 lov NEBLOKUJE — běží paralelně. Žádné obvodové moduly bez konzumenta.
-- Fronta (dialog 0468 `d473d0e`, čeká oponentura ChatGPT Q39–Q41): H-A CME_WEEKEND_GAP_FILL (Binance Vision 1m; **vlastník 2026-11-25: počkat na odpověď ChatGPT — krok 0 H-A ani H-B nezačínat bez jeho oponentury**), H-B TOKEN_UNLOCK_PRE_DRIFT (krok 0: PIT zdroj plánů odemčení).
+- Fronta (dialog 0468 `d473d0e`, čeká oponentura ChatGPT Q39–Q41): H-A CME_WEEKEND_GAP_FILL (Binance Vision 1m; **vlastník 2026-11-25: počkat na odpověď ChatGPT — krok 0 H-A ani H-B nezačínat bez jeho oponentury**), H-B TOKEN_UNLOCK_PRE_DRIFT (krok 0: PIT zdroj plánů odemčení). Za nimi **H-C PM_INTRAWINDOW_VOL_PRICING** (0470 §HAR-T 3: kalibrace σ̂ HAR/EWMA × Student-t/Gauss proti kotacím Polymarket Up/Down uvnitř okna, Brier/log-loss; NEOTEVÍRAT před vyhodnocením PM-UPDOWN-PAIR ≥ 2026-12-03 a ověřením PIT bid/ask v `pm_paper_events`; oponentura Q44).
 - Hlášení vlastníkovi: 1 řádek stav strategií (co je v testu, výsledek po nákladech).
 
 ## ROZHODNUTÍ 2026-11-16 ~14:10 UTC — TRVALÝ LOV STRATEGIÍ (vlastník v chatu: „chci, abyste sháněli anebo vyvíjeli pořád nové strategie pro boty“)

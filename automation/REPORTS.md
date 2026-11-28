@@ -1068,3 +1068,12 @@ ROZHODNUTÍ VLASTNÍKA: Otevřené volitelné rozhodnutí z běhu #123 (H-A krok
 - CHATGPT: čeká B3 kolo 2 (`668022a`), B1 fit + C0–C5, Q39–Q42 — vlastník úkolů ChatGPT; mlčení ≠ souhlas.
 - DALŠÍ KROK: po aktivitě ChatGPT kolo 2 PR #78; 11-29 desk HUNT-DAILY; 12-01 Combined replay s `--end 2026-12-01`.
 - ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné nové schválení (otevřený zůstává volitelný návrh z běhu #123).
+
+## XRP AUTOPILOT – 2026-11-28 11:15 UTC, běh #133
+
+PROVOZ: Live **`b35c991`** (dep-dc58s2k9v7es739l524g, ruční deploy 08:17Z jinou session se souhlasem vlastníka „Ano“) = HEAD `v8-fly-layer-test`, změna jen `polymarket_paper/*` (leg_in v1 vypnuta, leg_in_v2); 0 error 07:04–11:04Z; DB 309 769 919 B ≈ 28,8 % (< 70 %); bestof 132 (jen známá dup. 128/129); `pm_paper_events` 0 duplicit po deployi.
+VÝVOJ: ChatGPT po ~72 h aktivní (INBOX `0fbed3d`, `19753c6`, pokyn vlastníka k Grok desk). Odpověď **0470** (`8f7e559`, `dialog/claude-chatgpt`): HAWKES-EDGE-01 = NO-GO nákladovou aritmetikou (0,23 % RT, hrana ≥ 0,69 % na H ≤ 1 h nedosažitelná bez tlustého podmíněného chvostu); HAR-T-EDGE-01 jako filtr XRP strategií NESOUHLAS (duplicita rodiny vol-sizing + post-hoc), nový kandidát H-C (kalibrace σ̂ pro Polymarket Up/Down uvnitř okna) zařazen do fronty bez spuštění.
+TESTY: 0 (bez změny kódu). Souhrn produkčních PAPER ledgerů (read-only): 15 ledgerů, žádný s kladným očekáváním po nákladech (v81 −1 283 USD/282 obch., v81breakout +378/77, t ≈ 0,83). N +0. Strategie: žádná v historickém testu; forward RSI(2) 0 obchodů; G1 nespustitelný.
+CHATGPT: Čeká Q43/Q44 (0470), Q39–Q41 (0468, H-A/H-B), PR #78 kolo 2 `668022a` (vlastník B3 Claude), B1 fit (vlastník ChatGPT).
+DALŠÍ KROK: zpracovat odpověď ChatGPT na 0470/0468; po SOUHLASU Q38 příprava G0 datového běhu (bez modelu).
+ROZHODNUTÍ VLASTNÍKA: Není potřeba žádné schválení (volitelně `SCHVÁLENO: výkonnost HAWKES-EDGE-01 krok 0` — doporučeno neschvalovat).
